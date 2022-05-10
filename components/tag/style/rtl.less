@@ -4,15 +4,15 @@
 @tag-prefix-cls: ~'@{ant-prefix}-tag';
 
 .@{tag-prefix-cls} {
-  &-rtl {
+  &&-rtl {
     margin-right: 0;
     margin-left: 8px;
     direction: rtl;
     text-align: right;
   }
 
-  .@{iconfont-css-prefix}-close {
-    .@{tag-prefix-cls}-rtl& {
+  &-close-icon {
+    .@{tag-prefix-cls}-rtl & {
       margin-right: 3px;
       margin-left: 0;
     }

@@ -26,16 +26,15 @@ function cancel(e) {
   message.error('Click on No');
 }
 
-ReactDOM.render(
+export default () => (
   <Popconfirm
-    title="Are you sure delete this task?"
+    title="Are you sure to delete this task?"
     onConfirm={confirm}
     onCancel={cancel}
     okText="Yes"
     cancelText="No"
   >
     <a href="#">Delete</a>
-  </Popconfirm>,
-  mountNode,
+  </Popconfirm>
 );
 ```

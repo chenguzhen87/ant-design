@@ -1,12 +1,13 @@
 import * as React from 'react';
 import useRCNotification from 'rc-notification/lib/useNotification';
-import {
+import type {
   NotificationInstance as RCNotificationInstance,
   NoticeContent as RCNoticeContent,
   HolderReadyCallback as RCHolderReadyCallback,
 } from 'rc-notification/lib/Notification';
-import { ConfigConsumer, ConfigConsumerProps } from '../../config-provider';
-import { NotificationInstance, ArgsProps } from '..';
+import type { ConfigConsumerProps } from '../../config-provider';
+import { ConfigConsumer } from '../../config-provider';
+import type { NotificationInstance, ArgsProps } from '..';
 
 export default function createUseNotification(
   getNotificationInstance: (
@@ -46,19 +47,20 @@ export default function createUseNotification(
     }
 
     // Fill functions
-    const hookAPI: any = {
-      open: notify,
-    };
+    const hookApiRef = React.useRef<any>({});
+
+    hookApiRef.current.open = notify;
+
     ['success', 'info', 'warning', 'error'].forEach(type => {
-      hookAPI[type] = (args: ArgsProps) =>
-        hookAPI.open({
+      hookApiRef.current[type] = (args: ArgsProps) =>
+        hookApiRef.current.open({
           ...args,
           type,
         });
     });
 
     return [
-      hookAPI,
+      hookApiRef.current,
       <ConfigConsumer key="holder">
         {(context: ConfigConsumerProps) => {
           ({ getPrefixCls } = context);

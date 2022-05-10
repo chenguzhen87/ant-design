@@ -1,29 +1,25 @@
 import * as React from 'react';
-import Tooltip, { TooltipProps } from '../tooltip';
+import { useRef } from 'react';
+import { composeRef } from 'rc-util/lib/ref';
+import raf from 'rc-util/lib/raf';
+import type { TooltipProps } from '../tooltip';
+import Tooltip from '../tooltip';
 
-export default function SliderTooltip(props: TooltipProps) {
+const SliderTooltip = React.forwardRef<unknown, TooltipProps>((props, ref) => {
   const { visible } = props;
-  const tooltipRef = React.useRef<Tooltip>(null);
+  const innerRef = useRef<any>(null);
 
-  const rafRef = React.useRef<number | null>(null);
+  const rafRef = useRef<number | null>(null);
 
   function cancelKeepAlign() {
-    window.cancelAnimationFrame(rafRef.current!);
+    raf.cancel(rafRef.current!);
     rafRef.current = null;
   }
 
   function keepAlign() {
-    if (rafRef.current !== null) {
-      return;
-    }
-
-    rafRef.current = window.requestAnimationFrame(() => {
-      if (tooltipRef.current && (tooltipRef.current as any).tooltip) {
-        (tooltipRef.current as any).tooltip.forcePopupAlign();
-      }
-
+    rafRef.current = raf(() => {
+      innerRef.current?.forcePopupAlign();
       rafRef.current = null;
-      keepAlign();
     });
   }
 
@@ -35,7 +31,9 @@ export default function SliderTooltip(props: TooltipProps) {
     }
 
     return cancelKeepAlign;
-  }, [visible]);
+  }, [visible, props.title]);
 
-  return <Tooltip ref={tooltipRef} {...props} />;
-}
+  return <Tooltip ref={composeRef(innerRef, ref)} {...props} />;
+});
+
+export default SliderTooltip;

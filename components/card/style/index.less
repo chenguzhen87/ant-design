@@ -9,12 +9,11 @@
 @gradient-max: fade(@card-skeleton-bg, 40%);
 
 .@{card-prefix-cls} {
-  .reset-component;
+  .reset-component();
 
   position: relative;
   background: @card-background;
   border-radius: @card-radius;
-  transition: all 0.3s;
 
   &-rtl {
     direction: rtl;
@@ -22,6 +21,8 @@
 
   &-hoverable {
     cursor: pointer;
+    transition: box-shadow 0.3s, border-color 0.3s;
+
     &:hover {
       border-color: @card-hoverable-hover-border;
       box-shadow: @card-shadow;
@@ -42,7 +43,7 @@
     background: @card-head-background;
     border-bottom: @border-width-base @border-style-base @border-color-split;
     border-radius: @card-radius @card-radius 0 0;
-    .clearfix;
+    .clearfix();
 
     &-wrapper {
       display: flex;
@@ -56,9 +57,16 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+
+      > .@{ant-prefix}-typography,
+      > .@{ant-prefix}-typography-edit-content {
+        left: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
     }
 
-    .@{ant-prefix}-tabs {
+    .@{ant-prefix}-tabs-top {
       clear: both;
       margin-bottom: @card-head-tabs-margin-bottom;
       color: @text-color;
@@ -76,7 +84,7 @@
     // https://stackoverflow.com/a/22429853/3040605
     margin-left: auto;
     padding: @card-head-padding 0;
-    color: @text-color;
+    color: @card-head-extra-color;
     font-weight: normal;
     font-size: @font-size-base;
 
@@ -88,7 +96,7 @@
 
   &-body {
     padding: @card-padding-base;
-    .clearfix;
+    .clearfix();
   }
 
   &-contain-grid:not(&-loading) &-body {
@@ -129,10 +137,13 @@
     padding-bottom: 0;
   }
 
-  &-cover {
+  &-bordered &-cover {
+    margin-top: -1px;
     margin-right: -1px;
     margin-left: -1px;
+  }
 
+  &-cover {
     > * {
       display: block;
       width: 100%;
@@ -149,7 +160,7 @@
     list-style: none;
     background: @card-actions-background;
     border-top: @border-width-base @border-style-base @border-color-split;
-    .clearfix;
+    .clearfix();
 
     & > li {
       float: left;
@@ -175,7 +186,7 @@
         }
 
         a:not(.@{ant-prefix}-btn),
-        > .anticon {
+        > .@{iconfont-css-prefix} {
           display: inline-block;
           width: 100%;
           color: @text-color-secondary;
@@ -187,7 +198,7 @@
           }
         }
 
-        > .anticon {
+        > .@{iconfont-css-prefix} {
           font-size: @card-action-icon-size;
           line-height: 22px;
         }
@@ -195,6 +206,11 @@
 
       &:not(:last-child) {
         border-right: @border-width-base @border-style-base @border-color-split;
+
+        .@{card-prefix-cls}-rtl & {
+          border-right: none;
+          border-left: @border-width-base @border-style-base @border-color-split;
+        }
       }
     }
   }
@@ -219,7 +235,7 @@
 
   &-meta {
     margin: -4px 0;
-    .clearfix;
+    .clearfix();
 
     &-avatar {
       float: left;
@@ -234,6 +250,7 @@
 
     &-detail {
       overflow: hidden;
+
       > div:not(:last-child) {
         margin-bottom: @margin-xs;
       }
@@ -282,6 +299,7 @@
   100% {
     background-position: 0 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }

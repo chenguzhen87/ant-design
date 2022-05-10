@@ -4,7 +4,7 @@
 @pageheader-prefix-cls: ~'@{ant-prefix}-page-header';
 
 .@{pageheader-prefix-cls} {
-  .reset-component;
+  .reset-component();
   position: relative;
   padding: @page-header-padding-vertical @page-header-padding;
   background-color: @component-background;
@@ -66,8 +66,8 @@
       color: @heading-color;
       font-weight: 600;
       font-size: @page-header-heading-title;
-      line-height: 32px;
-      .text-overflow-ellipsis;
+      line-height: @height-base;
+      .text-overflow-ellipsis();
     }
 
     .@{ant-prefix}-avatar {
@@ -79,7 +79,7 @@
       color: @text-color-secondary;
       font-size: @page-header-heading-sub-title;
       line-height: @line-height-base;
-      .text-overflow-ellipsis;
+      .text-overflow-ellipsis();
     }
 
     &-extra {
@@ -87,11 +87,7 @@
       white-space: nowrap;
 
       > * {
-        margin-left: @margin-sm;
         white-space: unset;
-      }
-      > *:first-child {
-        margin-left: 0;
       }
     }
   }
@@ -102,14 +98,19 @@
 
   &-footer {
     margin-top: @margin-md;
-    .@{ant-prefix}-tabs-bar {
-      margin-bottom: 1px;
-      border-bottom: 0;
-      .@{ant-prefix}-tabs-nav {
-        .@{ant-prefix}-tabs-tab {
-          padding: @tabs-horizontal-padding-sm;
-          font-size: @page-header-tabs-tab-font-size;
+    .@{ant-prefix}-tabs {
+      > .@{ant-prefix}-tabs-nav {
+        margin: 0;
+
+        &::before {
+          border: none;
         }
+      }
+
+      .@{ant-prefix}-tabs-tab {
+        padding-top: @padding-xs;
+        padding-bottom: @padding-xs;
+        font-size: @page-header-tabs-tab-font-size;
       }
     }
   }

@@ -14,28 +14,17 @@ title:
 There are three sizes available to a numeric input box. By default, the size is `32px`. The two additional sizes are `large` and `small` which means `40px` and `24px`, respectively.
 
 ```jsx
-import { InputNumber } from 'antd';
+import { InputNumber, Space } from 'antd';
 
 function onChange(value) {
   console.log('changed', value);
 }
 
-ReactDOM.render(
-  <div className="site-input-number-wrapper">
+export default () => (
+  <Space>
     <InputNumber size="large" min={1} max={100000} defaultValue={3} onChange={onChange} />
     <InputNumber min={1} max={100000} defaultValue={3} onChange={onChange} />
     <InputNumber size="small" min={1} max={100000} defaultValue={3} onChange={onChange} />
-  </div>,
-  mountNode,
+  </Space>
 );
-```
-
-```css
-.code-box-demo .ant-input-number {
-  margin-right: 10px;
-}
-.ant-row-rtl .code-box-demo .ant-input-number {
-  margin-right: 0;
-  margin-left: 10px;
-}
 ```

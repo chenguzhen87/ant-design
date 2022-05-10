@@ -7,7 +7,7 @@ import rtlTest from '../../../tests/shared/rtlTest';
 
 const { getMentions } = Mentions;
 
-function simulateInput(wrapper, text = '', keyEvent) {
+function simulateInput(wrapper, text, keyEvent) {
   const lastChar = text[text.length - 1];
   const myKeyEvent = keyEvent || {
     which: lastChar.charCodeAt(0),
@@ -74,21 +74,21 @@ describe('Mentions', () => {
     expect(onBlur).toHaveBeenCalled();
   });
 
-  focusTest(Mentions);
+  focusTest(Mentions, { refFocus: true });
   mountTest(Mentions);
   rtlTest(Mentions);
 
   it('loading', () => {
     const wrapper = mount(<Mentions loading />);
     simulateInput(wrapper, '@');
-    expect(wrapper.find('.ant-mentions-dropdown-menu-item').length).toBe(1);
+    expect(wrapper.find('li.ant-mentions-dropdown-menu-item').length).toBe(1);
     expect(wrapper.find('.ant-spin').length).toBeTruthy();
   });
 
   it('notFoundContent', () => {
     const wrapper = mount(<Mentions notFoundContent={<span className="bamboo-light" />} />);
     simulateInput(wrapper, '@');
-    expect(wrapper.find('.ant-mentions-dropdown-menu-item').length).toBe(1);
+    expect(wrapper.find('li.ant-mentions-dropdown-menu-item').length).toBe(1);
     expect(wrapper.find('.bamboo-light').length).toBeTruthy();
   });
 });

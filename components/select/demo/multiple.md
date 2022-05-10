@@ -27,16 +27,29 @@ function handleChange(value) {
   console.log(`selected ${value}`);
 }
 
-ReactDOM.render(
-  <Select
-    mode="multiple"
-    style={{ width: '100%' }}
-    placeholder="Please select"
-    defaultValue={['a10', 'c12']}
-    onChange={handleChange}
-  >
-    {children}
-  </Select>,
-  mountNode,
+export default () => (
+  <>
+    <Select
+      mode="multiple"
+      allowClear
+      style={{ width: '100%' }}
+      placeholder="Please select"
+      defaultValue={['a10', 'c12']}
+      onChange={handleChange}
+    >
+      {children}
+    </Select>
+    <br />
+    <Select
+      mode="multiple"
+      disabled
+      style={{ width: '100%' }}
+      placeholder="Please select"
+      defaultValue={['a10', 'c12']}
+      onChange={handleChange}
+    >
+      {children}
+    </Select>
+  </>
 );
 ```

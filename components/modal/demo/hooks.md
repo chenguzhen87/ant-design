@@ -22,11 +22,11 @@ const UnreachableContext = React.createContext();
 const config = {
   title: 'Use Hook!',
   content: (
-    <div>
+    <>
       <ReachableContext.Consumer>{name => `Reachable: ${name}!`}</ReachableContext.Consumer>
       <br />
       <UnreachableContext.Consumer>{name => `Unreachable: ${name}!`}</UnreachableContext.Consumer>
-    </div>
+    </>
   ),
 };
 
@@ -74,5 +74,5 @@ const App = () => {
   );
 };
 
-ReactDOM.render(<App />, mountNode);
+export default App;
 ```

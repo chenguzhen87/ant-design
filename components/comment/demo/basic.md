@@ -37,22 +37,18 @@ const Demo = () => {
   };
 
   const actions = [
-    <span key="comment-basic-like">
-      <Tooltip title="Like">
-        {createElement(action === 'liked' ? LikeFilled : LikeOutlined, {
-          onClick: like,
-        })}
-      </Tooltip>
-      <span className="comment-action">{likes}</span>
-    </span>,
-    <span key=' key="comment-basic-dislike"'>
-      <Tooltip title="Dislike">
-        {React.createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined, {
-          onClick: dislike,
-        })}
-      </Tooltip>
-      <span className="comment-action">{dislikes}</span>
-    </span>,
+    <Tooltip key="comment-basic-like" title="Like">
+      <span onClick={like}>
+        {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
+        <span className="comment-action">{likes}</span>
+      </span>
+    </Tooltip>,
+    <Tooltip key="comment-basic-dislike" title="Dislike">
+      <span onClick={dislike}>
+        {React.createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined)}
+        <span className="comment-action">{dislikes}</span>
+      </span>
+    </Tooltip>,
     <span key="comment-basic-reply-to">Reply to</span>,
   ];
 
@@ -60,12 +56,7 @@ const Demo = () => {
     <Comment
       actions={actions}
       author={<a>Han Solo</a>}
-      avatar={
-        <Avatar
-          src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-          alt="Han Solo"
-        />
-      }
+      avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
       content={
         <p>
           We supply a series of design principles, practical patterns and high quality design
@@ -80,9 +71,9 @@ const Demo = () => {
       }
     />
   );
-}
+};
 
-ReactDOM.render(<Demo />, mountNode);
+export default Demo;
 ```
 
 ```css

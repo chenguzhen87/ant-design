@@ -1,5 +1,5 @@
 ---
-order: 23
+order: 25
 title:
   zh-CN: 大数据
   en-US: Big Data
@@ -31,7 +31,7 @@ function handleChange(value) {
   console.log(`selected ${value}`);
 }
 
-ReactDOM.render(
+export default () => (
   <>
     <Title level={3}>Ant Design 4.0</Title>
     <Title level={4}>{options.length} Items</Title>
@@ -52,7 +52,6 @@ ReactDOM.render(
       src="https://codesandbox.io/embed/solitary-voice-m3vme?fontsize=14&hidenavigation=1&theme=dark&view=preview"
       style={{ width: '100%', height: 300 }}
     />
-  </>,
-  mountNode,
+  </>
 );
 ```

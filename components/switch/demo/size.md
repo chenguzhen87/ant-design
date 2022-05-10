@@ -16,12 +16,11 @@ title:
 ```jsx
 import { Switch } from 'antd';
 
-ReactDOM.render(
-  <div>
+export default () => (
+  <>
     <Switch defaultChecked />
     <br />
     <Switch size="small" defaultChecked />
-  </div>,
-  mountNode,
+  </>
 );
 ```

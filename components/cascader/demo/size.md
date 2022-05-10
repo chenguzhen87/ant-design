@@ -55,8 +55,8 @@ function onChange(value) {
   console.log(value);
 }
 
-ReactDOM.render(
-  <div>
+export default () => (
+  <>
     <Cascader size="large" options={options} onChange={onChange} />
     <br />
     <br />
@@ -66,7 +66,6 @@ ReactDOM.render(
     <Cascader size="small" options={options} onChange={onChange} />
     <br />
     <br />
-  </div>,
-  mountNode,
+  </>
 );
 ```

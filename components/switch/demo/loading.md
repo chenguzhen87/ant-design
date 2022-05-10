@@ -16,12 +16,11 @@ Mark a pending state of switch.
 ```jsx
 import { Switch } from 'antd';
 
-ReactDOM.render(
-  <div>
+export default () => (
+  <>
     <Switch loading defaultChecked />
     <br />
     <Switch size="small" loading />
-  </div>,
-  mountNode,
+  </>
 );
 ```

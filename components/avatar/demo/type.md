@@ -14,19 +14,19 @@ title:
 Image, Icon and letter are supported, and the latter two kinds of avatar can have custom colors and background colors.
 
 ```tsx
-import { Avatar } from 'antd';
+import { Avatar, Image } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 
-ReactDOM.render(
-  <div>
+export default () => (
+  <>
     <Avatar icon={<UserOutlined />} />
     <Avatar>U</Avatar>
-    <Avatar>USER</Avatar>
-    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+    <Avatar size={40}>USER</Avatar>
+    <Avatar src="https://joeschmoe.io/api/v1/random" />
+    <Avatar src={<Image src="https://joeschmoe.io/api/v1/random" style={{ width: 32 }} />} />
     <Avatar style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>U</Avatar>
     <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
-  </div>,
-  mountNode,
+  </>
 );
 ```
 

@@ -1,5 +1,7 @@
 import React from 'react';
-import { mount, render } from 'enzyme';
+import { mount } from 'enzyme';
+import { act } from 'react-dom/test-utils';
+import { fireEvent, render } from '@testing-library/react';
 import Badge from '../index';
 import Tooltip from '../../tooltip';
 import mountTest from '../../../tests/shared/mountTest';
@@ -8,6 +10,13 @@ import rtlTest from '../../../tests/shared/rtlTest';
 describe('Badge', () => {
   mountTest(Badge);
   rtlTest(Badge);
+  rtlTest(() => (
+    <Badge count={5} offset={[10, 10]}>
+      <a href="#" className="head-example">
+        head
+      </a>
+    </Badge>
+  ));
 
   beforeEach(() => {
     jest.useFakeTimers();
@@ -23,10 +32,11 @@ describe('Badge', () => {
   });
 
   it('badge should support float number', () => {
-    let wrapper = render(<Badge count={3.5} />);
-    expect(wrapper).toMatchSnapshot();
+    let wrapper = mount(<Badge count={3.5} />);
+    expect(wrapper.find('.ant-badge-multiple-words').first().text()).toEqual('3.5');
+
     wrapper = mount(<Badge count="3.5" />);
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find('.ant-badge-multiple-words').first().text()).toEqual('3.5');
     expect(() => wrapper.unmount()).not.toThrow();
   });
 
@@ -38,64 +48,67 @@ describe('Badge', () => {
   it('should have an overriden title attribute', () => {
     const badge = mount(<Badge count={10} title="Custom title" />);
     expect(
-      badge
-        .find('.ant-scroll-number')
-        .getDOMNode()
-        .attributes.getNamedItem('title').value,
+      badge.find('.ant-scroll-number').getDOMNode().attributes.getNamedItem('title').value,
     ).toEqual('Custom title');
   });
 
   // https://github.com/ant-design/ant-design/issues/10626
   it('should be composable with Tooltip', () => {
-    const wrapper = mount(
-      <Tooltip title="Fix the error">
+    const ref = React.createRef();
+    const { container } = render(
+      <Tooltip title="Fix the error" ref={ref}>
         <Badge status="error" />
       </Tooltip>,
     );
-    wrapper.find('Badge').simulate('mouseenter');
-    jest.runAllTimers();
-    expect(wrapper.instance().tooltip.props.visible).toBe(true);
+
+    act(() => {
+      fireEvent.mouseEnter(container.querySelector('.ant-badge'));
+      jest.runAllTimers();
+    });
+    expect(ref.current.props.visible).toBeTruthy();
   });
 
   it('should render when count is changed', () => {
     const wrapper = mount(<Badge count={9} />);
-    wrapper.setProps({ count: 10 });
-    jest.runAllTimers();
-    expect(wrapper).toMatchSnapshot();
-    wrapper.setProps({ count: 11 });
-    jest.runAllTimers();
-    expect(wrapper).toMatchSnapshot();
-    wrapper.setProps({ count: 11 });
-    jest.runAllTimers();
-    expect(wrapper).toMatchSnapshot();
-    wrapper.setProps({ count: 10 });
-    jest.runAllTimers();
-    expect(wrapper).toMatchSnapshot();
-    jest.runAllTimers();
-    wrapper.setProps({ count: 9 });
-    expect(wrapper).toMatchSnapshot();
+
+    function updateMatch(count) {
+      wrapper.setProps({ count });
+
+      act(() => {
+        jest.runAllTimers();
+        wrapper.update();
+        expect(wrapper.render()).toMatchSnapshot();
+      });
+    }
+
+    updateMatch(10);
+    updateMatch(11);
+    updateMatch(11);
+    updateMatch(111);
+    updateMatch(10);
+    updateMatch(9);
   });
 
   it('should be compatible with borderColor style', () => {
-    const wrapper = render(
+    const wrapper = mount(
       <Badge
         count={4}
         style={{ backgroundColor: '#fff', color: '#999', borderColor: '#d9d9d9' }}
       />,
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.render()).toMatchSnapshot();
   });
 
   // https://github.com/ant-design/ant-design/issues/13694
   it('should support offset when count is a ReactNode', () => {
-    const wrapper = render(
+    const wrapper = mount(
       <Badge count={<span className="custom" style={{ color: '#f5222d' }} />} offset={[10, 20]}>
         <a href="#" className="head-example">
           head
         </a>
       </Badge>,
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.render()).toMatchSnapshot();
   });
 
   // https://github.com/ant-design/ant-design/issues/15349
@@ -106,19 +119,20 @@ describe('Badge', () => {
 
   // https://github.com/ant-design/ant-design/issues/15799
   it('render correct with negative number', () => {
-    const wrapper = render(
+    const wrapper = mount(
       <div>
         <Badge count="-10" />
         <Badge count={-10} />
       </div>,
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.render()).toMatchSnapshot();
   });
 
   // https://github.com/ant-design/ant-design/issues/21331
+  // https://github.com/ant-design/ant-design/issues/31590
   it('render Badge status/color when contains children', () => {
-    const wrapper = render(
-      <>
+    const wrapper = mount(
+      <div>
         <Badge count={5} status="success">
           <a />
         </Badge>
@@ -128,8 +142,22 @@ describe('Badge', () => {
         <Badge count={5} color="#08c">
           <a />
         </Badge>
+      </div>,
+    );
+    expect(wrapper.render()).toMatchSnapshot();
+    expect(wrapper.find(Badge).at(0).find('.ant-scroll-number-only-unit').text()).toBe('5');
+    expect(wrapper.find(Badge).at(1).find('.ant-scroll-number-only-unit').text()).toBe('5');
+    expect(wrapper.find(Badge).at(2).find('.ant-scroll-number-only-unit').text()).toBe('5');
+  });
+
+  it('Badge should work when status/color is empty string', () => {
+    const wrapper = mount(
+      <>
+        <Badge color="" text="text" />
+        <Badge status="" text="text" />
       </>,
     );
-    expect(wrapper).toMatchSnapshot();
+
+    expect(wrapper.find('.ant-badge')).toHaveLength(2);
   });
 });

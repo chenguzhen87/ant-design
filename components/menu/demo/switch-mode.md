@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 title:
   zh-CN: 切换菜单类型
   en-US: Switch the menu type
@@ -11,9 +11,10 @@ title:
 
 ## en-US
 
-Show the dynamic switching mode (between 'inline' and 'vertical').
+Show the dynamic switching mode (between `inline` and `vertical`).
 
-```jsx
+```tsx
+import type { MenuProps } from 'antd';
 import { Menu, Switch, Divider } from 'antd';
 import {
   MailOutlined,
@@ -23,71 +24,75 @@ import {
   LinkOutlined,
 } from '@ant-design/icons';
 
-const { SubMenu } = Menu;
+type MenuItem = Required<MenuProps>['items'][number];
 
-class Sider extends React.Component {
-  state = {
-    mode: 'inline',
-    theme: 'light',
-  };
-
-  changeMode = value => {
-    this.setState({
-      mode: value ? 'vertical' : 'inline',
-    });
-  };
-
-  changeTheme = value => {
-    this.setState({
-      theme: value ? 'dark' : 'light',
-    });
-  };
-
-  render() {
-    return (
-      <>
-        <Switch onChange={this.changeMode} /> Change Mode
-        <Divider type="vertical" />
-        <Switch onChange={this.changeTheme} /> Change Style
-        <br />
-        <br />
-        <Menu
-          style={{ width: 256 }}
-          defaultSelectedKeys={['1']}
-          defaultOpenKeys={['sub1']}
-          mode={this.state.mode}
-          theme={this.state.theme}
-        >
-          <Menu.Item key="1" icon={<MailOutlined />}>
-            Navigation One
-          </Menu.Item>
-          <Menu.Item key="2" icon={<CalendarOutlined />}>
-            Navigation Two
-          </Menu.Item>
-          <SubMenu key="sub1" icon={<AppstoreOutlined />} title="Navigation Two">
-            <Menu.Item key="3">Option 3</Menu.Item>
-            <Menu.Item key="4">Option 4</Menu.Item>
-            <SubMenu key="sub1-2" title="Submenu">
-              <Menu.Item key="5">Option 5</Menu.Item>
-              <Menu.Item key="6">Option 6</Menu.Item>
-            </SubMenu>
-          </SubMenu>
-          <SubMenu key="sub2" icon={<SettingOutlined />} title="Navigation Three">
-            <Menu.Item key="7">Option 7</Menu.Item>
-            <Menu.Item key="8">Option 8</Menu.Item>
-            <Menu.Item key="9">Option 9</Menu.Item>
-            <Menu.Item key="10">Option 10</Menu.Item>
-          </SubMenu>
-          <Menu.Item key="link" icon={<LinkOutlined />}>
-            <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
-              Ant Design
-            </a>
-          </Menu.Item>
-        </Menu>
-      </>
-    );
-  }
+function getItem(
+  label: React.ReactNode,
+  key?: React.Key | null,
+  icon?: React.ReactNode,
+  children?: MenuItem[],
+): MenuItem {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  } as MenuItem;
 }
 
-ReactDOM.render(<Sider />, mountNode);
+const items: MenuItem[] = [
+  getItem('Navigation One', '1', <MailOutlined />),
+  getItem('Navigation Two', '2', <CalendarOutlined />),
+  getItem('Navigation Two', 'sub1', <AppstoreOutlined />, [
+    getItem('Option 3', '3'),
+    getItem('Option 4', '4'),
+    getItem('Submenu', 'sub1-2', null, [getItem('Option 5', '5'), getItem('Option 6', '6')]),
+  ]),
+  getItem('Navigation Three', 'sub2', <SettingOutlined />, [
+    getItem('Option 7', '7'),
+    getItem('Option 8', '8'),
+    getItem('Option 9', '9'),
+    getItem('Option 10', '10'),
+  ]),
+  getItem(
+    <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
+      Ant Design
+    </a>,
+    'link',
+    <LinkOutlined />,
+  ),
+];
+
+const Demo = () => {
+  const [mode, setMode] = React.useState<'inline' | 'vertical'>('inline');
+  const [theme, setTheme] = React.useState<'dark' | 'light'>('light');
+
+  const changeMode = (value: boolean) => {
+    setMode(value ? 'vertical' : 'inline');
+  };
+
+  const changeTheme = (value: boolean) => {
+    setTheme(value ? 'dark' : 'light');
+  };
+
+  return (
+    <>
+      <Switch onChange={changeMode} /> Change Mode
+      <Divider type="vertical" />
+      <Switch onChange={changeTheme} /> Change Style
+      <br />
+      <br />
+      <Menu
+        style={{ width: 256 }}
+        defaultSelectedKeys={['1']}
+        defaultOpenKeys={['sub1']}
+        mode={mode}
+        theme={theme}
+        items={items}
+      />
+    </>
+  );
+};
+
+export default Demo;
 ```

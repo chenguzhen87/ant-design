@@ -21,7 +21,7 @@ const data = [
   {
     actions: [<span key="comment-list-reply-to-0">Reply to</span>],
     author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+    avatar: 'https://joeschmoe.io/api/v1/random',
     content: (
       <p>
         We supply a series of design principles, practical patterns and high quality design
@@ -30,23 +30,15 @@ const data = [
       </p>
     ),
     datetime: (
-      <Tooltip
-        title={moment()
-          .subtract(1, 'days')
-          .format('YYYY-MM-DD HH:mm:ss')}
-      >
-        <span>
-          {moment()
-            .subtract(1, 'days')
-            .fromNow()}
-        </span>
+      <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
+        <span>{moment().subtract(1, 'days').fromNow()}</span>
       </Tooltip>
     ),
   },
   {
     actions: [<span key="comment-list-reply-to-0">Reply to</span>],
     author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+    avatar: 'https://joeschmoe.io/api/v1/random',
     content: (
       <p>
         We supply a series of design principles, practical patterns and high quality design
@@ -55,22 +47,14 @@ const data = [
       </p>
     ),
     datetime: (
-      <Tooltip
-        title={moment()
-          .subtract(2, 'days')
-          .format('YYYY-MM-DD HH:mm:ss')}
-      >
-        <span>
-          {moment()
-            .subtract(2, 'days')
-            .fromNow()}
-        </span>
+      <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
+        <span>{moment().subtract(2, 'days').fromNow()}</span>
       </Tooltip>
     ),
   },
 ];
 
-ReactDOM.render(
+export default () => (
   <List
     className="comment-list"
     header={`${data.length} replies`}
@@ -87,7 +71,6 @@ ReactDOM.render(
         />
       </li>
     )}
-  />,
-  mountNode,
+  />
 );
 ```

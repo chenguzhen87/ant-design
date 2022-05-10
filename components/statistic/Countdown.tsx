@@ -1,6 +1,9 @@
 import * as React from 'react';
-import Statistic, { StatisticProps } from './Statistic';
-import { formatCountdown, countdownValueType, FormatConfig } from './utils';
+import type { StatisticProps } from './Statistic';
+import Statistic from './Statistic';
+import type { countdownValueType, FormatConfig } from './utils';
+import { formatCountdown } from './utils';
+import { cloneElement } from '../_util/reactNode';
 
 const REFRESH_INTERVAL = 1000 / 30;
 
@@ -8,6 +11,7 @@ interface CountdownProps extends StatisticProps {
   value?: countdownValueType;
   format?: string;
   onFinish?: () => void;
+  onChange?: (value?: countdownValueType) => void;
 }
 
 function getTime(value?: countdownValueType) {
@@ -47,8 +51,15 @@ class Countdown extends React.Component<CountdownProps, {}> {
   startTimer = () => {
     if (this.countdownId) return;
 
+    const { onChange, value } = this.props;
+    const timestamp = getTime(value);
+
     this.countdownId = window.setInterval(() => {
       this.forceUpdate();
+
+      if (onChange && timestamp > Date.now()) {
+        onChange(timestamp - Date.now());
+      }
     }, REFRESH_INTERVAL);
   };
 
@@ -71,8 +82,9 @@ class Countdown extends React.Component<CountdownProps, {}> {
   };
 
   // Countdown do not need display the timestamp
+  // eslint-disable-next-line class-methods-use-this
   valueRender = (node: React.ReactElement<HTMLDivElement>) =>
-    React.cloneElement(node, {
+    cloneElement(node, {
       title: undefined,
     });
 

@@ -11,6 +11,126 @@ exports[`renders ./components/drawer/demo/basic-right.md correctly 1`] = `
 </button>
 `;
 
+exports[`renders ./components/drawer/demo/config-provider.md correctly 1`] = `
+<div
+  class="site-drawer-render-in-current-wrapper"
+>
+  <button
+    class="ant-btn ant-btn-primary"
+    type="button"
+  >
+    <span>
+      Open
+    </span>
+  </button>
+</div>
+`;
+
+exports[`renders ./components/drawer/demo/extra.md correctly 1`] = `
+<div
+  class="ant-space ant-space-horizontal ant-space-align-center"
+>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px"
+  >
+    <div
+      class="ant-radio-group ant-radio-group-outline"
+    >
+      <label
+        class="ant-radio-wrapper"
+      >
+        <span
+          class="ant-radio"
+        >
+          <input
+            class="ant-radio-input"
+            type="radio"
+            value="top"
+          />
+          <span
+            class="ant-radio-inner"
+          />
+        </span>
+        <span>
+          top
+        </span>
+      </label>
+      <label
+        class="ant-radio-wrapper ant-radio-wrapper-checked"
+      >
+        <span
+          class="ant-radio ant-radio-checked"
+        >
+          <input
+            checked=""
+            class="ant-radio-input"
+            type="radio"
+            value="right"
+          />
+          <span
+            class="ant-radio-inner"
+          />
+        </span>
+        <span>
+          right
+        </span>
+      </label>
+      <label
+        class="ant-radio-wrapper"
+      >
+        <span
+          class="ant-radio"
+        >
+          <input
+            class="ant-radio-input"
+            type="radio"
+            value="bottom"
+          />
+          <span
+            class="ant-radio-inner"
+          />
+        </span>
+        <span>
+          bottom
+        </span>
+      </label>
+      <label
+        class="ant-radio-wrapper"
+      >
+        <span
+          class="ant-radio"
+        >
+          <input
+            class="ant-radio-input"
+            type="radio"
+            value="left"
+          />
+          <span
+            class="ant-radio-inner"
+          />
+        </span>
+        <span>
+          left
+        </span>
+      </label>
+    </div>
+  </div>
+  <div
+    class="ant-space-item"
+  >
+    <button
+      class="ant-btn ant-btn-primary"
+      type="button"
+    >
+      <span>
+        Open
+      </span>
+    </button>
+  </div>
+</div>
+`;
+
 exports[`renders ./components/drawer/demo/form-in-drawer.md correctly 1`] = `
 <button
   class="ant-btn ant-btn-primary"
@@ -23,7 +143,6 @@ exports[`renders ./components/drawer/demo/form-in-drawer.md correctly 1`] = `
   >
     <svg
       aria-hidden="true"
-      class=""
       data-icon="plus"
       fill="currentColor"
       focusable="false"
@@ -41,7 +160,7 @@ exports[`renders ./components/drawer/demo/form-in-drawer.md correctly 1`] = `
     </svg>
   </span>
   <span>
-     New account
+    New account
   </span>
 </button>
 `;
@@ -53,6 +172,17 @@ exports[`renders ./components/drawer/demo/multi-level-drawer.md correctly 1`] = 
 >
   <span>
     Open drawer
+  </span>
+</button>
+`;
+
+exports[`renders ./components/drawer/demo/no-mask.md correctly 1`] = `
+<button
+  class="ant-btn ant-btn-primary"
+  type="button"
+>
+  <span>
+    Open
   </span>
 </button>
 `;
@@ -192,7 +322,7 @@ exports[`renders ./components/drawer/demo/render-in-current.md correctly 1`] = `
       />
       <div
         class="ant-drawer-content-wrapper"
-        style="transform:translateX(100%);-ms-transform:translateX(100%);width:256px"
+        style="transform:translateX(100%);-ms-transform:translateX(100%);width:378px"
       >
         <div
           class="ant-drawer-content"
@@ -204,9 +334,13 @@ exports[`renders ./components/drawer/demo/render-in-current.md correctly 1`] = `
               class="ant-drawer-header"
             >
               <div
-                class="ant-drawer-title"
+                class="ant-drawer-header-title"
               >
-                Basic Drawer
+                <div
+                  class="ant-drawer-title"
+                >
+                  Basic Drawer
+                </div>
               </div>
             </div>
             <div
@@ -220,6 +354,38 @@ exports[`renders ./components/drawer/demo/render-in-current.md correctly 1`] = `
         </div>
       </div>
     </div>
+  </div>
+</div>
+`;
+
+exports[`renders ./components/drawer/demo/size.md correctly 1`] = `
+<div
+  class="ant-space ant-space-horizontal ant-space-align-center"
+>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px"
+  >
+    <button
+      class="ant-btn ant-btn-primary"
+      type="button"
+    >
+      <span>
+        Open Default Size (378px)
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+  >
+    <button
+      class="ant-btn ant-btn-primary"
+      type="button"
+    >
+      <span>
+        Open Large Size (736px)
+      </span>
+    </button>
   </div>
 </div>
 `;

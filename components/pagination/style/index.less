@@ -5,7 +5,7 @@
 @pagination-prefix-cls: ~'@{ant-prefix}-pagination';
 
 .@{pagination-prefix-cls} {
-  .reset-component;
+  .reset-component();
 
   ul,
   ol {
@@ -59,10 +59,21 @@
       }
     }
 
-    &:focus,
     &:hover {
       border-color: @primary-color;
       transition: all 0.3s;
+
+      a {
+        color: @primary-color;
+      }
+    }
+
+    // cannot merge with `&:hover`
+    // see https://github.com/ant-design/ant-design/pull/34002
+    &:focus-visible {
+      border-color: @primary-color;
+      transition: all 0.3s;
+
       a {
         color: @primary-color;
       }
@@ -77,13 +88,19 @@
         color: @primary-color;
       }
 
-      &:focus,
       &:hover {
         border-color: @primary-5;
       }
 
-      &:focus a,
+      &:focus-visible {
+        border-color: @primary-5;
+      }
+
       &:hover a {
+        color: @primary-5;
+      }
+
+      &:focus-visible a {
         color: @primary-5;
       }
     }
@@ -101,6 +118,7 @@
         letter-spacing: -1px;
         opacity: 0;
         transition: all 0.2s;
+
         &-svg {
           top: 0;
           right: 0;
@@ -119,6 +137,7 @@
         display: block;
         margin: auto;
         color: @disabled-color;
+        font-family: Arial, Helvetica, sans-serif;
         letter-spacing: 2px;
         text-align: center;
         text-indent: 0.13em;
@@ -127,8 +146,16 @@
       }
     }
 
-    &:focus,
     &:hover {
+      .@{pagination-prefix-cls}-item-link-icon {
+        opacity: 1;
+      }
+      .@{pagination-prefix-cls}-item-ellipsis {
+        opacity: 0;
+      }
+    }
+
+    &:focus-visible {
       .@{pagination-prefix-cls}-item-link-icon {
         opacity: 1;
       }
@@ -143,6 +170,7 @@
   &-jump-next {
     margin-right: 8px;
   }
+
   &-prev,
   &-next,
   &-jump-prev,
@@ -163,20 +191,24 @@
 
   &-prev,
   &-next {
+    font-family: Arial, Helvetica, sans-serif;
     outline: 0;
 
-    a {
+    button {
       color: @text-color;
+      cursor: pointer;
       user-select: none;
     }
 
-    &:hover a {
+    &:hover button {
       border-color: @primary-5;
     }
 
     .@{pagination-prefix-cls}-item-link {
       display: block;
+      width: 100%;
       height: 100%;
+      padding: 0;
       font-size: 12px;
       text-align: center;
       background-color: @pagination-item-link-bg;
@@ -186,7 +218,11 @@
       transition: all 0.3s;
     }
 
-    &:focus .@{pagination-prefix-cls}-item-link,
+    &:focus-visible .@{pagination-prefix-cls}-item-link {
+      color: @primary-color;
+      border-color: @primary-color;
+    }
+
     &:hover .@{pagination-prefix-cls}-item-link {
       color: @primary-color;
       border-color: @primary-color;
@@ -195,10 +231,17 @@
 
   &-disabled {
     &,
-    &:hover,
-    &:focus {
+    &:hover {
       cursor: not-allowed;
-      a,
+      .@{pagination-prefix-cls}-item-link {
+        color: @disabled-color;
+        border-color: @border-color-base;
+        cursor: not-allowed;
+      }
+    }
+
+    &:focus-visible {
+      cursor: not-allowed;
       .@{pagination-prefix-cls}-item-link {
         color: @disabled-color;
         border-color: @border-color-base;
@@ -227,19 +270,20 @@
     &-size-changer.@{ant-prefix}-select {
       display: inline-block;
       width: auto;
-      margin-right: 8px;
     }
 
     &-quick-jumper {
       display: inline-block;
       height: @input-height-base;
+      margin-left: @margin-xs;
       line-height: @input-height-base;
       vertical-align: top;
 
       input {
-        .input;
+        .input();
 
         width: 50px;
+        height: @input-height-base;
         margin: 0 8px;
       }
     }
@@ -252,7 +296,9 @@
     vertical-align: top;
     .@{pagination-prefix-cls}-item-link {
       height: @pagination-item-size-sm;
+      background-color: transparent;
       border: 0;
+
       &::after {
         height: @pagination-item-size-sm;
         line-height: @pagination-item-size-sm;
@@ -279,6 +325,18 @@
 
       &:hover {
         border-color: @primary-color;
+      }
+
+      &:focus {
+        border-color: @primary-color-hover;
+        box-shadow: @input-outline-offset @outline-blur-size @outline-width @primary-color-outline;
+      }
+
+      &[disabled] {
+        color: @disabled-color;
+        background: @disabled-bg;
+        border-color: @border-color-base;
+        cursor: not-allowed;
       }
     }
   }
@@ -313,6 +371,7 @@
   &.mini &-next &-item-link {
     background: transparent;
     border-color: transparent;
+
     &::after {
       height: @pagination-item-size-sm;
       line-height: @pagination-item-size-sm;
@@ -338,9 +397,10 @@
       line-height: @pagination-item-size-sm;
 
       input {
-        .input-sm;
+        .input-sm();
 
         width: 44px;
+        height: @input-height-sm;
       }
     }
   }
@@ -363,7 +423,7 @@
 
       &-active {
         background: @pagination-item-disabled-bg-active;
-        border-color: transparent;
+
         a {
           color: @pagination-item-disabled-color-active;
         }
@@ -371,27 +431,25 @@
     }
 
     .@{pagination-prefix-cls}-item-link {
-      &,
-      &:hover,
-      &:focus {
-        color: @text-color-secondary;
-        background: @disabled-bg;
-        border-color: @border-color-base;
-        cursor: not-allowed;
+      color: @disabled-color;
+      background: @disabled-bg;
+      border-color: @border-color-base;
+      cursor: not-allowed;
+      .@{pagination-prefix-cls}-simple& {
+        background: transparent;
       }
     }
 
-    .@{pagination-prefix-cls}-jump-prev,
-    .@{pagination-prefix-cls}-jump-next {
-      &:focus,
-      &:hover {
-        .@{pagination-prefix-cls}-item-link-icon {
-          opacity: 0;
-        }
-        .@{pagination-prefix-cls}-item-ellipsis {
-          opacity: 1;
-        }
-      }
+    .@{pagination-prefix-cls}-item-link-icon {
+      opacity: 0;
+    }
+
+    .@{pagination-prefix-cls}-item-ellipsis {
+      opacity: 1;
+    }
+
+    .@{pagination-prefix-cls}-simple-pager {
+      color: @disabled-color;
     }
   }
 }

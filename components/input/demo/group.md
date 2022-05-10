@@ -13,12 +13,24 @@ title:
 
 ## en-US
 
-Input.Group example
+Input.Group example.
 
 Note: You don't need `Col` to control the width in the `compact` mode.
 
 ```jsx
-import { Input, Col, Row, Select, InputNumber, DatePicker, AutoComplete, Cascader } from 'antd';
+import {
+  Input,
+  Button,
+  Col,
+  Row,
+  Select,
+  InputNumber,
+  DatePicker,
+  AutoComplete,
+  Cascader,
+  Tooltip,
+} from 'antd';
+import { CopyOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
@@ -76,6 +88,21 @@ const App = () => (
     </Input.Group>
     <br />
     <Input.Group compact>
+      <Input style={{ width: 'calc(100% - 200px)' }} defaultValue="https://ant.design" />
+      <Button type="primary">Submit</Button>
+    </Input.Group>
+    <br />
+    <Input.Group compact>
+      <Input
+        style={{ width: 'calc(100% - 200px)' }}
+        defaultValue="git@github.com:ant-design/ant-design.git"
+      />
+      <Tooltip title="copy git url">
+        <Button icon={<CopyOutlined />} />
+      </Tooltip>
+    </Input.Group>
+    <br />
+    <Input.Group compact>
       <Select defaultValue="Zhejiang">
         <Option value="Zhejiang">Zhejiang</Option>
         <Option value="Jiangsu">Jiangsu</Option>
@@ -84,8 +111,8 @@ const App = () => (
     </Input.Group>
     <br />
     <Input.Group compact>
-      <Input style={{ width: '20%' }} defaultValue="0571" />
-      <Input.Search style={{ width: '30%' }} defaultValue="26888888" />
+      <Input.Search allowClear style={{ width: '40%' }} defaultValue="0571" />
+      <Input.Search allowClear style={{ width: '40%' }} defaultValue="26888888" />
     </Input.Group>
     <br />
     <Input.Group compact>
@@ -167,7 +194,7 @@ const App = () => (
   </div>
 );
 
-ReactDOM.render(<App />, mountNode);
+export default App;
 ```
 
 ```css

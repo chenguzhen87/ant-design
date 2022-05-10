@@ -14,6 +14,7 @@ describe('Skeleton', () => {
   const genSkeletonButton = props => mount(<Skeleton.Button {...props} />);
   const genSkeletonAvatar = props => mount(<Skeleton.Avatar {...props} />);
   const genSkeletonInput = props => mount(<Skeleton.Input {...props} />);
+  const genSkeletonImage = props => mount(<Skeleton.Image {...props} />);
 
   mountTest(Skeleton);
   rtlTest(Skeleton);
@@ -26,6 +27,26 @@ describe('Skeleton', () => {
   it('should square avatar', () => {
     const wrapperSmall = genSkeleton({ avatar: true, paragraph: false });
     expect(wrapperSmall.render()).toMatchSnapshot();
+  });
+
+  it('should round title and paragraph', () => {
+    const wrapperSmall = genSkeleton({ round: true, title: true, paragraph: true });
+    expect(wrapperSmall.render()).toMatchSnapshot();
+  });
+
+  it('should display without children and falsy loading props', () => {
+    const wrapper = mount(<Skeleton loading={false} />);
+    expect(wrapper.render()).toMatchSnapshot();
+  });
+
+  it('should display with empty children and falsy loading props', () => {
+    const wrapper = mount(<Skeleton loading={false}>{0}</Skeleton>);
+    expect(wrapper.text()).toBe('0');
+  });
+
+  it('should display children', () => {
+    const wrapper = mount(<Skeleton loading={false}>{[1, 2, 3]}</Skeleton>);
+    expect(wrapper.text()).toBe('123');
   });
 
   describe('avatar', () => {
@@ -72,6 +93,10 @@ describe('Skeleton', () => {
   describe('button element', () => {
     it('active', () => {
       const wrapper = genSkeletonButton({ active: true });
+      expect(wrapper.render()).toMatchSnapshot();
+    });
+    it('block', () => {
+      const wrapper = genSkeletonButton({ block: true });
       expect(wrapper.render()).toMatchSnapshot();
     });
     it('size', () => {
@@ -129,5 +154,17 @@ describe('Skeleton', () => {
       const wrapperLarge = genSkeletonInput({ size: 'large' });
       expect(wrapperLarge.render()).toMatchSnapshot();
     });
+  });
+
+  describe('image element', () => {
+    it('should render normal', () => {
+      const wrapper = genSkeletonImage();
+      expect(wrapper.render()).toMatchSnapshot();
+    });
+  });
+
+  it('should support style', () => {
+    const wrapper = genSkeleton({ style: { background: 'blue' } });
+    expect(wrapper.render()).toMatchSnapshot();
   });
 });

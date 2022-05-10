@@ -9,13 +9,15 @@ title:
 
 带行编辑功能的表格。
 
+> 🛎️ 想要 3 分钟实现？试试 [ProTable 的可编辑表格](https://procomponents.ant.design/components/editable-table)！
+
 ## en-US
 
 Table with editable rows.
 
 ```tsx
 import React, { useState } from 'react';
-import { Table, Input, InputNumber, Popconfirm, Form } from 'antd';
+import { Table, Input, InputNumber, Popconfirm, Form, Typography } from 'antd';
 
 interface Item {
   key: string;
@@ -84,7 +86,7 @@ const EditableTable = () => {
 
   const isEditing = (record: Item) => record.key === editingKey;
 
-  const edit = (record: Item) => {
+  const edit = (record: Partial<Item> & { key: React.Key }) => {
     form.setFieldsValue({ name: '', age: '', address: '', ...record });
     setEditingKey(record.key);
   };
@@ -143,17 +145,17 @@ const EditableTable = () => {
         const editable = isEditing(record);
         return editable ? (
           <span>
-            <a href="javascript:;" onClick={() => save(record.key)} style={{ marginRight: 8 }}>
+            <Typography.Link onClick={() => save(record.key)} style={{ marginRight: 8 }}>
               Save
-            </a>
+            </Typography.Link>
             <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
               <a>Cancel</a>
             </Popconfirm>
           </span>
         ) : (
-          <a disabled={editingKey !== ''} onClick={() => edit(record)}>
+          <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
             Edit
-          </a>
+          </Typography.Link>
         );
       },
     },
@@ -195,13 +197,13 @@ const EditableTable = () => {
   );
 };
 
-ReactDOM.render(<EditableTable />, mountNode);
+export default () => <EditableTable />;
 ```
 
 ```css
-.editable-row .ant-form-explain {
+.editable-row .ant-form-item-explain {
   position: absolute;
+  top: 100%;
   font-size: 12px;
-  margin-top: -4px;
 }
 ```

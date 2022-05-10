@@ -26,7 +26,7 @@ function getBase64(file) {
   });
 }
 
-class PicturesWall extends React.Component {
+class App extends React.Component {
   state = {
     previewVisible: false,
     previewImage: '',
@@ -54,6 +54,13 @@ class PicturesWall extends React.Component {
         uid: '-4',
         name: 'image.png',
         status: 'done',
+        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+      },
+      {
+        uid: '-xxx',
+        percent: 50,
+        name: 'image.png',
+        status: 'uploading',
         url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
       },
       {
@@ -85,11 +92,11 @@ class PicturesWall extends React.Component {
     const uploadButton = (
       <div>
         <PlusOutlined />
-        <div className="ant-upload-text">Upload</div>
+        <div style={{ marginTop: 8 }}>Upload</div>
       </div>
     );
     return (
-      <div className="clearfix">
+      <>
         <Upload
           action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
           listType="picture-card"
@@ -107,23 +114,10 @@ class PicturesWall extends React.Component {
         >
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
         </Modal>
-      </div>
+      </>
     );
   }
 }
 
-ReactDOM.render(<PicturesWall />, mountNode);
-```
-
-```css
-/* you can make up upload button and sample style by using stylesheets */
-.ant-upload-select-picture-card i {
-  color: #999;
-  font-size: 32px;
-}
-
-.ant-upload-select-picture-card .ant-upload-text {
-  margin-top: 8px;
-  color: #666;
-}
+export default App;
 ```

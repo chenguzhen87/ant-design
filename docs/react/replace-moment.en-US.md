@@ -1,19 +1,17 @@
 ---
-order: 7.1
+order: 7.5
 title: Replace Moment.js
 ---
 
-## How to use DatePicker with a custom date library like dayjs
+You might want to replace Moment.js with another date library (**Ant design currently supports [dayjs](https://day.js.org) and [date-fns](https://date-fns.org)**) to reduce bundle size. We provide two ways to customize:
 
-Consider of bundle size, you can replace momentjs with customize date library. We provide two ways to customize date library:
+## Custom component
 
-### Custom component
+The first way is to use `generatePicker` (or `generateCalendar`) to help create Picker components.
 
-The first way is use `generatePicker` (or `generateCalendar`) helps to create Picker components.
+First, we initialize an antd demo with `create-react-app`. You can refer to [Use in TypeScript](/docs/react/use-in-typescript), or you can start directly here [init antd](https://github.com/xiaohuoni/antd4-generate-picker/commit/47fec964e36d48bd15760f8f5abcb9655c259aa6)
 
-First, we initialize an antd demo of `create-react-app`. You can refer to [Use in TypeScript](/docs/react/use-in-typescript), or you can start directly here [init antd](https://github.com/xiaohuoni/antd4-generate-picker/commit/47fec964e36d48bd15760f8f5abcb9655c259aa6)
-
-#### DatePicker.tsx
+### DatePicker.tsx
 
 Create `src/components/DatePicker.tsx`.
 
@@ -30,7 +28,7 @@ const DatePicker = generatePicker<Dayjs>(dayjsGenerateConfig);
 export default DatePicker;
 ```
 
-#### TimePicker.tsx
+### TimePicker.tsx
 
 Create `src/components/TimePicker.tsx`.
 
@@ -41,7 +39,6 @@ import { Dayjs } from 'dayjs';
 import * as React from 'react';
 import DatePicker from './DatePicker';
 import { PickerTimeProps } from 'antd/es/date-picker/generatePicker';
-import { Omit } from 'antd/es/_util/type';
 
 export interface TimePickerProps extends Omit<PickerTimeProps<Dayjs>, 'picker'> {}
 
@@ -54,7 +51,7 @@ TimePicker.displayName = 'TimePicker';
 export default TimePicker;
 ```
 
-#### Calendar.tsx
+### Calendar.tsx
 
 Create `src/components/Calendar.tsx`.
 
@@ -71,7 +68,7 @@ const Calendar = generateCalendar<Dayjs>(dayjsGenerateConfig);
 export default Calendar;
 ```
 
-#### Export Custom component
+### Export Custom component
 
 Create `src/components/index.tsx`.
 
@@ -83,7 +80,7 @@ export { default as Calendar } from './Calendar';
 export { default as TimePicker } from './TimePicker';
 ```
 
-#### Use Custom component
+### Use Custom component
 
 Modify `src/App.tsx`,import `dayjs` and custom component.
 
@@ -95,12 +92,44 @@ Modify `src/App.tsx`,import `dayjs` and custom component.
 + import format from 'dayjs';
 ```
 
-If the above steps do not work correctly, you can refer [antd4-generate-picker/antd-ts](https://github.com/xiaohuoni/antd4-generate-picker/tree/master/antd-ts).
+If the above steps do not work correctly, you can refer to [antd4-generate-picker/antd-ts](https://github.com/xiaohuoni/antd4-generate-picker/tree/master/antd-ts).
 
-If you need JavaScript code, you can refer [antd4-generate-picker/antd-demo](https://github.com/xiaohuoni/antd4-generate-picker/tree/master/antd-demo).
+If you need JavaScript code, you can refer to [antd4-generate-picker/antd-demo](https://github.com/xiaohuoni/antd4-generate-picker/tree/master/antd-demo).
 
-If you are the user of [umi](https://umijs.org/), you can ref [antd4-use-dayjs-replace-moment](https://github.com/xiaohuoni/antd4-use-dayjs-replace-moment).
+If you use [umi](https://umijs.org/), you can reference [antd4-use-dayjs-replace-moment](https://github.com/xiaohuoni/antd4-use-dayjs-replace-moment).
 
-### Webpack plugin
+## antd-dayjs-webpack-plugin
 
-We also provide another implementation. We provide `antd-dayjs-webpack-plugin` plugin to replace `momentjs` to `Day.js` directly without changing a line of existing code. More info at [antd-dayjs-webpack-plugin](https://github.com/ant-design/antd-dayjs-webpack-plugin).
+We also provide another implementation, which we provide with `antd-dayjs-webpack-plugin`, replacing `momentjs` with `Day.js` directly without changing a line of existing code. More info can be found at [antd-dayjs-webpack-plugin](https://github.com/ant-design/antd-dayjs-webpack-plugin).
+
+```js
+// webpack-config.js
+import AntdDayjsWebpackPlugin from 'antd-dayjs-webpack-plugin';
+
+module.exports = {
+  // ...
+  plugins: [new AntdDayjsWebpackPlugin()],
+};
+```
+
+## Use date-fns
+
+[date-fns](https://date-fns.org/) currently supports custom component methods similar to `dayjs`. The difference is that the parameter types used are different. Support is provided in antd 4.5.0 and above.
+
+For Example:
+
+### DatePicker.tsx
+
+Create `src/components/DatePicker.tsx`.
+
+Code as follows:
+
+```tsx
+import dateFnsGenerateConfig from 'rc-picker/lib/generate/dateFns';
+import generatePicker from 'antd/es/date-picker/generatePicker';
+import 'antd/es/date-picker/style/index';
+
+const DatePicker = generatePicker<Date>(dateFnsGenerateConfig);
+
+export default DatePicker;
+```

@@ -39,10 +39,11 @@ class Demo extends React.Component {
           Auto Resize: {String(autoResize)}
         </Button>
         <TextArea rows={4} autoSize={autoResize} defaultValue={defaultValue} />
+        <TextArea allowClear style={{ width: 93 }} />
       </>
     );
   }
 }
 
-ReactDOM.render(<Demo />, mountNode);
+export default Demo;
 ```

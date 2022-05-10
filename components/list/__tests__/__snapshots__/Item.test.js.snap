@@ -26,7 +26,7 @@ exports[`List Item Layout horizontal itemLayout List should accept extra node 1`
                 class="ant-list-item-meta-title"
               >
                 <a
-                  href="http://ant.design"
+                  href="https://ant.design"
                 >
                   ant design
                 </a>
@@ -50,6 +50,74 @@ exports[`List Item Layout horizontal itemLayout List should accept extra node 1`
           <span>
             extra
           </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`List Item Layout rowKey could be function 1`] = `
+<div
+  class="ant-list ant-list-split"
+>
+  <div
+    class="ant-spin-nested-loading"
+  >
+    <div
+      class="ant-spin-container"
+    >
+      <ul
+        class="ant-list-items"
+      >
+        <li
+          class="ant-list-item"
+        >
+          ant design
+        </li>
+        <li
+          class="ant-list-item"
+        >
+          ant design
+        </li>
+        <li
+          class="ant-list-item"
+        >
+          ant design
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`List Item Layout rowKey could be string 1`] = `
+<div
+  class="ant-list ant-list-split"
+>
+  <div
+    class="ant-spin-nested-loading"
+  >
+    <div
+      class="ant-spin-container"
+    >
+      <ul
+        class="ant-list-items"
+      >
+        <li
+          class="ant-list-item"
+        >
+          ant design
+        </li>
+        <li
+          class="ant-list-item"
+        >
+          ant design
+        </li>
+        <li
+          class="ant-list-item"
+        >
+          ant design
         </li>
       </ul>
     </div>
@@ -83,7 +151,7 @@ exports[`List Item Layout should render in RTL direction 1`] = `
                 class="ant-list-item-meta-title"
               >
                 <a
-                  href="http://ant.design"
+                  href="https://ant.design"
                 >
                   ant design
                 </a>

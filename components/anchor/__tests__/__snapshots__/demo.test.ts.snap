@@ -46,18 +46,6 @@ exports[`renders ./components/anchor/demo/basic.md correctly 1`] = `
         >
           <a
             class="ant-anchor-link-title"
-            href="#components-anchor-demo-basic"
-            target="_blank"
-            title="Basic demo with Target"
-          >
-            Basic demo with Target
-          </a>
-        </div>
-        <div
-          class="ant-anchor-link"
-        >
-          <a
-            class="ant-anchor-link-title"
             href="#API"
             title="API"
           >
@@ -98,7 +86,7 @@ exports[`renders ./components/anchor/demo/customizeHighlight.md correctly 1`] = 
   style="max-height:100vh"
 >
   <div
-    class="ant-anchor fixed"
+    class="ant-anchor ant-anchor-fixed"
   >
     <div
       class="ant-anchor-ink"
@@ -172,7 +160,7 @@ exports[`renders ./components/anchor/demo/onChange.md correctly 1`] = `
   style="max-height:100vh"
 >
   <div
-    class="ant-anchor fixed"
+    class="ant-anchor ant-anchor-fixed"
   >
     <div
       class="ant-anchor-ink"
@@ -246,7 +234,7 @@ exports[`renders ./components/anchor/demo/onClick.md correctly 1`] = `
   style="max-height:100vh"
 >
   <div
-    class="ant-anchor fixed"
+    class="ant-anchor ant-anchor-fixed"
   >
     <div
       class="ant-anchor-ink"
@@ -320,7 +308,7 @@ exports[`renders ./components/anchor/demo/static.md correctly 1`] = `
   style="max-height:100vh"
 >
   <div
-    class="ant-anchor fixed"
+    class="ant-anchor ant-anchor-fixed"
   >
     <div
       class="ant-anchor-ink"

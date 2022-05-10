@@ -8,7 +8,7 @@ title:
 
 ## zh-CN
 
-在不同大小的屏幕下，应该有不同的表现
+在不同大小的屏幕下，应该有不同的表现。
 
 ## en-US
 
@@ -52,40 +52,35 @@ const extraContent = (
   </div>
 );
 
-const Content = ({ children, extra }) => {
-  return (
-    <div className="content">
-      <div className="main">{children}</div>
-      <div className="extra">{extra}</div>
-    </div>
-  );
-};
+const Content = ({ children, extra }) => (
+  <div className="content">
+    <div className="main">{children}</div>
+    <div className="extra">{extra}</div>
+  </div>
+);
 
-ReactDOM.render(
-  <div>
-    <PageHeader
-      className="site-page-header-responsive"
-      onBack={() => window.history.back()}
-      title="Title"
-      subTitle="This is a subtitle"
-      extra={[
-        <Button key="3">Operation</Button>,
-        <Button key="2">Operation</Button>,
-        <Button key="1" type="primary">
-          Primary
-        </Button>,
-      ]}
-      footer={
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="Details" key="1" />
-          <TabPane tab="Rule" key="2" />
-        </Tabs>
-      }
-    >
-      <Content extra={extraContent}>{renderContent()}</Content>
-    </PageHeader>
-  </div>,
-  mountNode,
+export default () => (
+  <PageHeader
+    className="site-page-header-responsive"
+    onBack={() => window.history.back()}
+    title="Title"
+    subTitle="This is a subtitle"
+    extra={[
+      <Button key="3">Operation</Button>,
+      <Button key="2">Operation</Button>,
+      <Button key="1" type="primary">
+        Primary
+      </Button>,
+    ]}
+    footer={
+      <Tabs defaultActiveKey="1">
+        <TabPane tab="Details" key="1" />
+        <TabPane tab="Rule" key="2" />
+      </Tabs>
+    }
+  >
+    <Content extra={extraContent}>{renderContent()}</Content>
+  </PageHeader>
 );
 ```
 

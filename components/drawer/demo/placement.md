@@ -7,7 +7,7 @@ title:
 
 ## zh-CN
 
-自定义位置，点击触发按钮抽屉从相应的位置滑出，点击遮罩区关闭
+自定义位置，点击触发按钮抽屉从相应的位置滑出，点击遮罩区关闭。
 
 ## en-US
 
@@ -15,8 +15,6 @@ The Drawer can appear from any edge of the screen.
 
 ```jsx
 import { Drawer, Button, Radio, Space } from 'antd';
-
-const RadioGroup = Radio.Group;
 
 class App extends React.Component {
   state = { visible: false, placement: 'left' };
@@ -44,12 +42,12 @@ class App extends React.Component {
     return (
       <>
         <Space>
-          <RadioGroup defaultValue={placement} onChange={this.onChange}>
+          <Radio.Group value={placement} onChange={this.onChange}>
             <Radio value="top">top</Radio>
             <Radio value="right">right</Radio>
             <Radio value="bottom">bottom</Radio>
             <Radio value="left">left</Radio>
-          </RadioGroup>
+          </Radio.Group>
           <Button type="primary" onClick={this.showDrawer}>
             Open
           </Button>
@@ -71,5 +69,5 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, mountNode);
+export default App;
 ```

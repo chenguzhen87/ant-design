@@ -3,21 +3,22 @@ order: 27
 title:
   en-US: Resizable column
   zh-CN: 可伸缩列
+debug: true
 ---
 
 ## zh-CN
 
-集成 [react-resizable](https://github.com/STRML/react-resizable) 来实现可伸缩列。
+集成 [react-resizable](https://github.com/STRML/react-resizable) 来实现可伸缩列。如果有排序需要，可以通过[额外标记](https://codesandbox.io/s/zrj8xvyzxx)阻止触发排序。
 
 ## en-US
 
-Implement resizable column by integrate with [react-resizable](https://github.com/STRML/react-resizable).
+Implement resizable column by integrate with [react-resizable](https://github.com/STRML/react-resizable). When sort needed, you can use [additional mark](https://codesandbox.io/s/zrj8xvyzxx) to prevent resize trigger sort.
 
 ```jsx
 import { Table } from 'antd';
 import { Resizable } from 'react-resizable';
 
-const ResizeableTitle = props => {
+const ResizableTitle = props => {
   const { onResize, width, ...restProps } = props;
 
   if (!width) {
@@ -78,7 +79,7 @@ class Demo extends React.Component {
 
   components = {
     header: {
-      cell: ResizeableTitle,
+      cell: ResizableTitle,
     },
   };
 
@@ -106,16 +107,18 @@ class Demo extends React.Component {
     },
   ];
 
-  handleResize = index => (e, { size }) => {
-    this.setState(({ columns }) => {
-      const nextColumns = [...columns];
-      nextColumns[index] = {
-        ...nextColumns[index],
-        width: size.width,
-      };
-      return { columns: nextColumns };
-    });
-  };
+  handleResize =
+    index =>
+    (e, { size }) => {
+      this.setState(({ columns }) => {
+        const nextColumns = [...columns];
+        nextColumns[index] = {
+          ...nextColumns[index],
+          width: size.width,
+        };
+        return { columns: nextColumns };
+      });
+    };
 
   render() {
     const columns = this.state.columns.map((col, index) => ({
@@ -130,7 +133,7 @@ class Demo extends React.Component {
   }
 }
 
-ReactDOM.render(<Demo />, mountNode);
+export default Demo;
 ```
 
 ```css
@@ -141,11 +144,11 @@ ReactDOM.render(<Demo />, mountNode);
 
 #components-table-demo-resizable-column .react-resizable-handle {
   position: absolute;
+  right: -5px;
+  bottom: 0;
+  z-index: 1;
   width: 10px;
   height: 100%;
-  bottom: 0;
-  right: -5px;
   cursor: col-resize;
-  z-index: 1;
 }
 ```

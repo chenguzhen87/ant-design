@@ -7,11 +7,11 @@ title:
 
 ## zh-CN
 
-tags select，随意输入的内容（scroll the menu）
+tags select，随意输入的内容（scroll the menu）。
 
 ## en-US
 
-Select with tags, transform input to tag (scroll the menu)
+Select with tags, transform input to tag (scroll the menu).
 
 ```jsx
 import { Select } from 'antd';
@@ -27,10 +27,9 @@ function handleChange(value) {
   console.log(`selected ${value}`);
 }
 
-ReactDOM.render(
+export default () => (
   <Select mode="tags" style={{ width: '100%' }} placeholder="Tags Mode" onChange={handleChange}>
     {children}
-  </Select>,
-  mountNode,
+  </Select>
 );
 ```

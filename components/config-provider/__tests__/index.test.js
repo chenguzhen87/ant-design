@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { mount } from 'enzyme';
-import ConfigProvider from '..';
+import { SmileOutlined } from '@ant-design/icons';
+import { fireEvent, render } from '@testing-library/react';
+import ConfigProvider, { ConfigContext } from '..';
 import Button from '../../button';
 import Table from '../../table';
 import Input from '../../input';
@@ -53,7 +55,42 @@ describe('ConfigProvider', () => {
       </ConfigProvider>,
     );
 
-    expect(wrapper.find('button').props().className).toEqual('bamboo-btn');
+    expect(wrapper.exists('button.bamboo-btn')).toBeTruthy();
+  });
+
+  it('dynamic prefixCls', () => {
+    const DynamicPrefixCls = () => {
+      const [prefixCls, setPrefixCls] = useState('bamboo');
+      return (
+        <div>
+          <Button onClick={() => setPrefixCls('light')} className="toggle-button">
+            toggle
+          </Button>
+          <ConfigProvider prefixCls={prefixCls}>
+            <ConfigProvider>
+              <Button />
+            </ConfigProvider>
+          </ConfigProvider>
+        </div>
+      );
+    };
+
+    const { container } = render(<DynamicPrefixCls />);
+
+    expect(container.querySelector('button.bamboo-btn')).toBeTruthy();
+    fireEvent.click(container.querySelector('.toggle-button'));
+    expect(container.querySelector('button.light-btn')).toBeTruthy();
+  });
+
+  it('iconPrefixCls', () => {
+    const wrapper = mount(
+      <ConfigProvider iconPrefixCls="bamboo">
+        <SmileOutlined />
+      </ConfigProvider>,
+    );
+
+    expect(wrapper.find('[role="img"]').hasClass('bamboo')).toBeTruthy();
+    expect(wrapper.find('[role="img"]').hasClass('bamboo-smile')).toBeTruthy();
   });
 
   it('input autoComplete', () => {
@@ -64,5 +101,19 @@ describe('ConfigProvider', () => {
     );
 
     expect(wrapper.find('input').props().autoComplete).toEqual('off');
+  });
+
+  it('render empty', () => {
+    const App = () => {
+      const { renderEmpty } = React.useContext(ConfigContext);
+      return renderEmpty();
+    };
+    const wrapper = mount(
+      <ConfigProvider>
+        <App />
+      </ConfigProvider>,
+    );
+
+    expect(wrapper.render()).toMatchSnapshot();
   });
 });

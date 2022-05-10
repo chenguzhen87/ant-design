@@ -15,7 +15,7 @@ We recommend use `Form.useForm` to create data control. If you are using class c
 
 ```tsx
 import { Form, Input, Button, Select } from 'antd';
-import { FormInstance } from 'antd/lib/form';
+import type { FormInstance } from 'antd/es/form';
 
 const { Option } = Select;
 
@@ -30,22 +30,29 @@ const tailLayout = {
 class Demo extends React.Component {
   formRef = React.createRef<FormInstance>();
 
-  onGenderChange = value => {
-    this.formRef.current.setFieldsValue({
-      note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
-    });
+  onGenderChange = (value: string) => {
+    switch (value) {
+      case 'male':
+        this.formRef.current!.setFieldsValue({ note: 'Hi, man!' });
+        return;
+      case 'female':
+        this.formRef.current!.setFieldsValue({ note: 'Hi, lady!' });
+        return;
+      case 'other':
+        this.formRef.current!.setFieldsValue({ note: 'Hi there!' });
+    }
   };
 
-  onFinish = values => {
+  onFinish = (values: any) => {
     console.log(values);
   };
 
   onReset = () => {
-    this.formRef.current.resetFields();
+    this.formRef.current!.resetFields();
   };
 
   onFill = () => {
-    this.formRef.current.setFieldsValue({
+    this.formRef.current!.setFieldsValue({
       note: 'Hello world!',
       gender: 'male',
     });
@@ -72,8 +79,8 @@ class Demo extends React.Component {
           noStyle
           shouldUpdate={(prevValues, currentValues) => prevValues.gender !== currentValues.gender}
         >
-          {({ getFieldValue }) => {
-            return getFieldValue('gender') === 'other' ? (
+          {({ getFieldValue }) =>
+            getFieldValue('gender') === 'other' ? (
               <Form.Item
                 name="customizeGender"
                 label="Customize Gender"
@@ -81,8 +88,8 @@ class Demo extends React.Component {
               >
                 <Input />
               </Form.Item>
-            ) : null;
-          }}
+            ) : null
+          }
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit">
@@ -100,7 +107,7 @@ class Demo extends React.Component {
   }
 }
 
-ReactDOM.render(<Demo />, mountNode);
+export default Demo;
 ```
 
 ```css

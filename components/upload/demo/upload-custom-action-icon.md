@@ -48,18 +48,15 @@ const props = {
   ],
   showUploadList: {
     showDownloadIcon: true,
-    downloadIcon: 'download ',
+    downloadIcon: 'Download',
     showRemoveIcon: true,
     removeIcon: <StarOutlined onClick={e => console.log(e, 'custom removeIcon event')} />,
   },
 };
 
-ReactDOM.render(
+export default () => (
   <Upload {...props}>
-    <Button>
-      <UploadOutlined /> Upload
-    </Button>
-  </Upload>,
-  mountNode,
+    <Button icon={<UploadOutlined />}>Upload</Button>
+  </Upload>
 );
 ```

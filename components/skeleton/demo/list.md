@@ -20,9 +20,9 @@ import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons';
 const listData = [];
 for (let i = 0; i < 3; i++) {
   listData.push({
-    href: 'http://ant.design',
+    href: 'https://ant.design',
     title: `ant design part ${i}`,
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+    avatar: 'https://joeschmoe.io/api/v1/random',
     description:
       'Ant Design, a design language for background applications, is refined by Ant UED Team.',
     content:
@@ -50,7 +50,7 @@ class App extends React.Component {
     const { loading } = this.state;
 
     return (
-      <div>
+      <>
         <Switch checked={!loading} onChange={this.onChange} />
 
         <List
@@ -88,12 +88,12 @@ class App extends React.Component {
             </List.Item>
           )}
         />
-      </div>
+      </>
     );
   }
 }
 
-ReactDOM.render(<App />, mountNode);
+export default App;
 ```
 
 <style>

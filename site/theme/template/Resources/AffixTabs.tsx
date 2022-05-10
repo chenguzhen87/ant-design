@@ -16,9 +16,12 @@ export default () => {
   const [fixedId, setFixedId] = React.useState<string | null>(null);
 
   function scrollToId(id: string) {
-    const newTop =
-      document.getElementById(id)!.offsetTop - containerRef.current!.offsetHeight - VIEW_BALANCE;
-    scrollTo(newTop);
+    const targetNode = document.getElementById(id);
+
+    if (targetNode) {
+      const newTop = targetNode.offsetTop - containerRef.current!.offsetHeight - VIEW_BALANCE;
+      scrollTo(newTop);
+    }
   }
 
   React.useEffect(() => {
@@ -35,7 +38,7 @@ export default () => {
 
   const onSyncAffix = React.useMemo(() => {
     function doSync() {
-      const scrollY = window.scrollY;
+      const { scrollY } = window;
       const containerHeight = containerRef.current!.offsetHeight;
 
       for (let i = idsRef.current.length - 1; i >= 0; i -= 1) {

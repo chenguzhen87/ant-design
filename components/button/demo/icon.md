@@ -21,8 +21,8 @@ If you want specific control over the positioning and placement of the `Icon`, t
 import { Button, Tooltip } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
-ReactDOM.render(
-  <div>
+export default () => (
+  <>
     <Tooltip title="search">
       <Button type="primary" shape="circle" icon={<SearchOutlined />} />
     </Tooltip>
@@ -47,7 +47,38 @@ ReactDOM.render(
     <Button type="dashed" icon={<SearchOutlined />}>
       Search
     </Button>
-  </div>,
-  mountNode,
+    <Button icon={<SearchOutlined />} href="https://www.google.com" />
+    <br />
+    <br />
+    <Tooltip title="search">
+      <Button type="primary" shape="circle" icon={<SearchOutlined />} size="large" />
+    </Tooltip>
+    <Button type="primary" shape="circle" size="large">
+      A
+    </Button>
+    <Button type="primary" icon={<SearchOutlined />} size="large">
+      Search
+    </Button>
+    <Tooltip title="search">
+      <Button shape="circle" icon={<SearchOutlined />} size="large" />
+    </Tooltip>
+    <Button icon={<SearchOutlined />} size="large">
+      Search
+    </Button>
+    <br />
+    <Tooltip title="search">
+      <Button shape="circle" icon={<SearchOutlined />} size="large" />
+    </Tooltip>
+    <Button icon={<SearchOutlined />} size="large">
+      Search
+    </Button>
+    <Tooltip title="search">
+      <Button type="dashed" shape="circle" icon={<SearchOutlined />} size="large" />
+    </Tooltip>
+    <Button type="dashed" icon={<SearchOutlined />} size="large">
+      Search
+    </Button>
+    <Button icon={<SearchOutlined />} size="large" href="https://www.google.com" />
+  </>
 );
 ```

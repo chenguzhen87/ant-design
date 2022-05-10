@@ -95,8 +95,9 @@ class PicSearcher extends Component<PicSearcherProps, PicSearcherState> {
     reader.readAsDataURL(file);
   };
 
-  toImage = (url: any) => {
-    return new Promise(resolve => {
+  // eslint-disable-next-line class-methods-use-this
+  toImage = (url: any) =>
+    new Promise(resolve => {
       const img = new Image();
       img.setAttribute('crossOrigin', 'anonymous');
       img.src = url;
@@ -104,7 +105,6 @@ class PicSearcher extends Component<PicSearcherProps, PicSearcherState> {
         resolve(img);
       };
     });
-  };
 
   predict = (imgEl: any) => {
     try {
@@ -134,6 +134,7 @@ class PicSearcher extends Component<PicSearcherProps, PicSearcherState> {
     }
   };
 
+  // eslint-disable-next-line class-methods-use-this
   onCopied = (text: string) => {
     message.success(
       <span>
@@ -146,15 +147,8 @@ class PicSearcher extends Component<PicSearcherProps, PicSearcherState> {
     const {
       intl: { messages },
     } = this.props;
-    const {
-      modalVisible,
-      popoverVisible,
-      icons,
-      fileList,
-      loading,
-      modelLoaded,
-      error,
-    } = this.state;
+    const { modalVisible, popoverVisible, icons, fileList, loading, modelLoaded, error } =
+      this.state;
     return (
       <div className="icon-pic-searcher">
         <Popover

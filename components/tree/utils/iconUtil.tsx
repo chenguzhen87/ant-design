@@ -5,29 +5,47 @@ import FileOutlined from '@ant-design/icons/FileOutlined';
 import MinusSquareOutlined from '@ant-design/icons/MinusSquareOutlined';
 import PlusSquareOutlined from '@ant-design/icons/PlusSquareOutlined';
 import CaretDownFilled from '@ant-design/icons/CaretDownFilled';
-import { AntTreeNodeProps } from '../Tree';
+import type { AntTreeNodeProps, SwitcherIcon } from '../Tree';
+import { isValidElement, cloneElement } from '../../_util/reactNode';
 
 export default function renderSwitcherIcon(
   prefixCls: string,
-  switcherIcon: React.ReactNode | null | undefined,
-  showLine: boolean | undefined,
-  { isLeaf, expanded, loading }: AntTreeNodeProps,
-) {
+  switcherIcon: SwitcherIcon,
+  showLine: boolean | { showLeafIcon: boolean } | undefined,
+  treeNodeProps: AntTreeNodeProps,
+): React.ReactNode {
+  const { isLeaf, expanded, loading } = treeNodeProps;
+
   if (loading) {
     return <LoadingOutlined className={`${prefixCls}-switcher-loading-icon`} />;
   }
-  if (isLeaf) {
-    return showLine ? <FileOutlined className={`${prefixCls}-switcher-line-icon`} /> : null;
+  let showLeafIcon;
+  if (showLine && typeof showLine === 'object') {
+    showLeafIcon = showLine.showLeafIcon;
   }
+  if (isLeaf) {
+    if (showLine) {
+      if (typeof showLine === 'object' && !showLeafIcon) {
+        return <span className={`${prefixCls}-switcher-leaf-line`} />;
+      }
+      return <FileOutlined className={`${prefixCls}-switcher-line-icon`} />;
+    }
+    return null;
+  }
+
   const switcherCls = `${prefixCls}-switcher-icon`;
-  if (React.isValidElement(switcherIcon)) {
-    return React.cloneElement(switcherIcon, {
-      className: classNames(switcherIcon.props.className || '', switcherCls),
+
+  const switcher =
+    typeof switcherIcon === 'function' ? switcherIcon({ expanded: !!expanded }) : switcherIcon;
+
+  if (isValidElement(switcher)) {
+    return cloneElement(switcher, {
+      className: classNames(switcher.props.className || '', switcherCls),
     });
   }
 
-  if (switcherIcon) {
-    return switcherIcon;
+  if (switcher) {
+    return switcher;
   }
 
   if (showLine) {

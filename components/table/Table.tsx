@@ -1,41 +1,52 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import omit from 'omit.js';
+import omit from 'rc-util/lib/omit';
 import RcTable, { Summary } from 'rc-table';
-import { TableProps as RcTableProps, INTERNAL_HOOKS } from 'rc-table/lib/Table';
+import type { TableProps as RcTableProps } from 'rc-table/lib/Table';
+import { INTERNAL_HOOKS } from 'rc-table/lib/Table';
 import { convertChildrenToColumns } from 'rc-table/lib/hooks/useColumns';
-import Spin, { SpinProps } from '../spin';
-import Pagination, { PaginationConfig } from '../pagination';
+import type { SpinProps } from '../spin';
+import Spin from '../spin';
+import Pagination from '../pagination';
+import type { TooltipProps } from '../tooltip';
 import { ConfigContext } from '../config-provider/context';
 import usePagination, { DEFAULT_PAGE_SIZE, getPaginationParam } from './hooks/usePagination';
 import useLazyKVMap from './hooks/useLazyKVMap';
-import { Breakpoint } from '../_util/responsiveObserve';
-import {
+import type { Breakpoint } from '../_util/responsiveObserve';
+import type {
   TableRowSelection,
   GetRowKey,
   ColumnType,
-  ColumnsType,
   TableCurrentDataSource,
   SorterResult,
-  Key,
   GetPopupContainer,
   ExpandableConfig,
   ExpandType,
-  TablePaginationConfig,
   SortOrder,
   TableLocale,
+  TableAction,
+  FilterValue,
 } from './interface';
-import useSelection, { SELECTION_ALL, SELECTION_INVERT } from './hooks/useSelection';
-import useSorter, { getSortData, SortState } from './hooks/useSorter';
-import useFilter, { getFilterData, FilterState } from './hooks/useFilter';
+import { ColumnsType, TablePaginationConfig } from './interface';
+import useSelection, {
+  SELECTION_ALL,
+  SELECTION_COLUMN,
+  SELECTION_INVERT,
+  SELECTION_NONE,
+} from './hooks/useSelection';
+import type { SortState } from './hooks/useSorter';
+import useSorter, { getSortData } from './hooks/useSorter';
+import type { FilterState } from './hooks/useFilter';
+import useFilter, { getFilterData } from './hooks/useFilter';
 import useTitleColumns from './hooks/useTitleColumns';
 import renderExpandIcon from './ExpandIcon';
 import scrollTo from '../_util/scrollTo';
 import defaultLocale from '../locale/en_US';
-import SizeContext, { SizeType } from '../config-provider/SizeContext';
+import type { SizeType } from '../config-provider/SizeContext';
+import SizeContext from '../config-provider/SizeContext';
 import Column from './Column';
 import ColumnGroup from './ColumnGroup';
-import warning from '../_util/warning';
+import devWarning from '../_util/devWarning';
 import useBreakpoint from '../grid/hooks/useBreakpoint';
 
 export { ColumnsType, TablePaginationConfig };
@@ -48,7 +59,7 @@ interface ChangeEventInfo<RecordType> {
     pageSize?: number;
     total?: number;
   };
-  filters: Record<string, Key[] | null>;
+  filters: Record<string, FilterValue | null>;
   sorter: SorterResult<RecordType> | SorterResult<RecordType>[];
 
   filterStates: FilterState<RecordType>[];
@@ -60,7 +71,13 @@ interface ChangeEventInfo<RecordType> {
 export interface TableProps<RecordType>
   extends Omit<
     RcTableProps<RecordType>,
-    'transformColumns' | 'internalHooks' | 'internalRefs' | 'data' | 'columns' | 'scroll'
+    | 'transformColumns'
+    | 'internalHooks'
+    | 'internalRefs'
+    | 'data'
+    | 'columns'
+    | 'scroll'
+    | 'emptyText'
   > {
   dropdownPrefixCls?: string;
   dataSource?: RcTableProps<RecordType>['data'];
@@ -72,8 +89,8 @@ export interface TableProps<RecordType>
   locale?: TableLocale;
 
   onChange?: (
-    pagination: PaginationConfig,
-    filters: Record<string, Key[] | null>,
+    pagination: TablePaginationConfig,
+    filters: Record<string, FilterValue | null>,
     sorter: SorterResult<RecordType> | SorterResult<RecordType>[],
     extra: TableCurrentDataSource<RecordType>,
   ) => void;
@@ -84,10 +101,13 @@ export interface TableProps<RecordType>
     scrollToFirstRowOnChange?: boolean;
   };
   sortDirections?: SortOrder[];
-  showSorterTooltip?: boolean;
+  showSorterTooltip?: boolean | TooltipProps;
 }
 
-function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
+function InternalTable<RecordType extends object = any>(
+  props: TableProps<RecordType>,
+  ref: React.MutableRefObject<HTMLDivElement>,
+) {
   const {
     prefixCls: customizePrefixCls,
     className,
@@ -117,25 +137,42 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
     showSorterTooltip = true,
   } = props;
 
-  const screens = useBreakpoint();
+  devWarning(
+    !(typeof rowKey === 'function' && rowKey.length > 1),
+    'Table',
+    '`index` parameter of `rowKey` function is deprecated. There is no guarantee that it will work as expected.',
+  );
+
+  const baseColumns = React.useMemo(
+    () => columns || (convertChildrenToColumns(children) as ColumnsType<RecordType>),
+    [columns, children],
+  );
+  const needResponsive = React.useMemo(
+    () => baseColumns.some((col: ColumnType<RecordType>) => col.responsive),
+    [baseColumns],
+  );
+
+  const screens = useBreakpoint(needResponsive);
+
   const mergedColumns = React.useMemo(() => {
     const matched = new Set(Object.keys(screens).filter((m: Breakpoint) => screens[m]));
 
-    return (columns || convertChildrenToColumns(children)).filter(
-      (c: ColumnType<RecordType>) =>
-        !c.responsive || c.responsive.some((r: Breakpoint) => matched.has(r)),
+    return baseColumns.filter(
+      c => !c.responsive || c.responsive.some((r: Breakpoint) => matched.has(r)),
     );
-  }, [children, columns, screens]);
+  }, [baseColumns, screens]);
 
   const tableProps = omit(props, ['className', 'style', 'columns']) as TableProps<RecordType>;
 
   const size = React.useContext(SizeContext);
-  const { locale: contextLocale = defaultLocale, renderEmpty, direction } = React.useContext(
-    ConfigContext,
-  );
+  const {
+    locale: contextLocale = defaultLocale,
+    renderEmpty,
+    direction,
+  } = React.useContext(ConfigContext);
   const mergedSize = customizeSize || size;
   const tableLocale = { ...contextLocale.Table, ...locale } as TableLocale;
-  const rawData: RecordType[] = dataSource || EMPTY_LIST;
+  const rawData: readonly RecordType[] = dataSource || EMPTY_LIST;
 
   const { getPrefixCls } = React.useContext(ConfigContext);
   const prefixCls = getPrefixCls('table', customizePrefixCls);
@@ -149,7 +186,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
   const { childrenColumnName = 'children' } = mergedExpandable;
 
   const expandType: ExpandType = React.useMemo<ExpandType>(() => {
-    if (rawData.some(item => (item as any)[childrenColumnName])) {
+    if (rawData.some(item => (item as any)?.[childrenColumnName])) {
       return 'nest';
     }
 
@@ -170,7 +207,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
       return rowKey;
     }
 
-    return (record: RecordType) => (record as any)[rowKey as string];
+    return (record: RecordType) => (record as any)?.[rowKey as string];
   }, [rowKey]);
 
   const [getRecordByKey] = useLazyKVMap(rawData, childrenColumnName, getRowKey);
@@ -178,7 +215,11 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
   // ============================ Events =============================
   const changeEventInfo: Partial<ChangeEventInfo<RecordType>> = {};
 
-  const triggerOnChange = (info: Partial<ChangeEventInfo<RecordType>>, reset: boolean = false) => {
+  const triggerOnChange = (
+    info: Partial<ChangeEventInfo<RecordType>>,
+    action: TableAction,
+    reset: boolean = false,
+  ) => {
     const changeInfo = {
       ...changeEventInfo,
       ...info,
@@ -194,7 +235,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
 
       // Trigger pagination events
       if (pagination && pagination.onChange) {
-        pagination.onChange(1, changeInfo.pagination!.pageSize);
+        pagination.onChange(1, changeInfo.pagination!.pageSize!);
       }
     }
 
@@ -204,21 +245,19 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
       });
     }
 
-    if (onChange) {
-      onChange(changeInfo.pagination!, changeInfo.filters!, changeInfo.sorter!, {
-        currentDataSource: getFilterData(
-          getSortData(rawData, changeInfo.sorterStates!, childrenColumnName),
-          changeInfo.filterStates!,
-        ),
-      });
-    }
+    onChange?.(changeInfo.pagination!, changeInfo.filters!, changeInfo.sorter!, {
+      currentDataSource: getFilterData(
+        getSortData(rawData, changeInfo.sorterStates!, childrenColumnName),
+        changeInfo.filterStates!,
+      ),
+      action,
+    });
   };
 
   /**
-   * Controlled state in `columns` is not a good idea that makes too many code (1000+ line?)
-   * to read state out and then put it back to title render.
-   * Move these code into `hooks` but still too complex.
-   * We should provides Table props like `sorter` & `filter` to handle control in next big version.
+   * Controlled state in `columns` is not a good idea that makes too many code (1000+ line?) to read
+   * state out and then put it back to title render. Move these code into `hooks` but still too
+   * complex. We should provides Table props like `sorter` & `filter` to handle control in next big version.
    */
 
   // ============================ Sorter =============================
@@ -231,6 +270,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
         sorter,
         sorterStates,
       },
+      'sort',
       false,
     );
   };
@@ -242,17 +282,17 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
     tableLocale,
     showSorterTooltip,
   });
-  const sortedData = React.useMemo(() => getSortData(rawData, sortStates, childrenColumnName), [
-    rawData,
-    sortStates,
-  ]);
+  const sortedData = React.useMemo(
+    () => getSortData(rawData, sortStates, childrenColumnName),
+    [rawData, sortStates],
+  );
 
   changeEventInfo.sorter = getSorters();
   changeEventInfo.sorterStates = sortStates;
 
   // ============================ Filter ============================
   const onFilterChange = (
-    filters: Record<string, Key[]>,
+    filters: Record<string, FilterValue>,
     filterStates: FilterState<RecordType>[],
   ) => {
     triggerOnChange(
@@ -260,6 +300,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
         filters,
         filterStates,
       },
+      'filter',
       true,
     );
   };
@@ -288,9 +329,12 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
 
   // ========================== Pagination ==========================
   const onPaginationChange = (current: number, pageSize: number) => {
-    triggerOnChange({
-      pagination: { ...changeEventInfo.pagination, current, pageSize },
-    });
+    triggerOnChange(
+      {
+        pagination: { ...changeEventInfo.pagination, current, pageSize },
+      },
+      'paginate',
+    );
   };
 
   const [mergedPagination, resetPagination] = usePagination(
@@ -311,11 +355,12 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
     }
 
     const { current = 1, total, pageSize = DEFAULT_PAGE_SIZE } = mergedPagination;
+    devWarning(current > 0, 'Table', '`current` should be positive number.');
 
     // Dynamic table data
     if (mergedData.length < total!) {
       if (mergedData.length > pageSize) {
-        warning(
+        devWarning(
           false,
           'Table',
           '`dataSource` length is less than `pagination.total` but large than `pagination.pageSize`. Please make sure your config correct data with async mode.',
@@ -344,7 +389,6 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
     expandType,
     childrenColumnName,
     locale: tableLocale,
-    expandIconColumnIndex: mergedExpandable.expandIconColumnIndex,
     getPopupContainer,
   });
 
@@ -381,22 +425,23 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
   }
 
   // Indent size
-  mergedExpandable.indentSize = mergedExpandable.indentSize || indentSize || 15;
+  if (typeof mergedExpandable.indentSize !== 'number') {
+    mergedExpandable.indentSize = typeof indentSize === 'number' ? indentSize : 15;
+  }
 
   // ============================ Render ============================
   const transformColumns = React.useCallback(
-    (innerColumns: ColumnsType<RecordType>): ColumnsType<RecordType> => {
-      return transformTitleColumns(
+    (innerColumns: ColumnsType<RecordType>): ColumnsType<RecordType> =>
+      transformTitleColumns(
         transformSelectionColumns(transformFilterColumns(transformSorterColumns(innerColumns))),
-      );
-    },
+      ),
     [transformSorterColumns, transformFilterColumns, transformSelectionColumns],
   );
 
   let topPaginationNode: React.ReactNode;
   let bottomPaginationNode: React.ReactNode;
-  if (pagination !== false) {
-    let paginationSize: PaginationConfig['size'];
+  if (pagination !== false && mergedPagination?.total) {
+    let paginationSize: TablePaginationConfig['size'];
     if (mergedPagination.size) {
       paginationSize = mergedPagination.size;
     } else {
@@ -405,24 +450,28 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
 
     const renderPagination = (position: string) => (
       <Pagination
-        className={`${prefixCls}-pagination ${prefixCls}-pagination-${position}`}
         {...mergedPagination}
+        className={classNames(
+          `${prefixCls}-pagination ${prefixCls}-pagination-${position}`,
+          mergedPagination.className,
+        )}
         size={paginationSize}
       />
     );
     const defaultPosition = direction === 'rtl' ? 'left' : 'right';
-    if (mergedPagination.position !== null && Array.isArray(mergedPagination.position)) {
-      const topPos = mergedPagination.position.find(p => p.indexOf('top') !== -1);
-      const bottomPos = mergedPagination.position.find(p => p.indexOf('bottom') !== -1);
-      if (!topPos && !bottomPos) {
+    const { position } = mergedPagination;
+    if (position !== null && Array.isArray(position)) {
+      const topPos = position.find(p => p.indexOf('top') !== -1);
+      const bottomPos = position.find(p => p.indexOf('bottom') !== -1);
+      const isDisable = position.every(p => `${p}` === 'none');
+      if (!topPos && !bottomPos && !isDisable) {
         bottomPaginationNode = renderPagination(defaultPosition);
-      } else {
-        if (topPos) {
-          topPaginationNode = renderPagination(topPos!.toLowerCase().replace('top', ''));
-        }
-        if (bottomPos) {
-          bottomPaginationNode = renderPagination(bottomPos!.toLowerCase().replace('bottom', ''));
-        }
+      }
+      if (topPos) {
+        topPaginationNode = renderPagination(topPos!.toLowerCase().replace('top', ''));
+      }
+      if (bottomPos) {
+        bottomPaginationNode = renderPagination(bottomPos!.toLowerCase().replace('bottom', ''));
       }
     } else {
       bottomPaginationNode = renderPagination(defaultPosition);
@@ -442,16 +491,20 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
     };
   }
 
-  const wrapperClassNames = classNames(`${prefixCls}-wrapper`, className, {
-    [`${prefixCls}-wrapper-rtl`]: direction === 'rtl',
-  });
+  const wrapperClassNames = classNames(
+    `${prefixCls}-wrapper`,
+    {
+      [`${prefixCls}-wrapper-rtl`]: direction === 'rtl',
+    },
+    className,
+  );
   return (
-    <div className={wrapperClassNames} style={style}>
+    <div ref={ref} className={wrapperClassNames} style={style}>
       <Spin spinning={false} {...spinProps}>
         {topPaginationNode}
         <RcTable<RecordType>
           {...tableProps}
-          columns={mergedColumns}
+          columns={mergedColumns as RcTableProps<RecordType>['columns']}
           direction={direction}
           expandable={mergedExpandable}
           prefixCls={prefixCls}
@@ -459,6 +512,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
             [`${prefixCls}-middle`]: mergedSize === 'middle',
             [`${prefixCls}-small`]: mergedSize === 'small',
             [`${prefixCls}-bordered`]: bordered,
+            [`${prefixCls}-empty`]: rawData.length === 0,
           })}
           data={pageData}
           rowKey={getRowKey}
@@ -467,20 +521,43 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
           // Internal
           internalHooks={INTERNAL_HOOKS}
           internalRefs={internalRefs as any}
-          transformColumns={transformColumns}
+          transformColumns={transformColumns as RcTableProps<RecordType>['transformColumns']}
         />
-        {pageData && pageData.length > 0 && bottomPaginationNode}
+        {bottomPaginationNode}
       </Spin>
     </div>
   );
 }
 
+const ForwardTable = React.forwardRef(InternalTable) as <RecordType extends object = any>(
+  props: React.PropsWithChildren<TableProps<RecordType>> & { ref?: React.Ref<HTMLDivElement> },
+) => React.ReactElement;
+
+type InternalTableType = typeof ForwardTable;
+
+interface TableInterface extends InternalTableType {
+  defaultProps?: Partial<TableProps<any>>;
+  SELECTION_COLUMN: typeof SELECTION_COLUMN;
+  EXPAND_COLUMN: typeof RcTable.EXPAND_COLUMN;
+  SELECTION_ALL: 'SELECT_ALL';
+  SELECTION_INVERT: 'SELECT_INVERT';
+  SELECTION_NONE: 'SELECT_NONE';
+  Column: typeof Column;
+  ColumnGroup: typeof ColumnGroup;
+  Summary: typeof Summary;
+}
+
+const Table = ForwardTable as TableInterface;
+
 Table.defaultProps = {
   rowKey: 'key',
 };
 
+Table.SELECTION_COLUMN = SELECTION_COLUMN;
+Table.EXPAND_COLUMN = RcTable.EXPAND_COLUMN;
 Table.SELECTION_ALL = SELECTION_ALL;
 Table.SELECTION_INVERT = SELECTION_INVERT;
+Table.SELECTION_NONE = SELECTION_NONE;
 Table.Column = Column;
 Table.ColumnGroup = ColumnGroup;
 Table.Summary = Summary;

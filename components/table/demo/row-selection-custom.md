@@ -56,10 +56,10 @@ class App extends React.Component {
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
-      hideDefaultSelections: true,
       selections: [
         Table.SELECTION_ALL,
         Table.SELECTION_INVERT,
+        Table.SELECTION_NONE,
         {
           key: 'odd',
           text: 'Select Odd Row',
@@ -94,5 +94,5 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, mountNode);
+export default App;
 ```

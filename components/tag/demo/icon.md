@@ -26,8 +26,8 @@ import {
   LinkedinOutlined,
 } from '@ant-design/icons';
 
-ReactDOM.render(
-  <div>
+export default () => (
+  <>
     <Tag icon={<TwitterOutlined />} color="#55acee">
       Twitter
     </Tag>
@@ -40,7 +40,6 @@ ReactDOM.render(
     <Tag icon={<LinkedinOutlined />} color="#55acee">
       LinkedIn
     </Tag>
-  </div>,
-  mountNode,
+  </>
 );
 ```

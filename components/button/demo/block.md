@@ -7,7 +7,7 @@ title:
 
 ## zh-CN
 
-`block`属性将使按钮适合其父宽度。
+`block` 属性将使按钮适合其父宽度。
 
 ## en-US
 
@@ -16,8 +16,8 @@ title:
 ```jsx
 import { Button } from 'antd';
 
-ReactDOM.render(
-  <div>
+export default () => (
+  <>
     <Button type="primary" block>
       Primary
     </Button>
@@ -28,7 +28,6 @@ ReactDOM.render(
     <Button type="link" block>
       Link
     </Button>
-  </div>,
-  mountNode,
+  </>
 );
 ```

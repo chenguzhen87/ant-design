@@ -3,10 +3,12 @@
 exports[`renders ./components/statistic/demo/basic.md correctly 1`] = `
 <div
   class="ant-row"
+  role="row"
   style="margin-left:-8px;margin-right:-8px"
 >
   <div
     class="ant-col ant-col-12"
+    role="cell"
     style="padding-left:8px;padding-right:8px"
   >
     <div
@@ -34,6 +36,7 @@ exports[`renders ./components/statistic/demo/basic.md correctly 1`] = `
   </div>
   <div
     class="ant-col ant-col-12"
+    role="cell"
     style="padding-left:8px;padding-right:8px"
   >
     <div
@@ -73,6 +76,32 @@ exports[`renders ./components/statistic/demo/basic.md correctly 1`] = `
       </span>
     </button>
   </div>
+  <div
+    class="ant-col ant-col-12"
+    role="cell"
+    style="padding-left:8px;padding-right:8px"
+  >
+    <div
+      class="ant-statistic"
+    >
+      <div
+        class="ant-statistic-title"
+      >
+        Active Users
+      </div>
+      <div
+        class="ant-skeleton"
+      >
+        <div
+          class="ant-skeleton-content"
+        >
+          <h3
+            class="ant-skeleton-title"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 `;
 
@@ -82,10 +111,12 @@ exports[`renders ./components/statistic/demo/card.md correctly 1`] = `
 >
   <div
     class="ant-row"
+    role="row"
     style="margin-left:-8px;margin-right:-8px"
   >
     <div
       class="ant-col ant-col-12"
+      role="cell"
       style="padding-left:8px;padding-right:8px"
     >
       <div
@@ -116,7 +147,6 @@ exports[`renders ./components/statistic/demo/card.md correctly 1`] = `
                 >
                   <svg
                     aria-hidden="true"
-                    class=""
                     data-icon="arrow-up"
                     fill="currentColor"
                     focusable="false"
@@ -156,6 +186,7 @@ exports[`renders ./components/statistic/demo/card.md correctly 1`] = `
     </div>
     <div
       class="ant-col ant-col-12"
+      role="cell"
       style="padding-left:8px;padding-right:8px"
     >
       <div
@@ -186,7 +217,6 @@ exports[`renders ./components/statistic/demo/card.md correctly 1`] = `
                 >
                   <svg
                     aria-hidden="true"
-                    class=""
                     data-icon="arrow-down"
                     fill="currentColor"
                     focusable="false"
@@ -231,10 +261,12 @@ exports[`renders ./components/statistic/demo/card.md correctly 1`] = `
 exports[`renders ./components/statistic/demo/countdown.md correctly 1`] = `
 <div
   class="ant-row"
+  role="row"
   style="margin-left:-8px;margin-right:-8px"
 >
   <div
     class="ant-col ant-col-12"
+    role="cell"
     style="padding-left:8px;padding-right:8px"
   >
     <div
@@ -258,6 +290,7 @@ exports[`renders ./components/statistic/demo/countdown.md correctly 1`] = `
   </div>
   <div
     class="ant-col ant-col-12"
+    role="cell"
     style="padding-left:8px;padding-right:8px"
   >
     <div
@@ -281,6 +314,7 @@ exports[`renders ./components/statistic/demo/countdown.md correctly 1`] = `
   </div>
   <div
     class="ant-col ant-col-24"
+    role="cell"
     style="padding-left:8px;padding-right:8px;margin-top:32px"
   >
     <div
@@ -302,16 +336,42 @@ exports[`renders ./components/statistic/demo/countdown.md correctly 1`] = `
       </div>
     </div>
   </div>
+  <div
+    class="ant-col ant-col-12"
+    role="cell"
+    style="padding-left:8px;padding-right:8px"
+  >
+    <div
+      class="ant-statistic"
+    >
+      <div
+        class="ant-statistic-title"
+      >
+        Countdown
+      </div>
+      <div
+        class="ant-statistic-content"
+      >
+        <span
+          class="ant-statistic-content-value"
+        >
+          00:00:10
+        </span>
+      </div>
+    </div>
+  </div>
 </div>
 `;
 
 exports[`renders ./components/statistic/demo/unit.md correctly 1`] = `
 <div
   class="ant-row"
+  role="row"
   style="margin-left:-8px;margin-right:-8px"
 >
   <div
     class="ant-col ant-col-12"
+    role="cell"
     style="padding-left:8px;padding-right:8px"
   >
     <div
@@ -335,7 +395,6 @@ exports[`renders ./components/statistic/demo/unit.md correctly 1`] = `
           >
             <svg
               aria-hidden="true"
-              class=""
               data-icon="like"
               fill="currentColor"
               focusable="false"
@@ -363,6 +422,7 @@ exports[`renders ./components/statistic/demo/unit.md correctly 1`] = `
   </div>
   <div
     class="ant-col ant-col-12"
+    role="cell"
     style="padding-left:8px;padding-right:8px"
   >
     <div

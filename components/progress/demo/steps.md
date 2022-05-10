@@ -16,14 +16,13 @@ A progress bar with steps.
 ```jsx
 import { Progress } from 'antd';
 
-ReactDOM.render(
-  <div>
-    <Progress percent={50} steps={3} strokeColor="#1890ff" />
+export default () => (
+  <>
+    <Progress percent={50} steps={3} />
     <br />
-    <Progress percent={30} steps={5} strokeColor="#1890ff" />
+    <Progress percent={30} steps={5} />
     <br />
-    <Progress percent={100} steps={5} size="small" strokeColor="#1890ff" />
-  </div>,
-  mountNode,
+    <Progress percent={100} steps={5} size="small" strokeColor="#52c41a" />
+  </>
 );
 ```

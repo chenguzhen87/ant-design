@@ -1,52 +1,49 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
-import CloseCircleFilled from '@ant-design/icons/CloseCircleFilled';
-import CheckCircleFilled from '@ant-design/icons/CheckCircleFilled';
-import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
-import useMemo from 'rc-util/lib/hooks/useMemo';
-import CSSMotion from 'rc-animate/lib/CSSMotion';
-
-import Col, { ColProps } from '../grid/col';
-import { ValidateStatus } from './FormItem';
-import { FormContext } from './context';
-import { useCacheErrors } from './util';
+import type { ColProps } from '../grid/col';
+import Col from '../grid/col';
+import type { ValidateStatus } from './FormItem';
+import { FormContext, FormItemPrefixContext } from './context';
+import ErrorList from './ErrorList';
 
 interface FormItemInputMiscProps {
   prefixCls: string;
   children: React.ReactNode;
   errors: React.ReactNode[];
-  hasFeedback?: boolean;
-  validateStatus?: ValidateStatus;
-  onDomErrorVisibleChange: (visible: boolean) => void;
+  warnings: React.ReactNode[];
+  /** @private Internal Usage, do not use in any of your production. */
+  _internalItemRender?: {
+    mark: string;
+    render: (
+      props: FormItemInputProps & FormItemInputMiscProps,
+      domList: {
+        input: JSX.Element;
+        errorList: JSX.Element;
+        extra: JSX.Element | null;
+      },
+    ) => React.ReactNode;
+  };
 }
 
 export interface FormItemInputProps {
   wrapperCol?: ColProps;
-  help?: React.ReactNode;
   extra?: React.ReactNode;
+  status?: ValidateStatus;
+  help?: React.ReactNode;
 }
 
-const iconMap: { [key: string]: any } = {
-  success: CheckCircleFilled,
-  warning: ExclamationCircleFilled,
-  error: CloseCircleFilled,
-  validating: LoadingOutlined,
-};
-
-const FormItemInput: React.FC<FormItemInputProps & FormItemInputMiscProps> = ({
-  prefixCls,
-  wrapperCol,
-  children,
-  help,
-  errors,
-  onDomErrorVisibleChange,
-  hasFeedback,
-  validateStatus,
-  extra,
-}) => {
-  const [, forceUpdate] = React.useState({});
-
+const FormItemInput: React.FC<FormItemInputProps & FormItemInputMiscProps> = props => {
+  const {
+    prefixCls,
+    status,
+    wrapperCol,
+    children,
+    errors,
+    warnings,
+    _internalItemRender: formItemRender,
+    extra,
+    help,
+  } = props;
   const baseClassName = `${prefixCls}-item`;
 
   const formContext = React.useContext(FormContext);
@@ -55,79 +52,47 @@ const FormItemInput: React.FC<FormItemInputProps & FormItemInputMiscProps> = ({
 
   const className = classNames(`${baseClassName}-control`, mergedWrapperCol.className);
 
-  const [visible, cacheErrors] = useCacheErrors(
-    errors,
-    changedVisible => {
-      if (changedVisible) {
-        /**
-         * We trigger in sync to avoid dom shaking but this get warning in react 16.13.
-         * So use Promise to keep in micro async to handle this.
-         * https://github.com/ant-design/ant-design/issues/21698#issuecomment-593743485
-         */
-        Promise.resolve().then(() => {
-          onDomErrorVisibleChange(true);
-        });
-      }
-      forceUpdate({});
-    },
-    !!help,
-  );
-
-  React.useEffect(
-    () => () => {
-      onDomErrorVisibleChange(false);
-    },
-    [],
-  );
-
-  const memoErrors = useMemo(
-    () => cacheErrors,
-    visible,
-    (_, nextVisible) => nextVisible,
-  );
-
-  // Should provides additional icon if `hasFeedback`
-  const IconNode = validateStatus && iconMap[validateStatus];
-  const icon =
-    hasFeedback && IconNode ? (
-      <span className={`${baseClassName}-children-icon`}>
-        <IconNode />
-      </span>
-    ) : null;
-
   // Pass to sub FormItem should not with col info
-  const subFormContext = { ...formContext };
+  const subFormContext = React.useMemo(() => ({ ...formContext }), [formContext]);
   delete subFormContext.labelCol;
   delete subFormContext.wrapperCol;
 
+  const inputDom = (
+    <div className={`${baseClassName}-control-input`}>
+      <div className={`${baseClassName}-control-input-content`}>{children}</div>
+    </div>
+  );
+  const formItemContext = React.useMemo(() => ({ prefixCls, status }), [prefixCls, status]);
+  const errorListDom = (
+    <FormItemPrefixContext.Provider value={formItemContext}>
+      <ErrorList
+        errors={errors}
+        warnings={warnings}
+        help={help}
+        helpStatus={status}
+        className={`${baseClassName}-explain-connected`}
+      />
+    </FormItemPrefixContext.Provider>
+  );
+
+  // If extra = 0, && will goes wrong
+  // 0&&error -> 0
+  const extraDom = extra ? <div className={`${baseClassName}-extra`}>{extra}</div> : null;
+
+  const dom =
+    formItemRender && formItemRender.mark === 'pro_table_render' && formItemRender.render ? (
+      formItemRender.render(props, { input: inputDom, errorList: errorListDom, extra: extraDom })
+    ) : (
+      <>
+        {inputDom}
+        {errorListDom}
+        {extraDom}
+      </>
+    );
   return (
     <FormContext.Provider value={subFormContext}>
       <Col {...mergedWrapperCol} className={className}>
-        <div className={`${baseClassName}-control-input`}>
-          <div className={`${baseClassName}-control-input-content`}>{children}</div>
-          {icon}
-        </div>
-        <CSSMotion
-          visible={visible}
-          motionName="show-help"
-          onLeaveEnd={() => {
-            onDomErrorVisibleChange(false);
-          }}
-          motionAppear
-          removeOnLeave
-        >
-          {({ className: motionClassName }: { className: string }) => {
-            return (
-              <div className={classNames(`${baseClassName}-explain`, motionClassName)} key="help">
-                {memoErrors.map((error, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <div key={index}>{error}</div>
-                ))}
-              </div>
-            );
-          }}
-        </CSSMotion>
-        {extra && <div className={`${baseClassName}-extra`}>{extra}</div>}
+        {dom}
       </Col>
     </FormContext.Provider>
   );

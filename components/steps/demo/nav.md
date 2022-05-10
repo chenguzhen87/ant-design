@@ -31,7 +31,7 @@ class Demo extends React.Component {
   render() {
     const { current } = this.state;
     return (
-      <div>
+      <>
         <Steps
           type="navigation"
           size="small"
@@ -81,12 +81,12 @@ class Demo extends React.Component {
           <Step status="process" title="current process" />
           <Step status="wait" title="wait" disabled />
         </Steps>
-      </div>
+      </>
     );
   }
 }
 
-ReactDOM.render(<Demo />, mountNode);
+export default Demo;
 ```
 
 ```css

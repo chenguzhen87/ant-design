@@ -41,17 +41,28 @@ class SiderDemo extends React.Component {
       <Layout>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
           <div className="logo" />
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-            <Menu.Item key="1" icon={<UserOutlined />}>
-              nav 1
-            </Menu.Item>
-            <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-              nav 2
-            </Menu.Item>
-            <Menu.Item key="3" icon={<UploadOutlined />}>
-              nav 3
-            </Menu.Item>
-          </Menu>
+          <Menu
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={['1']}
+            items={[
+              {
+                key: '1',
+                icon: <UserOutlined />,
+                label: 'nav 1',
+              },
+              {
+                key: '2',
+                icon: <VideoCameraOutlined />,
+                label: 'nav 2',
+              },
+              {
+                key: '3',
+                icon: <UploadOutlined />,
+                label: 'nav 3',
+              },
+            ]}
+          />
         </Sider>
         <Layout className="site-layout">
           <Header className="site-layout-background" style={{ padding: 0 }}>
@@ -76,14 +87,14 @@ class SiderDemo extends React.Component {
   }
 }
 
-ReactDOM.render(<SiderDemo />, mountNode);
+export default () => <SiderDemo />;
 ```
 
 ```css
 #components-layout-demo-custom-trigger .trigger {
+  padding: 0 24px;
   font-size: 18px;
   line-height: 64px;
-  padding: 0 24px;
   cursor: pointer;
   transition: color 0.3s;
 }
@@ -94,8 +105,8 @@ ReactDOM.render(<SiderDemo />, mountNode);
 
 #components-layout-demo-custom-trigger .logo {
   height: 32px;
-  background: rgba(255, 255, 255, 0.2);
   margin: 16px;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .site-layout .site-layout-background {

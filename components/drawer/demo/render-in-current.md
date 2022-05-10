@@ -7,11 +7,11 @@ title:
 
 ## zh-CN
 
-渲染在当前 dom 里。自定义容器，查看 getContainer。
+渲染在当前 dom 里。自定义容器，查看 `getContainer`。
 
 ## en-US
 
-Render in current dom. custom container, check getContainer.
+Render in current dom. custom container, check `getContainer`.
 
 ```jsx
 import { Drawer, Button } from 'antd';
@@ -56,7 +56,7 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, mountNode);
+export default App;
 ```
 
 ```css

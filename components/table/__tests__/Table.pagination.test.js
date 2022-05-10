@@ -5,7 +5,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import Table from '..';
 import scrollTo from '../../_util/scrollTo';
-import { resetWarned } from '../../_util/warning';
+import { resetWarned } from '../../_util/devWarning';
 
 describe('Table.pagination', () => {
   const columns = [
@@ -21,6 +21,11 @@ describe('Table.pagination', () => {
     { key: 2, name: 'Tom' },
     { key: 3, name: 'Jerry' },
   ];
+
+  const longData = [];
+  for (let i = 0; i < 100; i += 1) {
+    longData.push({ key: i, name: `${i}` });
+  }
 
   const pagination = { className: 'my-page', pageSize: 2 };
 
@@ -39,7 +44,7 @@ describe('Table.pagination', () => {
 
   it('not crash when pageSize is undefined', () => {
     expect(() => {
-      mount(createTable({ pagination: { pageSIze: undefined } }));
+      mount(createTable({ pagination: { pageSize: undefined } }));
     }).not.toThrow();
   });
 
@@ -78,6 +83,27 @@ describe('Table.pagination', () => {
     expect(renderedNames(wrapper)).toEqual(['Jack']);
   });
 
+  // https://github.com/ant-design/ant-design/issues/33487
+  it('should not crash when trigger onChange in render', () => {
+    function App() {
+      const [page, setPage] = React.useState({ current: 1, pageSize: 10 });
+      const onChange = (current, pageSize) => {
+        setPage({ current, pageSize });
+      };
+      return (
+        <Table
+          dataSource={[]}
+          pagination={{
+            ...page,
+            onChange,
+          }}
+        />
+      );
+    }
+    const wrapper = mount(<App />);
+    expect(wrapper.render()).toMatchSnapshot();
+  });
+
   it('should accept pagination size', () => {
     const wrapper = mount(
       createTable({
@@ -101,6 +127,17 @@ describe('Table.pagination', () => {
     wrapper.find('.ant-select-selector').simulate('mousedown');
     wrapper.find('.ant-select-item').last().simulate('click');
     expect(scrollTo).toHaveBeenCalledTimes(2);
+  });
+
+  it('should scroll inside .ant-table-body', () => {
+    scrollTo.mockImplementationOnce((top, { getContainer }) => {
+      expect(top).toBe(0);
+      expect(getContainer().className).toBe('ant-table-body');
+    });
+    const wrapper = mount(
+      createTable({ scroll: { y: 20 }, pagination: { showSizeChanger: true, pageSize: 2 } }),
+    );
+    wrapper.find('Pager').last().simulate('click');
   });
 
   it('fires change event', () => {
@@ -131,6 +168,7 @@ describe('Table.pagination', () => {
           { key: 2, name: 'Tom' },
           { key: 3, name: 'Jerry' },
         ],
+        action: 'paginate',
       },
     );
 
@@ -179,6 +217,27 @@ describe('Table.pagination', () => {
     );
   });
 
+  // https://github.com/ant-design/ant-design/issues/24913
+  it('should called onChange when pageSize change', () => {
+    const onChange = jest.fn();
+    const onShowSizeChange = jest.fn();
+    const wrapper = mount(
+      createTable({
+        pagination: {
+          current: 1,
+          pageSize: 10,
+          total: 200,
+          onChange,
+          onShowSizeChange,
+        },
+      }),
+    );
+    wrapper.find('.ant-select-selector').simulate('mousedown');
+    expect(wrapper.find('.ant-select-item-option').length).toBe(4);
+    wrapper.find('.ant-select-item-option').at(1).simulate('click');
+    expect(onChange).toHaveBeenCalledWith(1, 20);
+  });
+
   it('should not change page when pagination current is specified', () => {
     const wrapper = mount(createTable({ pagination: { current: 2, pageSize: 1 } }));
     expect(wrapper.find('.ant-pagination-item-2').hasClass('ant-pagination-item-active')).toBe(
@@ -188,6 +247,91 @@ describe('Table.pagination', () => {
     expect(wrapper.find('.ant-pagination-item-2').hasClass('ant-pagination-item-active')).toBe(
       true,
     );
+  });
+
+  // https://github.com/ant-design/ant-design/issues/29175
+  it('should change page to max page count when pageSize change without pagination.total', () => {
+    const onChange = jest.fn();
+    const onShowSizeChange = jest.fn();
+    const wrapper = mount(
+      createTable({
+        pagination: {
+          current: 10,
+          pageSize: 10,
+          onChange,
+          onShowSizeChange,
+        },
+        dataSource: longData,
+      }),
+    );
+    wrapper.find('.ant-select-selector').simulate('mousedown');
+    expect(wrapper.find('.ant-select-item-option').length).toBe(4);
+    wrapper.find('.ant-select-item-option').at(1).simulate('click');
+    const newPageSize = parseInt(wrapper.find('.ant-select-item-option').at(1).text(), 10);
+    expect(onChange).toHaveBeenCalledWith(longData.length / newPageSize, 20);
+  });
+
+  it('should change page to max page count when pageSize change with pagination.total', () => {
+    const onChange = jest.fn();
+    const onShowSizeChange = jest.fn();
+    const total = 20000;
+    const wrapper = mount(
+      createTable({
+        pagination: {
+          current: total / 10,
+          pageSize: 10,
+          onChange,
+          total,
+          onShowSizeChange,
+        },
+        dataSource: longData,
+      }),
+    );
+    wrapper.find('.ant-select-selector').simulate('mousedown');
+    expect(wrapper.find('.ant-select-item-option').length).toBe(4);
+    wrapper.find('.ant-select-item-option').at(1).simulate('click');
+    const newPageSize = parseInt(wrapper.find('.ant-select-item-option').at(1).text(), 10);
+    expect(onChange).toHaveBeenCalledWith(total / newPageSize, 20);
+  });
+
+  // https://github.com/ant-design/ant-design/issues/29175
+  it('should not change page to max page if current is not greater max page when pageSize change', () => {
+    const onChange = jest.fn();
+    const onShowSizeChange = jest.fn();
+    const wrapper = mount(
+      createTable({
+        pagination: {
+          current: 4,
+          pageSize: 10,
+          onChange,
+          onShowSizeChange,
+        },
+        dataSource: longData,
+      }),
+    );
+    wrapper.find('.ant-select-selector').simulate('mousedown');
+    expect(wrapper.find('.ant-select-item-option').length).toBe(4);
+    wrapper.find('.ant-select-item-option').at(1).simulate('click');
+    expect(onChange).toHaveBeenCalledWith(4, 20);
+  });
+
+  it('should reset current to max page when data length is cut', () => {
+    const onChange = jest.fn();
+    const wrapper = mount(
+      createTable({
+        pagination: {
+          current: 10,
+          pageSize: 10,
+          onChange,
+        },
+        dataSource: longData,
+      }),
+    );
+    expect(wrapper.find('.ant-pagination-item-active').text()).toBe('10');
+    wrapper.setProps({
+      dataSource: longData.filter(item => item.key < 60),
+    });
+    expect(wrapper.find('.ant-pagination-item-active').text()).toBe('6');
   });
 
   it('specify the position of pagination', () => {
@@ -201,14 +345,17 @@ describe('Table.pagination', () => {
     expect(wrapper.find('.ant-spin-container').children()).toHaveLength(3);
     expect(wrapper.find('.ant-spin-container').childAt(0).find('.ant-pagination')).toHaveLength(1);
     expect(wrapper.find('.ant-spin-container').childAt(2).find('.ant-pagination')).toHaveLength(1);
+    wrapper.setProps({ pagination: { position: ['none', 'none'] } });
+    expect(wrapper.find('.ant-pagination')).toHaveLength(0);
     wrapper.setProps({ pagination: { position: ['invalid'] } });
+    expect(wrapper.find('.ant-pagination')).toHaveLength(1);
+    wrapper.setProps({ pagination: { position: ['invalid', 'invalid'] } });
     expect(wrapper.find('.ant-pagination')).toHaveLength(1);
   });
 
   /**
-   * `pagination` is not designed to accept `true` value,
-   * but in practice, many people assign `true` to `pagination`,
-   * since they misunderstand that `pagination` can accept a boolean value.
+   * `pagination` is not designed to accept `true` value, but in practice, many people assign `true`
+   * to `pagination`, since they misunderstand that `pagination` can accept a boolean value.
    */
   it('Accepts pagination as true', () => {
     const wrapper = mount(createTable({ pagination: true }));
@@ -244,6 +391,7 @@ describe('Table.pagination', () => {
           { key: 2, name: 'Tom' },
           { key: 3, name: 'Jerry' },
         ],
+        action: 'paginate',
       },
     );
     expect(onPaginationChange).toHaveBeenCalledWith(2, 10);
@@ -251,7 +399,7 @@ describe('Table.pagination', () => {
     expect(wrapper.find('.ant-table-tbody tr.ant-table-row')).toHaveLength(data.length);
   });
 
-  it('select by checkbox to trigger stopPropagation', () => {
+  it('onShowSizeChange should trigger once', () => {
     jest.useFakeTimers();
     const onShowSizeChange = jest.fn();
     const onChange = jest.fn();
@@ -267,10 +415,11 @@ describe('Table.pagination', () => {
     );
     wrapper.find('.ant-select-selector').simulate('mousedown');
     jest.runAllTimers();
-    const dropdownWrapper = mount(wrapper.find('Trigger').instance().getComponent());
+    const dropdownWrapper = wrapper.find('Trigger');
     expect(wrapper.find('.ant-select-item-option').length).toBe(4);
     dropdownWrapper.find('.ant-select-item-option').at(3).simulate('click');
-    expect(onShowSizeChange).toHaveBeenCalled();
+    expect(onShowSizeChange).toHaveBeenCalledTimes(1);
+    expect(onShowSizeChange).toHaveBeenLastCalledWith(1, 100);
     expect(onChange).toHaveBeenCalled();
     jest.useRealTimers();
   });
@@ -311,6 +460,24 @@ describe('Table.pagination', () => {
     expect(wrapper.render()).toMatchSnapshot();
   });
 
+  it('should call onChange when change pagination size', () => {
+    const onChange = jest.fn();
+    const wrapper = mount(
+      createTable({
+        pagination: {
+          total: 200,
+          showSizeChanger: true,
+        },
+        onChange,
+      }),
+    );
+    wrapper.find('.ant-select-selector').simulate('mousedown');
+    const dropdownWrapper = wrapper.find('Trigger');
+    dropdownWrapper.find('.ant-select-item-option').at(2).simulate('click');
+
+    expect(onChange).toBeCalledTimes(1);
+  });
+
   it('dynamic warning', () => {
     resetWarned();
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -334,6 +501,77 @@ describe('Table.pagination', () => {
 
     expect(errorSpy).toHaveBeenCalledWith(
       'Warning: [antd: Table] `dataSource` length is less than `pagination.total` but large than `pagination.pageSize`. Please make sure your config correct data with async mode.',
+    );
+  });
+
+  it('should render pagination after last item on last page being removed', () => {
+    const total = data.length;
+    const paginationProp = {
+      pageSize: 1,
+      total,
+      current: total,
+      position: ['topLeft', 'bottomLeft'],
+    };
+    const wrapper = mount(
+      createTable({
+        pagination: paginationProp,
+      }),
+    );
+
+    wrapper.setProps({
+      dataSource: data.slice(total - 1),
+      pagination: { ...paginationProp, total: total - 1 },
+    });
+    expect(wrapper.find('.ant-pagination')).toHaveLength(2);
+  });
+
+  it('showTotal should hide when removed', () => {
+    const Demo = () => {
+      const [p, setP] = React.useState({
+        showTotal: t => `>${t}<`,
+        total: 200,
+        current: 1,
+        pageSize: 10,
+      });
+
+      return (
+        <Table
+          data={[]}
+          columns={[]}
+          pagination={p}
+          onChange={pg => {
+            setP({
+              ...pg,
+              total: 23,
+            });
+          }}
+        />
+      );
+    };
+
+    const wrapper = mount(<Demo />);
+    expect(wrapper.find('.ant-pagination-total-text').text()).toEqual('>200<');
+
+    // Should hide
+    wrapper.find('.ant-pagination-item-2').simulate('click');
+    expect(wrapper.find('.ant-pagination-total-text')).toHaveLength(0);
+  });
+
+  it('should preserve table pagination className', () => {
+    const wrapper = mount(
+      <Table
+        data={[]}
+        columns={[]}
+        pagination={{
+          className: 'pagination',
+          total: 200,
+          current: 1,
+          pageSize: 10,
+        }}
+      />,
+    );
+    expect(wrapper.find('.ant-pagination').prop('className')).toEqual(
+      'ant-pagination ant-table-pagination ant-table-pagination-right pagination',
     );
   });
 });

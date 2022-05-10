@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { DescriptionsItemProps } from './Item';
+import type { DescriptionsItemProps } from './Item';
 import Cell from './Cell';
+import type { DescriptionsContextProps } from '.';
+import { DescriptionsContext } from '.';
 
 interface CellConfig {
   component: string | [string, string];
@@ -12,7 +14,14 @@ interface CellConfig {
 function renderCells(
   items: React.ReactElement<DescriptionsItemProps>[],
   { colon, prefixCls, bordered }: RowProps,
-  { component, type, showLabel, showContent }: CellConfig,
+  {
+    component,
+    type,
+    showLabel,
+    showContent,
+    labelStyle: rootLabelStyle,
+    contentStyle: rootContentStyle,
+  }: CellConfig & DescriptionsContextProps,
 ) {
   return items.map(
     (
@@ -23,6 +32,8 @@ function renderCells(
           prefixCls: itemPrefixCls = prefixCls,
           className,
           style,
+          labelStyle,
+          contentStyle,
           span = 1,
         },
         key,
@@ -35,6 +46,8 @@ function renderCells(
             key={`${type}-${key || index}`}
             className={className}
             style={style}
+            labelStyle={{ ...rootLabelStyle, ...labelStyle }}
+            contentStyle={{ ...rootContentStyle, ...contentStyle }}
             span={span}
             colon={colon}
             component={component}
@@ -50,7 +63,7 @@ function renderCells(
         <Cell
           key={`label-${key || index}`}
           className={className}
-          style={style}
+          style={{ ...rootLabelStyle, ...style, ...labelStyle }}
           span={1}
           colon={colon}
           component={component[0]}
@@ -61,7 +74,7 @@ function renderCells(
         <Cell
           key={`content-${key || index}`}
           className={className}
-          style={style}
+          style={{ ...rootContentStyle, ...style, ...contentStyle }}
           span={span * 2 - 1}
           component={component[1]}
           itemPrefixCls={itemPrefixCls}
@@ -80,21 +93,30 @@ export interface RowProps {
   bordered?: boolean;
   colon: boolean;
   index: number;
+  children?: React.ReactNode;
 }
 
 const Row: React.FC<RowProps> = props => {
+  const descContext = React.useContext(DescriptionsContext);
+
   const { prefixCls, vertical, row, index, bordered } = props;
   if (vertical) {
     return (
       <>
         <tr key={`label-${index}`} className={`${prefixCls}-row`}>
-          {renderCells(row, props, { component: 'th', type: 'label', showLabel: true })}
+          {renderCells(row, props, {
+            component: 'th',
+            type: 'label',
+            showLabel: true,
+            ...descContext,
+          })}
         </tr>
         <tr key={`content-${index}`} className={`${prefixCls}-row`}>
           {renderCells(row, props, {
             component: 'td',
             type: 'content',
             showContent: true,
+            ...descContext,
           })}
         </tr>
       </>
@@ -108,6 +130,7 @@ const Row: React.FC<RowProps> = props => {
         type: 'item',
         showLabel: true,
         showContent: true,
+        ...descContext,
       })}
     </tr>
   );

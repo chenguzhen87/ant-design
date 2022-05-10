@@ -1,4 +1,7 @@
-@import './index';
+@import (reference) '../../style/themes/index';
+
+@form-prefix-cls: ~'@{ant-prefix}-form';
+@form-item-prefix-cls: ~'@{form-prefix-cls}-item';
 
 .@{form-prefix-cls}-inline {
   display: flex;
@@ -18,6 +21,10 @@
     > .@{form-item-prefix-cls}-control {
       display: inline-block;
       vertical-align: top;
+    }
+
+    > .@{form-item-prefix-cls}-label {
+      flex: none;
     }
 
     .@{form-prefix-cls}-text {

@@ -1,15 +1,17 @@
 import * as React from 'react';
 import classNames from 'classnames';
+import type RcTree from 'rc-tree';
 import debounce from 'lodash/debounce';
 import { conductExpandParent } from 'rc-tree/lib/util';
-import { EventDataNode, DataNode, Key } from 'rc-tree/lib/interface';
+import type { EventDataNode, DataNode, Key } from 'rc-tree/lib/interface';
 import { convertDataToEntities, convertTreeToData } from 'rc-tree/lib/utils/treeUtil';
 import FileOutlined from '@ant-design/icons/FileOutlined';
 import FolderOpenOutlined from '@ant-design/icons/FolderOpenOutlined';
 import FolderOutlined from '@ant-design/icons/FolderOutlined';
 import { ConfigContext } from '../config-provider';
 
-import Tree, { TreeProps, AntdTreeNodeAttribute } from './Tree';
+import type { TreeProps, AntdTreeNodeAttribute } from './Tree';
+import Tree from './Tree';
 import { calcRangeKeys, convertDirectoryKeysToNodes } from './utils/dictUtil';
 
 export type ExpandAction = false | 'click' | 'doubleClick';
@@ -35,18 +37,18 @@ function getTreeData({ treeData, children }: DirectoryTreeProps) {
   return treeData || convertTreeToData(children);
 }
 
-const DirectoryTree: React.FC<DirectoryTreeProps> = ({
-  defaultExpandAll,
-  defaultExpandParent,
-  defaultExpandedKeys,
-  ...props
-}) => {
+const DirectoryTree: React.ForwardRefRenderFunction<RcTree, DirectoryTreeProps> = (
+  { defaultExpandAll, defaultExpandParent, defaultExpandedKeys, ...props },
+  ref,
+) => {
   // Shift click usage
   const lastSelectedKey = React.useRef<Key>();
 
   const cachedSelectedKeys = React.useRef<Key[]>();
 
-  const ref = React.createRef<any>();
+  const treeRef = React.createRef<RcTree>();
+
+  React.useImperativeHandle(ref, () => treeRef.current!);
 
   const getInitExpandedKeys = () => {
     const { keyEntities } = convertDataToEntities(getTreeData(props));
@@ -58,7 +60,7 @@ const DirectoryTree: React.FC<DirectoryTreeProps> = ({
       initExpandedKeys = Object.keys(keyEntities);
     } else if (defaultExpandParent) {
       initExpandedKeys = conductExpandParent(
-        props.expandedKeys || defaultExpandedKeys,
+        props.expandedKeys || defaultExpandedKeys || [],
         keyEntities,
       );
     } else {
@@ -93,7 +95,7 @@ const DirectoryTree: React.FC<DirectoryTreeProps> = ({
 
     // Call internal rc-tree expand function
     // https://github.com/ant-design/ant-design/issues/12567
-    ref.current.onNodeExpand(event, node);
+    treeRef.current!.onNodeExpand(event as any, node);
   };
 
   const onDebounceExpand = debounce(expandFolderNode, 200, {
@@ -111,11 +113,7 @@ const DirectoryTree: React.FC<DirectoryTreeProps> = ({
       setExpandedKeys(keys);
     }
     // Call origin function
-    if (props.onExpand) {
-      return props.onExpand(keys, info);
-    }
-
-    return undefined;
+    return props.onExpand?.(keys, info);
   };
 
   const onClick = (event: React.MouseEvent<HTMLElement>, node: EventDataNode) => {
@@ -126,9 +124,7 @@ const DirectoryTree: React.FC<DirectoryTreeProps> = ({
       onDebounceExpand(event, node);
     }
 
-    if (props.onClick) {
-      props.onClick(event, node);
-    }
+    props.onClick?.(event, node);
   };
 
   const onDoubleClick = (event: React.MouseEvent<HTMLElement>, node: EventDataNode) => {
@@ -139,9 +135,7 @@ const DirectoryTree: React.FC<DirectoryTreeProps> = ({
       onDebounceExpand(event, node);
     }
 
-    if (props.onDoubleClick) {
-      props.onDoubleClick(event, node);
-    }
+    props.onDoubleClick?.(event, node);
   };
 
   const onSelect = (
@@ -168,8 +162,8 @@ const DirectoryTree: React.FC<DirectoryTreeProps> = ({
     };
 
     // Windows / Mac single pick
-    const ctrlPick: boolean = nativeEvent.ctrlKey || nativeEvent.metaKey;
-    const shiftPick: boolean = nativeEvent.shiftKey;
+    const ctrlPick: boolean = nativeEvent?.ctrlKey || nativeEvent?.metaKey;
+    const shiftPick: boolean = nativeEvent?.shiftKey;
 
     // Generate new selected keys
     let newSelectedKeys: Key[];
@@ -184,7 +178,12 @@ const DirectoryTree: React.FC<DirectoryTreeProps> = ({
       newSelectedKeys = Array.from(
         new Set([
           ...(cachedSelectedKeys.current || []),
-          ...calcRangeKeys(treeData, expandedKeys, key, lastSelectedKey.current),
+          ...calcRangeKeys({
+            treeData,
+            expandedKeys,
+            startKey: key,
+            endKey: lastSelectedKey.current,
+          }),
         ]),
       );
       newEvent.selectedNodes = convertDirectoryKeysToNodes(treeData, newSelectedKeys);
@@ -196,9 +195,7 @@ const DirectoryTree: React.FC<DirectoryTreeProps> = ({
       newEvent.selectedNodes = convertDirectoryKeysToNodes(treeData, newSelectedKeys);
     }
 
-    if (props.onSelect) {
-      props.onSelect(newSelectedKeys, newEvent);
-    }
+    props.onSelect?.(newSelectedKeys, newEvent);
     if (!('selectedKeys' in props)) {
       setSelectedKeys(newSelectedKeys);
     }
@@ -208,14 +205,18 @@ const DirectoryTree: React.FC<DirectoryTreeProps> = ({
   const { prefixCls: customizePrefixCls, className, ...otherProps } = props;
 
   const prefixCls = getPrefixCls('tree', customizePrefixCls);
-  const connectClassName = classNames(`${prefixCls}-directory`, className, {
-    [`${prefixCls}-directory-rtl`]: direction === 'rtl',
-  });
+  const connectClassName = classNames(
+    `${prefixCls}-directory`,
+    {
+      [`${prefixCls}-directory-rtl`]: direction === 'rtl',
+    },
+    className,
+  );
 
   return (
     <Tree
       icon={getIcon}
-      ref={ref}
+      ref={treeRef}
       blockNode
       {...otherProps}
       prefixCls={prefixCls}
@@ -230,9 +231,12 @@ const DirectoryTree: React.FC<DirectoryTreeProps> = ({
   );
 };
 
-DirectoryTree.defaultProps = {
+const ForwardDirectoryTree = React.forwardRef(DirectoryTree);
+ForwardDirectoryTree.displayName = 'DirectoryTree';
+
+ForwardDirectoryTree.defaultProps = {
   showIcon: true,
   expandAction: 'click' as DirectoryTreeProps['expandAction'],
 };
 
-export default DirectoryTree;
+export default ForwardDirectoryTree;

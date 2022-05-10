@@ -1,5 +1,5 @@
 ---
-order: 8
+order: 9
 title:
   zh-CN: 多彩徽标
   en-US: Colorful Badge
@@ -14,7 +14,7 @@ title:
 We preset a series of colorful Badge styles for use in different situations. You can also set it to a hex color string for custom color.
 
 ```jsx
-import { Badge } from 'antd';
+import { Badge, Divider } from 'antd';
 
 const colors = [
   'pink',
@@ -32,9 +32,9 @@ const colors = [
   'lime',
 ];
 
-ReactDOM.render(
-  <div>
-    <h4 style={{ marginBottom: 16 }}>Presets:</h4>
+export default () => (
+  <>
+    <Divider orientation="left">Presets</Divider>
     <div>
       {colors.map(color => (
         <div key={color}>
@@ -42,8 +42,8 @@ ReactDOM.render(
         </div>
       ))}
     </div>
-    <h4 style={{ margin: '16px 0' }}>Custom:</h4>
-    <div>
+    <Divider orientation="left">Custom</Divider>
+    <>
       <Badge color="#f50" text="#f50" />
       <br />
       <Badge color="#2db7f5" text="#2db7f5" />
@@ -51,9 +51,8 @@ ReactDOM.render(
       <Badge color="#87d068" text="#87d068" />
       <br />
       <Badge color="#108ee9" text="#108ee9" />
-    </div>
-  </div>,
-  mountNode,
+    </>
+  </>
 );
 ```
 

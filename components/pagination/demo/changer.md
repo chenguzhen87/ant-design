@@ -20,8 +20,8 @@ function onShowSizeChange(current, pageSize) {
   console.log(current, pageSize);
 }
 
-ReactDOM.render(
-  <div>
+export default () => (
+  <>
     <Pagination
       showSizeChanger
       onShowSizeChange={onShowSizeChange}
@@ -36,7 +36,6 @@ ReactDOM.render(
       total={500}
       disabled
     />
-  </div>,
-  mountNode,
+  </>
 );
 ```

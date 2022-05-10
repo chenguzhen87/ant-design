@@ -17,10 +17,12 @@ Debug usage
 ```jsx
 import { Space, Button, Popconfirm } from 'antd';
 
-ReactDOM.render(
+export default () => (
   <Space>
-    Button
-    <Button>Button</Button>
+    <>
+      Button
+      <Button>Button</Button>
+    </>
     Button
     <Popconfirm title="Are you sure delete this task?" okText="Yes" cancelText="No">
       <Button>Delete</Button>
@@ -32,7 +34,8 @@ ReactDOM.render(
     {false}
     {1}
     Button
-  </Space>,
-  mountNode,
+    {null}
+    {undefined}
+  </Space>
 );
 ```

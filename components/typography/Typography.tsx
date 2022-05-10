@@ -1,8 +1,8 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { ConfigConsumer, ConfigConsumerProps } from '../config-provider';
-import warning from '../_util/warning';
-import { composeRef } from '../_util/ref';
+import { composeRef } from 'rc-util/lib/ref';
+import { ConfigContext } from '../config-provider';
+import devWarning from '../_util/devWarning';
 
 export interface TypographyProps {
   id?: string;
@@ -19,7 +19,7 @@ interface InternalTypographyProps extends TypographyProps {
   setContentRef?: (node: HTMLElement) => void;
 }
 
-const Typography: React.RefForwardingComponent<{}, InternalTypographyProps> = (
+const Typography: React.ForwardRefRenderFunction<{}, InternalTypographyProps> = (
   {
     prefixCls: customizePrefixCls,
     component = 'article',
@@ -31,33 +31,27 @@ const Typography: React.RefForwardingComponent<{}, InternalTypographyProps> = (
   },
   ref,
 ) => {
-  let mergedRef = ref;
+  const { getPrefixCls, direction } = React.useContext(ConfigContext);
 
+  let mergedRef = ref;
   if (setContentRef) {
-    warning(false, 'Typography', '`setContentRef` is deprecated. Please use `ref` instead.');
+    devWarning(false, 'Typography', '`setContentRef` is deprecated. Please use `ref` instead.');
     mergedRef = composeRef(ref, setContentRef);
   }
 
+  const Component = component as any;
+  const prefixCls = getPrefixCls('typography', customizePrefixCls);
+  const componentClassName = classNames(
+    prefixCls,
+    {
+      [`${prefixCls}-rtl`]: direction === 'rtl',
+    },
+    className,
+  );
   return (
-    <ConfigConsumer>
-      {({ getPrefixCls, direction }: ConfigConsumerProps) => {
-        const Component = component as any;
-        const prefixCls = getPrefixCls('typography', customizePrefixCls);
-        const componentClassName = classNames(prefixCls, className, {
-          [`${prefixCls}-rtl`]: direction === 'rtl',
-        });
-        return (
-          <Component
-            className={componentClassName}
-            aria-label={ariaLabel}
-            ref={mergedRef}
-            {...restProps}
-          >
-            {children}
-          </Component>
-        );
-      }}
-    </ConfigConsumer>
+    <Component className={componentClassName} aria-label={ariaLabel} ref={mergedRef} {...restProps}>
+      {children}
+    </Component>
   );
 };
 
@@ -66,6 +60,6 @@ const RefTypography = React.forwardRef(Typography);
 RefTypography.displayName = 'Typography';
 
 // es default export should use const instead of let
-const ExportTypography = (RefTypography as unknown) as React.FC<TypographyProps>;
+const ExportTypography = RefTypography as unknown as React.FC<TypographyProps>;
 
 export default ExportTypography;

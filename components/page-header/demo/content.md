@@ -15,49 +15,43 @@ Show all props provided by PageHeader.
 
 ```jsx
 import { PageHeader, Menu, Dropdown, Button, Tag, Typography, Row } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
+import { MoreOutlined } from '@ant-design/icons';
 
 const { Paragraph } = Typography;
 
 const menu = (
-  <Menu>
-    <Menu.Item>
-      <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-        1st menu item
-      </a>
-    </Menu.Item>
-    <Menu.Item>
-      <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
-        2nd menu item
-      </a>
-    </Menu.Item>
-    <Menu.Item>
-      <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
-        3rd menu item
-      </a>
-    </Menu.Item>
-  </Menu>
+  <Menu
+    items={[
+      {
+        label: (
+          <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
+            1st menu item
+          </a>
+        ),
+      },
+      {
+        label: (
+          <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
+            2nd menu item
+          </a>
+        ),
+      },
+      {
+        label: (
+          <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
+            3rd menu item
+          </a>
+        ),
+      },
+    ]}
+  />
 );
 
-const DropdownMenu = () => {
-  return (
-    <Dropdown key="more" overlay={menu}>
-      <Button
-        style={{
-          border: 'none',
-          padding: 0,
-        }}
-      >
-        <EllipsisOutlined
-          style={{
-            fontSize: 20,
-            verticalAlign: 'top',
-          }}
-        />
-      </Button>
-    </Dropdown>
-  );
-};
+const DropdownMenu = () => (
+  <Dropdown key="more" overlay={menu} placement="bottomRight">
+    <Button type="text" icon={<MoreOutlined style={{ fontSize: 20 }} />} />
+  </Dropdown>
+);
 
 const routes = [
   {
@@ -109,16 +103,14 @@ const content = (
   </>
 );
 
-const Content = ({ children, extraContent }) => {
-  return (
-    <Row>
-      <div style={{ flex: 1 }}>{children}</div>
-      <div className="image">{extraContent}</div>
-    </Row>
-  );
-};
+const Content = ({ children, extraContent }) => (
+  <Row>
+    <div style={{ flex: 1 }}>{children}</div>
+    <div className="image">{extraContent}</div>
+  </Row>
+);
 
-ReactDOM.render(
+export default () => (
   <PageHeader
     title="Title"
     className="site-page-header"
@@ -146,16 +138,15 @@ ReactDOM.render(
     >
       {content}
     </Content>
-  </PageHeader>,
-  mountNode,
+  </PageHeader>
 );
 ```
 
 ```css
 #components-page-header-demo-content .image {
-  margin: 0 0 0 60px;
   display: flex;
   align-items: center;
+  margin: 0 0 0 60px;
 }
 
 #components-page-header-demo-content .ant-page-header-rtl .image {
@@ -163,8 +154,8 @@ ReactDOM.render(
 }
 
 #components-page-header-demo-content .example-link {
-  line-height: 24px;
   margin-right: 16px;
+  line-height: 24px;
 }
 [data-theme='compact'] #components-page-header-demo-content .example-link {
   line-height: 20px;

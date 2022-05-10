@@ -11,7 +11,7 @@ exports[`Table renders empty table 1`] = `
       class="ant-spin-container"
     >
       <div
-        class="ant-table"
+        class="ant-table ant-table-empty"
       >
         <div
           class="ant-table-container"
@@ -119,11 +119,11 @@ exports[`Table renders empty table 1`] = `
                           </g>
                         </svg>
                       </div>
-                      <p
+                      <div
                         class="ant-empty-description"
                       >
                         No Data
-                      </p>
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -148,7 +148,7 @@ exports[`Table renders empty table with custom emptyText 1`] = `
       class="ant-spin-container"
     >
       <div
-        class="ant-table"
+        class="ant-table ant-table-empty"
       >
         <div
           class="ant-table-container"
@@ -240,24 +240,24 @@ exports[`Table renders empty table with fixed columns 1`] = `
       class="ant-spin-container"
     >
       <div
-        class="ant-table ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-left ant-table-has-fix-right"
+        class="ant-table ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-left ant-table-has-fix-right"
       >
         <div
           class="ant-table-container"
         >
           <div
             class="ant-table-content"
-            style="overflow-x:scroll;overflow-y:hidden"
+            style="overflow-x:auto;overflow-y:hidden"
           >
             <table
               style="width:1px;min-width:100%;table-layout:fixed"
             >
               <colgroup>
                 <col
-                  style="width:100px;min-width:100px"
+                  style="width:100px"
                 />
                 <col
-                  style="width:100px;min-width:100px"
+                  style="width:100px"
                 />
                 <col />
                 <col />
@@ -268,7 +268,7 @@ exports[`Table renders empty table with fixed columns 1`] = `
                 <col />
                 <col />
                 <col
-                  style="width:100px;min-width:100px"
+                  style="width:100px"
                 />
               </colgroup>
               <thead
@@ -341,41 +341,107 @@ exports[`Table renders empty table with fixed columns 1`] = `
                 <tr
                   aria-hidden="true"
                   class="ant-table-measure-row"
-                  style="height:0"
+                  style="height:0;font-size:0"
                 >
                   <td
                     style="padding:0;border:0;height:0"
-                  />
+                  >
+                    <div
+                      style="height:0;overflow:hidden"
+                    >
+                       
+                    </div>
+                  </td>
                   <td
                     style="padding:0;border:0;height:0"
-                  />
+                  >
+                    <div
+                      style="height:0;overflow:hidden"
+                    >
+                       
+                    </div>
+                  </td>
                   <td
                     style="padding:0;border:0;height:0"
-                  />
+                  >
+                    <div
+                      style="height:0;overflow:hidden"
+                    >
+                       
+                    </div>
+                  </td>
                   <td
                     style="padding:0;border:0;height:0"
-                  />
+                  >
+                    <div
+                      style="height:0;overflow:hidden"
+                    >
+                       
+                    </div>
+                  </td>
                   <td
                     style="padding:0;border:0;height:0"
-                  />
+                  >
+                    <div
+                      style="height:0;overflow:hidden"
+                    >
+                       
+                    </div>
+                  </td>
                   <td
                     style="padding:0;border:0;height:0"
-                  />
+                  >
+                    <div
+                      style="height:0;overflow:hidden"
+                    >
+                       
+                    </div>
+                  </td>
                   <td
                     style="padding:0;border:0;height:0"
-                  />
+                  >
+                    <div
+                      style="height:0;overflow:hidden"
+                    >
+                       
+                    </div>
+                  </td>
                   <td
                     style="padding:0;border:0;height:0"
-                  />
+                  >
+                    <div
+                      style="height:0;overflow:hidden"
+                    >
+                       
+                    </div>
+                  </td>
                   <td
                     style="padding:0;border:0;height:0"
-                  />
+                  >
+                    <div
+                      style="height:0;overflow:hidden"
+                    >
+                       
+                    </div>
+                  </td>
                   <td
                     style="padding:0;border:0;height:0"
-                  />
+                  >
+                    <div
+                      style="height:0;overflow:hidden"
+                    >
+                       
+                    </div>
+                  </td>
                   <td
                     style="padding:0;border:0;height:0"
-                  />
+                  >
+                    <div
+                      style="height:0;overflow:hidden"
+                    >
+                       
+                    </div>
+                  </td>
                 </tr>
                 <tr
                   class="ant-table-placeholder"
@@ -428,11 +494,11 @@ exports[`Table renders empty table with fixed columns 1`] = `
                             </g>
                           </svg>
                         </div>
-                        <p
+                        <div
                           class="ant-empty-description"
                         >
                           No Data
-                        </p>
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -456,6 +522,8 @@ exports[`Table renders empty table without emptyText when loading 1`] = `
   >
     <div>
       <div
+        aria-busy="true"
+        aria-live="polite"
         class="ant-spin ant-spin-spinning"
       >
         <span
@@ -480,7 +548,7 @@ exports[`Table renders empty table without emptyText when loading 1`] = `
       class="ant-spin-container ant-spin-blur"
     >
       <div
-        class="ant-table"
+        class="ant-table ant-table-empty"
       >
         <div
           class="ant-table-container"
@@ -588,11 +656,11 @@ exports[`Table renders empty table without emptyText when loading 1`] = `
                           </g>
                         </svg>
                       </div>
-                      <p
+                      <div
                         class="ant-empty-description"
                       >
                         No Data
-                      </p>
+                      </div>
                     </div>
                   </td>
                 </tr>

@@ -1,72 +1,40 @@
-@import '../../style/themes/index';
-@import '../../style/mixins/index';
-
-@alert-prefix-cls: ~'@{ant-prefix}-alert';
-
 .@{alert-prefix-cls} {
   &&-rtl {
-    padding: 8px 37px 8px 15px;
     direction: rtl;
-  }
-
-  &&-no-icon {
-    .@{alert-prefix-cls}-rtl& {
-      padding: @alert-no-icon-padding-vertical 15px;
-    }
-  }
-
-  &&-closable {
-    .@{alert-prefix-cls}.@{alert-prefix-cls}-rtl& {
-      padding-right: 37px;
-      padding-left: 30px;
-    }
-  }
-
-  &&-no-icon&-closable {
-    .@{alert-prefix-cls}.@{alert-prefix-cls}-rtl& {
-      padding-right: 15px;
-      padding-left: 30px;
-    }
   }
 
   &-icon {
     .@{alert-prefix-cls}-rtl & {
-      right: 16px;
-      left: auto;
+      margin-right: auto;
+      margin-left: @margin-xs;
+    }
+  }
+
+  &-action {
+    .@{alert-prefix-cls}-rtl & {
+      margin-right: @margin-xs;
+      margin-left: auto;
     }
   }
 
   &-close-icon {
     .@{alert-prefix-cls}-rtl & {
-      right: auto;
-      left: 16px;
+      margin-right: @margin-xs;
+      margin-left: auto;
     }
   }
 
-  &-with-description,
-  &-with-description&-closable {
-    .@{alert-prefix-cls}.@{alert-prefix-cls}-rtl& {
-      padding: 15px 64px 15px 15px;
-    }
-  }
-
-  &-with-description&-no-icon {
-    .@{alert-prefix-cls}.@{alert-prefix-cls}-rtl& {
-      padding: 15px;
-    }
-  }
-
-  &-with-description &-icon {
+  &-with-description {
     .@{alert-prefix-cls}-rtl& {
-      right: 24px;
-      left: auto;
+      padding-right: @alert-with-description-icon-size;
+      padding-left: @alert-with-description-padding-vertical;
     }
-  }
 
-  &-with-description &-close-icon {
-    .@{alert-prefix-cls}-rtl& {
-      right: auto;
-      left: 16px;
+    .@{alert-prefix-cls}-icon {
+      .@{alert-prefix-cls}-rtl& {
+        margin-right: auto;
+        margin-left: @alert-with-description-padding-vertical;
+      }
     }
   }
 }

@@ -19,17 +19,17 @@ import { Anchor } from 'antd';
 const { Link } = Anchor;
 
 const handleClick = (
-    e: React.MouseEvent<HTMLElement>,
-    link: {
-      title: React.ReactNode;
-      href: string;
-    },
-  ) => {
-    e.preventDefault();
-    console.log(link);
+  e: React.MouseEvent<HTMLElement>,
+  link: {
+    title: React.ReactNode;
+    href: string;
+  },
+) => {
+  e.preventDefault();
+  console.log(link);
 };
 
-ReactDOM.render(
+export default () => (
   <Anchor affix={false} onClick={handleClick}>
     <Link href="#components-anchor-demo-basic" title="Basic demo" />
     <Link href="#components-anchor-demo-static" title="Static demo" />
@@ -37,7 +37,6 @@ ReactDOM.render(
       <Link href="#Anchor-Props" title="Anchor Props" />
       <Link href="#Link-Props" title="Link Props" />
     </Link>
-  </Anchor>,
-  mountNode,
+  </Anchor>
 );
 ```

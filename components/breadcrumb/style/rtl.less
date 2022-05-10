@@ -1,11 +1,6 @@
-@import '../../style/themes/index';
-@import '../../style/mixins/index';
-
-@breadcrumb-prefix-cls: ~'@{ant-prefix}-breadcrumb';
-
 .@{breadcrumb-prefix-cls} {
   &-rtl {
-    .clearfix;
+    .clearfix();
     direction: rtl;
 
     > span {
@@ -14,7 +9,8 @@
   }
 
   &-link {
-    > .@{iconfont-css-prefix} + span {
+    > .@{iconfont-css-prefix} + span,
+    > .@{iconfont-css-prefix} + a {
       .@{breadcrumb-prefix-cls}-rtl & {
         margin-right: 4px;
         margin-left: 0;

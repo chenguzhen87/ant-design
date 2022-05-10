@@ -1,9 +1,9 @@
 @import '../../style/themes/index';
 @import '../../style/mixins/index';
 @import '../../input/style/mixin';
-
 @import './single';
 @import './multiple';
+@import './status';
 
 @select-prefix-cls: ~'@{ant-prefix}-select';
 @select-height-without-border: @input-height-base - 2 * @border-width-base;
@@ -13,7 +13,7 @@
   position: relative;
   background-color: @select-background;
   border: @border-width-base @border-style-base @select-border-color;
-  border-radius: @border-radius-base;
+  border-radius: @control-border-radius;
   transition: all 0.3s @ease-in-out;
 
   input {
@@ -28,7 +28,7 @@
     }
   }
 
-  .@{select-prefix-cls}-focused& {
+  .@{select-prefix-cls}-focused:not(.@{select-prefix-cls}-disabled)& {
     .active();
   }
 
@@ -36,6 +36,10 @@
     color: @disabled-color;
     background: @input-disabled-bg;
     cursor: not-allowed;
+
+    .@{select-prefix-cls}-multiple& {
+      background: @select-multiple-disabled-background;
+    }
 
     input {
       cursor: not-allowed;
@@ -46,19 +50,33 @@
 /* Reset search input style */
 .select-search-input-without-border() {
   .@{select-prefix-cls}-selection-search-input {
+    margin: 0;
+    padding: 0;
     background: transparent;
     border: none;
     outline: none;
+    appearance: none;
+
+    &::-webkit-search-cancel-button {
+      display: none;
+      /* stylelint-disable-next-line property-no-vendor-prefix */
+      -webkit-appearance: none;
+    }
   }
 }
 
 .@{select-prefix-cls} {
-  .reset-component;
+  .reset-component();
   position: relative;
   display: inline-block;
   cursor: pointer;
 
-  &:not(.@{select-prefix-cls}-disabled):hover &-selector {
+  &:not(&-customize-input) &-selector {
+    .select-selector();
+    .select-search-input-without-border();
+  }
+
+  &:not(&-disabled):hover &-selector {
     .hover();
   }
 
@@ -66,6 +84,7 @@
   &-selection-item {
     flex: 1;
     overflow: hidden;
+    font-weight: normal;
     white-space: nowrap;
     text-overflow: ellipsis;
 
@@ -82,9 +101,10 @@
   &-selection-placeholder {
     flex: 1;
     overflow: hidden;
+    color: @input-placeholder-color;
     white-space: nowrap;
     text-overflow: ellipsis;
-    opacity: 0.4;
+    pointer-events: none;
 
     // IE11 css hack. `*::-ms-backdrop,` is a must have
     @media all and (-ms-high-contrast: none) {
@@ -99,11 +119,12 @@
   &-arrow {
     .iconfont-mixin();
     position: absolute;
-    top: 53%;
+    top: 50%;
     right: @control-padding-horizontal - 1px;
-    width: @font-size-sm;
+    display: flex;
+    align-items: center;
     height: @font-size-sm;
-    margin-top: -@font-size-sm / 2;
+    margin-top: (-@font-size-sm / 2);
     color: @disabled-color;
     font-size: @font-size-sm;
     line-height: 1;
@@ -118,9 +139,17 @@
         vertical-align: top;
       }
 
-      &:not(.@{iconfont-css-prefix}-down) {
+      &:not(.@{select-prefix-cls}-suffix) {
         pointer-events: auto;
       }
+    }
+
+    .@{select-prefix-cls}-disabled & {
+      cursor: not-allowed;
+    }
+
+    > *:not(:last-child) {
+      margin-inline-end: @padding-xs;
     }
   }
 
@@ -133,7 +162,7 @@
     display: inline-block;
     width: @font-size-sm;
     height: @font-size-sm;
-    margin-top: -@font-size-sm / 2;
+    margin-top: (-@font-size-sm / 2);
     color: @disabled-color;
     font-size: @font-size-sm;
     font-style: normal;
@@ -145,9 +174,11 @@
     opacity: 0;
     transition: color 0.3s ease, opacity 0.15s ease;
     text-rendering: auto;
+
     &::before {
       display: block;
     }
+
     &:hover {
       color: @text-color-secondary;
     }
@@ -159,7 +190,7 @@
 
   // ========================== Popup ==========================
   &-dropdown {
-    .reset-component;
+    .reset-component();
     position: absolute;
     top: -9999px;
     left: -9999px;
@@ -177,26 +208,30 @@
     outline: none;
     box-shadow: @box-shadow-base;
 
-    &.slide-up-enter.slide-up-enter-active&-placement-bottomLeft,
-    &.slide-up-appear.slide-up-appear-active&-placement-bottomLeft {
+    &.@{ant-prefix}-slide-up-enter.@{ant-prefix}-slide-up-enter-active&-placement-bottomLeft,
+    &.@{ant-prefix}-slide-up-appear.@{ant-prefix}-slide-up-appear-active&-placement-bottomLeft {
       animation-name: antSlideUpIn;
     }
 
-    &.slide-up-enter.slide-up-enter-active&-placement-topLeft,
-    &.slide-up-appear.slide-up-appear-active&-placement-topLeft {
+    &.@{ant-prefix}-slide-up-enter.@{ant-prefix}-slide-up-enter-active&-placement-topLeft,
+    &.@{ant-prefix}-slide-up-appear.@{ant-prefix}-slide-up-appear-active&-placement-topLeft {
       animation-name: antSlideDownIn;
     }
 
-    &.slide-up-leave.slide-up-leave-active&-placement-bottomLeft {
+    &.@{ant-prefix}-slide-up-leave.@{ant-prefix}-slide-up-leave-active&-placement-bottomLeft {
       animation-name: antSlideUpOut;
     }
 
-    &.slide-up-leave.slide-up-leave-active&-placement-topLeft {
+    &.@{ant-prefix}-slide-up-leave.@{ant-prefix}-slide-up-leave-active&-placement-topLeft {
       animation-name: antSlideDownOut;
     }
 
     &-hidden {
       display: none;
+    }
+
+    &-empty {
+      color: @disabled-color;
     }
   }
 
@@ -214,6 +249,7 @@
 
   &-item-empty {
     .item();
+    color: @disabled-color;
   }
 
   &-item {
@@ -249,7 +285,7 @@
       }
 
       &-selected:not(&-disabled) {
-        color: @text-color;
+        color: @select-item-selected-color;
         font-weight: @select-item-selected-font-weight;
         background-color: @select-item-selected-bg;
 
@@ -259,6 +295,9 @@
       }
 
       &-disabled {
+        &.@{select-prefix-cls}-item-option-selected {
+          background-color: @select-multiple-disabled-background;
+        }
         color: @disabled-color;
         cursor: not-allowed;
       }
@@ -281,6 +320,10 @@
     background-color: transparent !important;
     border-color: transparent !important;
     box-shadow: none !important;
+  }
+
+  &&-in-form-item {
+    width: 100%;
   }
 }
 

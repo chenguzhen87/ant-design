@@ -16,7 +16,7 @@ Config item align.
 ```jsx
 import { Space, Button } from 'antd';
 
-ReactDOM.render(
+export default () => (
   <div className="space-align-container">
     <div className="space-align-block">
       <Space align="center">
@@ -46,22 +46,21 @@ ReactDOM.render(
         <span className="mock-block">Block</span>
       </Space>
     </div>
-  </div>,
-  mountNode,
+  </div>
 );
 ```
 
 ```css
 .space-align-container {
   display: flex;
-  align-item: flex-start;
   flex-wrap: wrap;
+  align-items: flex-start;
 }
 .space-align-block {
-  margin: 8px 4px;
-  border: 1px solid #40a9ff;
-  padding: 4px;
   flex: none;
+  margin: 8px 4px;
+  padding: 4px;
+  border: 1px solid #40a9ff;
 }
 .space-align-block .mock-block {
   display: inline-block;

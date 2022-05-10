@@ -20,7 +20,7 @@ According to our [release schedule](changelog#Release-Schedule), we maintain two
 
 ## Bugs
 
-We are using [GitHub Issues](https://github.com/ant-design/ant-design/issues) for bug tracking. The best way to get your bug fixed is using our [issue helper](http://new-issue.ant.design) and provide reproduction steps with this [template](https://u.ant.design/codesandbox-repro).
+We are using [GitHub Issues](https://github.com/ant-design/ant-design/issues) for bug tracking. The best way to get your bug fixed is by using our [issue helper](http://new-issue.ant.design) and provide reproduction steps with this [template](https://u.ant.design/codesandbox-repro).
 
 Before you report a bug, please make sure you've searched existing issues, and read our [FAQ](/docs/react/faq).
 
@@ -50,9 +50,11 @@ The core team is monitoring for pull requests. We will review your pull request 
 
 1. Fork the repository and create your branch from the [correct branch](#Branch-Organization).
 1. Run `npm install` in the repository root.
+   > For Windows 10 development environment, if you run into error `gyp err! find vs msvs_version not set from command line or npm config`, please install [the latest Python v3](https://www.python.org/downloads/) and **Desktop development with C++** through [Visual Studio Installer](https://docs.microsoft.com/en-us/visualstudio/install/install-visual-studio?view=vs-2019#step-3---install-the-visual-studio-installer) before running `npm install`
 1. If you've fixed a bug or added code that should be tested, add tests!
 1. Ensure the test suite passes (npm run test). Tip: `npm test -- --watch TestName` is helpful in development.
 1. Run `npm test -- -u` to update the [jest snapshots](http://facebook.github.io/jest/docs/en/snapshot-testing.html#snapshot-testing-with-jest) and commit these changes as well (if there are any updates).
+1. Ensure the UI change passes `npm run test-image`，Run `npm run test-image -- -u` to update UI snapshots and commit these changes as well (if there are any updates), **UI test base on [Docker](https://docs.docker.com/get-docker/), need download the corresponding installation according to the platform**
 1. Make sure your code lints (npm run lint). Tip: Lint runs automatically when you `git commit` (Use [Git Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)).
 
 Sending a Pull Request to [react-component](https://github.com/react-component/):
@@ -65,10 +67,20 @@ After cloning antd, run `npm install` to fetch its dependencies. Then, you can r
 
 1. `npm start` runs Ant Design website locally.
 1. `npm run lint` checks the code style.
-1. `npm test` runs the complete test suite.
+1. `npm test` runs the complete test suite. (Make sure the `NODE_ENV` environment variable is unset, or it may causing some problems.)
 1. `npm run compile` compiles TypeScript code to the `lib` and `es` directory.
 1. `npm run dist` creates UMD build of antd.
 
+### Switch Theme
+
+Use `DEV_THEME` to change start theme:
+
+```bash
+DEV_THEME=dark npm start
+```
+
+Visit [http://127.0.0.1:8001/components/button-cn/?theme=dark](http://127.0.0.1:8001/components/button-cn/?theme=dark).
+
 ## Being a collaborator
 
-If you are a active contributor and are willing to work with Ant Design Team in our opensource workflow, you can [apply to be a outside collaborator](https://github.com/ant-design/ant-design/wiki/Collaborators#how-to-apply-for-being-a-collaborator).
+If you are an active contributor and are willing to work with Ant Design Team in our opensource workflow, you can [apply to be a outside collaborator](https://github.com/ant-design/ant-design/wiki/Collaborators#how-to-apply-for-being-a-collaborator).

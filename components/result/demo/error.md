@@ -19,7 +19,7 @@ import { CloseCircleOutlined } from '@ant-design/icons';
 
 const { Paragraph, Text } = Typography;
 
-ReactDOM.render(
+export default () => (
   <Result
     status="error"
     title="Submission Failed"
@@ -43,16 +43,15 @@ ReactDOM.render(
         </Text>
       </Paragraph>
       <Paragraph>
-        <CloseCircleOutlined className="site-result-demo-error-icon" /> Your account has been frozen
-        <a>Thaw immediately &gt;</a>
+        <CloseCircleOutlined className="site-result-demo-error-icon" /> Your account has been
+        frozen. <a>Thaw immediately &gt;</a>
       </Paragraph>
       <Paragraph>
         <CloseCircleOutlined className="site-result-demo-error-icon" /> Your account is not yet
-        eligible to apply <a>Apply Unlock &gt;</a>
+        eligible to apply. <a>Apply Unlock &gt;</a>
       </Paragraph>
     </div>
-  </Result>,
-  mountNode,
+  </Result>
 );
 ```
 

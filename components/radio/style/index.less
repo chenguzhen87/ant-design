@@ -5,14 +5,14 @@
 @radio-group-prefix-cls: ~'@{radio-prefix-cls}-group';
 @radio-inner-prefix-cls: ~'@{radio-prefix-cls}-inner';
 @radio-duration: 0.3s;
-@radio-focus-shadow: 0 0 0 3px fade(@radio-dot-color, 8%);
+@radio-focus-shadow: 0 0 0 3px @primary-1;
 @radio-button-focus-shadow: @radio-focus-shadow;
 
 .@{radio-group-prefix-cls} {
-  .reset-component;
+  .reset-component();
 
   display: inline-block;
-  line-height: unset;
+  font-size: 0;
 
   .@{ant-prefix}-badge-count {
     z-index: 1;
@@ -25,24 +25,38 @@
 
 // 一般状态
 .@{radio-prefix-cls}-wrapper {
-  .reset-component;
-
+  .reset-component();
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: baseline;
   margin-right: @radio-wrapper-margin-right;
-  white-space: nowrap;
   cursor: pointer;
+
+  &-disabled {
+    cursor: not-allowed;
+  }
+
+  &::after {
+    display: inline-block;
+    width: 0;
+    overflow: hidden;
+    content: '\a0';
+  }
+
+  &&-in-form-item {
+    input[type='radio'] {
+      width: 14px;
+      height: 14px;
+    }
+  }
 }
 
 .@{radio-prefix-cls} {
-  .reset-component;
+  .reset-component();
 
   position: relative;
   top: @radio-top;
   display: inline-block;
-  line-height: 1;
-  white-space: nowrap;
-  vertical-align: sub;
   outline: none;
   cursor: pointer;
 
@@ -77,18 +91,18 @@
 
   &-inner {
     &::after {
-      @radio-dot-size: @radio-size - 8px;
-
       position: absolute;
-      top: (@radio-size - @radio-dot-size) / 2 - 1px;
-      left: (@radio-size - @radio-dot-size) / 2 - 1px;
-      display: table;
-      width: @radio-dot-size;
-      height: @radio-dot-size;
+      top: 50%;
+      left: 50%;
+      display: block;
+      width: @radio-size;
+      height: @radio-size;
+      margin-top: -(@radio-size / 2);
+      margin-left: -(@radio-size / 2);
       background-color: @radio-dot-color;
       border-top: 0;
       border-left: 0;
-      border-radius: @radio-dot-size;
+      border-radius: @radio-size;
       transform: scale(0);
       opacity: 0;
       transition: all @radio-duration @ease-in-out-circ;
@@ -104,8 +118,8 @@
     background-color: @radio-button-bg;
     border-color: @border-color-base;
     border-style: solid;
-    border-width: 1px;
-    border-radius: 100px;
+    border-width: @radio-border-width;
+    border-radius: 50%;
     transition: all @radio-duration;
   }
 
@@ -125,8 +139,9 @@
 .@{radio-prefix-cls}-checked {
   .@{radio-inner-prefix-cls} {
     border-color: @radio-dot-color;
+
     &::after {
-      transform: scale(1);
+      transform: scale((unit(@radio-dot-size) / unit(@radio-size)));
       opacity: 1;
       transition: all @radio-duration @ease-in-out-circ;
     }
@@ -134,10 +149,13 @@
 }
 
 .@{radio-prefix-cls}-disabled {
+  cursor: not-allowed;
+
   .@{radio-inner-prefix-cls} {
     background-color: @input-disabled-bg;
     border-color: @border-color-base !important;
     cursor: not-allowed;
+
     &::after {
       background-color: @radio-dot-disabled-color;
     }
@@ -163,8 +181,9 @@ span.@{radio-prefix-cls} + * {
   display: inline-block;
   height: @btn-height-base;
   margin: 0;
-  padding: 0 @padding-md - 1px;
+  padding: 0 @radio-button-padding-horizontal;
   color: @radio-button-color;
+  font-size: @font-size-base;
   line-height: @btn-height-base - 2px;
   background: @radio-button-bg;
   border: @border-width-base @border-style-base @border-color-base;
@@ -180,10 +199,12 @@ span.@{radio-prefix-cls} + * {
   }
 
   > .@{radio-prefix-cls}-button {
-    display: block;
-    width: 0;
-    height: 0;
-    margin-left: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
   }
 
   .@{radio-group-prefix-cls}-large & {
@@ -262,6 +283,7 @@ span.@{radio-prefix-cls} + * {
     &:hover {
       color: @radio-button-hover-color;
       border-color: @radio-button-hover-color;
+
       &::before {
         background-color: @radio-button-hover-color;
       }
@@ -270,6 +292,7 @@ span.@{radio-prefix-cls} + * {
     &:active {
       color: @radio-button-active-color;
       border-color: @radio-button-active-color;
+
       &::before {
         background-color: @radio-button-active-color;
       }
@@ -284,16 +307,19 @@ span.@{radio-prefix-cls} + * {
     color: @radio-solid-checked-color;
     background: @radio-dot-color;
     border-color: @radio-dot-color;
+
     &:hover {
       color: @radio-solid-checked-color;
       background: @radio-button-hover-color;
       border-color: @radio-button-hover-color;
     }
+
     &:active {
       color: @radio-solid-checked-color;
       background: @radio-button-active-color;
       border-color: @radio-button-active-color;
     }
+
     &:focus-within {
       box-shadow: @radio-button-focus-shadow;
     }
@@ -311,6 +337,7 @@ span.@{radio-prefix-cls} + * {
       background-color: @input-disabled-bg;
       border-color: @border-color-base;
     }
+
     &:first-child {
       border-left-color: @border-color-base;
     }
@@ -329,16 +356,10 @@ span.@{radio-prefix-cls} + * {
     transform: scale(1);
     opacity: 0.5;
   }
+
   100% {
     transform: scale(1.6);
     opacity: 0;
-  }
-}
-
-// Firefox hack
-@supports (-moz-appearance: meterbar) and (background-blend-mode: difference, normal) {
-  .@{radio-prefix-cls} {
-    vertical-align: text-bottom;
   }
 }
 

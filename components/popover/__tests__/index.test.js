@@ -1,14 +1,14 @@
 import React from 'react';
-import { render, mount } from 'enzyme';
+import { mount } from 'enzyme';
+import { render } from '../../../tests/utils';
 import Popover from '..';
 import mountTest from '../../../tests/shared/mountTest';
-import { sleep } from '../../../tests/utils';
 import ConfigProvider from '../../config-provider';
 
 describe('Popover', () => {
   mountTest(Popover);
 
-  it('should show overlay when trigger is clicked', async () => {
+  it('should show overlay when trigger is clicked', () => {
     const ref = React.createRef();
 
     const popover = mount(
@@ -20,12 +20,7 @@ describe('Popover', () => {
     expect(ref.current.getPopupDomNode()).toBe(null);
 
     popover.find('span').simulate('click');
-    await sleep(100);
-
-    const popup = ref.current.getPopupDomNode();
-    expect(popup).not.toBe(null);
-    expect(popup.className).toContain('ant-popover-placement-top');
-    expect(popup.innerHTML).toMatchSnapshot();
+    expect(popover.find('Trigger PopupInner').props().visible).toBeTruthy();
   });
 
   it('shows content for render functions', () => {
@@ -60,21 +55,35 @@ describe('Popover', () => {
     popover.find('span').simulate('click');
 
     const popup = ref.current.getPopupDomNode();
-    expect(popup).not.toBe(null);
-    expect(popup.innerHTML).toMatchSnapshot();
+    expect(popup).toBe(null);
+  });
+
+  it('should not render popover when the title & content props is empty', () => {
+    const ref = React.createRef();
+
+    const popover = mount(
+      <Popover trigger="click" ref={ref} content="">
+        <span>show me your code</span>
+      </Popover>,
+    );
+
+    popover.find('span').simulate('click');
+    const popup = ref.current.getPopupDomNode();
+
+    expect(popup).toBe(null);
   });
 
   it('props#overlay do not warn anymore', () => {
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     const overlay = jest.fn();
-    mount(
+    render(
       <Popover content="console.log('hello world')" title="code" trigger="click">
         <span>show me your code</span>
       </Popover>,
     );
 
-    expect(errorSpy.mock.calls.length).toBe(0);
+    expect(errorSpy).not.toHaveBeenCalled();
     expect(overlay).not.toHaveBeenCalled();
   });
 
@@ -86,6 +95,6 @@ describe('Popover', () => {
         </Popover>
       </ConfigProvider>,
     );
-    expect(render(wrapper)).toMatchSnapshot();
+    expect(wrapper.render()).toMatchSnapshot();
   });
 });

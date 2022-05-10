@@ -4,6 +4,7 @@ type: Navigation
 title: PageHeader
 cols: 1
 subtitle:
+cover: https://gw.alipayobjects.com/zos/alicdn/6bKE0Cq0R/PageHeader.svg
 ---
 
 A header with common actions and design elements built in.
@@ -16,16 +17,17 @@ PageHeader can be used to highlight the page topic, display important informatio
 
 | Param | Description | Type | Default value | Version |
 | --- | --- | --- | --- | --- |
-| title | Custom title text | ReactNode | - |  |
-| subTitle | Custom subtitle text | ReactNode | - |  |
-| ghost | PageHeader type, will change background color | boolean | true |  |
-| avatar | Avatar next to the title bar | [avatar props](/components/avatar/) | - |  |
-| backIcon | Custom back icon, if false the back icon will not be displayed | ReactNode \| boolean | `<ArrowLeft />` |  |
-| tags | Tag list next to title | [Tag](/components/tag/)[] \| [Tag](/components/tag/) | - |  |
+| avatar | Avatar next to the title bar | [AvatarProps](/components/avatar/) | - |  |
+| backIcon | Custom back icon, if false the back icon will not be displayed | ReactNode \| boolean | &lt;ArrowLeft /> |  |
+| breadcrumb | Breadcrumb configuration | [Breadcrumb](/components/breadcrumb/) | - |  |
+| breadcrumbRender | Customize the content of the breadcrumb area | `(props, originBreadcrumb)=> ReactNode` | - | 4.11.0 |
 | extra | Operating area, at the end of the line of the title line | ReactNode | - |  |
-| breadcrumb | Breadcrumb configuration | [breadcrumb](/components/breadcrumb/) | - |  |
 | footer | PageHeader's footer, generally used to render TabBar | ReactNode | - |  |
-| onBack | Back icon click event | `()=>void` | `()=>history.back()` |  |
+| ghost | PageHeader type, will change background color | boolean | true |  |
+| subTitle | Custom subtitle text | ReactNode | - |  |
+| tags | Tag list next to title | [Tag](/components/tag/)\[] \| [Tag](/components/tag/) | - |  |
+| title | Custom title text | ReactNode | - |  |
+| onBack | Back icon click event | () => void | - |  |
 
 <style>
   [data-theme="dark"] .site-page-header {

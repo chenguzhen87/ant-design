@@ -41,7 +41,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div>
+    <>
       <Button onClick={toggle}>Toggle Avatar visibility</Button>
       <Button onClick={toggleSize}>Toggle Avatar size</Button>
       <Button onClick={changeScale}>Change Avatar scale</Button>
@@ -67,9 +67,9 @@ const App: React.FC = () => {
           </Avatar>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-ReactDOM.render(<App />, mountNode);
+export default App;
 ```

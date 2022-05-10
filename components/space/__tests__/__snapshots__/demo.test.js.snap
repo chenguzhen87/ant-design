@@ -195,7 +195,7 @@ exports[`renders ./components/space/demo/base.md correctly 1`] = `
             type="file"
           />
           <button
-            class="ant-btn"
+            class="ant-btn ant-btn-default"
             type="button"
           >
             <span
@@ -205,7 +205,6 @@ exports[`renders ./components/space/demo/base.md correctly 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class=""
                 data-icon="upload"
                 fill="currentColor"
                 focusable="false"
@@ -233,7 +232,7 @@ exports[`renders ./components/space/demo/base.md correctly 1`] = `
     class="ant-space-item"
   >
     <button
-      class="ant-btn"
+      class="ant-btn ant-btn-default"
       type="button"
     >
       <span>
@@ -247,14 +246,14 @@ exports[`renders ./components/space/demo/base.md correctly 1`] = `
 exports[`renders ./components/space/demo/customize.md correctly 1`] = `
 Array [
   <div
-    class="ant-slider"
+    class="ant-slider ant-slider-horizontal"
   >
     <div
       class="ant-slider-rail"
     />
     <div
       class="ant-slider-track"
-      style="left:0%;right:auto;width:8%"
+      style="left:0%;width:8%"
     />
     <div
       class="ant-slider-step"
@@ -266,11 +265,8 @@ Array [
       aria-valuenow="8"
       class="ant-slider-handle"
       role="slider"
-      style="left:8%;right:auto;transform:translateX(-50%)"
+      style="left:8%;transform:translateX(-50%)"
       tabindex="0"
-    />
-    <div
-      class="ant-slider-mark"
     />
   </div>,
   <br />,
@@ -296,7 +292,7 @@ Array [
       style="margin-right:8px"
     >
       <button
-        class="ant-btn"
+        class="ant-btn ant-btn-default"
         type="button"
       >
         <span>
@@ -348,7 +344,7 @@ exports[`renders ./components/space/demo/debug.md correctly 1`] = `
     style="margin-right:8px"
   >
     <button
-      class="ant-btn"
+      class="ant-btn ant-btn-default"
       type="button"
     >
       <span>
@@ -367,7 +363,7 @@ exports[`renders ./components/space/demo/debug.md correctly 1`] = `
     style="margin-right:8px"
   >
     <button
-      class="ant-btn"
+      class="ant-btn ant-btn-default"
       type="button"
     >
       <span>
@@ -384,7 +380,7 @@ exports[`renders ./components/space/demo/debug.md correctly 1`] = `
       style="display:inline-block;cursor:not-allowed"
     >
       <button
-        class="ant-btn"
+        class="ant-btn ant-btn-default"
         disabled=""
         style="pointer-events:none"
         type="button"
@@ -407,6 +403,65 @@ exports[`renders ./components/space/demo/debug.md correctly 1`] = `
     Button
   </div>
 </div>
+`;
+
+exports[`renders ./components/space/demo/gap-in-line.md correctly 1`] = `
+Array [
+  <button
+    aria-checked="false"
+    class="ant-switch"
+    role="switch"
+    type="button"
+  >
+    <div
+      class="ant-switch-handle"
+    />
+    <span
+      class="ant-switch-inner"
+    />
+  </button>,
+  <div
+    style="box-shadow:0 0 5px green"
+  >
+    <div
+      class="ant-space ant-space-horizontal ant-space-align-center"
+      style="flex-wrap:wrap;margin-bottom:-8px;width:310px;background:blue"
+    >
+      <div
+        class="ant-space-item"
+        style="margin-right:8px;padding-bottom:8px"
+      >
+        <div
+          style="width:150px;height:100px;background:red"
+        />
+      </div>
+      <div
+        class="ant-space-item"
+        style="margin-right:8px;padding-bottom:8px"
+      >
+        <div
+          style="width:150px;height:100px;background:red"
+        />
+      </div>
+      <div
+        class="ant-space-item"
+        style="margin-right:8px;padding-bottom:8px"
+      >
+        <div
+          style="width:150px;height:100px;background:red"
+        />
+      </div>
+      <div
+        class="ant-space-item"
+        style="padding-bottom:8px"
+      >
+        <div
+          style="width:150px;height:100px;background:red"
+        />
+      </div>
+    </div>
+  </div>,
+]
 `;
 
 exports[`renders ./components/space/demo/size.md correctly 1`] = `
@@ -496,7 +551,7 @@ Array [
       style="margin-right:8px"
     >
       <button
-        class="ant-btn"
+        class="ant-btn ant-btn-default"
         type="button"
       >
         <span>
@@ -533,17 +588,103 @@ Array [
 ]
 `;
 
-exports[`renders ./components/space/demo/vertical.md correctly 1`] = `
+exports[`renders ./components/space/demo/split.md correctly 1`] = `
 <div
-  class="ant-space ant-space-vertical"
+  class="ant-space ant-space-horizontal ant-space-align-center"
 >
   <div
     class="ant-space-item"
-    style="margin-bottom:8px"
+    style="margin-right:4px"
+  >
+    <a
+      class="ant-typography"
+    >
+      Link
+    </a>
+  </div>
+  <span
+    class="ant-space-item-split"
+    style="margin-right:4px"
   >
     <div
-      class="ant-card ant-card-bordered"
-      style="width:300px"
+      class="ant-divider ant-divider-vertical"
+      role="separator"
+    />
+  </span>
+  <div
+    class="ant-space-item"
+    style="margin-right:4px"
+  >
+    <a
+      class="ant-typography"
+    >
+      Link
+    </a>
+  </div>
+  <span
+    class="ant-space-item-split"
+    style="margin-right:4px"
+  >
+    <div
+      class="ant-divider ant-divider-vertical"
+      role="separator"
+    />
+  </span>
+  <div
+    class="ant-space-item"
+  >
+    <a
+      class="ant-typography"
+    >
+      Link
+    </a>
+  </div>
+</div>
+`;
+
+exports[`renders ./components/space/demo/vertical.md correctly 1`] = `
+<div
+  class="ant-space ant-space-vertical"
+  style="display:flex"
+>
+  <div
+    class="ant-space-item"
+    style="margin-bottom:16px"
+  >
+    <div
+      class="ant-card ant-card-bordered ant-card-small"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            Card
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        <p>
+          Card content
+        </p>
+        <p>
+          Card content
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-bottom:16px"
+  >
+    <div
+      class="ant-card ant-card-bordered ant-card-small"
     >
       <div
         class="ant-card-head"
@@ -574,8 +715,7 @@ exports[`renders ./components/space/demo/vertical.md correctly 1`] = `
     class="ant-space-item"
   >
     <div
-      class="ant-card ant-card-bordered"
-      style="width:300px"
+      class="ant-card ant-card-bordered ant-card-small"
     >
       <div
         class="ant-card-head"
@@ -601,6 +741,274 @@ exports[`renders ./components/space/demo/vertical.md correctly 1`] = `
         </p>
       </div>
     </div>
+  </div>
+</div>
+`;
+
+exports[`renders ./components/space/demo/wrap.md correctly 1`] = `
+<div
+  class="ant-space ant-space-horizontal ant-space-align-center"
+  style="flex-wrap:wrap;margin-bottom:-16px"
+>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="margin-right:8px;padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+    style="padding-bottom:16px"
+  >
+    <button
+      class="ant-btn ant-btn-default"
+      type="button"
+    >
+      <span>
+        Button
+      </span>
+    </button>
   </div>
 </div>
 `;

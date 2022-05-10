@@ -1,9 +1,11 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { spyElementPrototype } from 'rc-util/lib/test/domHook';
 import Popconfirm from '..';
 import mountTest from '../../../tests/shared/mountTest';
-import { sleep } from '../../../tests/utils';
+import { sleep, render, fireEvent } from '../../../tests/utils';
 import rtlTest from '../../../tests/shared/rtlTest';
+import Button from '../../button';
 
 describe('Popconfirm', () => {
   mountTest(Popconfirm);
@@ -12,6 +14,12 @@ describe('Popconfirm', () => {
   const eventObject = expect.objectContaining({
     target: expect.anything(),
     preventDefault: expect.any(Function),
+  });
+
+  beforeAll(() => {
+    spyElementPrototype(HTMLElement, 'offsetParent', {
+      get: () => ({}),
+    });
   });
 
   it('should popup Popconfirm dialog', () => {
@@ -124,6 +132,27 @@ describe('Popconfirm', () => {
     expect(onVisibleChange).toHaveBeenLastCalledWith(false, eventObject);
   });
 
+  it('should support onConfirm to return Promise', async () => {
+    const confirm = () =>
+      new Promise(res => {
+        setTimeout(res, 300);
+      });
+    const onVisibleChange = jest.fn();
+    const popconfirm = mount(
+      <Popconfirm title="code" onConfirm={confirm} onVisibleChange={onVisibleChange}>
+        <span>show me your code</span>
+      </Popconfirm>,
+    );
+
+    const triggerNode = popconfirm.find('span').at(0);
+    triggerNode.simulate('click');
+    expect(onVisibleChange).toHaveBeenCalledTimes(1);
+
+    popconfirm.find('.ant-btn').at(0).simulate('click');
+    await sleep(400);
+    expect(onVisibleChange).toHaveBeenCalledWith(false, eventObject);
+  });
+
   it('should support customize icon', () => {
     const wrapper = mount(
       <Popconfirm title="code" icon={<span className="customize-icon">custom-icon</span>}>
@@ -175,5 +204,66 @@ describe('Popconfirm', () => {
     const triggerNode = popconfirm.find('span').at(0);
     triggerNode.simulate('click');
     expect(ref.current.getPopupDomNode()).toBeFalsy();
+  });
+
+  it('should be closed by pressing ESC', () => {
+    const onVisibleChange = jest.fn();
+    const wrapper = mount(
+      <Popconfirm
+        title="title"
+        mouseEnterDelay={0}
+        mouseLeaveDelay={0}
+        onVisibleChange={onVisibleChange}
+      >
+        <span>Delete</span>
+      </Popconfirm>,
+    );
+    const triggerNode = wrapper.find('span').at(0);
+    triggerNode.simulate('click');
+    expect(onVisibleChange).toHaveBeenLastCalledWith(true, undefined);
+    triggerNode.simulate('keydown', { key: 'Escape', keyCode: 27 });
+    expect(onVisibleChange).toHaveBeenLastCalledWith(false, eventObject);
+  });
+
+  it('should not warn memory leaking if setState in async callback', async () => {
+    const error = jest.spyOn(console, 'error');
+
+    const Test = () => {
+      const [show, setShow] = React.useState(true);
+
+      if (show) {
+        return (
+          <Popconfirm
+            title="will unmount"
+            onConfirm={() =>
+              new Promise(resolve => {
+                setTimeout(() => {
+                  setShow(false);
+                  resolve();
+                }, 300);
+              })
+            }
+          >
+            <Button className="clickTarget">Test</Button>
+          </Popconfirm>
+        );
+      }
+      return <Button>Unmounted</Button>;
+    };
+
+    const { container } = render(
+      <div>
+        <Test />
+      </div>,
+    );
+
+    expect(container.textContent).toEqual('Test');
+
+    fireEvent.click(container.querySelector('.clickTarget'));
+    fireEvent.click(container.querySelector('.ant-btn-primary'));
+
+    await sleep(500);
+    expect(container.textContent).toEqual('Unmounted');
+    expect(error).not.toHaveBeenCalled();
   });
 });

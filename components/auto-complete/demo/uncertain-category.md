@@ -16,17 +16,17 @@ Demonstration of [Lookup Patterns: Uncertain Category](https://ant.design/docs/s
 ```tsx
 import React, { useState } from 'react';
 import { Input, AutoComplete } from 'antd';
-import { SelectProps } from 'antd/es/select';
+import type { SelectProps } from 'antd/es/select';
 
 function getRandomInt(max: number, min: number = 0) {
   return Math.floor(Math.random() * (max - min + 1)) + min; // eslint-disable-line no-mixed-operators
 }
 
-const searchResult = (query: string) => {
-  return new Array(getRandomInt(5))
+const searchResult = (query: string) =>
+  new Array(getRandomInt(5))
     .join('.')
     .split('.')
-    .map((item, idx) => {
+    .map((_, idx) => {
       const category = `${query}${idx}`;
       return {
         value: category,
@@ -52,7 +52,6 @@ const searchResult = (query: string) => {
         ),
       };
     });
-};
 
 const Complete: React.FC = () => {
   const [options, setOptions] = useState<SelectProps<object>['options']>([]);
@@ -78,5 +77,5 @@ const Complete: React.FC = () => {
   );
 };
 
-ReactDOM.render(<Complete />, mountNode);
+export default () => <Complete />;
 ```

@@ -11,7 +11,7 @@ title:
 
 ## en-US
 
-Spacified the prop name of Option which will be rendered in select box.
+Specify the prop name of Option which will be rendered in select box.
 
 ```jsx
 import { Select } from 'antd';
@@ -22,7 +22,7 @@ function handleChange(value) {
   console.log(`selected ${value}`);
 }
 
-ReactDOM.render(
+export default () => (
   <Select
     mode="multiple"
     style={{ width: '100%' }}
@@ -63,8 +63,7 @@ ReactDOM.render(
         Korea (韩国)
       </div>
     </Option>
-  </Select>,
-  mountNode,
+  </Select>
 );
 ```
 

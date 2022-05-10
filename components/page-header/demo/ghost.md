@@ -16,7 +16,7 @@ The default PageHeader is a transparent background. In some cases, PageHeader ne
 ```jsx
 import { PageHeader, Button, Descriptions } from 'antd';
 
-ReactDOM.render(
+export default () => (
   <div className="site-page-header-ghost-wrapper">
     <PageHeader
       ghost={false}
@@ -43,14 +43,13 @@ ReactDOM.render(
         </Descriptions.Item>
       </Descriptions>
     </PageHeader>
-  </div>,
-  mountNode,
+  </div>
 );
 ```
 
 ```css
 .site-page-header-ghost-wrapper {
-  background-color: #f5f5f5;
   padding: 24px;
+  background-color: #f5f5f5;
 }
 ```

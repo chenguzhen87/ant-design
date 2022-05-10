@@ -37,10 +37,7 @@ describe('Tabs', () => {
     });
 
     it('add card', () => {
-      wrapper
-        .find('.ant-tabs-new-tab')
-        .hostNodes()
-        .simulate('click');
+      wrapper.find('.ant-tabs-nav-add').first().simulate('click');
       expect(handleEdit.mock.calls[0][1]).toBe('add');
     });
 
@@ -78,5 +75,33 @@ describe('Tabs', () => {
       );
       expect(wrapper).toMatchSnapshot();
     });
+  });
+
+  it('warning for onNextClick', () => {
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    mount(<Tabs onNextClick={() => {}} />);
+    expect(errorSpy).toHaveBeenCalledWith(
+      'Warning: [antd: Tabs] `onPrevClick` and `onNextClick` has been removed. Please use `onTabScroll` instead.',
+    );
+    errorSpy.mockRestore();
+  });
+
+  it('tabBarGutter should work', () => {
+    const wrapper = mount(
+      <Tabs tabBarGutter={0}>
+        <TabPane />
+        <TabPane />
+        <TabPane />
+      </Tabs>,
+    );
+    expect(wrapper.render()).toMatchSnapshot();
+    const wrapper2 = mount(
+      <Tabs tabBarGutter={0} tabPosition="left">
+        <TabPane />
+        <TabPane />
+        <TabPane />
+      </Tabs>,
+    );
+    expect(wrapper2.render()).toMatchSnapshot();
   });
 });

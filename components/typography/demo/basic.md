@@ -16,9 +16,12 @@ Display the document sample.
 ```jsx
 import { Typography, Divider } from 'antd';
 
-const { Title, Paragraph, Text } = Typography;
+const { Title, Paragraph, Text, Link } = Typography;
 
-ReactDOM.render(
+const blockContent = `AntV 是蚂蚁金服全新一代数据可视化解决方案，致力于提供一套简单方便、专业可靠、不限可能的数据可视化最佳实践。得益于丰富的业务场景和用户需求挑战，AntV 经历多年积累与不断打磨，已支撑整个阿里集团内外 20000+ 业务系统，通过了日均千万级 UV 产品的严苛考验。
+我们正在基础图表，图分析，图编辑，地理空间可视化，智能可视化等各个可视化的领域耕耘，欢迎同路人一起前行。`;
+
+export default () => (
   <Typography>
     <Title>Introduction</Title>
     <Paragraph>
@@ -28,12 +31,13 @@ ReactDOM.render(
     </Paragraph>
     <Paragraph>
       After massive project practice and summaries, Ant Design, a design language for background
-      applications, is refined by Ant UED Team, which aims to
+      applications, is refined by Ant UED Team, which aims to{' '}
       <Text strong>
         uniform the user interface specs for internal background projects, lower the unnecessary
         cost of design differences and implementation and liberate the resources of design and
         front-end development
-      </Text>.
+      </Text>
+      .
     </Paragraph>
     <Title level={2}>Guidelines and Resources</Title>
     <Paragraph>
@@ -45,15 +49,19 @@ ReactDOM.render(
     <Paragraph>
       <ul>
         <li>
-          <a href="/docs/spec/proximity">Principles</a>
+          <Link href="/docs/spec/proximity">Principles</Link>
         </li>
         <li>
-          <a href="/docs/pattern/navigation">Patterns</a>
+          <Link href="/docs/spec/overview">Patterns</Link>
         </li>
         <li>
-          <a href="/docs/resource/download">Resource Download</a>
+          <Link href="/docs/resources">Resource Download</Link>
         </li>
       </ul>
+    </Paragraph>
+
+    <Paragraph>
+      Press <Text keyboard>Esc</Text> to exit...
     </Paragraph>
 
     <Divider />
@@ -77,17 +85,25 @@ ReactDOM.render(
     <Paragraph>
       <ul>
         <li>
-          <a href="/docs/spec/proximity">设计原则</a>
+          <Link href="/docs/spec/proximity-cn">设计原则</Link>
         </li>
         <li>
-          <a href="/docs/pattern/navigation">设计模式</a>
+          <Link href="/docs/spec/overview-cn">设计模式</Link>
         </li>
         <li>
-          <a href="/docs/resource/download">设计资源</a>
+          <Link href="/docs/resources-cn">设计资源</Link>
         </li>
       </ul>
     </Paragraph>
-  </Typography>,
-  mountNode,
+
+    <Paragraph>
+      <blockquote>{blockContent}</blockquote>
+      <pre>{blockContent}</pre>
+    </Paragraph>
+
+    <Paragraph>
+      按<Text keyboard>Esc</Text>键退出阅读……
+    </Paragraph>
+  </Typography>
 );
 ```

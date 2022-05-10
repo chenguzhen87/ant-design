@@ -4,6 +4,7 @@ import Card from '../index';
 import Button from '../../button/index';
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
+import { render } from '../../../tests/utils';
 
 describe('Card', () => {
   mountTest(Card);
@@ -52,10 +53,7 @@ describe('Card', () => {
         xxx
       </Card>,
     );
-    wrapper
-      .find('.ant-tabs-tab')
-      .at(1)
-      .simulate('click');
+    wrapper.find('.ant-tabs-tab').at(1).simulate('click');
     expect(onTabChange).toHaveBeenCalledWith('tab2');
   });
 
@@ -84,5 +82,17 @@ describe('Card', () => {
       </Card>,
     );
     expect(wrapper.find('Tabs').get(0).props.size).toBe('small');
+  });
+
+  it('get ref of card', () => {
+    const cardRef = React.createRef();
+
+    render(
+      <Card ref={cardRef} title="Card title">
+        <p>Card content</p>
+      </Card>,
+    );
+
+    expect(cardRef.current).toHaveClass('ant-card');
   });
 });

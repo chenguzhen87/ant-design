@@ -1,35 +1,29 @@
 @import '../../style/themes/index';
 @import '../../style/mixins/index';
 @import '../../input/style/mixin';
-@import './panel';
+@import './status';
 
 @picker-prefix-cls: ~'@{ant-prefix}-picker';
 
 .picker-padding(@input-height, @font-size, @padding-horizontal) {
   // font height probably 22.0001， So use floor better
   @font-height: floor(@font-size * @line-height-base) + 2;
-  @padding-top: max((@input-height - @font-height) / 2, 0);
+  @padding-top: max(((@input-height - @font-height) / 2), 0);
   @padding-bottom: max(@input-height - @font-height - @padding-top, 0);
   padding: @padding-top @padding-horizontal @padding-bottom;
 }
 
 .@{picker-prefix-cls} {
-  @vertical-fix-base: @input-height-base - ceil(@font-size-base * @line-height-base) - 2 *
-    @input-padding-vertical-base - 2 * @border-width-base;
-  @vertical-fix-lg: @input-height-lg - ceil(@font-size-lg * @line-height-base) - 2 *
-    @input-padding-vertical-lg - 2 * @border-width-base;
-  @vertical-fix-sm: @input-height-sm - ceil(@font-size-base * @line-height-base) - 2 *
-    @input-padding-vertical-sm - 2 * @border-width-base;
-  @arrow-size: 10px;
+  @arrow-size: @popover-arrow-width;
 
-  .reset-component;
+  .reset-component();
   .picker-padding(@input-height-base, @font-size-base, @input-padding-horizontal-base);
   position: relative;
   display: inline-flex;
   align-items: center;
   background: @picker-bg;
   border: @border-width-base @border-style-base @select-border-color;
-  border-radius: @border-radius-base;
+  border-radius: @control-border-radius;
   transition: border @animation-duration-slow, box-shadow @animation-duration-slow;
 
   &:hover,
@@ -61,6 +55,7 @@
   &-input {
     position: relative;
     display: inline-flex;
+    align-items: center;
     width: 100%;
 
     > input {
@@ -90,6 +85,12 @@
         opacity: 1;
       }
     }
+
+    &-placeholder {
+      > input {
+        color: @input-placeholder-color;
+      }
+    }
   }
 
   // Size
@@ -106,10 +107,21 @@
   }
 
   &-suffix {
+    display: flex;
+    flex: none;
     align-self: center;
-    margin-left: @padding-xs / 2;
+    margin-left: (@padding-xs / 2);
     color: @disabled-color;
+    line-height: 1;
     pointer-events: none;
+
+    > * {
+      vertical-align: top;
+
+      &:not(:last-child) {
+        margin-right: 8px;
+      }
+    }
   }
 
   &-clear {
@@ -117,11 +129,16 @@
     top: 50%;
     right: 0;
     color: @disabled-color;
+    line-height: 1;
     background: @component-background;
     transform: translateY(-50%);
     cursor: pointer;
     opacity: 0;
     transition: opacity @animation-duration-slow, color @animation-duration-slow;
+
+    > * {
+      vertical-align: top;
+    }
 
     &:hover {
       color: @text-color-secondary;
@@ -187,11 +204,21 @@
       padding: 0 @padding-xs;
       line-height: 1;
     }
+
+    &.@{picker-prefix-cls}-small {
+      .@{picker-prefix-cls}-clear {
+        right: @input-padding-horizontal-sm;
+      }
+
+      .@{picker-prefix-cls}-active-bar {
+        margin-left: @input-padding-horizontal-sm;
+      }
+    }
   }
 
   // ======================= Dropdown =======================
   &-dropdown {
-    .reset-component;
+    .reset-component();
     position: absolute;
     z-index: @zindex-picker;
 
@@ -201,18 +228,42 @@
 
     &-placement-bottomLeft {
       .@{picker-prefix-cls}-range-arrow {
-        top: @arrow-size / 2 - @arrow-size / 3;
+        top: (@arrow-size / 2) - (@arrow-size / 3) + 0.7px;
         display: block;
-        transform: rotate(-45deg);
+        transform: rotate(-135deg) translateY(1px);
       }
     }
 
     &-placement-topLeft {
       .@{picker-prefix-cls}-range-arrow {
-        bottom: @arrow-size / 2 - @arrow-size / 3;
+        bottom: (@arrow-size / 2) - (@arrow-size / 3) + 0.7px;
         display: block;
-        transform: rotate(135deg);
+        transform: rotate(45deg);
       }
+    }
+
+    &.@{ant-prefix}-slide-up-enter.@{ant-prefix}-slide-up-enter-active&-placement-topLeft,
+    &.@{ant-prefix}-slide-up-enter.@{ant-prefix}-slide-up-enter-active&-placement-topRight,
+    &.@{ant-prefix}-slide-up-appear.@{ant-prefix}-slide-up-appear-active&-placement-topLeft,
+    &.@{ant-prefix}-slide-up-appear.@{ant-prefix}-slide-up-appear-active&-placement-topRight {
+      animation-name: antSlideDownIn;
+    }
+
+    &.@{ant-prefix}-slide-up-enter.@{ant-prefix}-slide-up-enter-active&-placement-bottomLeft,
+    &.@{ant-prefix}-slide-up-enter.@{ant-prefix}-slide-up-enter-active&-placement-bottomRight,
+    &.@{ant-prefix}-slide-up-appear.@{ant-prefix}-slide-up-appear-active&-placement-bottomLeft,
+    &.@{ant-prefix}-slide-up-appear.@{ant-prefix}-slide-up-appear-active&-placement-bottomRight {
+      animation-name: antSlideUpIn;
+    }
+
+    &.@{ant-prefix}-slide-up-leave.@{ant-prefix}-slide-up-leave-active&-placement-topLeft,
+    &.@{ant-prefix}-slide-up-leave.@{ant-prefix}-slide-up-leave-active&-placement-topRight {
+      animation-name: antSlideDownOut;
+    }
+
+    &.@{ant-prefix}-slide-up-leave.@{ant-prefix}-slide-up-leave-active&-placement-bottomLeft,
+    &.@{ant-prefix}-slide-up-leave.@{ant-prefix}-slide-up-leave-active&-placement-bottomRight {
+      animation-name: antSlideUpOut;
     }
   }
 
@@ -226,15 +277,15 @@
 
   // Time picker with additional style
   &-dropdown &-panel > &-time-panel {
-    padding-top: @padding-xs / 2;
+    padding-top: (@padding-xs / 2);
   }
 
   // ======================== Ranges ========================
   &-ranges {
     margin-bottom: 0;
-    padding: @padding-xs / 2 @padding-sm;
+    padding: (@padding-xs / 2) @padding-sm;
     overflow: hidden;
-    line-height: @picker-text-height - 2 * @border-width-base - @padding-xs / 2;
+    line-height: @picker-text-height - 2 * @border-width-base - (@padding-xs / 2);
     text-align: left;
     list-style: none;
 
@@ -267,19 +318,14 @@
     width: @arrow-size;
     height: @arrow-size;
     margin-left: @input-padding-horizontal-base * 1.5;
-    box-shadow: 2px -2px 6px fade(@black, 6%);
+    background: linear-gradient(
+      135deg,
+      transparent 40%,
+      @calendar-bg 40%
+    ); // Use linear-gradient to prevent arrow from covering text
+    box-shadow: 2px 2px 6px -2px fade(@black, 10%); // use spread radius to hide shadow over popover
     transition: left @animation-duration-slow ease-out;
-
-    &::after {
-      position: absolute;
-      top: @border-width-base;
-      right: @border-width-base;
-      width: @arrow-size;
-      height: @arrow-size;
-      border: @arrow-size / 2 solid @border-color-split;
-      border-color: @calendar-bg @calendar-bg transparent transparent;
-      content: '';
-    }
+    .roundedArrow(@arrow-size, 5px, @calendar-bg);
   }
 
   &-panel-container {
@@ -302,6 +348,11 @@
       border-width: 0 0 @border-width-base 0;
       border-radius: 0;
 
+      .@{picker-prefix-cls}-content,
+      table {
+        text-align: center;
+      }
+
       &-focused {
         border-color: @border-color-split;
       }
@@ -309,4 +360,5 @@
   }
 }
 
+@import './panel';
 @import './rtl';

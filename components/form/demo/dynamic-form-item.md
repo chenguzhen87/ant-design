@@ -7,11 +7,11 @@ title:
 
 ## zh-CN
 
-动态增加、减少表单项。如果需要动态支持多项字段时，可以参考[此处](https://codesandbox.io/s/wonderful-lichterman-br63z)。
+动态增加、减少表单项。`add` 方法参数可用于设置初始值。
 
 ## en-US
 
-Add or remove form items dynamically. You can ref [this example](https://codesandbox.io/s/wonderful-lichterman-br63z) if you want to support mutiple fields.
+Add or remove form items dynamically. `add` function support config initial value.
 
 ```jsx
 import { Form, Input, Button } from 'antd';
@@ -41,58 +41,73 @@ const DynamicFieldSet = () => {
 
   return (
     <Form name="dynamic_form_item" {...formItemLayoutWithOutLabel} onFinish={onFinish}>
-      <Form.List name="names">
-        {(fields, { add, remove }) => {
-          return (
-            <div>
-              {fields.map((field, index) => (
+      <Form.List
+        name="names"
+        rules={[
+          {
+            validator: async (_, names) => {
+              if (!names || names.length < 2) {
+                return Promise.reject(new Error('At least 2 passengers'));
+              }
+            },
+          },
+        ]}
+      >
+        {(fields, { add, remove }, { errors }) => (
+          <>
+            {fields.map((field, index) => (
+              <Form.Item
+                {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
+                label={index === 0 ? 'Passengers' : ''}
+                required={false}
+                key={field.key}
+              >
                 <Form.Item
-                  {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-                  label={index === 0 ? 'Passengers' : ''}
-                  required={false}
-                  key={field.key}
+                  {...field}
+                  validateTrigger={['onChange', 'onBlur']}
+                  rules={[
+                    {
+                      required: true,
+                      whitespace: true,
+                      message: "Please input passenger's name or delete this field.",
+                    },
+                  ]}
+                  noStyle
                 >
-                  <Form.Item
-                    {...field}
-                    validateTrigger={['onChange', 'onBlur']}
-                    rules={[
-                      {
-                        required: true,
-                        whitespace: true,
-                        message: "Please input passenger's name or delete this field.",
-                      },
-                    ]}
-                    noStyle
-                  >
-                    <Input placeholder="passenger name" style={{ width: '60%' }} />
-                  </Form.Item>
-                  {fields.length > 1 ? (
-                    <MinusCircleOutlined
-                      className="dynamic-delete-button"
-                      style={{ margin: '0 8px' }}
-                      onClick={() => {
-                        remove(field.name);
-                      }}
-                    />
-                  ) : null}
+                  <Input placeholder="passenger name" style={{ width: '60%' }} />
                 </Form.Item>
-              ))}
-              <Form.Item>
-                <Button
-                  type="dashed"
-                  onClick={() => {
-                    add();
-                  }}
-                  style={{ width: '60%' }}
-                >
-                  <PlusOutlined /> Add field
-                </Button>
+                {fields.length > 1 ? (
+                  <MinusCircleOutlined
+                    className="dynamic-delete-button"
+                    onClick={() => remove(field.name)}
+                  />
+                ) : null}
               </Form.Item>
-            </div>
-          );
-        }}
+            ))}
+            <Form.Item>
+              <Button
+                type="dashed"
+                onClick={() => add()}
+                style={{ width: '60%' }}
+                icon={<PlusOutlined />}
+              >
+                Add field
+              </Button>
+              <Button
+                type="dashed"
+                onClick={() => {
+                  add('The head item', 0);
+                }}
+                style={{ width: '60%', marginTop: '20px' }}
+                icon={<PlusOutlined />}
+              >
+                Add field at head
+              </Button>
+              <Form.ErrorList errors={errors} />
+            </Form.Item>
+          </>
+        )}
       </Form.List>
-
       <Form.Item>
         <Button type="primary" htmlType="submit">
           Submit
@@ -102,16 +117,17 @@ const DynamicFieldSet = () => {
   );
 };
 
-ReactDOM.render(<DynamicFieldSet />, mountNode);
+export default () => <DynamicFieldSet />;
 ```
 
 ```css
 .dynamic-delete-button {
-  cursor: pointer;
   position: relative;
   top: 4px;
-  font-size: 24px;
+  margin: 0 8px;
   color: #999;
+  font-size: 24px;
+  cursor: pointer;
   transition: all 0.3s;
 }
 .dynamic-delete-button:hover {

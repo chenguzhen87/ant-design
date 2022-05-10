@@ -14,7 +14,7 @@ title:
 We preset five different colors, you can set color property such as `success`,`processing`,`error`,`default` and `warning` to indicate specific status.
 
 ```jsx
-import { Tag } from 'antd';
+import { Tag, Divider } from 'antd';
 import {
   CheckCircleOutlined,
   SyncOutlined,
@@ -24,19 +24,18 @@ import {
   MinusCircleOutlined,
 } from '@ant-design/icons';
 
-ReactDOM.render(
+export default () => (
   <>
+    <Divider orientation="left">Without icon</Divider>
     <div>
-      <h4>Without icon</h4>
       <Tag color="success">success</Tag>
       <Tag color="processing">processing</Tag>
       <Tag color="error">error</Tag>
       <Tag color="warning">warning</Tag>
       <Tag color="default">default</Tag>
     </div>
-
+    <Divider orientation="left">With icon</Divider>
     <div>
-      <h4>With icon</h4>
       <Tag icon={<CheckCircleOutlined />} color="success">
         success
       </Tag>
@@ -56,7 +55,6 @@ ReactDOM.render(
         stop
       </Tag>
     </div>
-  </>,
-  mountNode,
+  </>
 );
 ```

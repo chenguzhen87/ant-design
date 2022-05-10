@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { render } from '../../../tests/utils';
 import Transfer from '../index';
 
 describe('Transfer.Customize', () => {
@@ -13,11 +14,11 @@ describe('Transfer.Customize', () => {
     errorSpy.mockRestore();
   });
 
-  it('props#body doesnot work anymore', () => {
+  it('props#body does not work anymore', () => {
     const body = jest.fn();
-    mount(<Transfer body={body} />);
+    render(<Transfer body={body} />);
 
-    expect(errorSpy.mock.calls.length).toBe(0);
+    expect(errorSpy).not.toHaveBeenCalled();
     expect(body).not.toHaveBeenCalled();
   });
 
@@ -48,5 +49,17 @@ describe('Transfer.Customize', () => {
         </Transfer>,
       );
     });
+  });
+
+  it('warning if use `pagination`', () => {
+    mount(
+      <Transfer dataSource={[]} pagination>
+        {() => null}
+      </Transfer>,
+    );
+
+    expect(errorSpy).toHaveBeenCalledWith(
+      'Warning: [antd: Transfer] `pagination` not support customize render list.',
+    );
   });
 });

@@ -20,9 +20,9 @@ import { MessageOutlined, LikeOutlined, StarOutlined } from '@ant-design/icons';
 const listData = [];
 for (let i = 0; i < 23; i++) {
   listData.push({
-    href: 'http://ant.design',
+    href: 'https://ant.design',
     title: `ant design part ${i}`,
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+    avatar: 'https://joeschmoe.io/api/v1/random',
     description:
       'Ant Design, a design language for background applications, is refined by Ant UED Team.',
     content:
@@ -37,7 +37,7 @@ const IconText = ({ icon, text }) => (
   </Space>
 );
 
-ReactDOM.render(
+export default () => (
   <List
     itemLayout="vertical"
     size="large"
@@ -77,7 +77,6 @@ ReactDOM.render(
         {item.content}
       </List.Item>
     )}
-  />,
-  mountNode,
+  />
 );
 ```

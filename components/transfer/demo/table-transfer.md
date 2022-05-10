@@ -19,7 +19,7 @@ import difference from 'lodash/difference';
 
 // Customize Table Transfer
 const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
-  <Transfer {...restProps} showSelectAll={false}>
+  <Transfer {...restProps}>
     {({
       direction,
       filteredItems,
@@ -125,7 +125,7 @@ class App extends React.Component {
   render() {
     const { targetKeys, disabled, showSearch } = this.state;
     return (
-      <div>
+      <>
         <TableTransfer
           dataSource={mockData}
           targetKeys={targetKeys}
@@ -152,12 +152,12 @@ class App extends React.Component {
           onChange={this.triggerShowSearch}
           style={{ marginTop: 16 }}
         />
-      </div>
+      </>
     );
   }
 }
 
-ReactDOM.render(<App />, mountNode);
+export default App;
 ```
 
 ```css

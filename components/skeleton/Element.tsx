@@ -4,7 +4,7 @@ import classNames from 'classnames';
 export interface SkeletonElementProps {
   prefixCls?: string;
   className?: string;
-  style?: object;
+  style?: React.CSSProperties;
   size?: 'large' | 'small' | 'default' | number;
   shape?: 'circle' | 'square' | 'round';
   active?: boolean;
@@ -27,18 +27,18 @@ const Element = (props: SkeletonElementProps) => {
   const sizeStyle: React.CSSProperties =
     typeof size === 'number'
       ? {
-        width: size,
-        height: size,
-        lineHeight: `${size}px`,
-      }
+          width: size,
+          height: size,
+          lineHeight: `${size}px`,
+        }
       : {};
+
   return (
     <span
-      className={classNames(prefixCls, className, sizeCls, shapeCls)}
+      className={classNames(prefixCls, sizeCls, shapeCls, className)}
       style={{ ...sizeStyle, ...style }}
     />
   );
 };
-
 
 export default Element;

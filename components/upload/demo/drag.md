@@ -38,9 +38,12 @@ const props = {
       message.error(`${info.file.name} file upload failed.`);
     }
   },
+  onDrop(e) {
+    console.log('Dropped files', e.dataTransfer.files);
+  },
 };
 
-ReactDOM.render(
+export default () => (
   <Dragger {...props}>
     <p className="ant-upload-drag-icon">
       <InboxOutlined />
@@ -50,7 +53,6 @@ ReactDOM.render(
       Support for a single or bulk upload. Strictly prohibit from uploading company data or other
       band files
     </p>
-  </Dragger>,
-  mountNode,
+  </Dragger>
 );
 ```

@@ -53,7 +53,9 @@ class EditableTagGroup extends React.Component {
     });
   };
 
-  saveInputRef = input => (this.input = input);
+  saveInputRef = input => {
+    this.input = input;
+  };
 
   forMap = tag => {
     const tagElem = (
@@ -78,7 +80,7 @@ class EditableTagGroup extends React.Component {
     const { tags, inputVisible, inputValue } = this.state;
     const tagChild = tags.map(this.forMap);
     return (
-      <div>
+      <>
         <div style={{ marginBottom: 16 }}>
           <TweenOneGroup
             enter={{
@@ -86,9 +88,11 @@ class EditableTagGroup extends React.Component {
               opacity: 0,
               type: 'from',
               duration: 100,
-              onComplete: e => {
-                e.target.style = '';
-              },
+            }}
+            onEnd={e => {
+              if (e.type === 'appear' || e.type === 'enter') {
+                e.target.style = 'display: inline-block';
+              }
             }}
             leave={{ opacity: 0, width: 0, scale: 0, duration: 200 }}
             appear={false}
@@ -113,12 +117,12 @@ class EditableTagGroup extends React.Component {
             <PlusOutlined /> New Tag
           </Tag>
         )}
-      </div>
+      </>
     );
   }
 }
 
-ReactDOM.render(<EditableTagGroup />, mountNode);
+export default () => <EditableTagGroup />;
 ```
 
 ```css

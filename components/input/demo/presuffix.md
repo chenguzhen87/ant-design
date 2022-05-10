@@ -11,13 +11,13 @@ title:
 
 ## en-US
 
-Add prefix or suffix icons inside input.
+Add a prefix or suffix icons inside input.
 
 ```jsx
 import { Input, Tooltip } from 'antd';
 import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
 
-ReactDOM.render(
+export default () => (
   <>
     <Input
       placeholder="Enter your username"
@@ -34,7 +34,6 @@ ReactDOM.render(
     <br />
     <br />
     <Input prefix="￥" suffix="RMB" disabled />
-  </>,
-  mountNode,
+  </>
 );
 ```

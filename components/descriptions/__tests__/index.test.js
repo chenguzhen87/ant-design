@@ -3,7 +3,7 @@ import MockDate from 'mockdate';
 import { mount } from 'enzyme';
 import Descriptions from '..';
 import mountTest from '../../../tests/shared/mountTest';
-import { resetWarned } from '../../_util/warning';
+import { resetWarned } from '../../_util/devWarning';
 
 describe('Descriptions', () => {
   mountTest(Descriptions);
@@ -226,5 +226,27 @@ describe('Descriptions', () => {
 
     expect(wrapper.find('th').hasClass('ant-descriptions-item-label')).toBeTruthy();
     expect(wrapper.find('td').hasClass('ant-descriptions-item-content')).toBeTruthy();
+  });
+
+  it('Descriptions support extra', () => {
+    const wrapper = mount(
+      <Descriptions extra="Edit">
+        <Descriptions.Item label="UserName">Zhou Maomao</Descriptions.Item>
+      </Descriptions>,
+    );
+    expect(wrapper.find('.ant-descriptions-extra').exists()).toBe(true);
+    wrapper.setProps({ extra: undefined });
+    expect(wrapper.find('.ant-descriptions-extra').exists()).toBe(false);
+  });
+
+  it('number 0 should render correct', () => {
+    const wrapper = mount(
+      <Descriptions>
+        <Descriptions.Item label={0} labelStyle={{ color: 'red' }} contentStyle={{ color: 'red' }}>
+          {0}
+        </Descriptions.Item>
+      </Descriptions>,
+    );
+    expect(wrapper.render()).toMatchSnapshot();
   });
 });

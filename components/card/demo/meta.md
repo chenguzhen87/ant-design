@@ -19,7 +19,7 @@ import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/ico
 
 const { Meta } = Card;
 
-ReactDOM.render(
+export default () => (
   <Card
     style={{ width: 300 }}
     cover={
@@ -35,11 +35,10 @@ ReactDOM.render(
     ]}
   >
     <Meta
-      avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+      avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
       title="Card title"
       description="This is the description"
     />
-  </Card>,
-  mountNode,
+  </Card>
 );
 ```

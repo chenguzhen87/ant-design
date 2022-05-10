@@ -1,80 +1,188 @@
-import * as React from 'react';
-import classNames from 'classnames';
-import RcInputNumber from 'rc-input-number';
-import UpOutlined from '@ant-design/icons/UpOutlined';
 import DownOutlined from '@ant-design/icons/DownOutlined';
+import UpOutlined from '@ant-design/icons/UpOutlined';
+import classNames from 'classnames';
+import type { InputNumberProps as RcInputNumberProps } from 'rc-input-number';
+import RcInputNumber from 'rc-input-number';
+import * as React from 'react';
+import { useContext } from 'react';
+import { ConfigContext } from '../config-provider';
+import type { SizeType } from '../config-provider/SizeContext';
+import SizeContext from '../config-provider/SizeContext';
+import { FormItemInputContext, NoFormStatus } from '../form/context';
+import { cloneElement } from '../_util/reactNode';
+import type { InputStatus } from '../_util/statusUtils';
+import { getStatusClassNames, getMergedStatus } from '../_util/statusUtils';
 
-import { ConfigConsumer, ConfigConsumerProps } from '../config-provider';
-import { Omit } from '../_util/type';
-import SizeContext, { SizeType } from '../config-provider/SizeContext';
+type ValueType = string | number;
 
-// omitting this attrs because they conflicts with the ones defined in InputNumberProps
-export type OmitAttrs = 'defaultValue' | 'onChange' | 'size';
-
-export interface InputNumberProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, OmitAttrs> {
+export interface InputNumberProps<T extends ValueType = ValueType>
+  extends Omit<RcInputNumberProps<T>, 'prefix' | 'size' | 'controls'> {
   prefixCls?: string;
-  min?: number;
-  max?: number;
-  value?: number;
-  step?: number | string;
-  defaultValue?: number;
-  tabIndex?: number;
-  onChange?: (value: number | string | undefined) => void;
-  disabled?: boolean;
+  addonBefore?: React.ReactNode;
+  addonAfter?: React.ReactNode;
+  prefix?: React.ReactNode;
   size?: SizeType;
-  formatter?: (value: number | string | undefined) => string;
-  parser?: (displayValue: string | undefined) => number | string;
-  decimalSeparator?: string;
-  placeholder?: string;
-  style?: React.CSSProperties;
-  className?: string;
-  name?: string;
-  id?: string;
-  precision?: number;
-  onPressEnter?: React.KeyboardEventHandler<HTMLInputElement>;
+  bordered?: boolean;
+  status?: InputStatus;
+  controls?: boolean | { upIcon?: React.ReactNode; downIcon?: React.ReactNode };
 }
 
-const InputNumber = React.forwardRef<unknown, InputNumberProps>((props, ref) => {
-  const renderInputNumber = ({ getPrefixCls, direction }: ConfigConsumerProps) => {
-    const { className, size: customizeSize, prefixCls: customizePrefixCls, ...others } = props;
-    const prefixCls = getPrefixCls('input-number', customizePrefixCls);
-    const upIcon = <UpOutlined className={`${prefixCls}-handler-up-inner`} />;
-    const downIcon = <DownOutlined className={`${prefixCls}-handler-down-inner`} />;
+const InputNumber = React.forwardRef<HTMLInputElement, InputNumberProps>((props, ref) => {
+  const { getPrefixCls, direction } = React.useContext(ConfigContext);
+  const size = React.useContext(SizeContext);
+  const [focused, setFocus] = React.useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
-    return (
-      <SizeContext.Consumer>
-        {size => {
-          const mergeSize = customizeSize || size;
-          const inputNumberClass = classNames(
-            {
-              [`${prefixCls}-lg`]: mergeSize === 'large',
-              [`${prefixCls}-sm`]: mergeSize === 'small',
-              [`${prefixCls}-rtl`]: direction === 'rtl',
-            },
-            className,
-          );
+  React.useImperativeHandle(ref, () => inputRef.current!);
 
-          return (
-            <RcInputNumber
-              ref={ref}
-              className={inputNumberClass}
-              upHandler={upIcon}
-              downHandler={downIcon}
-              prefixCls={prefixCls}
-              {...others}
-            />
-          );
-        }}
-      </SizeContext.Consumer>
+  const {
+    className,
+    size: customizeSize,
+    prefixCls: customizePrefixCls,
+    addonBefore,
+    addonAfter,
+    prefix,
+    bordered = true,
+    readOnly,
+    status: customStatus,
+    controls,
+    ...others
+  } = props;
+
+  const prefixCls = getPrefixCls('input-number', customizePrefixCls);
+  let upIcon = <UpOutlined className={`${prefixCls}-handler-up-inner`} />;
+  let downIcon = <DownOutlined className={`${prefixCls}-handler-down-inner`} />;
+  const controlsTemp = typeof controls === 'boolean' ? controls : undefined;
+
+  if (typeof controls === 'object') {
+    upIcon =
+      typeof controls.upIcon === 'undefined' ? (
+        upIcon
+      ) : (
+        <span className={`${prefixCls}-handler-up-inner`}>{controls.upIcon}</span>
+      );
+    downIcon =
+      typeof controls.downIcon === 'undefined' ? (
+        downIcon
+      ) : (
+        <span className={`${prefixCls}-handler-down-inner`}>{controls.downIcon}</span>
+      );
+  }
+
+  const {
+    hasFeedback,
+    status: contextStatus,
+    isFormItemInput,
+    feedbackIcon,
+  } = useContext(FormItemInputContext);
+  const mergedStatus = getMergedStatus(contextStatus, customStatus);
+
+  const mergeSize = customizeSize || size;
+  const inputNumberClass = classNames(
+    {
+      [`${prefixCls}-lg`]: mergeSize === 'large',
+      [`${prefixCls}-sm`]: mergeSize === 'small',
+      [`${prefixCls}-rtl`]: direction === 'rtl',
+      [`${prefixCls}-readonly`]: readOnly,
+      [`${prefixCls}-borderless`]: !bordered,
+      [`${prefixCls}-in-form-item`]: isFormItemInput,
+    },
+    getStatusClassNames(prefixCls, mergedStatus),
+    className,
+  );
+
+  let element = (
+    <RcInputNumber
+      ref={inputRef}
+      className={inputNumberClass}
+      upHandler={upIcon}
+      downHandler={downIcon}
+      prefixCls={prefixCls}
+      readOnly={readOnly}
+      controls={controlsTemp}
+      {...others}
+    />
+  );
+
+  if (prefix != null || hasFeedback) {
+    const affixWrapperCls = classNames(
+      `${prefixCls}-affix-wrapper`,
+      getStatusClassNames(`${prefixCls}-affix-wrapper`, mergedStatus, hasFeedback),
+      {
+        [`${prefixCls}-affix-wrapper-focused`]: focused,
+        [`${prefixCls}-affix-wrapper-disabled`]: props.disabled,
+        [`${prefixCls}-affix-wrapper-sm`]: size === 'small',
+        [`${prefixCls}-affix-wrapper-lg`]: size === 'large',
+        [`${prefixCls}-affix-wrapper-rtl`]: direction === 'rtl',
+        [`${prefixCls}-affix-wrapper-readonly`]: readOnly,
+        [`${prefixCls}-affix-wrapper-borderless`]: !bordered,
+        // className will go to addon wrapper
+        [`${className}`]: !(addonBefore || addonAfter) && className,
+      },
     );
-  };
 
-  return <ConfigConsumer>{renderInputNumber}</ConfigConsumer>;
+    element = (
+      <div
+        className={affixWrapperCls}
+        style={props.style}
+        onMouseUp={() => inputRef.current!.focus()}
+      >
+        {prefix && <span className={`${prefixCls}-prefix`}>{prefix}</span>}
+        {cloneElement(element, {
+          style: null,
+          value: props.value,
+          onFocus: (event: React.FocusEvent<HTMLInputElement>) => {
+            setFocus(true);
+            props.onFocus?.(event);
+          },
+          onBlur: (event: React.FocusEvent<HTMLInputElement>) => {
+            setFocus(false);
+            props.onBlur?.(event);
+          },
+        })}
+        {hasFeedback && <span className={`${prefixCls}-suffix`}>{feedbackIcon}</span>}
+      </div>
+    );
+  }
+
+  if (addonBefore != null || addonAfter != null) {
+    const wrapperClassName = `${prefixCls}-group`;
+    const addonClassName = `${wrapperClassName}-addon`;
+    const addonBeforeNode = addonBefore ? (
+      <div className={addonClassName}>{addonBefore}</div>
+    ) : null;
+    const addonAfterNode = addonAfter ? <div className={addonClassName}>{addonAfter}</div> : null;
+
+    const mergedWrapperClassName = classNames(`${prefixCls}-wrapper`, wrapperClassName, {
+      [`${wrapperClassName}-rtl`]: direction === 'rtl',
+    });
+
+    const mergedGroupClassName = classNames(
+      `${prefixCls}-group-wrapper`,
+      {
+        [`${prefixCls}-group-wrapper-sm`]: size === 'small',
+        [`${prefixCls}-group-wrapper-lg`]: size === 'large',
+        [`${prefixCls}-group-wrapper-rtl`]: direction === 'rtl',
+      },
+      getStatusClassNames(`${prefixCls}-group-wrapper`, mergedStatus, hasFeedback),
+      className,
+    );
+    element = (
+      <div className={mergedGroupClassName} style={props.style}>
+        <div className={mergedWrapperClassName}>
+          {addonBeforeNode && <NoFormStatus>{addonBeforeNode}</NoFormStatus>}
+          {cloneElement(element, { style: null })}
+          {addonAfterNode && <NoFormStatus>{addonAfterNode}</NoFormStatus>}
+        </div>
+      </div>
+    );
+  }
+
+  return element;
 });
 
-InputNumber.defaultProps = {
-  step: 1,
-};
-
-export default InputNumber;
+export default InputNumber as (<T extends ValueType = ValueType>(
+  props: React.PropsWithChildren<InputNumberProps<T>> & {
+    ref?: React.Ref<HTMLInputElement>;
+  },
+) => React.ReactElement) & { displayName?: string };

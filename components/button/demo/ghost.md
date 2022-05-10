@@ -16,26 +16,25 @@ title:
 ```jsx
 import { Button } from 'antd';
 
-ReactDOM.render(
+export default () => (
   <div className="site-button-ghost-wrapper">
     <Button type="primary" ghost>
       Primary
     </Button>
     <Button ghost>Default</Button>
     <Button type="dashed" ghost>
-      link
+      Dashed
     </Button>
-    <Button type="link" ghost>
-      link
+    <Button type="primary" danger ghost>
+      Danger
     </Button>
-  </div>,
-  mountNode,
+  </div>
 );
 ```
 
 ```css
 .site-button-ghost-wrapper {
-  background: rgb(190, 200, 200);
   padding: 26px 16px 16px;
+  background: rgb(190, 200, 200);
 }
 ```

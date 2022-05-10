@@ -23,7 +23,7 @@ class Demo extends React.Component {
 
   render() {
     return (
-      <div>
+      <>
         <Tag
           closable
           visible={this.state.visible}
@@ -35,10 +35,10 @@ class Demo extends React.Component {
         <Button size="small" onClick={() => this.setState({ visible: !this.state.visible })}>
           Toggle
         </Button>
-      </div>
+      </>
     );
   }
 }
 
-ReactDOM.render(<Demo />, mountNode);
+export default Demo;
 ```

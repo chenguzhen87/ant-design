@@ -1,12 +1,12 @@
 /* eslint-disable import/prefer-default-export */
-import { ColumnType, ColumnTitle, ColumnTitleProps, Key } from './interface';
+import type { ColumnType, ColumnTitle, ColumnTitleProps, Key } from './interface';
 
 export function getColumnKey<RecordType>(column: ColumnType<RecordType>, defaultKey: string): Key {
   if ('key' in column && column.key !== undefined && column.key !== null) {
     return column.key;
   }
   if (column.dataIndex) {
-    return Array.isArray(column.dataIndex) ? column.dataIndex.join('.') : column.dataIndex;
+    return (Array.isArray(column.dataIndex) ? column.dataIndex.join('.') : column.dataIndex) as Key;
   }
 
   return defaultKey;

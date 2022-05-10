@@ -1,142 +1,137 @@
 import * as React from 'react';
-import Animate from 'rc-animate';
+import CSSMotion from 'rc-motion';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
+import useMergedState from 'rc-util/lib/hooks/useMergedState';
 import classNames from 'classnames';
-import omit from 'omit.js';
-import { throttleByAnimationFrameDecorator } from '../_util/throttleByAnimationFrame';
-import { ConfigConsumer, ConfigConsumerProps } from '../config-provider';
+import omit from 'rc-util/lib/omit';
+import VerticalAlignTopOutlined from '@ant-design/icons/VerticalAlignTopOutlined';
+import { throttleByAnimationFrame } from '../_util/throttleByAnimationFrame';
+import { ConfigContext } from '../config-provider';
 import getScroll from '../_util/getScroll';
 import scrollTo from '../_util/scrollTo';
+import { cloneElement } from '../_util/reactNode';
 
 export interface BackTopProps {
   visibilityHeight?: number;
   onClick?: React.MouseEventHandler<HTMLElement>;
   target?: () => HTMLElement | Window | Document;
   prefixCls?: string;
+  children?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
+  duration?: number;
   visible?: boolean; // Only for test. Don't use it.
 }
 
-export default class BackTop extends React.Component<BackTopProps, any> {
-  static defaultProps = {
-    visibilityHeight: 400,
-  };
+const BackTop: React.FC<BackTopProps> = props => {
+  const [visible, setVisible] = useMergedState(false, {
+    value: props.visible,
+  });
 
-  state = {
-    visible: false,
-  };
+  const ref = React.createRef<HTMLDivElement>();
+  const scrollEvent = React.useRef<any>();
 
-  scrollEvent: any;
+  const getDefaultTarget = () =>
+    ref.current && ref.current.ownerDocument ? ref.current.ownerDocument : window;
 
-  node: HTMLDivElement;
+  const handleScroll = throttleByAnimationFrame(
+    (e: React.UIEvent<HTMLElement> | { target: any }) => {
+      const { visibilityHeight } = props;
+      const scrollTop = getScroll(e.target, true);
+      setVisible(scrollTop > visibilityHeight!);
+    },
+  );
 
-  componentDidMount() {
-    this.bindScrollEvent();
-  }
-
-  componentDidUpdate(prevProps: BackTopProps) {
-    const { target } = this.props;
-    if (prevProps.target !== target) {
-      this.bindScrollEvent();
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.scrollEvent) {
-      this.scrollEvent.remove();
-    }
-    (this.handleScroll as any).cancel();
-  }
-
-  bindScrollEvent() {
-    if (this.scrollEvent) {
-      this.scrollEvent.remove();
-    }
-    const { target } = this.props;
-    const getTarget = target || this.getDefaultTarget;
+  const bindScrollEvent = () => {
+    const { target } = props;
+    const getTarget = target || getDefaultTarget;
     const container = getTarget();
-    this.scrollEvent = addEventListener(container, 'scroll', (e: React.UIEvent<HTMLElement>) => {
-      this.handleScroll(e);
+    scrollEvent.current = addEventListener(container, 'scroll', (e: React.UIEvent<HTMLElement>) => {
+      handleScroll(e);
     });
-    this.handleScroll({
+    handleScroll({
       target: container,
     });
-  }
-
-  getVisible() {
-    if ('visible' in this.props) {
-      return this.props.visible;
-    }
-    return this.state.visible;
-  }
-
-  getDefaultTarget = () => {
-    return this.node && this.node.ownerDocument ? this.node.ownerDocument : window;
   };
 
-  saveDivRef = (node: HTMLDivElement) => {
-    this.node = node;
-  };
+  React.useEffect(() => {
+    bindScrollEvent();
+    return () => {
+      if (scrollEvent.current) {
+        scrollEvent.current.remove();
+      }
+      (handleScroll as any).cancel();
+    };
+  }, [props.target]);
 
-  scrollToTop = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { onClick, target } = this.props;
+  const scrollToTop = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { onClick, target, duration = 450 } = props;
     scrollTo(0, {
-      getContainer: target || this.getDefaultTarget,
+      getContainer: target || getDefaultTarget,
+      duration,
     });
     if (typeof onClick === 'function') {
       onClick(e);
     }
   };
 
-  @throttleByAnimationFrameDecorator()
-  handleScroll(e: React.UIEvent<HTMLElement> | { target: any }) {
-    const { visibilityHeight = 0 } = this.props;
-    const scrollTop = getScroll(e.target, true);
-    this.setState({
-      visible: scrollTop > visibilityHeight,
-    });
-  }
-
-  renderChildren({ prefixCls }: { prefixCls: string }) {
-    const { children } = this.props;
+  const renderChildren = ({
+    prefixCls,
+    rootPrefixCls,
+  }: {
+    prefixCls: string;
+    rootPrefixCls: string;
+  }) => {
+    const { children } = props;
     const defaultElement = (
       <div className={`${prefixCls}-content`}>
-        <div className={`${prefixCls}-icon`} />
+        <div className={`${prefixCls}-icon`}>
+          <VerticalAlignTopOutlined />
+        </div>
       </div>
     );
     return (
-      <Animate component="" transitionName="fade">
-        {this.getVisible() ? <div>{children || defaultElement}</div> : null}
-      </Animate>
-    );
-  }
-
-  renderBackTop = ({ getPrefixCls, direction }: ConfigConsumerProps) => {
-    const { prefixCls: customizePrefixCls, className = '' } = this.props;
-    const prefixCls = getPrefixCls('back-top', customizePrefixCls);
-    const classString = classNames(prefixCls, className, {
-      [`${prefixCls}-rtl`]: direction === 'rtl',
-    });
-
-    // fix https://fb.me/react-unknown-prop
-    const divProps = omit(this.props, [
-      'prefixCls',
-      'className',
-      'children',
-      'visibilityHeight',
-      'target',
-      'visible',
-    ]);
-
-    return (
-      <div {...divProps} className={classString} onClick={this.scrollToTop} ref={this.saveDivRef}>
-        {this.renderChildren({ prefixCls })}
-      </div>
+      <CSSMotion visible={visible} motionName={`${rootPrefixCls}-fade`}>
+        {({ className: motionClassName }) =>
+          cloneElement(children || defaultElement, ({ className }) => ({
+            className: classNames(motionClassName, className),
+          }))
+        }
+      </CSSMotion>
     );
   };
 
-  render() {
-    return <ConfigConsumer>{this.renderBackTop}</ConfigConsumer>;
-  }
-}
+  const { getPrefixCls, direction } = React.useContext(ConfigContext);
+  const { prefixCls: customizePrefixCls, className = '' } = props;
+  const prefixCls = getPrefixCls('back-top', customizePrefixCls);
+  const rootPrefixCls = getPrefixCls();
+  const classString = classNames(
+    prefixCls,
+    {
+      [`${prefixCls}-rtl`]: direction === 'rtl',
+    },
+    className,
+  );
+
+  // fix https://fb.me/react-unknown-prop
+  const divProps = omit(props, [
+    'prefixCls',
+    'className',
+    'children',
+    'visibilityHeight',
+    'target',
+    'visible',
+  ]);
+
+  return (
+    <div {...divProps} className={classString} onClick={scrollToTop} ref={ref}>
+      {renderChildren({ prefixCls, rootPrefixCls })}
+    </div>
+  );
+};
+
+BackTop.defaultProps = {
+  visibilityHeight: 400,
+};
+
+export default React.memo(BackTop);

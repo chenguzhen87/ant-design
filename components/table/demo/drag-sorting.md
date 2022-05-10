@@ -7,22 +7,23 @@ title:
 
 ## zh-CN
 
-使用自定义元素，我们可以集成 react-dnd 来实现拖拽排序。
+使用自定义元素，我们可以集成 [react-dnd](https://github.com/react-dnd/react-dnd) 来实现拖拽排序。
 
 ## en-US
 
-By using custom components, we can integrate table with react-dnd to implement drag sorting.
+By using `components`, we can integrate table with [react-dnd](https://github.com/react-dnd/react-dnd) to implement drag sorting function.
 
 ```jsx
+import React, { useState, useCallback, useRef } from 'react';
 import { Table } from 'antd';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 
-const type = 'DragableBodyRow';
+const type = 'DraggableBodyRow';
 
-const DragableBodyRow = ({ index, moveRow, className, style, ...restProps }) => {
-  const ref = React.useRef();
+const DraggableBodyRow = ({ index, moveRow, className, style, ...restProps }) => {
+  const ref = useRef();
   const [{ isOver, dropClassName }, drop] = useDrop({
     accept: type,
     collect: monitor => {
@@ -40,12 +41,14 @@ const DragableBodyRow = ({ index, moveRow, className, style, ...restProps }) => 
     },
   });
   const [, drag] = useDrag({
-    item: { type, index },
+    type,
+    item: { index },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),
   });
   drop(drag(ref));
+
   return (
     <tr
       ref={ref}
@@ -74,70 +77,65 @@ const columns = [
   },
 ];
 
-class DragSortingTable extends React.Component {
-  state = {
-    data: [
-      {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-      },
-      {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-      },
-      {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-      },
-    ],
-  };
+const DragSortingTable: React.FC = () => {
+  const [data, setData] = useState([
+    {
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
+    },
+    {
+      key: '3',
+      name: 'Joe Black',
+      age: 32,
+      address: 'Sidney No. 1 Lake Park',
+    },
+  ]);
 
-  components = {
+  const components = {
     body: {
-      row: DragableBodyRow,
+      row: DraggableBodyRow,
     },
   };
 
-  moveRow = (dragIndex, hoverIndex) => {
-    const { data } = this.state;
-    const dragRow = data[dragIndex];
-
-    this.setState(
-      update(this.state, {
-        data: {
+  const moveRow = useCallback(
+    (dragIndex, hoverIndex) => {
+      const dragRow = data[dragIndex];
+      setData(
+        update(data, {
           $splice: [
             [dragIndex, 1],
             [hoverIndex, 0, dragRow],
           ],
-        },
-      }),
-    );
-  };
+        }),
+      );
+    },
+    [data],
+  );
 
-  render() {
-    return (
-      <DndProvider backend={HTML5Backend}>
-        <Table
-          columns={columns}
-          dataSource={this.state.data}
-          components={this.components}
-          onRow={(record, index) => ({
-            index,
-            moveRow: this.moveRow,
-          })}
-        />
-      </DndProvider>
-    );
-  }
-}
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <Table
+        columns={columns}
+        dataSource={data}
+        components={components}
+        onRow={(record, index) => ({
+          index,
+          moveRow,
+        })}
+      />
+    </DndProvider>
+  );
+};
 
-ReactDOM.render(<DragSortingTable />, mountNode);
+export default () => <DragSortingTable />;
 ```
 
 ```css

@@ -28,7 +28,7 @@ const text = `
   it can be found as a welcome guest in many households across the world.
 `;
 
-ReactDOM.render(
+export default () => (
   <Collapse defaultActiveKey={['1']} onChange={callback}>
     <Panel header="This is panel header 1" key="1">
       <p>{text}</p>
@@ -36,11 +36,10 @@ ReactDOM.render(
     <Panel header="This is panel header 2" key="2">
       <p>{text}</p>
     </Panel>
-    <Panel header="This is panel header 3" key="3" disabled>
+    <Panel header="This is panel header 3" key="3">
       <p>{text}</p>
     </Panel>
-  </Collapse>,
-  mountNode,
+  </Collapse>
 );
 ```
 

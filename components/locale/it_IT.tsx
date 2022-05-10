@@ -2,7 +2,7 @@ import Pagination from 'rc-pagination/lib/locale/it_IT';
 import DatePicker from '../date-picker/locale/it_IT';
 import TimePicker from '../time-picker/locale/it_IT';
 import Calendar from '../calendar/locale/it_IT';
-import { Locale } from '../locale-provider';
+import type { Locale } from '../locale-provider';
 
 const localeValues: Locale = {
   locale: 'it',
@@ -17,9 +17,14 @@ const localeValues: Locale = {
     filterTitle: 'Menù Filtro',
     filterConfirm: 'OK',
     filterReset: 'Reset',
+    selectNone: 'Deseleziona tutto',
+    selectionAll: 'Seleziona tutto',
     selectAll: 'Seleziona pagina corrente',
     selectInvert: 'Inverti selezione nella pagina corrente',
     sortTitle: 'Ordina',
+    triggerDesc: 'Clicca per ordinare in modo discendente',
+    triggerAsc: '﻿Clicca per ordinare in modo ascendente',
+    cancelSort: 'Clicca per eliminare i filtri',
   },
   Modal: {
     okText: 'OK',

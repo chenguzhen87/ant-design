@@ -14,15 +14,10 @@ title:
 Showing more detailed info of every row.
 
 ```jsx
-import { Table, Badge, Menu, Dropdown } from 'antd';
+import { Table, Badge, Menu, Dropdown, Space } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
-const menu = (
-  <Menu>
-    <Menu.Item>Action 1</Menu.Item>
-    <Menu.Item>Action 2</Menu.Item>
-  </Menu>
-);
+const menu = <Menu items={[{ label: 'Action 1' }, { label: 'Action 2' }]} />;
 
 function NestedTable() {
   const expandedRowRender = () => {
@@ -45,7 +40,7 @@ function NestedTable() {
         dataIndex: 'operation',
         key: 'operation',
         render: () => (
-          <span className="table-operation">
+          <Space size="middle">
             <a>Pause</a>
             <a>Stop</a>
             <Dropdown overlay={menu}>
@@ -53,7 +48,7 @@ function NestedTable() {
                 More <DownOutlined />
               </a>
             </Dropdown>
-          </span>
+          </Space>
         ),
       },
     ];
@@ -103,5 +98,5 @@ function NestedTable() {
   );
 }
 
-ReactDOM.render(<NestedTable />, mountNode);
+export default () => <NestedTable />;
 ```

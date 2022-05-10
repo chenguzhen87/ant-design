@@ -21,17 +21,16 @@ const openNotification = () => {
     message: 'Notification Title',
     description:
       'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+    className: 'custom-class',
     style: {
       width: 600,
-      marginLeft: 335 - 600,
     },
   });
 };
 
-ReactDOM.render(
+export default () => (
   <Button type="primary" onClick={openNotification}>
     Open the notification box
-  </Button>,
-  mountNode,
+  </Button>
 );
 ```

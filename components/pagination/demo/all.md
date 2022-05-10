@@ -16,15 +16,12 @@ Show all configured prop.
 ```jsx
 import { Pagination } from 'antd';
 
-ReactDOM.render(
-  <div>
-    <Pagination
-      total={85}
-      showSizeChanger
-      showQuickJumper
-      showTotal={total => `Total ${total} items`}
-    />
-  </div>,
-  mountNode,
+export default () => (
+  <Pagination
+    total={85}
+    showSizeChanger
+    showQuickJumper
+    showTotal={total => `Total ${total} items`}
+  />
 );
 ```

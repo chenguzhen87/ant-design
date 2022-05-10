@@ -9,20 +9,18 @@ title:
 
 布局基础。
 
-子元素根据不同的值 `start`,`center`,`end`,`space-between`,`space-around`，分别定义其在父节点里面的排版方式。
+子元素根据不同的值 `start`、`center`、`end`、`space-between`、`space-around` 和 `space-evenly`，分别定义其在父节点里面的排版方式。
 
 ## en-US
 
-Child elements depending on the value of the `start`,`center`, `end`,`space-between`, `space-around`, which are defined in its parent node typesetting mode.
+Child elements depending on the value of the `start`, `center`, `end`, `space-between`, `space-around` and `space-evenly`, which are defined in its parent node typesetting mode.
 
 ```jsx
 import { Row, Col, Divider } from 'antd';
 
-ReactDOM.render(
+export default () => (
   <>
-    <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }}>
-      sub-element align left
-    </Divider>
+    <Divider orientation="left">sub-element align left</Divider>
     <Row justify="start">
       <Col span={4}>col-4</Col>
       <Col span={4}>col-4</Col>
@@ -30,9 +28,7 @@ ReactDOM.render(
       <Col span={4}>col-4</Col>
     </Row>
 
-    <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }}>
-      sub-element align center
-    </Divider>
+    <Divider orientation="left">sub-element align center</Divider>
     <Row justify="center">
       <Col span={4}>col-4</Col>
       <Col span={4}>col-4</Col>
@@ -40,9 +36,7 @@ ReactDOM.render(
       <Col span={4}>col-4</Col>
     </Row>
 
-    <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }}>
-      sub-element align right
-    </Divider>
+    <Divider orientation="left">sub-element align right</Divider>
     <Row justify="end">
       <Col span={4}>col-4</Col>
       <Col span={4}>col-4</Col>
@@ -50,9 +44,7 @@ ReactDOM.render(
       <Col span={4}>col-4</Col>
     </Row>
 
-    <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }}>
-      sub-element monospaced arrangement
-    </Divider>
+    <Divider orientation="left">sub-element monospaced arrangement</Divider>
     <Row justify="space-between">
       <Col span={4}>col-4</Col>
       <Col span={4}>col-4</Col>
@@ -60,17 +52,22 @@ ReactDOM.render(
       <Col span={4}>col-4</Col>
     </Row>
 
-    <Divider orientation="left" style={{ color: '#333', fontWeight: 'normal' }}>
-      sub-element align full
-    </Divider>
+    <Divider orientation="left">sub-element align full</Divider>
     <Row justify="space-around">
       <Col span={4}>col-4</Col>
       <Col span={4}>col-4</Col>
       <Col span={4}>col-4</Col>
       <Col span={4}>col-4</Col>
     </Row>
-  </>,
-  mountNode,
+
+    <Divider orientation="left">sub-element align evenly</Divider>
+    <Row justify="space-evenly">
+      <Col span={4}>col-4</Col>
+      <Col span={4}>col-4</Col>
+      <Col span={4}>col-4</Col>
+      <Col span={4}>col-4</Col>
+    </Row>
+  </>
 );
 ```
 

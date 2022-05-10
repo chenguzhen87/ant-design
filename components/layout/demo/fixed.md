@@ -14,20 +14,24 @@ title:
 
 Fixed Header is generally used to fix the top navigation to facilitate page switching.
 
-```jsx
+```tsx
 import { Layout, Menu, Breadcrumb } from 'antd';
 
 const { Header, Content, Footer } = Layout;
 
-ReactDOM.render(
+export default () => (
   <Layout>
     <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
       <div className="logo" />
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
-        <Menu.Item key="1">nav 1</Menu.Item>
-        <Menu.Item key="2">nav 2</Menu.Item>
-        <Menu.Item key="3">nav 3</Menu.Item>
-      </Menu>
+      <Menu
+        theme="dark"
+        mode="horizontal"
+        defaultSelectedKeys={['2']}
+        items={new Array(3).fill(null).map((_, index) => ({
+          key: String(index + 1),
+          label: `nav ${index + 1}`,
+        }))}
+      />
     </Header>
     <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
       <Breadcrumb style={{ margin: '16px 0' }}>
@@ -40,18 +44,17 @@ ReactDOM.render(
       </div>
     </Content>
     <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
-  </Layout>,
-  mountNode,
+  </Layout>
 );
 ```
 
 ```css
 #components-layout-demo-fixed .logo {
+  float: left;
   width: 120px;
   height: 31px;
-  background: rgba(255, 255, 255, 0.2);
   margin: 16px 24px 16px 0;
-  float: left;
+  background: rgba(255, 255, 255, 0.2);
 }
 .site-layout .site-layout-background {
   background: #fff;

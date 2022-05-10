@@ -18,7 +18,7 @@ import { Tabs } from 'antd';
 
 const { TabPane } = Tabs;
 
-ReactDOM.render(
+export default () => (
   <div className="card-container">
     <Tabs type="card">
       <TabPane tab="Tab Title 1" key="1">
@@ -37,8 +37,7 @@ ReactDOM.render(
         <p>Content of Tab Pane 3</p>
       </TabPane>
     </Tabs>
-  </div>,
-  mountNode,
+  </div>
 );
 ```
 
@@ -46,61 +45,48 @@ ReactDOM.render(
 .card-container p {
   margin: 0;
 }
-.card-container > .ant-tabs-card > .ant-tabs-content {
+.card-container > .ant-tabs-card .ant-tabs-content {
   height: 120px;
   margin-top: -16px;
 }
-[data-theme='compact'] .card-container > .ant-tabs-card > .ant-tabs-content {
+.card-container > .ant-tabs-card .ant-tabs-content > .ant-tabs-tabpane {
+  padding: 16px;
+  background: #fff;
+}
+.card-container > .ant-tabs-card > .ant-tabs-nav::before {
+  display: none;
+}
+.card-container > .ant-tabs-card .ant-tabs-tab,
+[data-theme='compact'] .card-container > .ant-tabs-card .ant-tabs-tab {
+  background: transparent;
+  border-color: transparent;
+}
+.card-container > .ant-tabs-card .ant-tabs-tab-active,
+[data-theme='compact'] .card-container > .ant-tabs-card .ant-tabs-tab-active {
+  background: #fff;
+  border-color: #fff;
+}
+#components-tabs-demo-card-top .code-box-demo {
+  padding: 24px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+[data-theme='compact'] .card-container > .ant-tabs-card .ant-tabs-content {
   height: 120px;
   margin-top: -8px;
 }
-
-[data-theme='compact'] .card-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane,
-.card-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
-  background: #fff;
-  padding: 16px;
-}
-
-[data-theme='compact'] .card-container > .ant-tabs-card > .ant-tabs-bar,
-.card-container > .ant-tabs-card > .ant-tabs-bar {
-  border-color: #fff;
-}
-
-[data-theme='compact'] .card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab,
-.card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
-  border-color: transparent;
+[data-theme='dark'] .card-container > .ant-tabs-card .ant-tabs-tab {
   background: transparent;
-}
-
-[data-theme='compact'] .card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active,
-.card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
-  border-color: #fff;
-  background: #fff;
-}
-```
-
-<style>
-#components-tabs-demo-card-top .code-box-demo {
-  background: #F5F5F5;
-  overflow: hidden;
-  padding: 24px;
-}
-
-[data-theme="dark"] .card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
   border-color: transparent;
-  background: transparent;
 }
-[data-theme="dark"] #components-tabs-demo-card-top .code-box-demo {
+[data-theme='dark'] #components-tabs-demo-card-top .code-box-demo {
   background: #000;
 }
-[data-theme="dark"] .card-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
+[data-theme='dark'] .card-container > .ant-tabs-card .ant-tabs-content > .ant-tabs-tabpane {
   background: #141414;
 }
-[data-theme="dark"] .card-container > .ant-tabs-card > .ant-tabs-bar {
-  border-color: #141414;
-}
-[data-theme="dark"] .card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
-  border-color: #141414;
+[data-theme='dark'] .card-container > .ant-tabs-card .ant-tabs-tab-active {
   background: #141414;
+  border-color: #141414;
 }
-</style>
+```

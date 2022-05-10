@@ -1,126 +1,259 @@
+import classNames from 'classnames';
+import type { TextAreaProps as RcTextAreaProps } from 'rc-textarea';
+import RcTextArea from 'rc-textarea';
+import type ResizableTextArea from 'rc-textarea/lib/ResizableTextArea';
+import useMergedState from 'rc-util/lib/hooks/useMergedState';
+import omit from 'rc-util/lib/omit';
 import * as React from 'react';
+import { ConfigContext } from '../config-provider';
+import type { SizeType } from '../config-provider/SizeContext';
+import SizeContext from '../config-provider/SizeContext';
+import { FormItemInputContext } from '../form/context';
+import type { InputStatus } from '../_util/statusUtils';
+import { getStatusClassNames, getMergedStatus } from '../_util/statusUtils';
 import ClearableLabeledInput from './ClearableLabeledInput';
-import ResizableTextArea, { AutoSizeType } from './ResizableTextArea';
-import { ConfigConsumer, ConfigConsumerProps } from '../config-provider';
-import { fixControlledValue, resolveOnChange } from './Input';
+import type { InputFocusOptions } from './Input';
+import { fixControlledValue, resolveOnChange, triggerFocus } from './Input';
 
-export type HTMLTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+interface ShowCountProps {
+  formatter: (args: { count: number; maxLength?: number }) => string;
+}
 
-export interface TextAreaProps extends HTMLTextareaProps {
-  prefixCls?: string;
-  autoSize?: boolean | AutoSizeType;
-  onPressEnter?: React.KeyboardEventHandler<HTMLTextAreaElement>;
+function fixEmojiLength(value: string, maxLength: number) {
+  return [...(value || '')].slice(0, maxLength).join('');
+}
+
+function setTriggerValue(
+  isCursorInEnd: boolean,
+  preValue: string,
+  triggerValue: string,
+  maxLength: number,
+) {
+  let newTriggerValue = triggerValue;
+  if (isCursorInEnd) {
+    // 光标在尾部，直接截断
+    newTriggerValue = fixEmojiLength(triggerValue, maxLength!);
+  } else if (
+    [...(preValue || '')].length < triggerValue.length &&
+    [...(triggerValue || '')].length > maxLength!
+  ) {
+    // 光标在中间，如果最后的值超过最大值，则采用原先的值
+    newTriggerValue = preValue;
+  }
+  return newTriggerValue;
+}
+
+export interface TextAreaProps extends RcTextAreaProps {
   allowClear?: boolean;
-  onResize?: (size: { width: number; height: number }) => void;
+  bordered?: boolean;
+  showCount?: boolean | ShowCountProps;
+  size?: SizeType;
+  status?: InputStatus;
 }
 
-export interface TextAreaState {
-  value: any;
+export interface TextAreaRef {
+  focus: (options?: InputFocusOptions) => void;
+  blur: () => void;
+  resizableTextArea?: ResizableTextArea;
 }
 
-class TextArea extends React.Component<TextAreaProps, TextAreaState> {
-  resizableTextArea: ResizableTextArea;
+const TextArea = React.forwardRef<TextAreaRef, TextAreaProps>(
+  (
+    {
+      prefixCls: customizePrefixCls,
+      bordered = true,
+      showCount = false,
+      maxLength,
+      className,
+      style,
+      size: customizeSize,
+      onCompositionStart,
+      onCompositionEnd,
+      onChange,
+      status: customStatus,
+      ...props
+    },
+    ref,
+  ) => {
+    const { getPrefixCls, direction } = React.useContext(ConfigContext);
+    const size = React.useContext(SizeContext);
 
-  clearableInput: ClearableLabeledInput;
+    const {
+      status: contextStatus,
+      hasFeedback,
+      isFormItemInput,
+      feedbackIcon,
+    } = React.useContext(FormItemInputContext);
+    const mergedStatus = getMergedStatus(contextStatus, customStatus);
 
-  constructor(props: TextAreaProps) {
-    super(props);
-    const value = typeof props.value === 'undefined' ? props.defaultValue : props.value;
-    this.state = {
-      value,
+    const innerRef = React.useRef<RcTextArea>(null);
+    const clearableInputRef = React.useRef<ClearableLabeledInput>(null);
+
+    const [compositing, setCompositing] = React.useState(false);
+    const oldCompositionValueRef = React.useRef<string>();
+    const oldSelectionStartRef = React.useRef<number>(0);
+
+    const [value, setValue] = useMergedState(props.defaultValue, {
+      value: props.value,
+    });
+    const { hidden } = props;
+
+    const handleSetValue = (val: string, callback?: () => void) => {
+      if (props.value === undefined) {
+        setValue(val);
+        callback?.();
+      }
     };
-  }
 
-  static getDerivedStateFromProps(nextProps: TextAreaProps) {
-    if ('value' in nextProps) {
-      return {
-        value: nextProps.value,
-      };
-    }
-    return null;
-  }
+    // =========================== Value Update ===========================
+    // Max length value
+    const hasMaxLength = Number(maxLength) > 0;
 
-  setValue(value: string, callback?: () => void) {
-    if (!('value' in this.props)) {
-      this.setState({ value }, callback);
-    }
-  }
+    const onInternalCompositionStart: React.CompositionEventHandler<HTMLTextAreaElement> = e => {
+      setCompositing(true);
+      // 拼音输入前保存一份旧值
+      oldCompositionValueRef.current = value as string;
+      // 保存旧的光标位置
+      oldSelectionStartRef.current = e.currentTarget.selectionStart;
+      onCompositionStart?.(e);
+    };
 
-  focus = () => {
-    this.resizableTextArea.textArea.focus();
-  };
+    const onInternalCompositionEnd: React.CompositionEventHandler<HTMLTextAreaElement> = e => {
+      setCompositing(false);
 
-  blur() {
-    this.resizableTextArea.textArea.blur();
-  }
+      let triggerValue = e.currentTarget.value;
+      if (hasMaxLength) {
+        const isCursorInEnd =
+          oldSelectionStartRef.current >= maxLength! + 1 ||
+          oldSelectionStartRef.current === oldCompositionValueRef.current?.length;
+        triggerValue = setTriggerValue(
+          isCursorInEnd,
+          oldCompositionValueRef.current as string,
+          triggerValue,
+          maxLength!,
+        );
+      }
+      // Patch composition onChange when value changed
+      if (triggerValue !== value) {
+        handleSetValue(triggerValue);
+        resolveOnChange(e.currentTarget, e, onChange, triggerValue);
+      }
 
-  saveTextArea = (resizableTextArea: ResizableTextArea) => {
-    this.resizableTextArea = resizableTextArea;
-  };
+      onCompositionEnd?.(e);
+    };
 
-  saveClearableInput = (clearableInput: ClearableLabeledInput) => {
-    this.clearableInput = clearableInput;
-  };
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      let triggerValue = e.target.value;
+      if (!compositing && hasMaxLength) {
+        // 1. 复制粘贴超过maxlength的情况 2.未超过maxlength的情况
+        const isCursorInEnd =
+          e.target.selectionStart >= maxLength! + 1 ||
+          e.target.selectionStart === triggerValue.length ||
+          !e.target.selectionStart;
+        triggerValue = setTriggerValue(isCursorInEnd, value as string, triggerValue, maxLength!);
+      }
+      handleSetValue(triggerValue);
+      resolveOnChange(e.currentTarget, e, onChange, triggerValue);
+    };
 
-  handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    this.setValue(e.target.value, () => {
-      this.resizableTextArea.resizeTextarea();
-    });
-    resolveOnChange(this.resizableTextArea.textArea, e, this.props.onChange);
-  };
+    // ============================== Reset ===============================
+    const handleReset = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      handleSetValue('', () => {
+        innerRef.current?.focus();
+      });
+      resolveOnChange(innerRef.current?.resizableTextArea?.textArea!, e, onChange);
+    };
 
-  handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    const { onPressEnter, onKeyDown } = this.props;
-    if (e.keyCode === 13 && onPressEnter) {
-      onPressEnter(e);
-    }
-    if (onKeyDown) {
-      onKeyDown(e);
-    }
-  };
+    const prefixCls = getPrefixCls('input', customizePrefixCls);
 
-  handleReset = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    this.setValue('', () => {
-      this.resizableTextArea.renderTextArea();
-      this.focus();
-    });
-    resolveOnChange(this.resizableTextArea.textArea, e, this.props.onChange);
-  };
+    React.useImperativeHandle(ref, () => ({
+      resizableTextArea: innerRef.current?.resizableTextArea,
+      focus: (option?: InputFocusOptions) => {
+        triggerFocus(innerRef.current?.resizableTextArea?.textArea, option);
+      },
+      blur: () => innerRef.current?.blur(),
+    }));
 
-  renderTextArea = (prefixCls: string) => {
-    return (
-      <ResizableTextArea
-        {...this.props}
+    const textArea = (
+      <RcTextArea
+        {...omit(props, ['allowClear'])}
+        className={classNames(
+          {
+            [`${prefixCls}-borderless`]: !bordered,
+            [className!]: className && !showCount,
+            [`${prefixCls}-sm`]: size === 'small' || customizeSize === 'small',
+            [`${prefixCls}-lg`]: size === 'large' || customizeSize === 'large',
+          },
+          getStatusClassNames(prefixCls, mergedStatus),
+        )}
+        style={showCount ? undefined : style}
         prefixCls={prefixCls}
-        onKeyDown={this.handleKeyDown}
-        onChange={this.handleChange}
-        ref={this.saveTextArea}
+        onCompositionStart={onInternalCompositionStart}
+        onChange={handleChange}
+        onCompositionEnd={onInternalCompositionEnd}
+        ref={innerRef}
       />
     );
-  };
 
-  renderComponent = ({ getPrefixCls, direction }: ConfigConsumerProps) => {
-    const { value } = this.state;
-    const { prefixCls: customizePrefixCls } = this.props;
-    const prefixCls = getPrefixCls('input', customizePrefixCls);
-    return (
+    let val = fixControlledValue(value) as string;
+
+    if (!compositing && hasMaxLength && (props.value === null || props.value === undefined)) {
+      // fix #27612 将value转为数组进行截取，解决 '😂'.length === 2 等emoji表情导致的截取乱码的问题
+      val = fixEmojiLength(val, maxLength!);
+    }
+
+    // TextArea
+    const textareaNode = (
       <ClearableLabeledInput
-        {...this.props}
+        {...props}
         prefixCls={prefixCls}
         direction={direction}
         inputType="text"
-        value={fixControlledValue(value)}
-        element={this.renderTextArea(prefixCls)}
-        handleReset={this.handleReset}
-        ref={this.saveClearableInput}
-        triggerFocus={this.focus}
+        value={val}
+        element={textArea}
+        handleReset={handleReset}
+        ref={clearableInputRef}
+        bordered={bordered}
+        status={customStatus}
+        style={showCount ? undefined : style}
       />
     );
-  };
 
-  render() {
-    return <ConfigConsumer>{this.renderComponent}</ConfigConsumer>;
-  }
-}
+    // Only show text area wrapper when needed
+    if (showCount || hasFeedback) {
+      const valueLength = [...val].length;
+
+      let dataCount = '';
+      if (typeof showCount === 'object') {
+        dataCount = showCount.formatter({ count: valueLength, maxLength });
+      } else {
+        dataCount = `${valueLength}${hasMaxLength ? ` / ${maxLength}` : ''}`;
+      }
+
+      return (
+        <div
+          hidden={hidden}
+          className={classNames(
+            `${prefixCls}-textarea`,
+            {
+              [`${prefixCls}-textarea-rtl`]: direction === 'rtl',
+              [`${prefixCls}-textarea-show-count`]: showCount,
+              [`${prefixCls}-textarea-in-form-item`]: isFormItemInput,
+            },
+            getStatusClassNames(`${prefixCls}-textarea`, mergedStatus, hasFeedback),
+            className,
+          )}
+          style={style}
+          data-count={dataCount}
+        >
+          {textareaNode}
+          {hasFeedback && <span className={`${prefixCls}-textarea-suffix`}>{feedbackIcon}</span>}
+        </div>
+      );
+    }
+
+    return textareaNode;
+  },
+);
 
 export default TextArea;

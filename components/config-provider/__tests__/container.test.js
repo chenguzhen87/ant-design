@@ -3,6 +3,8 @@ import { mount } from 'enzyme';
 import ConfigProvider from '..';
 import DatePicker from '../../date-picker';
 import Slider from '../../slider';
+import Drawer from '../../drawer';
+import Cascader from '../../cascader';
 
 describe('ConfigProvider.GetPopupContainer', () => {
   it('Datepicker', () => {
@@ -23,6 +25,23 @@ describe('ConfigProvider.GetPopupContainer', () => {
       </ConfigProvider>,
     );
     wrapper.find('.ant-slider-handle').first().simulate('mouseenter');
+    expect(getPopupContainer).toHaveBeenCalled();
+  });
+
+  it('Drawer', () => {
+    const getPopupContainer = jest.fn(node => node.parentNode);
+    const Demo = ({ visible }) => (
+      <ConfigProvider getPopupContainer={getPopupContainer}>
+        <Drawer visible={visible} />
+      </ConfigProvider>
+    );
+    mount(<Demo visible />);
+    expect(getPopupContainer).toHaveBeenCalled();
+  });
+
+  it('Cascader', () => {
+    const getPopupContainer = jest.fn(node => node.parentNode);
+    mount(<Cascader getPopupContainer={getPopupContainer} open />);
     expect(getPopupContainer).toHaveBeenCalled();
   });
 });

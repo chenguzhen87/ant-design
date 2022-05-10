@@ -1,8 +1,9 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import omit from 'omit.js';
+import omit from 'rc-util/lib/omit';
 import ResizeObserver from 'rc-resize-observer';
-import { ConfigContext, ConfigConsumerProps } from '../config-provider';
+import type { ConfigConsumerProps } from '../config-provider';
+import { ConfigContext } from '../config-provider';
 import { throttleByAnimationFrameDecorator } from '../_util/throttleByAnimationFrame';
 
 import {
@@ -19,9 +20,7 @@ function getDefaultTarget() {
 
 // Affix
 export interface AffixProps {
-  /**
-   * 距离窗口顶部达到指定偏移量后触发
-   */
+  /** 距离窗口顶部达到指定偏移量后触发 */
   offsetTop?: number;
   /** 距离窗口底部达到指定偏移量后触发 */
   offsetBottom?: number;
@@ -33,6 +32,10 @@ export interface AffixProps {
   prefixCls?: string;
   className?: string;
   children: React.ReactNode;
+}
+
+interface InternalAffixProps extends AffixProps {
+  affixPrefixCls: string;
 }
 
 enum AffixStatus {
@@ -49,7 +52,7 @@ export interface AffixState {
   prevTarget: Window | HTMLElement | null;
 }
 
-class Affix extends React.Component<AffixProps, AffixState> {
+class Affix extends React.Component<InternalAffixProps, AffixState> {
   static contextType = ConfigContext;
 
   state: AffixState = {
@@ -62,7 +65,7 @@ class Affix extends React.Component<AffixProps, AffixState> {
 
   fixedNode: HTMLDivElement;
 
-  private timeout: number;
+  private timeout: any;
 
   context: ConfigConsumerProps;
 
@@ -94,10 +97,7 @@ class Affix extends React.Component<AffixProps, AffixState> {
   componentDidUpdate(prevProps: AffixProps) {
     const { prevTarget } = this.state;
     const targetFunc = this.getTargetFunc();
-    let newTarget = null;
-    if (targetFunc) {
-      newTarget = targetFunc() || null;
-    }
+    const newTarget = targetFunc?.() || null;
 
     if (prevTarget !== newTarget) {
       removeObserveTarget(this);
@@ -107,6 +107,7 @@ class Affix extends React.Component<AffixProps, AffixState> {
         this.updatePosition();
       }
 
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ prevTarget: newTarget });
     }
 
@@ -129,17 +130,11 @@ class Affix extends React.Component<AffixProps, AffixState> {
   }
 
   getOffsetTop = () => {
-    const { offsetBottom } = this.props;
-    let { offsetTop } = this.props;
-    if (offsetBottom === undefined && offsetTop === undefined) {
-      offsetTop = 0;
-    }
-    return offsetTop;
+    const { offsetBottom, offsetTop } = this.props;
+    return offsetBottom === undefined && offsetTop === undefined ? 0 : offsetTop;
   };
 
-  getOffsetBottom = () => {
-    return this.props.offsetBottom;
-  };
+  getOffsetBottom = () => this.props.offsetBottom;
 
   savePlaceholderNode = (node: HTMLDivElement) => {
     this.placeholderNode = node;
@@ -218,9 +213,7 @@ class Affix extends React.Component<AffixProps, AffixState> {
     // Test if `updatePosition` called
     if (process.env.NODE_ENV === 'test') {
       const { onTestUpdatePosition } = this.props as any;
-      if (onTestUpdatePosition) {
-        onTestUpdatePosition();
-      }
+      onTestUpdatePosition?.();
     }
   };
 
@@ -261,18 +254,24 @@ class Affix extends React.Component<AffixProps, AffixState> {
   }
 
   // =================== Render ===================
-  render = () => {
-    const { getPrefixCls } = this.context;
+  render() {
     const { affixStyle, placeholderStyle } = this.state;
-    const { prefixCls, children } = this.props;
+    const { affixPrefixCls, children } = this.props;
     const className = classNames({
-      [getPrefixCls('affix', prefixCls)]: affixStyle,
+      [affixPrefixCls]: !!affixStyle,
     });
 
-    let props = omit(this.props, ['prefixCls', 'offsetTop', 'offsetBottom', 'target', 'onChange']);
+    let props = omit(this.props, [
+      'prefixCls',
+      'offsetTop',
+      'offsetBottom',
+      'target',
+      'onChange',
+      'affixPrefixCls',
+    ]);
     // Omit this since `onTestUpdatePosition` only works on test.
     if (process.env.NODE_ENV === 'test') {
-      props = omit(props, ['onTestUpdatePosition']);
+      props = omit(props as typeof props & { onTestUpdatePosition: any }, ['onTestUpdatePosition']);
     }
 
     return (
@@ -295,7 +294,26 @@ class Affix extends React.Component<AffixProps, AffixState> {
         </div>
       </ResizeObserver>
     );
-  };
+  }
 }
 
-export default Affix;
+const AffixFC = React.forwardRef<Affix, AffixProps>((props, ref) => {
+  const { prefixCls: customizePrefixCls } = props;
+  const { getPrefixCls } = React.useContext(ConfigContext);
+
+  const affixPrefixCls = getPrefixCls('affix', customizePrefixCls);
+
+  const affixProps: InternalAffixProps = {
+    ...props,
+
+    affixPrefixCls,
+  };
+
+  return <Affix {...affixProps} ref={ref} />;
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  AffixFC.displayName = 'Affix';
+}
+
+export default AffixFC;

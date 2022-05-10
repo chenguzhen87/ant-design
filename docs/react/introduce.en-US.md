@@ -17,9 +17,9 @@ Following the Ant Design specification, we developed a React UI library `antd` t
   vertical-align: middle;
 }
 .pic-plus span {
-  font-size: 30px;
-  color: #aaa;
   margin: 0 20px;
+  color: #aaa;
+  font-size: 30px;
 }
 </style>
 
@@ -36,9 +36,17 @@ Following the Ant Design specification, we developed a React UI library `antd` t
 
 ## Environment Support
 
-- Modern browsers and Internet Explorer 11 (with [polyfills](/docs/react/getting-started#Compatibility))
+- Modern browsers and Internet Explorer 11 (with [polyfills](https://ant.design/docs/react/getting-started#Compatibility))
 - Server-side Rendering
 - [Electron](https://www.electronjs.org/)
+
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Opera | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/electron/electron_48x48.png" alt="Electron" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Electron |
+| --- | --- | --- | --- | --- | --- |
+| IE11, Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
+
+Polyfills are needed for IE browsers. We recommend [@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env) for it. You can set `targets` config if you are using [umi](http://umijs.org/).
+
+> We drop support of IE8 after `antd@2.0`, We drop support of React 15 and IE9/10 after `antd@4.0`,
 
 ## Version
 
@@ -88,43 +96,18 @@ import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 
 ### Use modularized antd
 
-> Note: antd support ES6 tree shaking by default even without the below plugin.
-
-- Use [babel-plugin-import](https://github.com/ant-design/babel-plugin-import) (Recommended)
-
-  ```js
-  // .babelrc or babel-loader option
-  {
-    "plugins": [
-      ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }] // `style: true` for less
-    ]
-  }
-  ```
-
-  This allows you to import components from antd without having to manually import the corresponding stylesheet. The antd babel plugin will automatically import stylesheets.
-
-  ```jsx
-  // import js and css modularly, parsed by babel-plugin-import
-  import { DatePicker } from 'antd';
-  ```
-
-- Manually import
-
-  ```jsx
-  import DatePicker from 'antd/es/date-picker'; // for js
-  import 'antd/es/date-picker/style/css'; // for css
-  // import 'antd/es/date-picker/style';         // that will import less
-  ```
+`antd` supports ES modules tree shaking by default for JS part.
 
 ### TypeScript
 
-- Don't use @types/antd, as antd provides a built-in ts definition already.
+`antd` provides a built-in ts definition, don't install `@types/antd`.
 
 ## Links
 
 - [Home page](/)
-- [Components](/components/button/)
+- [Components](/components/overview)
 - [Ant Design Pro](https://pro.ant.design/)
+- [Ant Design Charts](https://charts.ant.design)
 - [Change Log](/changelog)
 - [rc-components](http://react-component.github.io/)
 - [Mobile UI](http://mobile.ant.design)
@@ -167,6 +150,6 @@ If you'd like to help us improve antd, just create a [Pull Request](https://gith
 
 ## Need Help?
 
-For questions on how to use antd, please post questions to [<img alt="Stack Overflow" src="https://cdn.sstatic.net/Sites/stackoverflow/company/img/logos/so/so-logo.svg?v=2bb144720a66" width="140" />](http://stackoverflow.com/questions/tagged/antd) using the `antd` tag. If you're not finding what you need on stackoverflow, you can find us on [![Gitter](https://badges.gitter.im/ant-design/ant-design-english.svg)](https://gitter.im/ant-design/ant-design-english?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) as well.
+For questions on how to use antd, please post questions to [GitHub Discussions](https://github.com/ant-design/ant-design/discussions) using the `Q&A` tag or [<img alt="Stack Overflow" src="https://cdn.sstatic.net/Sites/stackoverflow/company/img/logos/so/so-logo.svg?v=2bb144720a66" width="140" />](http://stackoverflow.com/questions/tagged/antd) using the `antd` tag.
 
 As always, we encourage experienced users to help those who are not familiar with `antd`!

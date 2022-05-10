@@ -20,7 +20,7 @@ function onPanelChange(value, mode) {
   console.log(value, mode);
 }
 
-ReactDOM.render(
+export default () => (
   <div className="site-calendar-customize-header-wrapper">
     <Calendar
       fullscreen={false}
@@ -57,9 +57,7 @@ ReactDOM.render(
         }
         return (
           <div style={{ padding: 8 }}>
-            <Typography.Title level={4}>
-              Custom header
-            </Typography.Title>
+            <Typography.Title level={4}>Custom header</Typography.Title>
             <Row gutter={8}>
               <Col>
                 <Radio.Group size="small" onChange={e => onTypeChange(e.target.value)} value={type}>
@@ -101,8 +99,7 @@ ReactDOM.render(
       }}
       onPanelChange={onPanelChange}
     />
-  </div>,
-  mountNode,
+  </div>
 );
 ```
 

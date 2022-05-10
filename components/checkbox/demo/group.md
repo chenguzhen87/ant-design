@@ -32,8 +32,8 @@ const optionsWithDisabled = [
   { label: 'Orange', value: 'Orange', disabled: false },
 ];
 
-ReactDOM.render(
-  <div>
+export default () => (
+  <>
     <Checkbox.Group options={plainOptions} defaultValue={['Apple']} onChange={onChange} />
     <br />
     <br />
@@ -46,7 +46,6 @@ ReactDOM.render(
       defaultValue={['Apple']}
       onChange={onChange}
     />
-  </div>,
-  mountNode,
+  </>
 );
 ```

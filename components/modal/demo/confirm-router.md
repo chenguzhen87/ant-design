@@ -40,10 +40,5 @@ function showConfirm() {
   }
 }
 
-ReactDOM.render(
-  <div>
-    <Button onClick={showConfirm}>Confirm</Button>
-  </div>,
-  mountNode,
-);
+export default () => <Button onClick={showConfirm}>Confirm</Button>;
 ```

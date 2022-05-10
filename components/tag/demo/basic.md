@@ -25,8 +25,8 @@ function preventDefault(e) {
   console.log('Clicked! But prevent default.');
 }
 
-ReactDOM.render(
-  <div>
+export default () => (
+  <>
     <Tag>Tag 1</Tag>
     <Tag>
       <a href="https://github.com/ant-design/ant-design/issues/1862">Link</a>
@@ -37,7 +37,6 @@ ReactDOM.render(
     <Tag closable onClose={preventDefault}>
       Prevent Default
     </Tag>
-  </div>,
-  mountNode,
+  </>
 );
 ```
