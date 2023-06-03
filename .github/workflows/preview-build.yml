@@ -30,7 +30,7 @@ jobs:
           key: lock-${{ github.sha }}
 
       - name: create package-lock.json
-        run: npm i --package-lock-only --ignore-scripts --legacy-peer-deps
+        run: npm i --package-lock-only --ignore-scripts
 
       - name: hack for single file
         run: |
@@ -74,6 +74,7 @@ jobs:
         run: npm run site
         env:
           SITE_ENV: development
+          NODE_OPTIONS: --max_old_space_size=4096
 
       - name: upload site artifact
         uses: actions/upload-artifact@v3

@@ -1,12 +1,13 @@
-import * as React from 'react';
 import omit from 'rc-util/lib/omit';
-import devWarning from '../_util/devWarning';
+import * as React from 'react';
+import warning from '../_util/warning';
 import type { BlockProps, EllipsisConfig } from './Base';
 import Base from './Base';
 
-export interface TextProps extends BlockProps {
+export interface TextProps
+  extends BlockProps<'span'>,
+    Omit<React.HTMLAttributes<HTMLSpanElement>, 'type' | keyof BlockProps<'span'>> {
   ellipsis?: boolean | Omit<EllipsisConfig, 'expandable' | 'rows' | 'onExpand'>;
-  onClick?: (e?: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const Text: React.ForwardRefRenderFunction<HTMLSpanElement, TextProps> = (
@@ -21,7 +22,7 @@ const Text: React.ForwardRefRenderFunction<HTMLSpanElement, TextProps> = (
     return ellipsis;
   }, [ellipsis]);
 
-  devWarning(
+  warning(
     typeof ellipsis !== 'object' ||
       !ellipsis ||
       (!('expandable' in ellipsis) && !('rows' in ellipsis)),

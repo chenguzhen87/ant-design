@@ -1,67 +1,34 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
+import { createCache, StyleProvider } from '@ant-design/cssinjs';
+import { globSync } from 'glob';
+import path from 'path';
 import * as React from 'react';
-import glob from 'glob';
-import { render } from 'enzyme';
-import MockDate from 'mockdate';
-import moment from 'moment';
-import type { TriggerProps } from 'rc-trigger';
+import { renderToString } from 'react-dom/server';
+import { render } from '../utils';
+import { TriggerMockContext } from './demoTestContext';
 import { excludeWarning } from './excludeWarning';
+import rootPropsTest from './rootPropsTest';
 
-export const TriggerMockContext = React.createContext<Partial<TriggerProps> | undefined>(undefined);
+export { rootPropsTest };
 
-type CheerIO = ReturnType<typeof render>;
-type CheerIOElement = CheerIO[0];
-// We should avoid use it in 4.0. Reopen if can not handle this.
-const USE_REPLACEMENT = false;
-const testDist = process.env.LIB_DIR === 'dist';
+require('isomorphic-fetch');
 
-/**
- * Rc component will generate id for aria usage. It's created as `test-uuid` when env === 'test'. Or
- * `f7fa7a3c-a675-47bc-912e-0c45fb6a74d9`(randomly) when not test env. So we need hack of this to
- * modify the `aria-controls`.
- */
-function ariaConvert(wrapper: CheerIO) {
-  if (!testDist || !USE_REPLACEMENT) return wrapper;
-
-  const matches = new Map();
-
-  function process(entry: CheerIOElement) {
-    if (entry.type === 'text' || entry.type === 'comment') {
-      return;
-    }
-    const { attribs, children } = entry;
-    if (matches.has(entry)) return;
-    matches.set(entry, true);
-
-    // Change aria
-    if (attribs && attribs['aria-controls']) {
-      attribs['aria-controls'] = ''; // Remove all the aria to keep render sync in jest & jest node
-    }
-
-    // Loop children
-    if (!children) {
-      return;
-    }
-    (Array.isArray(children) ? children : [children]).forEach(process);
-  }
-
-  wrapper.each((_, entry) => process(entry));
-
-  return wrapper;
-}
-
-type Options = {
+export type Options = {
   skip?: boolean | string[];
+  testingLib?: boolean;
+  testRootProps?: false | object;
 };
 
 function baseText(doInject: boolean, component: string, options: Options = {}) {
-  const files = glob.sync(`./components/${component}/demo/*.md`);
-
-  files.forEach(file => {
-    let testMethod = options.skip === true ? test.skip : test;
-    if (Array.isArray(options.skip) && options.skip.some(c => file.includes(c))) {
-      testMethod = test.skip;
-    }
+  const files = globSync(`./components/${component}/demo/*.tsx`);
+  files.forEach((file) => {
+    // to compatible windows path
+    file = file.split(path.sep).join('/');
+    const testMethod =
+      options.skip === true ||
+      (Array.isArray(options.skip) && options.skip.some((c) => file.includes(c)))
+        ? test.skip
+        : test;
 
     // function doTest(name: string, openTrigger = false) {
     testMethod(
@@ -69,33 +36,38 @@ function baseText(doInject: boolean, component: string, options: Options = {}) {
       () => {
         const errSpy = excludeWarning();
 
-        MockDate.set(moment('2016-11-22').valueOf());
-        let Demo = require(`../.${file}`).default; // eslint-disable-line global-require, import/no-dynamic-require
+        Date.now = jest.fn(() => new Date('2016-11-22').getTime());
+        jest.useFakeTimers().setSystemTime(new Date('2016-11-22'));
+
+        let Demo = require(`../../${file}`).default; // eslint-disable-line global-require, import/no-dynamic-require
         // Inject Trigger status unless skipped
         Demo = typeof Demo === 'function' ? <Demo /> : Demo;
         if (doInject) {
           Demo = (
-            <TriggerMockContext.Provider
-              value={{
-                popupVisible: true,
-              }}
-            >
+            <TriggerMockContext.Provider value={{ popupVisible: true }}>
               {Demo}
             </TriggerMockContext.Provider>
           );
         }
 
-        const wrapper = render(Demo);
+        // Inject cssinjs cache to avoid create <style /> element
+        Demo = <StyleProvider cache={createCache()}>{Demo}</StyleProvider>;
 
-        // Convert aria related content
-        ariaConvert(wrapper);
+        // Demo Test also include `dist` test which is already uglified.
+        // We need test this as SSR instead.
+        if (doInject) {
+          const { container } = render(Demo);
+          expect({ type: 'demo', html: container.innerHTML }).toMatchSnapshot();
+        } else {
+          const html = renderToString(Demo);
+          expect({ type: 'demo', html }).toMatchSnapshot();
+        }
 
-        expect(wrapper).toMatchSnapshot();
-        MockDate.reset();
-
-        errSpy();
+        jest.clearAllTimers();
+        errSpy.mockRestore();
       },
     );
+    jest.useRealTimers();
   });
 }
 
@@ -105,4 +77,10 @@ export function extendTest(component: string, options: Options = {}) {
 
 export default function demoTest(component: string, options: Options = {}) {
   baseText(false, component, options);
+
+  if (options?.testRootProps !== false) {
+    rootPropsTest(component, null!, {
+      props: options?.testRootProps,
+    });
+  }
 }

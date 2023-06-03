@@ -1,15 +1,24 @@
-import * as React from 'react';
-import RcDropdown from 'rc-dropdown';
-import classNames from 'classnames';
 import RightOutlined from '@ant-design/icons/RightOutlined';
-import DropdownButton from './dropdown-button';
-import { ConfigContext } from '../config-provider';
-import devWarning from '../_util/devWarning';
-import { tuple } from '../_util/type';
-import { cloneElement } from '../_util/reactNode';
+import classNames from 'classnames';
+import RcDropdown from 'rc-dropdown';
+import useEvent from 'rc-util/lib/hooks/useEvent';
+import useMergedState from 'rc-util/lib/hooks/useMergedState';
+import omit from 'rc-util/lib/omit';
+import * as React from 'react';
+import genPurePanel from '../_util/PurePanel';
+import type { AdjustOverflow } from '../_util/placements';
 import getPlacements from '../_util/placements';
+import { cloneElement } from '../_util/reactNode';
+import warning from '../_util/warning';
+import { ConfigContext } from '../config-provider';
+import type { MenuProps } from '../menu';
+import Menu from '../menu';
+import { OverrideProvider } from '../menu/OverrideContext';
+import { NoCompactStyle } from '../space/Compact';
+import theme from '../theme';
+import useStyle from './style';
 
-const Placements = tuple(
+const Placements = [
   'topLeft',
   'topCenter',
   'topRight',
@@ -18,9 +27,10 @@ const Placements = tuple(
   'bottomRight',
   'top',
   'bottom',
-);
+] as const;
 
-type Placement = typeof Placements[number];
+type Placement = (typeof Placements)[number];
+type DropdownPlacement = Exclude<Placement, 'topCenter' | 'bottomCenter'>;
 
 type OverlayFunc = () => React.ReactElement;
 
@@ -42,17 +52,20 @@ export type DropdownArrowOptions = {
 };
 
 export interface DropdownProps {
+  menu?: MenuProps;
+  autoFocus?: boolean;
   arrow?: boolean | DropdownArrowOptions;
   trigger?: ('click' | 'hover' | 'contextMenu')[];
-  overlay: React.ReactElement | OverlayFunc;
-  onVisibleChange?: (visible: boolean) => void;
-  visible?: boolean;
+  dropdownRender?: (originNode: React.ReactNode) => React.ReactNode;
+  onOpenChange?: (open: boolean) => void;
+  open?: boolean;
   disabled?: boolean;
   destroyPopupOnHide?: boolean;
   align?: Align;
   getPopupContainer?: (triggerNode: HTMLElement) => HTMLElement;
   prefixCls?: string;
   className?: string;
+  rootClassName?: string;
   transitionName?: string;
   placement?: Placement;
   overlayClassName?: string;
@@ -62,88 +75,91 @@ export interface DropdownProps {
   mouseLeaveDelay?: number;
   openClassName?: string;
   children?: React.ReactNode;
+  autoAdjustOverflow?: boolean | AdjustOverflow;
+
+  // Deprecated
+  /** @deprecated Please use `menu` instead */
+  overlay?: React.ReactElement | OverlayFunc;
+  /** @deprecated Please use `open` instead */
+  visible?: boolean;
+  /** @deprecated Please use `onOpenChange` instead */
+  onVisibleChange?: (open: boolean) => void;
 }
 
-interface DropdownInterface extends React.FC<DropdownProps> {
-  Button: typeof DropdownButton;
-}
+type CompoundedComponent = React.FC<DropdownProps> & {
+  _InternalPanelDoNotUseOrYouWillBeFired: typeof WrapPurePanel;
+};
 
-const Dropdown: DropdownInterface = props => {
+const Dropdown: CompoundedComponent = (props) => {
+  const {
+    menu,
+    arrow,
+    prefixCls: customizePrefixCls,
+    children,
+    trigger,
+    disabled,
+    dropdownRender,
+    getPopupContainer,
+    overlayClassName,
+    rootClassName,
+    open,
+    onOpenChange,
+    // Deprecated
+    visible,
+    onVisibleChange,
+    mouseEnterDelay = 0.15,
+    mouseLeaveDelay = 0.1,
+    autoAdjustOverflow = true,
+    placement = '',
+    overlay,
+    transitionName,
+  } = props;
   const {
     getPopupContainer: getContextPopupContainer,
     getPrefixCls,
     direction,
   } = React.useContext(ConfigContext);
 
-  const getTransitionName = () => {
+  // Warning for deprecated usage
+  if (process.env.NODE_ENV !== 'production') {
+    [
+      ['visible', 'open'],
+      ['onVisibleChange', 'onOpenChange'],
+    ].forEach(([deprecatedName, newName]) => {
+      warning(
+        !(deprecatedName in props),
+        'Dropdown',
+        `\`${deprecatedName}\` is deprecated which will be removed in next major version, please use \`${newName}\` instead.`,
+      );
+    });
+
+    warning(
+      !('overlay' in props),
+      'Dropdown',
+      '`overlay` is deprecated. Please use `menu` instead.',
+    );
+  }
+
+  const memoTransitionName = React.useMemo<string>(() => {
     const rootPrefixCls = getPrefixCls();
-    const { placement = '', transitionName } = props;
+
     if (transitionName !== undefined) {
       return transitionName;
     }
-    if (placement.indexOf('top') >= 0) {
+    if (placement.includes('top')) {
       return `${rootPrefixCls}-slide-down`;
     }
     return `${rootPrefixCls}-slide-up`;
-  };
+  }, [getPrefixCls, placement, transitionName]);
 
-  const renderOverlay = (prefixCls: string) => {
-    // rc-dropdown already can process the function of overlay, but we have check logic here.
-    // So we need render the element to check and pass back to rc-dropdown.
-    const { overlay } = props;
-
-    let overlayNode;
-    if (typeof overlay === 'function') {
-      overlayNode = (overlay as OverlayFunc)();
-    } else {
-      overlayNode = overlay;
-    }
-    overlayNode = React.Children.only(
-      typeof overlayNode === 'string' ? <span>{overlayNode}</span> : overlayNode,
-    );
-
-    const overlayProps = overlayNode.props;
-
-    // Warning if use other mode
-    devWarning(
-      !overlayProps.mode || overlayProps.mode === 'vertical',
-      'Dropdown',
-      `mode="${overlayProps.mode}" is not supported for Dropdown's Menu.`,
-    );
-
-    // menu cannot be selectable in dropdown defaultly
-    const { selectable = false, expandIcon } = overlayProps;
-
-    const overlayNodeExpandIcon =
-      typeof expandIcon !== 'undefined' && React.isValidElement(expandIcon) ? (
-        expandIcon
-      ) : (
-        <span className={`${prefixCls}-menu-submenu-arrow`}>
-          <RightOutlined className={`${prefixCls}-menu-submenu-arrow-icon`} />
-        </span>
-      );
-
-    const fixedModeOverlay =
-      typeof overlayNode.type === 'string'
-        ? overlayNode
-        : cloneElement(overlayNode, {
-            mode: 'vertical',
-            selectable,
-            expandIcon: overlayNodeExpandIcon,
-          });
-
-    return fixedModeOverlay as React.ReactElement;
-  };
-
-  const getPlacement = () => {
-    const { placement } = props;
+  const memoPlacement = React.useMemo<DropdownPlacement>(() => {
     if (!placement) {
-      return direction === 'rtl' ? ('bottomRight' as Placement) : ('bottomLeft' as Placement);
+      return direction === 'rtl' ? 'bottomRight' : 'bottomLeft';
     }
 
     if (placement.includes('Center')) {
-      const newPlacement = placement.slice(0, placement.indexOf('Center'));
-      devWarning(
+      const newPlacement = placement.slice(0, placement.indexOf('Center')) as DropdownPlacement;
+      warning(
         !placement.includes('Center'),
         'Dropdown',
         `You are using '${placement}' placement in Dropdown, which is deprecated. Try to use '${newPlacement}' instead.`,
@@ -151,20 +167,27 @@ const Dropdown: DropdownInterface = props => {
       return newPlacement;
     }
 
-    return placement;
-  };
+    return placement as DropdownPlacement;
+  }, [placement, direction]);
 
-  const {
-    arrow,
-    prefixCls: customizePrefixCls,
-    children,
-    trigger,
-    disabled,
-    getPopupContainer,
-    overlayClassName,
-  } = props;
+  if (process.env.NODE_ENV !== 'production') {
+    [
+      ['visible', 'open'],
+      ['onVisibleChange', 'onOpenChange'],
+    ].forEach(([deprecatedName, newName]) => {
+      warning(
+        !(deprecatedName in props),
+        'Dropdown',
+        `\`${deprecatedName}\` is deprecated, please use \`${newName}\` instead.`,
+      );
+    });
+  }
 
   const prefixCls = getPrefixCls('dropdown', customizePrefixCls);
+  const [wrapSSR, hashId] = useStyle(prefixCls);
+
+  const { token } = theme.useToken();
+
   const child = React.Children.only(children) as React.ReactElement<any>;
 
   const dropdownTrigger = cloneElement(child, {
@@ -178,45 +201,134 @@ const Dropdown: DropdownInterface = props => {
     disabled,
   });
 
-  const overlayClassNameCustomized = classNames(overlayClassName, {
-    [`${prefixCls}-rtl`]: direction === 'rtl',
-  });
-
   const triggerActions = disabled ? [] : trigger;
-  let alignPoint;
-  if (triggerActions && triggerActions.indexOf('contextMenu') !== -1) {
+  let alignPoint: boolean;
+  if (triggerActions && triggerActions.includes('contextMenu')) {
     alignPoint = true;
   }
 
-  const builtinPlacements = getPlacements({
-    arrowPointAtCenter: typeof arrow === 'object' && arrow.pointAtCenter,
-    autoAdjustOverflow: true,
+  // =========================== Open ============================
+  const [mergedOpen, setOpen] = useMergedState(false, {
+    value: open ?? visible,
   });
 
-  return (
+  const onInnerOpenChange = useEvent((nextOpen: boolean) => {
+    onOpenChange?.(nextOpen);
+    onVisibleChange?.(nextOpen);
+    setOpen(nextOpen);
+  });
+
+  // =========================== Overlay ============================
+  const overlayClassNameCustomized = classNames(overlayClassName, rootClassName, hashId, {
+    [`${prefixCls}-rtl`]: direction === 'rtl',
+  });
+
+  const builtinPlacements = getPlacements({
+    arrowPointAtCenter: typeof arrow === 'object' && arrow.pointAtCenter,
+    autoAdjustOverflow,
+    offset: token.marginXXS,
+    arrowWidth: arrow ? token.sizePopupArrow : 0,
+    borderRadius: token.borderRadius,
+  });
+
+  const onMenuClick = React.useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  const renderOverlay = () => {
+    // rc-dropdown already can process the function of overlay, but we have check logic here.
+    // So we need render the element to check and pass back to rc-dropdown.
+
+    let overlayNode: React.ReactNode;
+    if (menu?.items) {
+      overlayNode = <Menu {...menu} />;
+    } else if (typeof overlay === 'function') {
+      overlayNode = overlay();
+    } else {
+      overlayNode = overlay;
+    }
+    if (dropdownRender) {
+      overlayNode = dropdownRender(overlayNode);
+    }
+    overlayNode = React.Children.only(
+      typeof overlayNode === 'string' ? <span>{overlayNode}</span> : overlayNode,
+    );
+
+    return (
+      <OverrideProvider
+        prefixCls={`${prefixCls}-menu`}
+        expandIcon={
+          <span className={`${prefixCls}-menu-submenu-arrow`}>
+            <RightOutlined className={`${prefixCls}-menu-submenu-arrow-icon`} />
+          </span>
+        }
+        mode="vertical"
+        selectable={false}
+        onClick={onMenuClick}
+        validator={({ mode }) => {
+          // Warning if use other mode
+          warning(
+            !mode || mode === 'vertical',
+            'Dropdown',
+            `mode="${mode}" is not supported for Dropdown's Menu.`,
+          );
+        }}
+      >
+        <NoCompactStyle>{overlayNode}</NoCompactStyle>
+      </OverrideProvider>
+    );
+  };
+
+  // ============================ Render ============================
+  return wrapSSR(
     <RcDropdown
-      alignPoint={alignPoint}
-      {...props}
+      alignPoint={alignPoint!}
+      {...omit(props, ['rootClassName'])}
+      mouseEnterDelay={mouseEnterDelay}
+      mouseLeaveDelay={mouseLeaveDelay}
+      visible={mergedOpen}
       builtinPlacements={builtinPlacements}
       arrow={!!arrow}
       overlayClassName={overlayClassNameCustomized}
       prefixCls={prefixCls}
       getPopupContainer={getPopupContainer || getContextPopupContainer}
-      transitionName={getTransitionName()}
+      transitionName={memoTransitionName}
       trigger={triggerActions}
-      overlay={() => renderOverlay(prefixCls)}
-      placement={getPlacement()}
+      overlay={renderOverlay}
+      placement={memoPlacement}
+      onVisibleChange={onInnerOpenChange}
     >
       {dropdownTrigger}
-    </RcDropdown>
+    </RcDropdown>,
   );
 };
 
-Dropdown.Button = DropdownButton;
+function postPureProps(props: DropdownProps) {
+  return {
+    ...props,
+    align: {
+      overflow: {
+        adjustX: false,
+        adjustY: false,
+      },
+    },
+  };
+}
 
-Dropdown.defaultProps = {
-  mouseEnterDelay: 0.15,
-  mouseLeaveDelay: 0.1,
-};
+// We don't care debug panel
+const PurePanel = genPurePanel(Dropdown, 'dropdown', (prefixCls) => prefixCls, postPureProps);
+
+/* istanbul ignore next */
+const WrapPurePanel = (props: DropdownProps) => (
+  <PurePanel {...props}>
+    <span />
+  </PurePanel>
+);
+
+Dropdown._InternalPanelDoNotUseOrYouWillBeFired = WrapPurePanel;
+
+if (process.env.NODE_ENV !== 'production') {
+  Dropdown.displayName = 'Dropdown';
+}
 
 export default Dropdown;

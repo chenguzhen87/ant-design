@@ -7,7 +7,7 @@ export interface ItemProps {
   index: number;
   direction?: 'horizontal' | 'vertical';
   marginDirection: 'marginLeft' | 'marginRight';
-  split?: string | React.ReactNode;
+  split?: React.ReactNode;
   wrap?: boolean;
 }
 
@@ -20,9 +20,8 @@ export default function Item({
   split,
   wrap,
 }: ItemProps) {
-  const { horizontalSize, verticalSize, latestIndex, supportFlexGap } = React.useContext(
-    SpaceContext,
-  );
+  const { horizontalSize, verticalSize, latestIndex, supportFlexGap } =
+    React.useContext(SpaceContext);
 
   let style: React.CSSProperties = {};
 

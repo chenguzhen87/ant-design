@@ -1,13 +1,15 @@
-import * as React from 'react';
 import { presetPrimaryColors } from '@ant-design/colors';
-import type { ProgressGradient, ProgressProps, StringGradients } from './progress';
-import { validProgress, getSuccessPercent } from './utils';
+import * as React from 'react';
 import type { DirectionType } from '../config-provider';
+import warning from '../_util/warning';
+import type { ProgressGradient, ProgressProps, StringGradients } from './progress';
+import { getSize, getSuccessPercent, validProgress } from './utils';
 
 interface LineProps extends ProgressProps {
   prefixCls: string;
   direction?: DirectionType;
   children: React.ReactNode;
+  strokeColor?: string | ProgressGradient;
 }
 
 /**
@@ -22,7 +24,7 @@ interface LineProps extends ProgressProps {
  */
 export const sortGradient = (gradients: StringGradients) => {
   let tempArr: any[] = [];
-  Object.keys(gradients).forEach(key => {
+  Object.keys(gradients).forEach((key) => {
     const formattedKey = parseFloat(key.replace(/%/g, ''));
     if (!isNaN(formattedKey)) {
       tempArr.push({
@@ -48,7 +50,10 @@ export const sortGradient = (gradients: StringGradients) => {
  *     "100%": "#ffffff"
  *   }
  */
-export const handleGradient = (strokeColor: ProgressGradient, directionConfig: DirectionType) => {
+export const handleGradient = (
+  strokeColor: ProgressGradient,
+  directionConfig?: DirectionType,
+): React.CSSProperties => {
   const {
     from = presetPrimaryColors.blue,
     to = presetPrimaryColors.blue,
@@ -62,60 +67,73 @@ export const handleGradient = (strokeColor: ProgressGradient, directionConfig: D
   return { backgroundImage: `linear-gradient(${direction}, ${from}, ${to})` };
 };
 
-const Line: React.FC<LineProps> = props => {
+const Line: React.FC<LineProps> = (props) => {
   const {
     prefixCls,
     direction: directionConfig,
     percent,
-    strokeWidth,
     size,
+    strokeWidth,
     strokeColor,
-    strokeLinecap,
+    strokeLinecap = 'round',
     children,
-    trailColor,
+    trailColor = null,
     success,
   } = props;
 
-  const backgroundProps =
+  const backgroundProps: React.CSSProperties =
     strokeColor && typeof strokeColor !== 'string'
       ? handleGradient(strokeColor, directionConfig)
-      : {
-          background: strokeColor,
-        };
+      : { backgroundColor: strokeColor };
 
-  const trailStyle = trailColor
-    ? {
-        backgroundColor: trailColor,
-      }
-    : undefined;
+  const borderRadius = strokeLinecap === 'square' || strokeLinecap === 'butt' ? 0 : undefined;
 
-  const percentStyle = {
+  const trailStyle: React.CSSProperties = {
+    backgroundColor: trailColor || undefined,
+    borderRadius,
+  };
+
+  const mergedSize = size ?? [-1, strokeWidth || (size === 'small' ? 6 : 8)];
+
+  const [width, height] = getSize(mergedSize, 'line', { strokeWidth });
+
+  if (process.env.NODE_ENV !== 'production') {
+    warning(
+      !('strokeWidth' in props),
+      'Progress',
+      '`strokeWidth` is deprecated. Please use `size` instead.',
+    );
+  }
+
+  const percentStyle: React.CSSProperties = {
     width: `${validProgress(percent)}%`,
-    height: strokeWidth || (size === 'small' ? 6 : 8),
-    borderRadius: strokeLinecap === 'square' ? 0 : undefined,
+    height,
+    borderRadius,
     ...backgroundProps,
-  } as React.CSSProperties;
+  };
 
   const successPercent = getSuccessPercent(props);
 
-  const successPercentStyle = {
+  const successPercentStyle: React.CSSProperties = {
     width: `${validProgress(successPercent)}%`,
-    height: strokeWidth || (size === 'small' ? 6 : 8),
-    borderRadius: strokeLinecap === 'square' ? 0 : undefined,
+    height,
+    borderRadius,
     backgroundColor: success?.strokeColor,
-  } as React.CSSProperties;
+  };
 
-  const successSegment =
-    successPercent !== undefined ? (
-      <div className={`${prefixCls}-success-bg`} style={successPercentStyle} />
-    ) : null;
+  const outerStyle: React.CSSProperties = {
+    width: width < 0 ? '100%' : width,
+    height,
+  };
 
   return (
     <>
-      <div className={`${prefixCls}-outer`}>
+      <div className={`${prefixCls}-outer`} style={outerStyle}>
         <div className={`${prefixCls}-inner`} style={trailStyle}>
           <div className={`${prefixCls}-bg`} style={percentStyle} />
-          {successSegment}
+          {successPercent !== undefined ? (
+            <div className={`${prefixCls}-success-bg`} style={successPercentStyle} />
+          ) : null}
         </div>
       </div>
       {children}

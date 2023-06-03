@@ -1,16 +1,18 @@
-import * as React from 'react';
-import classNames from 'classnames';
 import CheckCircleFilled from '@ant-design/icons/CheckCircleFilled';
 import CloseCircleFilled from '@ant-design/icons/CloseCircleFilled';
 import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
 import WarningFilled from '@ant-design/icons/WarningFilled';
+import classNames from 'classnames';
+import * as React from 'react';
 
 import { ConfigContext } from '../config-provider';
-import devWarning from '../_util/devWarning';
+import warning from '../_util/warning';
 
 import noFound from './noFound';
 import serverError from './serverError';
 import unauthorized from './unauthorized';
+
+import useStyle from './style';
 
 export const IconMap = {
   success: CheckCircleFilled,
@@ -36,6 +38,7 @@ export interface ResultProps {
   extra?: React.ReactNode;
   prefixCls?: string;
   className?: string;
+  rootClassName?: string;
   style?: React.CSSProperties;
   children?: React.ReactNode;
 }
@@ -49,10 +52,17 @@ const ExceptionStatus = Object.keys(ExceptionMap);
  * @param prefixCls
  * @param {status, icon}
  */
-const renderIcon = (prefixCls: string, { status, icon }: ResultProps) => {
+
+interface IconProps {
+  prefixCls: string;
+  icon: React.ReactNode;
+  status: ResultStatusType;
+}
+
+const Icon: React.FC<IconProps> = ({ prefixCls, icon, status }) => {
   const className = classNames(`${prefixCls}-icon`);
 
-  devWarning(
+  warning(
     !(typeof icon === 'string' && icon.length > 2),
     'Result',
     `\`icon\` is using ReactNode instead of string naming in v4. Please check \`${icon}\` at https://ant.design/components/icon`,
@@ -66,15 +76,29 @@ const renderIcon = (prefixCls: string, { status, icon }: ResultProps) => {
       </div>
     );
   }
+
   const iconNode = React.createElement(
     IconMap[status as Exclude<ResultStatusType, ExceptionStatusType>],
   );
 
+  if (icon === null || icon === false) {
+    return null;
+  }
+
   return <div className={className}>{icon || iconNode}</div>;
 };
 
-const renderExtra = (prefixCls: string, { extra }: ResultProps) =>
-  extra && <div className={`${prefixCls}-extra`}>{extra}</div>;
+interface ExtraProps {
+  prefixCls: string;
+  extra: React.ReactNode;
+}
+
+const Extra: React.FC<ExtraProps> = ({ prefixCls, extra }) => {
+  if (!extra) {
+    return null;
+  }
+  return <div className={`${prefixCls}-extra`}>{extra}</div>;
+};
 
 export interface ResultType extends React.FC<ResultProps> {
   PRESENTED_IMAGE_404: React.FC;
@@ -85,6 +109,7 @@ export interface ResultType extends React.FC<ResultProps> {
 const Result: ResultType = ({
   prefixCls: customizePrefixCls,
   className: customizeClassName,
+  rootClassName,
   subTitle,
   title,
   style,
@@ -96,22 +121,36 @@ const Result: ResultType = ({
   const { getPrefixCls, direction } = React.useContext(ConfigContext);
 
   const prefixCls = getPrefixCls('result', customizePrefixCls);
-  const className = classNames(prefixCls, `${prefixCls}-${status}`, customizeClassName, {
-    [`${prefixCls}-rtl`]: direction === 'rtl',
-  });
-  return (
+
+  // Style
+  const [wrapSSR, hashId] = useStyle(prefixCls);
+
+  const className = classNames(
+    prefixCls,
+    `${prefixCls}-${status}`,
+    customizeClassName,
+    rootClassName,
+    { [`${prefixCls}-rtl`]: direction === 'rtl' },
+    hashId,
+  );
+
+  return wrapSSR(
     <div className={className} style={style}>
-      {renderIcon(prefixCls, { status, icon })}
+      <Icon prefixCls={prefixCls} status={status} icon={icon} />
       <div className={`${prefixCls}-title`}>{title}</div>
       {subTitle && <div className={`${prefixCls}-subtitle`}>{subTitle}</div>}
-      {renderExtra(prefixCls, { extra })}
+      <Extra prefixCls={prefixCls} extra={extra} />
       {children && <div className={`${prefixCls}-content`}>{children}</div>}
-    </div>
+    </div>,
   );
 };
 
 Result.PRESENTED_IMAGE_403 = ExceptionMap['403'];
 Result.PRESENTED_IMAGE_404 = ExceptionMap['404'];
 Result.PRESENTED_IMAGE_500 = ExceptionMap['500'];
+
+if (process.env.NODE_ENV !== 'production') {
+  Result.displayName = 'Result';
+}
 
 export default Result;

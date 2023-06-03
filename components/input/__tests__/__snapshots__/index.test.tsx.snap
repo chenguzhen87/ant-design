@@ -43,7 +43,7 @@ exports[`Input allowClear should change type when click 1`] = `
 
 exports[`Input allowClear should change type when click 2`] = `
 <span
-  class="ant-input-affix-wrapper"
+  class="ant-input-affix-wrapper ant-input-affix-wrapper-focused"
 >
   <input
     class="ant-input"
@@ -328,6 +328,108 @@ exports[`Input allowClear should not show icon if value is undefined, null or em
 </span>
 `;
 
+exports[`Input allowClear should support classNames and styles 1`] = `
+<div>
+  <span
+    class="rc-input-affix-wrapper custom-class"
+    style="background-color: red;"
+  >
+    <span
+      class="rc-input-prefix custom-prefix"
+      style="color: blue;"
+    >
+      prefix
+    </span>
+    <input
+      class="rc-input custom-input"
+      style="color: red;"
+      type="text"
+      value="123"
+    />
+    <span
+      class="rc-input-suffix custom-suffix"
+      style="color: yellow;"
+    >
+      <span
+        class="rc-input-show-count-suffix rc-input-show-count-has-suffix custom-count"
+        style="color: green;"
+      >
+        3
+      </span>
+      suffix
+    </span>
+  </span>
+  <span
+    class="rc-input-group-wrapper custom-class"
+    style="background-color: red;"
+  >
+    <span
+      class="rc-input-wrapper rc-input-group"
+    >
+      <span
+        class="rc-input-affix-wrapper"
+      >
+        <span
+          class="rc-input-prefix custom-prefix"
+          style="color: blue;"
+        >
+          prefix
+        </span>
+        <input
+          class="rc-input custom-input"
+          style="color: red;"
+          type="text"
+          value="123"
+        />
+        <span
+          class="rc-input-suffix custom-suffix"
+          style="color: yellow;"
+        >
+          <span
+            class="rc-input-show-count-suffix rc-input-show-count-has-suffix custom-count"
+            style="color: green;"
+          >
+            3
+          </span>
+          suffix
+        </span>
+      </span>
+      <span
+        class="rc-input-group-addon"
+      >
+        addon
+      </span>
+    </span>
+  </span>
+  <input
+    class="rc-input custom-input custom-class"
+    style="color: red; background-color: red;"
+    type="text"
+    value="123"
+  />
+  <span
+    class="rc-input-group-wrapper custom-class"
+    style="background-color: red;"
+  >
+    <span
+      class="rc-input-wrapper rc-input-group"
+    >
+      <input
+        class="rc-input custom-input"
+        style="color: red;"
+        type="text"
+        value="123"
+      />
+      <span
+        class="rc-input-group-addon"
+      >
+        addon
+      </span>
+    </span>
+  </span>
+</div>
+`;
+
 exports[`Input rtl render component should be rendered correctly in RTL direction 1`] = `
 <input
   class="ant-input ant-input-rtl"
@@ -364,24 +466,26 @@ exports[`Input should support size in form 1`] = `
   class="ant-form ant-form-horizontal ant-form-large"
 >
   <div
-    class="ant-row ant-form-item"
-    role="row"
+    class="ant-form-item"
   >
     <div
-      class="ant-col ant-form-item-control"
-      role="cell"
+      class="ant-row ant-form-item-row"
     >
       <div
-        class="ant-form-item-control-input"
+        class="ant-col ant-form-item-control"
       >
         <div
-          class="ant-form-item-control-input-content"
+          class="ant-form-item-control-input"
         >
-          <input
-            class="ant-input ant-input-lg"
-            type="text"
-            value=""
-          />
+          <div
+            class="ant-form-item-control-input-content"
+          >
+            <input
+              class="ant-input ant-input-lg"
+              type="text"
+              value=""
+            />
+          </div>
         </div>
       </div>
     </div>

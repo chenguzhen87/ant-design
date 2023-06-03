@@ -1,14 +1,15 @@
-import * as React from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
 import { composeRef } from 'rc-util/lib/ref';
+import * as React from 'react';
+import type { Breakpoint } from '../_util/responsiveObserver';
+import { responsiveArray } from '../_util/responsiveObserver';
+import warning from '../_util/warning';
 import { ConfigContext } from '../config-provider';
-import devWarning from '../_util/devWarning';
-import type { Breakpoint } from '../_util/responsiveObserve';
-import { responsiveArray } from '../_util/responsiveObserve';
 import useBreakpoint from '../grid/hooks/useBreakpoint';
 import type { AvatarSize } from './SizeContext';
 import SizeContext from './SizeContext';
+import useStyle from './style';
 
 export interface AvatarProps {
   /** Shape of avatar, options: `circle`, `square` */
@@ -23,31 +24,35 @@ export interface AvatarProps {
   src?: React.ReactNode;
   /** Srcset of image avatar */
   srcSet?: string;
-  draggable?: boolean;
+  draggable?: boolean | 'true' | 'false';
   /** Icon to be used in avatar */
   icon?: React.ReactNode;
   style?: React.CSSProperties;
   prefixCls?: string;
   className?: string;
+  rootClassName?: string;
   children?: React.ReactNode;
   alt?: string;
   crossOrigin?: '' | 'anonymous' | 'use-credentials';
+  onClick?: (e?: React.MouseEvent<HTMLElement>) => void;
   /* callback when img load error */
-  /* return false to prevent Avatar show default fallback behavior, then you can do fallback by your self */
+  /* return false to prevent Avatar show default fallback behavior, then you can do fallback by yourself */
   onError?: () => boolean;
 }
 
-const InternalAvatar: React.ForwardRefRenderFunction<unknown, AvatarProps> = (props, ref) => {
-  const groupSize = React.useContext(SizeContext);
+const InternalAvatar: React.ForwardRefRenderFunction<HTMLSpanElement, AvatarProps> = (
+  props,
+  ref,
+) => {
+  const contextSize = React.useContext<AvatarSize>(SizeContext);
 
   const [scale, setScale] = React.useState(1);
   const [mounted, setMounted] = React.useState(false);
   const [isImgExist, setIsImgExist] = React.useState(true);
 
-  const avatarNodeRef = React.useRef<HTMLElement>();
-  const avatarChildrenRef = React.useRef<HTMLElement>();
-
-  const avatarNodeMergeRef = composeRef(ref, avatarNodeRef);
+  const avatarNodeRef = React.useRef<HTMLSpanElement>(null);
+  const avatarChildrenRef = React.useRef<HTMLSpanElement>(null);
+  const avatarNodeMergeRef = composeRef<HTMLSpanElement>(ref, avatarNodeRef);
 
   const { getPrefixCls } = React.useContext(ConfigContext);
 
@@ -75,13 +80,11 @@ const InternalAvatar: React.ForwardRefRenderFunction<unknown, AvatarProps> = (pr
     setScale(1);
   }, [props.src]);
 
-  React.useEffect(() => {
-    setScaleParam();
-  }, [props.gap]);
+  React.useEffect(setScaleParam, [props.gap]);
 
   const handleImgLoadError = () => {
     const { onError } = props;
-    const errorFlag = onError ? onError() : undefined;
+    const errorFlag = onError?.();
     if (errorFlag !== false) {
       setIsImgExist(false);
     }
@@ -89,12 +92,13 @@ const InternalAvatar: React.ForwardRefRenderFunction<unknown, AvatarProps> = (pr
 
   const {
     prefixCls: customizePrefixCls,
-    shape,
-    size: customSize,
+    shape = 'circle',
+    size: customSize = 'default',
     src,
     srcSet,
     icon,
     className,
+    rootClassName,
     alt,
     draggable,
     children,
@@ -102,18 +106,18 @@ const InternalAvatar: React.ForwardRefRenderFunction<unknown, AvatarProps> = (pr
     ...others
   } = props;
 
-  const size = customSize === 'default' ? groupSize : customSize;
+  const size = customSize === 'default' ? contextSize : customSize;
 
-  const needResponsive = Object.keys(typeof size === 'object' ? size || {} : {}).some(key =>
+  const needResponsive = Object.keys(typeof size === 'object' ? size || {} : {}).some((key) =>
     ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'].includes(key),
   );
   const screens = useBreakpoint(needResponsive);
-  const responsiveSizeStyle: React.CSSProperties = React.useMemo(() => {
+  const responsiveSizeStyle = React.useMemo<React.CSSProperties>(() => {
     if (typeof size !== 'object') {
       return {};
     }
 
-    const currentBreakpoint: Breakpoint = responsiveArray.find(screen => screens[screen])!;
+    const currentBreakpoint: Breakpoint = responsiveArray.find((screen) => screens[screen])!;
     const currentSize = size[currentBreakpoint];
 
     return currentSize
@@ -126,13 +130,14 @@ const InternalAvatar: React.ForwardRefRenderFunction<unknown, AvatarProps> = (pr
       : {};
   }, [screens, size]);
 
-  devWarning(
+  warning(
     !(typeof icon === 'string' && icon.length > 2),
     'Avatar',
     `\`icon\` is using ReactNode instead of string naming in v4. Please check \`${icon}\` at https://ant.design/components/icon`,
   );
 
   const prefixCls = getPrefixCls('avatar', customizePrefixCls);
+  const [wrapSSR, hashId] = useStyle(prefixCls);
 
   const sizeCls = classNames({
     [`${prefixCls}-lg`]: size === 'large',
@@ -150,6 +155,8 @@ const InternalAvatar: React.ForwardRefRenderFunction<unknown, AvatarProps> = (pr
       [`${prefixCls}-icon`]: !!icon,
     },
     className,
+    rootClassName,
+    hashId,
   );
 
   const sizeStyle: React.CSSProperties =
@@ -162,7 +169,7 @@ const InternalAvatar: React.ForwardRefRenderFunction<unknown, AvatarProps> = (pr
         }
       : {};
 
-  let childrenToRender;
+  let childrenToRender: React.ReactNode;
   if (typeof src === 'string' && isImgExist) {
     childrenToRender = (
       <img
@@ -197,9 +204,7 @@ const InternalAvatar: React.ForwardRefRenderFunction<unknown, AvatarProps> = (pr
       <ResizeObserver onResize={setScaleParam}>
         <span
           className={`${prefixCls}-string`}
-          ref={(node: HTMLElement) => {
-            avatarChildrenRef.current = node;
-          }}
+          ref={avatarChildrenRef}
           style={{ ...sizeChildrenStyle, ...childrenStyle }}
         >
           {children}
@@ -208,13 +213,7 @@ const InternalAvatar: React.ForwardRefRenderFunction<unknown, AvatarProps> = (pr
     );
   } else {
     childrenToRender = (
-      <span
-        className={`${prefixCls}-string`}
-        style={{ opacity: 0 }}
-        ref={(node: HTMLElement) => {
-          avatarChildrenRef.current = node;
-        }}
-      >
+      <span className={`${prefixCls}-string`} style={{ opacity: 0 }} ref={avatarChildrenRef}>
         {children}
       </span>
     );
@@ -225,24 +224,22 @@ const InternalAvatar: React.ForwardRefRenderFunction<unknown, AvatarProps> = (pr
   delete others.onError;
   delete others.gap;
 
-  return (
+  return wrapSSR(
     <span
       {...others}
       style={{ ...sizeStyle, ...responsiveSizeStyle, ...others.style }}
       className={classString}
-      ref={avatarNodeMergeRef as any}
+      ref={avatarNodeMergeRef}
     >
       {childrenToRender}
-    </span>
+    </span>,
   );
 };
 
-const Avatar = React.forwardRef<unknown, AvatarProps>(InternalAvatar);
-Avatar.displayName = 'Avatar';
+const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(InternalAvatar);
 
-Avatar.defaultProps = {
-  shape: 'circle' as AvatarProps['shape'],
-  size: 'default' as AvatarProps['size'],
-};
+if (process.env.NODE_ENV !== 'production') {
+  Avatar.displayName = 'Avatar';
+}
 
 export default Avatar;

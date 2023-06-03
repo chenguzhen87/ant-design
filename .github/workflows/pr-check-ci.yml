@@ -3,13 +3,14 @@ name: PR Check CI
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/5 * * * *"
 
 permissions:
   contents: read
 
 jobs:
   pr-check-ci:
+    if: github.repository == 'ant-design/ant-design'
     permissions:
       checks: read  # for actions-cool/check-pr-ci to get check reference
       contents: write  # for actions-cool/check-pr-ci to merge PRs
@@ -28,4 +29,4 @@ jobs:
           success-review: true
           success-merge: true
           merge-method: 'merge'
-          merge-title: 'chore: auto merge branchs (#${number})'
+          merge-title: 'chore: auto merge branches (#${number})'

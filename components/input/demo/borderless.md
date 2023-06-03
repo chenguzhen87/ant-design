@@ -1,10 +1,3 @@
----
-order: 20
-title:
-  zh-CN: 无边框
-  en-US: Borderless
----
-
 ## zh-CN
 
 没有边框。
@@ -12,9 +5,3 @@ title:
 ## en-US
 
 No border.
-
-```jsx
-import { Input } from 'antd';
-
-export default () => <Input placeholder="Borderless" bordered={false} />;
-```
