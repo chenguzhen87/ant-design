@@ -1,4 +1,5 @@
 import type { PresetColorType } from './presetColors';
+
 // ======================================================================
 // ==                            Seed Token                            ==
 // ======================================================================
@@ -62,6 +63,14 @@ export interface SeedToken extends PresetColorType {
    * @descEN Used to derive the base variable of the background color gradient. In v5, we added a layer of background color derivation algorithm to produce map token of background color. But PLEASE DO NOT USE this Seed Token directly in the code!
    */
   colorBgBase: string;
+
+  /**
+   * @nameZH 超链接颜色
+   * @nameEN Hyperlink color
+   * @desc 控制超链接的颜色。
+   * @descEN Control the color of hyperlink.
+   */
+  colorLink: string;
 
   //  ----------   Font   ---------- //
 
@@ -265,7 +274,7 @@ export interface SeedToken extends PresetColorType {
    * @nameEN Motion Style
    * @desc 用于配置动画效果，为 `false` 时则关闭动画
    * @descEN Used to configure the motion effect, when it is `false`, the motion is turned off
-   * @default false
+   * @default true
    */
   motion: boolean;
 }

@@ -1,7 +1,8 @@
-import classNames from 'classnames';
 import * as React from 'react';
-import { ConfigContext } from '../config-provider';
+import classNames from 'classnames';
+
 import type { LiteralUnion } from '../_util/type';
+import { ConfigContext } from '../config-provider';
 
 type Color = 'blue' | 'red' | 'green' | 'gray';
 
@@ -39,8 +40,8 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
 
   const prefixCls = getPrefixCls('timeline', customizePrefixCls);
   const itemClassName = classNames(
+    `${prefixCls}-item`,
     {
-      [`${prefixCls}-item`]: true,
       [`${prefixCls}-item-pending`]: pending,
     },
     className,
@@ -48,8 +49,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
 
   const customColor = /blue|red|green|gray/.test(color || '') ? undefined : color;
 
-  const dotClassName = classNames({
-    [`${prefixCls}-item-head`]: true,
+  const dotClassName = classNames(`${prefixCls}-item-head`, {
     [`${prefixCls}-item-head-custom`]: !!dot,
     [`${prefixCls}-item-head-${color}`]: !customColor,
   });

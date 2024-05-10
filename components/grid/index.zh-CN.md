@@ -1,13 +1,12 @@
 ---
 category: Components
-subtitle: 栅格
 group: 布局
 title: Grid
+subtitle: 栅格
+description: 24 栅格系统。
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*mfJeS6cqZrEAAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*DLUwQ4B2_zQAAAAAAAAAAAAADrJ8AQ/original
 ---
-
-24 栅格系统。
 
 ## 设计理念
 
@@ -44,11 +43,14 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*DLUwQ4B2_zQAAA
 <code src="./demo/flex-order.tsx">排序</code>
 <code src="./demo/flex-stretch.tsx">Flex 填充</code>
 <code src="./demo/responsive.tsx">响应式布局</code>
+<code src="./demo/responsive-flex.tsx" version="5.14.0">Flex 响应式布局</code>
 <code src="./demo/responsive-more.tsx">其他属性的响应式</code>
 <code src="./demo/playground.tsx">栅格配置器</code>
 <code src="./demo/useBreakpoint.tsx">useBreakpoint Hook</code>
 
 ## API
+
+通用属性参考：[通用属性](/docs/react/common-props)
 
 Ant Design 的布局组件若不能满足你的需求，你也可以直接使用社区的优秀布局组件：
 
@@ -85,6 +87,6 @@ Ant Design 的布局组件若不能满足你的需求，你也可以直接使用
 
 响应式栅格的断点扩展自 [BootStrap 4 的规则](https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints)（不包含链接里 `occasionally` 的部分)。
 
-## Design Token
+## 主题变量（Design Token）
 
 <ComponentTokenTable component="Grid"></ComponentTokenTable>

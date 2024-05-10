@@ -1,4 +1,5 @@
 import React from 'react';
+
 import FloatButton from '..';
 import { fireEvent, render } from '../../../tests/utils';
 
@@ -83,5 +84,40 @@ describe('FloatButtonGroup', () => {
     fireEvent.click(container.querySelector('.ant-float-btn')!);
     fireEvent.click(container);
     expect(onOpenChange).toHaveBeenCalledTimes(2);
+  });
+
+  it('warning if set `open` but not set `trigger`', () => {
+    const warnSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(
+      <FloatButton.Group open trigger="click">
+        <FloatButton />
+        <FloatButton />
+      </FloatButton.Group>,
+    );
+
+    expect(warnSpy).not.toHaveBeenCalled();
+
+    render(
+      <FloatButton.Group open>
+        <FloatButton />
+        <FloatButton />
+      </FloatButton.Group>,
+    );
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Warning: [antd: FloatButton.Group] `open` need to be used together with `trigger`',
+    );
+    warnSpy.mockRestore();
+  });
+
+  it('menu should support badge', () => {
+    const { container } = render(
+      <FloatButton.Group trigger="click" badge={{ dot: true }}>
+        <FloatButton />
+        <FloatButton />
+      </FloatButton.Group>,
+    );
+
+    expect(container.querySelector('.ant-badge')).toBeTruthy();
   });
 });

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AutoComplete, Input } from 'antd';
-import type { SelectProps } from 'antd/es/select';
+import type { SelectProps } from 'antd';
 
 const getRandomInt = (max: number, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -48,11 +48,12 @@ const App: React.FC = () => {
 
   return (
     <AutoComplete
-      dropdownMatchSelectWidth={252}
+      popupMatchSelectWidth={252}
       style={{ width: 300 }}
       options={options}
       onSelect={onSelect}
       onSearch={handleSearch}
+      size="large"
     >
       <Input.Search size="large" placeholder="input here" enterButton />
     </AutoComplete>

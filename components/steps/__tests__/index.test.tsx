@@ -1,9 +1,10 @@
 import React from 'react';
+
 import Steps from '..';
+import { resetWarned } from '../../_util/warning';
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
 import { fireEvent, render, screen } from '../../../tests/utils';
-import { resetWarned } from '../../_util/warning';
 import ConfigProvider from '../../config-provider';
 
 describe('Steps', () => {
@@ -103,7 +104,7 @@ describe('Steps', () => {
     expect(container.querySelectorAll('.ant-steps-item')).toHaveLength(1);
 
     expect(errorSpy).toHaveBeenCalledWith(
-      'Warning: [antd: Steps] Step is deprecated. Please use `items` directly.',
+      'Warning: [antd: Menu] `Step` is deprecated. Please use `items` instead.',
     );
     errorSpy.mockRestore();
   });

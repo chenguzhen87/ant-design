@@ -2,13 +2,12 @@
 category: Components
 group: Data Entry
 title: Upload
+description: Used to select and upload files or drag and drop files.
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*93ymR4RD4S0AAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*l1nlSryXib8AAAAAAAAAAAAADrJ8AQ/original
 demo:
   cols: 2
 ---
-
-Upload the file by selecting or dragging.
 
 ## When To Use
 
@@ -41,8 +40,12 @@ Uploading is the process of publishing information (web pages, text, pictures, v
 <code src="./demo/drag-sorting.tsx">Drag sorting of uploadList</code>
 <code src="./demo/crop-image.tsx">Crop image before uploading</code>
 <code src="./demo/customize-progress-bar.tsx">Customize Progress Bar</code>
+<code src="./demo/component-token.tsx" debug>Component Token</code>
+<code src="./demo/debug-disabled.tsx" debug>Debug Disabled Styles</code>
 
 ## API
+
+Common props ref：[Common props](/docs/react/common-props)
 
 | Property | Description | Type | Default | Version |
 | --- | --- | --- | --- | --- |
@@ -53,7 +56,7 @@ Uploading is the process of publishing information (web pages, text, pictures, v
 | data | Uploading extra params or function which can return uploading extra params | object \| (file) => object \| Promise&lt;object> | - |  |
 | defaultFileList | Default list of files that have been uploaded | object\[] | - |  |
 | directory | Support upload whole directory ([caniuse](https://caniuse.com/#feat=input-file-directory)) | boolean | false |  |
-| disabled | Disable upload button | boolean | false |  |
+| disabled | Disable upload button | boolean | false | When customizing Upload children, please pass the disabled attribute to the child node at the same time to ensure the disabled rendering effect is consistent. |
 | fileList | List of files that have been uploaded (controlled). Here is a common issue [#2423](https://github.com/ant-design/ant-design/issues/2423) when using it | [UploadFile](#uploadfile)\[] | - |  |
 | headers | Set request headers, valid above IE10 | object | - |  |
 | iconRender | Custom show icon | (file: UploadFile, listType?: UploadListType) => ReactNode | - |  |
@@ -69,7 +72,7 @@ Uploading is the process of publishing information (web pages, text, pictures, v
 | progress | Custom progress bar | [ProgressProps](/components/progress/#api) (support `type="line"` only) | { strokeWidth: 2, showInfo: false } | 4.3.0 |
 | showUploadList | Whether to show default upload list, could be an object to specify `showPreviewIcon`, `showRemoveIcon`, `showDownloadIcon`, `removeIcon` and `downloadIcon` individually | boolean \| { showPreviewIcon?: boolean, showDownloadIcon?: boolean, showRemoveIcon?: boolean, previewIcon?: ReactNode \| (file: UploadFile) => ReactNode, removeIcon?: ReactNode \| (file: UploadFile) => ReactNode, downloadIcon?: ReactNode \| (file: UploadFile) => ReactNode } | true | function: 4.7.0 |
 | withCredentials | The ajax upload with cookie sent | boolean | false |  |
-| onChange | A callback function, can be executed when uploading state is changing, see [onChange](#onchange) | function | - |  |
+| onChange | A callback function, can be executed when uploading state is changing. It will trigger by every uploading phase. see [onChange](#onchange) | function | - |  |
 | onDrop | A callback function executed when files are dragged and dropped into the upload area | (event: React.DragEvent) => void | - | 4.16.0 |
 | onDownload | Click the method to download the file, pass the method to perform the method logic, and do not pass the default jump to the new TAB | function(file): void | (Jump to new TAB) |  |
 | onPreview | A callback function, will be executed when the file link or preview icon is clicked | function(file) | - |  |
@@ -84,18 +87,18 @@ Extends File with additional props.
 | crossOrigin | CORS settings attributes | `'anonymous'` \| `'use-credentials'` \| `''` | - | 4.20.0 |
 | name | File name | string | - | - |
 | percent | Upload progress percent | number | - | - |
-| status | Upload status. Show different style when configured | `error` \| `success` \| `done` \| `uploading` \| `removed` | - | - |
+| status | Upload status. Show different style when configured | `error` \| `done` \| `uploading` \| `removed` | - | - |
 | thumbUrl | Thumb image url | string | - | - |
 | uid | unique id. Will auto-generate when not provided | string | - | - |
 | url | Download url | string | - | - |
 
 ### onChange
 
-> The function will be called when uploading is in progress, completed, or failed.
+> 💡 The function will be called when uploading is in progress, completed, or failed.
 
 When uploading state change, it returns:
 
-```js
+```jsx
 {
   file: { /* ... */ },
   fileList: [ /* ... */ ],
@@ -105,11 +108,11 @@ When uploading state change, it returns:
 
 1. `file` File object for the current operation.
 
-   ```js
+   ```jsx
    {
       uid: 'uid',      // unique identifier, negative is recommended, to prevent interference with internally generated id
       name: 'xx.png',   // file name
-      status: 'done', // options： uploading, done, error, removed. Intercepted file by beforeUpload doesn't have a status field.
+      status: 'done' | 'uploading' | 'error' | 'removed', // Intercepted file by beforeUpload doesn't have a status field.
       response: '{"status": "success"}', // response from server
       linkProps: '{"download": "image"}', // additional HTML props of file link
       xhr: 'XMLHttpRequest{ ... }', // XMLHttpRequest Header
@@ -149,8 +152,21 @@ For compatible case, we return File object when `beforeUpload` return `false`. I
 
 ### Why sometimes Chrome can not upload?
 
-Chrome update will also break native upload. Please restart Chrome to finish the upload work. Ref:
+Chrome update will also break native upload. Please restart Chrome to finish the upload job.
 
+![](https://github.com/ant-design/ant-design/assets/507615/1509b25f-4cd3-41b2-9415-90394ad08273)
+
+Ref:
+
+- [#48007](https://github.com/ant-design/ant-design/issues/48007)
 - [#32672](https://github.com/ant-design/ant-design/issues/32672)
 - [#32913](https://github.com/ant-design/ant-design/issues/32913)
 - [#33988](https://github.com/ant-design/ant-design/issues/33988)
+
+### Can still select files when uploading a folder in Safari?
+
+Inside the upload component, we use the `directory` and `webkitdirectory` properties to control only directories can be selected. However, in Safari's implementation it doesn't seem to work. See [here](https://stackoverflow.com/q/55649945/3040605). Please try passing an additional `accept` attribute that cannot match any files. For example:
+
+```jsx
+accept: `.${'n'.repeat(100)}`;
+```

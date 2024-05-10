@@ -1,4 +1,6 @@
+import { unit } from '@ant-design/cssinjs';
 import type { CSSObject } from '@ant-design/cssinjs';
+
 import type { GenerateStyle } from '../../theme/internal';
 import type { ColorPickerToken } from './index';
 
@@ -16,9 +18,9 @@ const genPresetsStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
     borderRadius,
     colorFill,
     colorWhite,
-    colorTextTertiary,
     marginXXS,
     paddingXS,
+    fontHeightSM,
   } = token;
 
   return {
@@ -26,7 +28,7 @@ const genPresetsStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
       [`${antCls}-collapse-item > ${antCls}-collapse-header`]: {
         padding: 0,
         [`${antCls}-collapse-expand-icon`]: {
-          height: fontSizeSM * lineHeightSM,
+          height: fontHeightSM,
           color: colorTextQuaternary,
           paddingInlineEnd: paddingXXS,
         },
@@ -37,7 +39,7 @@ const genPresetsStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
         gap: marginXXS,
       },
       [`${antCls}-collapse-item > ${antCls}-collapse-content > ${antCls}-collapse-content-box`]: {
-        padding: `${paddingXS}px 0`,
+        padding: `${unit(paddingXS)} 0`,
       },
       '&-label': {
         fontSize: fontSizeSM,
@@ -47,7 +49,7 @@ const genPresetsStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
       '&-items': {
         display: 'flex',
         flexWrap: 'wrap',
-        gap: marginXXS * 1.5,
+        gap: token.calc(marginXXS).mul(1.5).equal(),
         [`${componentCls}-presets-color`]: {
           position: 'relative',
           cursor: 'pointer',
@@ -57,13 +59,16 @@ const genPresetsStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
           '&::before': {
             content: '""',
             pointerEvents: 'none',
-            width: colorPickerPresetColorSize + 4 * lineWidth,
-            height: colorPickerPresetColorSize + 4 * lineWidth,
+            width: token.calc(colorPickerPresetColorSize).add(token.calc(lineWidth).mul(4)).equal(),
+            height: token
+              .calc(colorPickerPresetColorSize)
+              .add(token.calc(lineWidth).mul(4))
+              .equal(),
             position: 'absolute',
-            top: -2 * lineWidth,
-            insetInlineStart: -2 * lineWidth,
+            top: token.calc(lineWidth).mul(-2).equal(),
+            insetInlineStart: token.calc(lineWidth).mul(-2).equal(),
             borderRadius,
-            border: `${lineWidth}px solid transparent`,
+            border: `${unit(lineWidth)} solid transparent`,
             transition: `border-color ${token.motionDurationMid} ${token.motionEaseInBack}`,
           },
           '&:hover::before': {
@@ -76,9 +81,9 @@ const genPresetsStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
             top: '50%',
             insetInlineStart: '21.5%',
             display: 'table',
-            width: (colorPickerPresetColorSize / 13) * 5,
-            height: (colorPickerPresetColorSize / 13) * 8,
-            border: `${token.lineWidthBold}px solid ${token.colorWhite}`,
+            width: token.calc(colorPickerPresetColorSize).div(13).mul(5).equal(),
+            height: token.calc(colorPickerPresetColorSize).div(13).mul(8).equal(),
+            border: `${unit(token.lineWidthBold)} solid ${token.colorWhite}`,
             borderTop: 0,
             borderInlineStart: 0,
             transform: 'rotate(45deg) scale(0) translate(-50%,-50%)',
@@ -96,7 +101,7 @@ const genPresetsStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
             },
             [`&${componentCls}-presets-color-bright`]: {
               '&::after': {
-                borderColor: colorTextTertiary,
+                borderColor: 'rgba(0, 0, 0, 0.45)',
               },
             },
           },

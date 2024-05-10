@@ -1,5 +1,6 @@
-import { removeCSS, updateCSS } from 'rc-util/lib/Dom/dynamicCSS';
 import * as React from 'react';
+import { removeCSS, updateCSS } from 'rc-util/lib/Dom/dynamicCSS';
+
 import useLocale from '../../../hooks/useLocale';
 
 const whereCls = 'ant-where-checker';
@@ -20,7 +21,7 @@ const locales = {
 
 // Check for browser support `:where` or not
 // Warning user if not support to modern browser
-export default function InfoNewVersion() {
+function InfoNewVersion() {
   const [location] = useLocale(locales);
   const [supportWhere, setSupportWhere] = React.useState(true);
 
@@ -45,10 +46,8 @@ export default function InfoNewVersion() {
     const { content } = getComputedStyle(p);
     setSupportWhere(String(content).includes('CHECK'));
 
-    return () => {
-      document.body.removeChild(p);
-      removeCSS(whereCls);
-    };
+    document.body.removeChild(p);
+    removeCSS(whereCls);
   }, []);
 
   return supportWhere ? null : (
@@ -86,3 +85,5 @@ export default function InfoNewVersion() {
     </div>
   );
 }
+
+export default InfoNewVersion;

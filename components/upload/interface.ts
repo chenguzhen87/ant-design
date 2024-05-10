@@ -1,16 +1,17 @@
+import type * as React from 'react';
 import type {
   RcFile as OriRcFile,
   UploadRequestOption as RcCustomRequestOptions,
   UploadProps as RcUploadProps,
 } from 'rc-upload/lib/interface';
-import type * as React from 'react';
+
 import type { ProgressAriaProps, ProgressProps } from '../progress';
 
 export interface RcFile extends OriRcFile {
   readonly lastModifiedDate: Date;
 }
 
-export type UploadFileStatus = 'error' | 'success' | 'done' | 'uploading' | 'removed';
+export type UploadFileStatus = 'error' | 'done' | 'uploading' | 'removed';
 
 export interface HttpRequestHeader {
   [key: string]: string;
@@ -86,7 +87,7 @@ type TransformFileHandler = (
 ) => string | Blob | File | PromiseLike<string | Blob | File>;
 type BeforeUploadValueType = void | boolean | string | Blob | File;
 
-export interface UploadProps<T = any> extends Pick<RcUploadProps, 'capture'> {
+export interface UploadProps<T = any> extends Pick<RcUploadProps, 'capture' | 'hasControlInside'> {
   type?: UploadType;
   name?: string;
   defaultFileList?: Array<UploadFile<T>>;
@@ -109,6 +110,7 @@ export interface UploadProps<T = any> extends Pick<RcUploadProps, 'capture'> {
   onDrop?: (event: React.DragEvent<HTMLDivElement>) => void;
   listType?: UploadListType;
   className?: string;
+  rootClassName?: string;
   onPreview?: (file: UploadFile<T>) => void;
   onDownload?: (file: UploadFile<T>) => void;
   onRemove?: (file: UploadFile<T>) => void | boolean | Promise<void | boolean>;
@@ -116,7 +118,7 @@ export interface UploadProps<T = any> extends Pick<RcUploadProps, 'capture'> {
   style?: React.CSSProperties;
   disabled?: boolean;
   prefixCls?: string;
-  customRequest?: (options: RcCustomRequestOptions) => void;
+  customRequest?: (options: RcCustomRequestOptions<T>) => void;
   withCredentials?: boolean;
   openFileDialogOnClick?: boolean;
   locale?: UploadLocale;
@@ -150,9 +152,9 @@ export interface UploadListProps<T = any> {
   showRemoveIcon?: boolean;
   showDownloadIcon?: boolean;
   showPreviewIcon?: boolean;
-  removeIcon?: React.ReactNode | ((file: UploadFile) => React.ReactNode);
-  downloadIcon?: React.ReactNode | ((file: UploadFile) => React.ReactNode);
-  previewIcon?: React.ReactNode | ((file: UploadFile) => React.ReactNode);
+  removeIcon?: React.ReactNode | ((file: UploadFile<T>) => React.ReactNode);
+  downloadIcon?: React.ReactNode | ((file: UploadFile<T>) => React.ReactNode);
+  previewIcon?: React.ReactNode | ((file: UploadFile<T>) => React.ReactNode);
   locale: UploadLocale;
   previewFile?: PreviewFileHandler;
   iconRender?: (file: UploadFile<T>, listType?: UploadListType) => React.ReactNode;

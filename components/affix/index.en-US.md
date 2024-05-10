@@ -1,6 +1,7 @@
 ---
 category: Components
 title: Affix
+description: Stick an element to the viewport.
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*YSm4RI3iOJ8AAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*03dxS64LxeQAAAAAAAAAAAAADrJ8AQ/original
 demo:
@@ -10,13 +11,15 @@ group:
   order: 7
 ---
 
-Wrap Affix around another component to make it stick the viewport.
-
 ## When To Use
 
 On longer web pages, it's helpful to stick component into the viewport. This is common for menus and actions.
 
 Please note that Affix should not cover other content on the page, especially when the size of the viewport is small.
+
+> Notes for developers
+>
+> After version `5.10.0`, we rewrite Affix use FC, Some methods of obtaining `ref` and calling internal instance methods will invalid.
 
 ## Examples
 
@@ -27,6 +30,8 @@ Please note that Affix should not cover other content on the page, especially wh
 <code src="./demo/debug.tsx" debug>debug</code>
 
 ## API
+
+Common props ref：[Common props](/docs/react/common-props)
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |

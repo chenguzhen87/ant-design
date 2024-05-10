@@ -1,11 +1,13 @@
-import raf from 'rc-util/lib/raf';
-import { composeRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import { useRef } from 'react';
+import type { SliderRef } from 'rc-slider/lib/Slider';
+import raf from 'rc-util/lib/raf';
+import { composeRef } from 'rc-util/lib/ref';
+
 import type { TooltipProps } from '../tooltip';
 import Tooltip from '../tooltip';
 
-const SliderTooltip = React.forwardRef<unknown, TooltipProps>((props, ref) => {
+const SliderTooltip = React.forwardRef<SliderRef, TooltipProps>((props, ref) => {
   const { open } = props;
   const innerRef = useRef<any>(null);
 
@@ -35,5 +37,9 @@ const SliderTooltip = React.forwardRef<unknown, TooltipProps>((props, ref) => {
 
   return <Tooltip ref={composeRef(innerRef, ref)} {...props} />;
 });
+
+if (process.env.NODE_ENV !== 'production') {
+  SliderTooltip.displayName = 'SliderTooltip';
+}
 
 export default SliderTooltip;

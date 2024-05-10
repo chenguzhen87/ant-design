@@ -1,16 +1,16 @@
+import * as React from 'react';
 import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
 import classNames from 'classnames';
-import * as React from 'react';
+
 import type { PopconfirmProps } from '.';
 import ActionButton from '../_util/ActionButton';
 import { getRenderPropValue } from '../_util/getRenderPropValue';
 import Button from '../button';
-import { convertLegacyProps } from '../button/button';
+import { convertLegacyProps } from '../button/buttonHelpers';
 import { ConfigContext } from '../config-provider';
 import { useLocale } from '../locale';
 import defaultLocale from '../locale/en_US';
 import PopoverPurePanel from '../popover/PurePanel';
-
 import useStyle from './style';
 
 export interface PopconfirmLocale {
@@ -74,18 +74,22 @@ export const Overlay: React.FC<OverlayProps> = (props) => {
       <div className={`${prefixCls}-buttons`}>
         {showCancel && (
           <Button onClick={onCancel} size="small" {...cancelButtonProps}>
-            {cancelText ?? contextLocale?.cancelText}
+            {cancelText || contextLocale?.cancelText}
           </Button>
         )}
         <ActionButton
-          buttonProps={{ size: 'small', ...convertLegacyProps(okType), ...okButtonProps }}
+          buttonProps={{
+            size: 'small',
+            ...convertLegacyProps(okType),
+            ...okButtonProps,
+          }}
           actionFn={onConfirm}
           close={close}
           prefixCls={getPrefixCls('btn')}
           quitOnNullishReturnValue
           emitEvent
         >
-          {okText ?? contextLocale?.okText}
+          {okText || contextLocale?.okText}
         </ActionButton>
       </div>
     </div>
@@ -100,14 +104,14 @@ export interface PurePanelProps
   prefixCls?: string;
 }
 
-export default function PurePanel(props: PurePanelProps) {
+const PurePanel: React.FC<PurePanelProps> = (props) => {
   const { prefixCls: customizePrefixCls, placement, className, style, ...restProps } = props;
 
   const { getPrefixCls } = React.useContext(ConfigContext);
   const prefixCls = getPrefixCls('popconfirm', customizePrefixCls);
-  const [wrapSSR] = useStyle(prefixCls);
+  const [wrapCSSVar] = useStyle(prefixCls);
 
-  return wrapSSR(
+  return wrapCSSVar(
     <PopoverPurePanel
       placement={placement}
       className={classNames(prefixCls, className)}
@@ -115,4 +119,6 @@ export default function PurePanel(props: PurePanelProps) {
       content={<Overlay prefixCls={prefixCls} {...restProps} />}
     />,
   );
-}
+};
+
+export default PurePanel;

@@ -2,11 +2,10 @@
 category: Components
 group: Data Display
 title: Empty
+description: Empty state placeholder.
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*ZdiZSLzEV0wAAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*obM7S5lIxeMAAAAAAAAAAAAADrJ8AQ/original
 ---
-
-Empty state placeholder.
 
 ## When To Use
 
@@ -23,6 +22,8 @@ Empty state placeholder.
 <code src="./demo/description.tsx">No description</code>
 
 ## API
+
+Common props ref：[Common props](/docs/react/common-props)
 
 ```jsx
 <Empty>

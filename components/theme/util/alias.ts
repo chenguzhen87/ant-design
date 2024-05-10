@@ -1,4 +1,5 @@
 import { TinyColor } from '@ctrl/tinycolor';
+
 import type { AliasToken, MapToken, OverrideToken, SeedToken } from '../interface';
 import seedToken from '../themes/seed';
 import getAlphaColor from './getAlphaColor';
@@ -42,10 +43,6 @@ export default function formatToken(derivativeToken: RawMergedToken): AliasToken
   // Generate alias token
   const aliasToken: AliasToken = {
     ...mergedToken,
-
-    colorLink: mergedToken.colorInfoText,
-    colorLinkHover: mergedToken.colorInfoHover,
-    colorLinkActive: mergedToken.colorInfoActive,
 
     // ============== Background ============== //
     colorFillContent: mergedToken.colorFillSecondary,

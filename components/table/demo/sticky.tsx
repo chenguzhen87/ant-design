@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Switch, Table } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import type { TableColumnsType } from 'antd';
 
 interface DataType {
   key: React.Key;
@@ -9,7 +9,7 @@ interface DataType {
   address: string;
 }
 
-const columns: ColumnsType<DataType> = [
+const columns: TableColumnsType<DataType> = [
   {
     title: 'Full Name',
     width: 100,
@@ -114,7 +114,8 @@ const App: React.FC = () => {
           </Table.Summary.Row>
         </Table.Summary>
       )}
-      sticky
+      // antd site header height
+      sticky={{ offsetHeader: 64 }}
     />
   );
 };

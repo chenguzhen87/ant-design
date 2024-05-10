@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+
+import { fireEvent, render } from '../../../tests/utils';
 import Sider from '../Sider';
-import { render, fireEvent } from '../../../tests/utils';
 
 const Content = () => {
   const [breakpoint, setBreakpoint] = useState('sm');

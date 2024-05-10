@@ -66,7 +66,7 @@ title: 数据格式
 <img class="preview-img bad" alt="不推荐示例" description="“千”不能以单位的形式展示。" src="https://gw.alipayobjects.com/mdn/rms_08e378/afts/img/A*iuEARoq_-o0AAAAAAAAAAABkARQnAQ">
 </ImagePreview>
 
-**大额计量：** 如果一个金额很大，那么数值中的“万”“亿”单位可采用汉字。如果一个数值很大，那么数值中的“万”“亿”单位可采用汉字。
+**大额计量：** 如果一个数值很大，那么数值中的“万”“亿”单位可采用汉字。
 
 ### 日期时间
 
@@ -79,7 +79,7 @@ title: 数据格式
 | 格式 | 如何使用及何时使用 | 例子 |
 | --- | --- | --- |
 | 年、月、日 | 中国默认使用 `yyyy-mm-dd` 格式。（[其它国家参考链接）](https://zh.wikipedia.org/wiki/%E5%90%84%E5%9C%B0%E6%97%A5%E6%9C%9F%E5%92%8C%E6%97%B6%E9%97%B4%E8%A1%A8%E7%A4%BA%E6%B3%95)。 | 2019-12-08 |
-| 专用名词 | 含有月日的专用名词采用阿拉伯数字表示时，应采用间隔号 `·` 将月、日分开，并在数字前后加引号。 | 6.1 儿童节 |
+| 专用名词 | 含有月日的专用名词采用阿拉伯数字表示时，应采用间隔号 `·` 将月、日分开，并在数字前后加引号。 | “6·1” 儿童节 |
 | 日期范围 | 在日期或时间范围之间显示一个波浪号 （前后需要空格）。 | 2018-12-08 ～ 2019-12-07 |
 
 **时间格式**：默认使用二十四小时制：
@@ -143,8 +143,9 @@ title: 数据格式
 
 #### 数据加载
 
+<ImagePreview>
 <img class="preview-img" src="https://gw.alipayobjects.com/mdn/rms_08e378/afts/img/A*E6pGTJYEh-gAAAAAAAAAAABkARQnAQ">
-
+</ImagePreview>
 数据加载用「骨架屏」表示。
 
 ## 参考文档

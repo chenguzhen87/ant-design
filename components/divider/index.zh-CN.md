@@ -2,6 +2,7 @@
 category: Components
 title: Divider
 subtitle: 分割线
+description: 区隔内容的分割线。
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*7sMiTbzvaDoAAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*KPSEQ74PLg4AAAAAAAAAAAAADrJ8AQ/original
 demo:
@@ -10,8 +11,6 @@ group:
   title: 布局
   order: 2
 ---
-
-区隔内容的分割线。
 
 ## 何时使用
 
@@ -26,8 +25,11 @@ group:
 <code src="./demo/plain.tsx">分割文字使用正文样式</code>
 <code src="./demo/vertical.tsx">垂直分割线</code>
 <code src="./demo/customize-style.tsx" debug>样式自定义</code>
+<code src="./demo/component-token.tsx" debug>组件 Token</code>
 
 ## API
+
+通用属性参考：[通用属性](/docs/react/common-props)
 
 | 参数 | 说明 | 类型 | 默认值 | 版本 |
 | --- | --- | --- | --- | --- |
@@ -40,6 +42,6 @@ group:
 | style | 分割线样式对象 | CSSProperties | - |  |
 | type | 水平还是垂直类型 | `horizontal` \| `vertical` | `horizontal` |  |
 
-## Design Token
+## 主题变量（Design Token）
 
 <ComponentTokenTable component="Divider"></ComponentTokenTable>

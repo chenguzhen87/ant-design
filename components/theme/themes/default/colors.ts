@@ -1,4 +1,5 @@
 import { generate } from '@ant-design/colors';
+
 import type { GenerateColorMap, GenerateNeutralColorMap } from '../ColorMap';
 import { getAlphaColor, getSolidColor } from './colorAlgorithm';
 
@@ -46,6 +47,7 @@ export const generateNeutralColorPalettes: GenerateNeutralColorMap = (
     colorBgContainer: getSolidColor(colorBgBase, 0),
     colorBgElevated: getSolidColor(colorBgBase, 0),
     colorBgSpotlight: getAlphaColor(colorTextBase, 0.85),
+    colorBgBlur: 'transparent',
 
     colorBorder: getSolidColor(colorBgBase, 15),
     colorBorderSecondary: getSolidColor(colorBgBase, 6),

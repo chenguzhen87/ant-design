@@ -1,12 +1,11 @@
+import * as React from 'react';
 import classNames from 'classnames';
 import toArray from 'rc-util/lib/Children/toArray';
-import * as React from 'react';
 
 import type { DirectionType } from '../config-provider';
 import { ConfigContext } from '../config-provider';
-import type { SizeType } from '../config-provider/SizeContext';
-
 import useSize from '../config-provider/hooks/useSize';
+import type { SizeType } from '../config-provider/SizeContext';
 import useStyle from './style';
 
 export interface SpaceCompactItemContextType {
@@ -30,8 +29,7 @@ export const useCompactItemContext = (prefixCls: string, direction: DirectionTyp
     const { compactDirection, isFirstItem, isLastItem } = compactItemContext;
     const separator = compactDirection === 'vertical' ? '-vertical-' : '-';
 
-    return classNames({
-      [`${prefixCls}-compact${separator}item`]: true,
+    return classNames(`${prefixCls}-compact${separator}item`, {
       [`${prefixCls}-compact${separator}first-item`]: isFirstItem,
       [`${prefixCls}-compact${separator}last-item`]: isLastItem,
       [`${prefixCls}-compact${separator}item-rtl`]: direction === 'rtl',
@@ -78,10 +76,10 @@ const Compact: React.FC<SpaceCompactProps> = (props) => {
     ...restProps
   } = props;
 
-  const mergedSize = useSize((ctx) => size ?? ctx ?? 'middle');
+  const mergedSize = useSize((ctx) => size ?? ctx);
 
   const prefixCls = getPrefixCls('space-compact', customizePrefixCls);
-  const [wrapSSR, hashId] = useStyle(prefixCls);
+  const [wrapCSSVar, hashId] = useStyle(prefixCls);
   const clx = classNames(
     prefixCls,
     hashId,
@@ -123,7 +121,7 @@ const Compact: React.FC<SpaceCompactProps> = (props) => {
     return null;
   }
 
-  return wrapSSR(
+  return wrapCSSVar(
     <div className={clx} {...restProps}>
       {nodes}
     </div>,

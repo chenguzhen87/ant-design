@@ -1,9 +1,10 @@
-import useMergedState from 'rc-util/lib/hooks/useMergedState';
 import type { FC } from 'react';
 import React, { useMemo } from 'react';
+import useMergedState from 'rc-util/lib/hooks/useMergedState';
+
 import Select from '../../select';
 import type { Color } from '../color';
-import type { ColorPickerBaseProps } from '../interface';
+import type { ColorFormatType, ColorPickerBaseProps } from '../interface';
 import { ColorFormat } from '../interface';
 import ColorAlphaInput from './ColorAlphaInput';
 import ColorHexInput from './ColorHexInput';
@@ -11,7 +12,7 @@ import ColorHsbInput from './ColorHsbInput';
 import ColorRgbInput from './ColorRgbInput';
 
 interface ColorInputProps
-  extends Pick<ColorPickerBaseProps, 'prefixCls' | 'format' | 'onFormatChange'> {
+  extends Pick<ColorPickerBaseProps, 'prefixCls' | 'format' | 'onFormatChange' | 'disabledAlpha'> {
   value?: Color;
   onChange?: (value: Color) => void;
 }
@@ -22,7 +23,7 @@ const selectOptions = [ColorFormat.hex, ColorFormat.hsb, ColorFormat.rgb].map((f
 }));
 
 const ColorInput: FC<ColorInputProps> = (props) => {
-  const { prefixCls, format, value, onFormatChange, onChange } = props;
+  const { prefixCls, format, value, disabledAlpha, onFormatChange, onChange } = props;
   const [colorFormat, setColorFormat] = useMergedState(ColorFormat.hex, {
     value: format,
     onChange: onFormatChange,
@@ -30,7 +31,7 @@ const ColorInput: FC<ColorInputProps> = (props) => {
 
   const colorInputPrefixCls = `${prefixCls}-input`;
 
-  const handleFormatChange = (newFormat: ColorFormat) => {
+  const handleFormatChange = (newFormat: ColorFormatType) => {
     setColorFormat(newFormat);
   };
 
@@ -51,7 +52,7 @@ const ColorInput: FC<ColorInputProps> = (props) => {
     <div className={`${colorInputPrefixCls}-container`}>
       <Select
         value={colorFormat}
-        bordered={false}
+        variant="borderless"
         getPopupContainer={(current) => current}
         popupMatchSelectWidth={68}
         placement="bottomRight"
@@ -61,7 +62,9 @@ const ColorInput: FC<ColorInputProps> = (props) => {
         options={selectOptions}
       />
       <div className={colorInputPrefixCls}>{steppersNode}</div>
-      <ColorAlphaInput prefixCls={prefixCls} value={value} onChange={onChange} />
+      {!disabledAlpha && (
+        <ColorAlphaInput prefixCls={prefixCls} value={value} onChange={onChange} />
+      )}
     </div>
   );
 };

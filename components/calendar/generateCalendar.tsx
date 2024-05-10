@@ -1,39 +1,18 @@
+import * as React from 'react';
 import classNames from 'classnames';
+import type { BasePickerPanelProps as RcBasePickerPanelProps } from 'rc-picker';
 import { PickerPanel as RCPickerPanel } from 'rc-picker';
 import type { GenerateConfig } from 'rc-picker/lib/generate';
 import type { CellRenderInfo } from 'rc-picker/lib/interface';
-import type {
-  PickerPanelBaseProps as RCPickerPanelBaseProps,
-  PickerPanelDateProps as RCPickerPanelDateProps,
-  PickerPanelTimeProps as RCPickerPanelTimeProps,
-} from 'rc-picker/lib/PickerPanel';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
-import * as React from 'react';
+
+import type { AnyObject } from '../_util/type';
+import { devUseWarning } from '../_util/warning';
 import { ConfigContext } from '../config-provider';
 import { useLocale } from '../locale';
 import CalendarHeader from './Header';
 import enUS from './locale/en_US';
-
 import useStyle from './style';
-import warning from '../_util/warning';
-
-type InjectDefaultProps<Props> = Omit<
-  Props,
-  'locale' | 'generateConfig' | 'prevIcon' | 'nextIcon' | 'superPrevIcon' | 'superNextIcon'
-> & {
-  locale?: typeof enUS;
-  size?: 'large' | 'default' | 'small';
-};
-
-// Picker Props
-export type PickerPanelBaseProps<DateType> = InjectDefaultProps<RCPickerPanelBaseProps<DateType>>;
-export type PickerPanelDateProps<DateType> = InjectDefaultProps<RCPickerPanelDateProps<DateType>>;
-export type PickerPanelTimeProps<DateType> = InjectDefaultProps<RCPickerPanelTimeProps<DateType>>;
-
-export type PickerProps<DateType> =
-  | PickerPanelBaseProps<DateType>
-  | PickerPanelDateProps<DateType>
-  | PickerPanelTimeProps<DateType>;
 
 export type CalendarMode = 'year' | 'month';
 export type HeaderRender<DateType> = (config: {
@@ -42,6 +21,10 @@ export type HeaderRender<DateType> = (config: {
   onChange: (date: DateType) => void;
   onTypeChange: (type: CalendarMode) => void;
 }) => React.ReactNode;
+
+export interface SelectInfo {
+  source: 'year' | 'month' | 'date' | 'customize';
+}
 
 export interface CalendarProps<DateType> {
   prefixCls?: string;
@@ -68,10 +51,10 @@ export interface CalendarProps<DateType> {
   fullscreen?: boolean;
   onChange?: (date: DateType) => void;
   onPanelChange?: (date: DateType, mode: CalendarMode) => void;
-  onSelect?: (date: DateType) => void;
+  onSelect?: (date: DateType, selectInfo: SelectInfo) => void;
 }
 
-function generateCalendar<DateType>(generateConfig: GenerateConfig<DateType>) {
+function generateCalendar<DateType extends AnyObject>(generateConfig: GenerateConfig<DateType>) {
   function isSameYear(date1: DateType, date2: DateType) {
     return date1 && date2 && generateConfig.getYear(date1) === generateConfig.getYear(date2);
   }
@@ -111,36 +94,22 @@ function generateCalendar<DateType>(generateConfig: GenerateConfig<DateType>) {
       onPanelChange,
       onSelect,
     } = props;
-    const { getPrefixCls, direction } = React.useContext(ConfigContext);
+    const { getPrefixCls, direction, calendar } = React.useContext(ConfigContext);
     const prefixCls = getPrefixCls('picker', customizePrefixCls);
     const calendarPrefixCls = `${prefixCls}-calendar`;
 
-    const [wrapSSR, hashId] = useStyle(prefixCls);
+    const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls, calendarPrefixCls);
 
     const today = generateConfig.getNow();
 
     // ====================== Warning =======================
     if (process.env.NODE_ENV !== 'production') {
-      warning(
-        !dateFullCellRender,
-        'Calendar',
-        '`dateFullCellRender` is deprecated. Please use `fullCellRender` instead.',
-      );
-      warning(
-        !dateCellRender,
-        'Calendar',
-        '`dateCellRender` is deprecated. Please use `cellRender` instead.',
-      );
-      warning(
-        !monthFullCellRender,
-        'Calendar',
-        '`monthFullCellRender` is deprecated. Please use `fullCellRender` instead.',
-      );
-      warning(
-        !monthCellRender,
-        'Calendar',
-        '`monthCellRender` is deprecated. Please use `cellRender` instead.',
-      );
+      const warning = devUseWarning('Calendar');
+
+      warning.deprecated(!dateFullCellRender, 'dateFullCellRender', 'fullCellRender');
+      warning.deprecated(!dateCellRender, 'dateCellRender', 'cellRender');
+      warning.deprecated(!monthFullCellRender, 'monthFullCellRender', 'fullCellRender');
+      warning.deprecated(!monthCellRender, 'monthCellRender', 'cellRender');
     }
 
     // ====================== State =======================
@@ -198,10 +167,10 @@ function generateCalendar<DateType>(generateConfig: GenerateConfig<DateType>) {
       triggerPanelChange(mergedValue, newMode);
     };
 
-    const onInternalSelect = (date: DateType) => {
+    const onInternalSelect = (date: DateType, source: SelectInfo['source']) => {
       triggerChange(date);
 
-      onSelect?.(date);
+      onSelect?.(date, { source });
     };
 
     // ====================== Locale ======================
@@ -278,7 +247,7 @@ function generateCalendar<DateType>(generateConfig: GenerateConfig<DateType>) {
 
     const [contextLocale] = useLocale('Calendar', getDefaultLocale);
 
-    const mergedCellRender = (current: DateType, info: CellRenderInfo<DateType>) => {
+    const mergedCellRender: RcBasePickerPanelProps['cellRender'] = (current, info) => {
       if (info.type === 'date') {
         return dateRender(current, info);
       }
@@ -291,7 +260,7 @@ function generateCalendar<DateType>(generateConfig: GenerateConfig<DateType>) {
       }
     };
 
-    return wrapSSR(
+    return wrapCSSVar(
       <div
         className={classNames(
           calendarPrefixCls,
@@ -300,17 +269,21 @@ function generateCalendar<DateType>(generateConfig: GenerateConfig<DateType>) {
             [`${calendarPrefixCls}-mini`]: !fullscreen,
             [`${calendarPrefixCls}-rtl`]: direction === 'rtl',
           },
+          calendar?.className,
           className,
           rootClassName,
           hashId,
+          cssVarCls,
         )}
-        style={style}
+        style={{ ...calendar?.style, ...style }}
       >
         {headerRender ? (
           headerRender({
             value: mergedValue,
             type: mergedMode,
-            onChange: onInternalSelect,
+            onChange: (nextDate) => {
+              onInternalSelect(nextDate, 'customize');
+            },
             onTypeChange: triggerModeChange,
           })
         ) : (
@@ -332,7 +305,9 @@ function generateCalendar<DateType>(generateConfig: GenerateConfig<DateType>) {
           locale={contextLocale?.lang}
           generateConfig={generateConfig}
           cellRender={mergedCellRender}
-          onSelect={onInternalSelect}
+          onSelect={(nextDate) => {
+            onInternalSelect(nextDate, panelMode);
+          }}
           mode={panelMode}
           picker={panelMode}
           disabledDate={mergedDisabledDate}

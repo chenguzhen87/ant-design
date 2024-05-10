@@ -1,12 +1,15 @@
+import type { Component } from 'react';
+import React from 'react';
 import HolderOutlined from '@ant-design/icons/HolderOutlined';
 import classNames from 'classnames';
+import type { CSSMotionProps } from 'rc-motion';
 import type { BasicDataNode, TreeProps as RcTreeProps } from 'rc-tree';
 import RcTree from 'rc-tree';
 import type { DataNode, Key } from 'rc-tree/lib/interface';
-import type { Component } from 'react';
-import React from 'react';
+
 import initCollapseMotion from '../_util/motion';
 import { ConfigContext } from '../config-provider';
+import { useToken } from '../theme/internal';
 import useStyle from './style';
 import dropIndicatorRender from './utils/dropIndicator';
 import SwitcherIconCom from './utils/iconUtil';
@@ -156,7 +159,7 @@ export interface TreeProps<T extends BasicDataNode = DataNode>
 }
 
 const Tree = React.forwardRef<RcTree, TreeProps>((props, ref) => {
-  const { getPrefixCls, direction, virtual } = React.useContext(ConfigContext);
+  const { getPrefixCls, direction, virtual, tree } = React.useContext(ConfigContext);
   const {
     prefixCls: customizePrefixCls,
     className,
@@ -169,12 +172,13 @@ const Tree = React.forwardRef<RcTree, TreeProps>((props, ref) => {
     selectable = true,
     draggable,
     motion: customMotion,
+    style,
   } = props;
 
   const prefixCls = getPrefixCls('tree', customizePrefixCls);
   const rootPrefixCls = getPrefixCls();
 
-  const motion = customMotion ?? {
+  const motion: CSSMotionProps = customMotion ?? {
     ...initCollapseMotion(rootPrefixCls),
     motionAppear: false,
   };
@@ -190,7 +194,10 @@ const Tree = React.forwardRef<RcTree, TreeProps>((props, ref) => {
     dropIndicatorRender,
   };
 
-  const [wrapSSR, hashId] = useStyle(prefixCls);
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
+  const [, token] = useToken();
+
+  const itemHeight = token.paddingXS / 2 + (token.Tree?.titleHeight || token.controlHeightSM);
 
   const draggableConfig = React.useMemo(() => {
     if (!draggable) {
@@ -220,18 +227,21 @@ const Tree = React.forwardRef<RcTree, TreeProps>((props, ref) => {
   const renderSwitcherIcon = (nodeProps: AntTreeNodeProps) => (
     <SwitcherIconCom
       prefixCls={prefixCls}
-      switcherIcon={switcherIcon}
+      switcherIcon={switcherIcon as any}
       treeNodeProps={nodeProps}
       showLine={showLine}
     />
   );
 
-  return wrapSSR(
+  return wrapCSSVar(
+    // @ts-ignore
     <RcTree
-      itemHeight={20}
+      itemHeight={itemHeight}
       ref={ref}
       virtual={virtual}
       {...newProps}
+      // newProps may contain style so declare style below it
+      style={{ ...tree?.style, ...style }}
       prefixCls={prefixCls}
       className={classNames(
         {
@@ -240,13 +250,15 @@ const Tree = React.forwardRef<RcTree, TreeProps>((props, ref) => {
           [`${prefixCls}-unselectable`]: !selectable,
           [`${prefixCls}-rtl`]: direction === 'rtl',
         },
+        tree?.className,
         className,
         hashId,
+        cssVarCls,
       )}
       direction={direction}
       checkable={checkable ? <span className={`${prefixCls}-checkbox-inner`} /> : checkable}
       selectable={selectable}
-      switcherIcon={renderSwitcherIcon}
+      switcherIcon={renderSwitcherIcon as any}
       draggable={draggableConfig}
     >
       {children}

@@ -1,6 +1,7 @@
 ---
 category: Components
 title: Divider
+description: A divider line separates different content.
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*7sMiTbzvaDoAAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*KPSEQ74PLg4AAAAAAAAAAAAADrJ8AQ/original
 demo:
@@ -9,8 +10,6 @@ group:
   title: Layout
   order: 2
 ---
-
-A divider line separates different content.
 
 ## When To Use
 
@@ -25,8 +24,11 @@ A divider line separates different content.
 <code src="./demo/plain.tsx">Text without heading style</code>
 <code src="./demo/vertical.tsx">Vertical</code>
 <code src="./demo/customize-style.tsx" debug>Style Customization</code>
+<code src="./demo/component-token.tsx" debug>Component Token</code>
 
 ## API
+
+Common props ref：[Common props](/docs/react/common-props)
 
 | Property | Description | Type | Default | Version |
 | --- | --- | --- | --- | --- |

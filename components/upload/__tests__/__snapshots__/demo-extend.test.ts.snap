@@ -1,24 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders components/upload/demo/avatar.tsx extend context correctly 1`] = `
-Array [
+<div
+  class="ant-flex ant-flex-wrap-wrap ant-flex-gap-middle"
+>
   <span
-    class="ant-upload-wrapper ant-upload-picture-card-wrapper avatar-uploader"
+    class="ant-upload-wrapper avatar-uploader ant-upload-picture-card-wrapper"
   >
     <div
       class="ant-upload ant-upload-select"
     >
       <span
         class="ant-upload"
-        role="button"
-        tabindex="0"
       >
         <input
           accept=""
           style="display: none;"
           type="file"
         />
-        <div>
+        <button
+          style="border: 0px; background: none;"
+          type="button"
+        >
           <span
             aria-label="plus"
             class="anticon anticon-plus"
@@ -33,14 +36,11 @@ Array [
               viewBox="64 64 896 896"
               width="1em"
             >
-              <defs>
-                <style />
-              </defs>
               <path
                 d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z"
               />
               <path
-                d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z"
+                d="M192 474h672q8 0 8 8v60q0 8-8 8H160q-8 0-8-8v-60q0-8 8-8z"
               />
             </svg>
           </span>
@@ -49,27 +49,28 @@ Array [
           >
             Upload
           </div>
-        </div>
+        </button>
       </span>
     </div>
-  </span>,
+  </span>
   <span
-    class="ant-upload-wrapper ant-upload-picture-circle-wrapper avatar-uploader"
+    class="ant-upload-wrapper avatar-uploader ant-upload-picture-circle-wrapper"
   >
     <div
       class="ant-upload ant-upload-select"
     >
       <span
         class="ant-upload"
-        role="button"
-        tabindex="0"
       >
         <input
           accept=""
           style="display: none;"
           type="file"
         />
-        <div>
+        <button
+          style="border: 0px; background: none;"
+          type="button"
+        >
           <span
             aria-label="plus"
             class="anticon anticon-plus"
@@ -84,14 +85,11 @@ Array [
               viewBox="64 64 896 896"
               width="1em"
             >
-              <defs>
-                <style />
-              </defs>
               <path
                 d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z"
               />
               <path
-                d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z"
+                d="M192 474h672q8 0 8 8v60q0 8-8 8H160q-8 0-8-8v-60q0-8 8-8z"
               />
             </svg>
           </span>
@@ -100,12 +98,14 @@ Array [
           >
             Upload
           </div>
-        </div>
+        </button>
       </span>
     </div>
-  </span>,
-]
+  </span>
+</div>
 `;
+
+exports[`renders components/upload/demo/avatar.tsx extend context correctly 2`] = `[]`;
 
 exports[`renders components/upload/demo/basic.tsx extend context correctly 1`] = `
 <span
@@ -116,8 +116,6 @@ exports[`renders components/upload/demo/basic.tsx extend context correctly 1`] =
   >
     <span
       class="ant-upload"
-      role="button"
-      tabindex="0"
     >
       <input
         accept=""
@@ -163,63 +161,9 @@ exports[`renders components/upload/demo/basic.tsx extend context correctly 1`] =
 </span>
 `;
 
-exports[`renders components/upload/demo/customize-progress-bar.tsx extend context correctly 1`] = `
-<span
-  class="ant-upload-wrapper"
->
-  <div
-    class="ant-upload ant-upload-select"
-  >
-    <span
-      class="ant-upload"
-      role="button"
-      tabindex="0"
-    >
-      <input
-        accept=""
-        style="display: none;"
-        type="file"
-      />
-      <button
-        class="ant-btn ant-btn-default"
-        type="button"
-      >
-        <span
-          class="ant-btn-icon"
-        >
-          <span
-            aria-label="upload"
-            class="anticon anticon-upload"
-            role="img"
-          >
-            <svg
-              aria-hidden="true"
-              data-icon="upload"
-              fill="currentColor"
-              focusable="false"
-              height="1em"
-              viewBox="64 64 896 896"
-              width="1em"
-            >
-              <path
-                d="M400 317.7h73.9V656c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V317.7H624c6.7 0 10.4-7.7 6.3-12.9L518.3 163a8 8 0 00-12.6 0l-112 141.7c-4.1 5.3-.4 13 6.3 13zM878 626h-60c-4.4 0-8 3.6-8 8v154H214V634c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v198c0 17.7 14.3 32 32 32h684c17.7 0 32-14.3 32-32V634c0-4.4-3.6-8-8-8z"
-              />
-            </svg>
-          </span>
-        </span>
-        <span>
-          Click to Upload
-        </span>
-      </button>
-    </span>
-  </div>
-  <div
-    class="ant-upload-list ant-upload-list-text"
-  />
-</span>
-`;
+exports[`renders components/upload/demo/basic.tsx extend context correctly 2`] = `[]`;
 
-exports[`renders components/upload/demo/defaultFileList.tsx extend context correctly 1`] = `
+exports[`renders components/upload/demo/component-token.tsx extend context correctly 1`] = `
 <span
   class="ant-upload-wrapper"
 >
@@ -228,8 +172,6 @@ exports[`renders components/upload/demo/defaultFileList.tsx extend context corre
   >
     <span
       class="ant-upload"
-      role="button"
-      tabindex="0"
     >
       <input
         accept=""
@@ -517,6 +459,1064 @@ exports[`renders components/upload/demo/defaultFileList.tsx extend context corre
 </span>
 `;
 
+exports[`renders components/upload/demo/component-token.tsx extend context correctly 2`] = `[]`;
+
+exports[`renders components/upload/demo/customize-progress-bar.tsx extend context correctly 1`] = `
+<span
+  class="ant-upload-wrapper"
+>
+  <div
+    class="ant-upload ant-upload-select"
+  >
+    <span
+      class="ant-upload"
+    >
+      <input
+        accept=""
+        style="display: none;"
+        type="file"
+      />
+      <button
+        class="ant-btn ant-btn-default"
+        type="button"
+      >
+        <span
+          class="ant-btn-icon"
+        >
+          <span
+            aria-label="upload"
+            class="anticon anticon-upload"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              data-icon="upload"
+              fill="currentColor"
+              focusable="false"
+              height="1em"
+              viewBox="64 64 896 896"
+              width="1em"
+            >
+              <path
+                d="M400 317.7h73.9V656c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V317.7H624c6.7 0 10.4-7.7 6.3-12.9L518.3 163a8 8 0 00-12.6 0l-112 141.7c-4.1 5.3-.4 13 6.3 13zM878 626h-60c-4.4 0-8 3.6-8 8v154H214V634c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v198c0 17.7 14.3 32 32 32h684c17.7 0 32-14.3 32-32V634c0-4.4-3.6-8-8-8z"
+              />
+            </svg>
+          </span>
+        </span>
+        <span>
+          Click to Upload
+        </span>
+      </button>
+    </span>
+  </div>
+  <div
+    class="ant-upload-list ant-upload-list-text"
+  />
+</span>
+`;
+
+exports[`renders components/upload/demo/customize-progress-bar.tsx extend context correctly 2`] = `[]`;
+
+exports[`renders components/upload/demo/debug-disabled.tsx extend context correctly 1`] = `
+<div
+  class="ant-space ant-space-vertical ant-space-gap-row-small ant-space-gap-col-small"
+>
+  <div
+    class="ant-space-item"
+  >
+    <span
+      class="ant-upload-wrapper"
+    >
+      <div
+        class="ant-upload ant-upload-select ant-upload-disabled"
+      >
+        <span
+          class="ant-upload ant-upload-disabled"
+        >
+          <input
+            accept=""
+            disabled=""
+            style="display: none;"
+            type="file"
+          />
+          Click Text to Upload
+        </span>
+      </div>
+      <div
+        class="ant-upload-list ant-upload-list-text"
+      />
+    </span>
+  </div>
+  <div
+    class="ant-space-item"
+  >
+    <span
+      class="ant-upload-wrapper"
+    >
+      <div
+        class="ant-upload ant-upload-select ant-upload-disabled"
+      >
+        <span
+          class="ant-upload ant-upload-disabled"
+        >
+          <input
+            accept=""
+            disabled=""
+            style="display: none;"
+            type="file"
+          />
+          <button
+            class="ant-btn ant-btn-default"
+            type="button"
+          >
+            <span
+              class="ant-btn-icon"
+            >
+              <span
+                aria-label="upload"
+                class="anticon anticon-upload"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="upload"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M400 317.7h73.9V656c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V317.7H624c6.7 0 10.4-7.7 6.3-12.9L518.3 163a8 8 0 00-12.6 0l-112 141.7c-4.1 5.3-.4 13 6.3 13zM878 626h-60c-4.4 0-8 3.6-8 8v154H214V634c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v198c0 17.7 14.3 32 32 32h684c17.7 0 32-14.3 32-32V634c0-4.4-3.6-8-8-8z"
+                  />
+                </svg>
+              </span>
+            </span>
+            <span>
+              Click to Upload
+            </span>
+          </button>
+        </span>
+      </div>
+      <div
+        class="ant-upload-list ant-upload-list-text"
+      />
+    </span>
+  </div>
+  <div
+    class="ant-space-item"
+  >
+    <span
+      class="ant-upload-wrapper ant-upload-picture-card-wrapper"
+    >
+      <div
+        class="ant-upload-list ant-upload-list-picture-card"
+      >
+        <div
+          class="ant-upload-list-item-container"
+        >
+          <div
+            class="ant-upload-list-item ant-upload-list-item-done"
+          >
+            <a
+              class="ant-upload-list-item-thumbnail"
+              href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <img
+                alt="image.png"
+                class="ant-upload-list-item-image"
+                src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              />
+            </a>
+            <a
+              class="ant-upload-list-item-name"
+              href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="image.png"
+            >
+              image.png
+            </a>
+            <span
+              class="ant-upload-list-item-actions"
+            >
+              <a
+                href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                rel="noopener noreferrer"
+                target="_blank"
+                title="Preview file"
+              >
+                <span
+                  aria-label="eye"
+                  class="anticon anticon-eye"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="eye"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 000 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"
+                    />
+                  </svg>
+                </span>
+              </a>
+            </span>
+          </div>
+        </div>
+        <div
+          class="ant-upload-list-item-container"
+        >
+          <div
+            class="ant-upload-list-item ant-upload-list-item-done"
+          >
+            <a
+              class="ant-upload-list-item-thumbnail"
+              href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <img
+                alt="image.png"
+                class="ant-upload-list-item-image"
+                src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              />
+            </a>
+            <a
+              class="ant-upload-list-item-name"
+              href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="image.png"
+            >
+              image.png
+            </a>
+            <span
+              class="ant-upload-list-item-actions"
+            >
+              <a
+                href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                rel="noopener noreferrer"
+                target="_blank"
+                title="Preview file"
+              >
+                <span
+                  aria-label="eye"
+                  class="anticon anticon-eye"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="eye"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 000 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"
+                    />
+                  </svg>
+                </span>
+              </a>
+            </span>
+          </div>
+        </div>
+        <div
+          class="ant-upload-list-item-container"
+        >
+          <div
+            class="ant-upload-list-item ant-upload-list-item-uploading"
+          >
+            <div
+              class="ant-upload-list-item-thumbnail"
+            >
+              Uploading...
+            </div>
+            <a
+              class="ant-upload-list-item-name"
+              href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="image.png"
+            >
+              image.png
+            </a>
+          </div>
+        </div>
+        <div
+          class="ant-upload-list-item-container"
+        >
+          <div
+            class="ant-upload-list-item ant-upload-list-item-error"
+          >
+            <div
+              class="ant-upload-list-item-thumbnail ant-upload-list-item-file"
+            >
+              <span
+                aria-label="picture"
+                class="anticon anticon-picture"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="picture"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 632H136v-39.9l138.5-164.3 150.1 178L658.1 489 888 761.6V792zm0-129.8L664.2 396.8c-3.2-3.8-9-3.8-12.2 0L424.6 666.4l-144-170.7c-3.2-3.8-9-3.8-12.2 0L136 652.7V232h752v430.2z"
+                    fill="#1677ff"
+                  />
+                  <path
+                    d="M424.6 765.8l-150.1-178L136 752.1V792h752v-30.4L658.1 489z"
+                    fill="#e6f4ff"
+                  />
+                  <path
+                    d="M136 652.7l132.4-157c3.2-3.8 9-3.8 12.2 0l144 170.7L652 396.8c3.2-3.8 9-3.8 12.2 0L888 662.2V232H136v420.7zM304 280a88 88 0 110 176 88 88 0 010-176z"
+                    fill="#e6f4ff"
+                  />
+                  <path
+                    d="M276 368a28 28 0 1056 0 28 28 0 10-56 0z"
+                    fill="#e6f4ff"
+                  />
+                  <path
+                    d="M304 456a88 88 0 100-176 88 88 0 000 176zm0-116c15.5 0 28 12.5 28 28s-12.5 28-28 28-28-12.5-28-28 12.5-28 28-28z"
+                    fill="#1677ff"
+                  />
+                </svg>
+              </span>
+            </div>
+            <span
+              class="ant-upload-list-item-name"
+              title="image.png"
+            >
+              image.png
+            </span>
+            <span
+              class="ant-upload-list-item-actions"
+            />
+          </div>
+          <div
+            class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-top"
+            style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+          >
+            <div
+              class="ant-tooltip-arrow"
+              style="position: absolute; bottom: 0px; left: 0px;"
+            />
+            <div
+              class="ant-tooltip-content"
+            >
+              <div
+                class="ant-tooltip-inner"
+                role="tooltip"
+              >
+                Upload error
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-upload ant-upload-select ant-upload-disabled"
+        >
+          <span
+            class="ant-upload ant-upload-disabled"
+          >
+            <input
+              accept=""
+              disabled=""
+              style="display: none;"
+              type="file"
+            />
+            <button
+              style="border: 0px; background: none;"
+              type="button"
+            >
+              <span
+                aria-label="plus"
+                class="anticon anticon-plus"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="plus"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z"
+                  />
+                  <path
+                    d="M192 474h672q8 0 8 8v60q0 8-8 8H160q-8 0-8-8v-60q0-8 8-8z"
+                  />
+                </svg>
+              </span>
+              <div
+                style="margin-top: 8px;"
+              >
+                Upload
+              </div>
+            </button>
+          </span>
+        </div>
+      </div>
+    </span>
+  </div>
+  <div
+    class="ant-space-item"
+  >
+    <span
+      class="ant-upload-wrapper ant-upload-picture-circle-wrapper"
+    >
+      <div
+        class="ant-upload-list ant-upload-list-picture-circle"
+      >
+        <div
+          class="ant-upload-list-item-container"
+        >
+          <div
+            class="ant-upload-list-item ant-upload-list-item-done"
+          >
+            <a
+              class="ant-upload-list-item-thumbnail"
+              href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <img
+                alt="image.png"
+                class="ant-upload-list-item-image"
+                src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              />
+            </a>
+            <a
+              class="ant-upload-list-item-name"
+              href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="image.png"
+            >
+              image.png
+            </a>
+            <span
+              class="ant-upload-list-item-actions"
+            >
+              <a
+                href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                rel="noopener noreferrer"
+                target="_blank"
+                title="Preview file"
+              >
+                <span
+                  aria-label="eye"
+                  class="anticon anticon-eye"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="eye"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 000 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"
+                    />
+                  </svg>
+                </span>
+              </a>
+            </span>
+          </div>
+        </div>
+        <div
+          class="ant-upload-list-item-container"
+        >
+          <div
+            class="ant-upload-list-item ant-upload-list-item-done"
+          >
+            <a
+              class="ant-upload-list-item-thumbnail"
+              href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <img
+                alt="image.png"
+                class="ant-upload-list-item-image"
+                src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              />
+            </a>
+            <a
+              class="ant-upload-list-item-name"
+              href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="image.png"
+            >
+              image.png
+            </a>
+            <span
+              class="ant-upload-list-item-actions"
+            >
+              <a
+                href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                rel="noopener noreferrer"
+                target="_blank"
+                title="Preview file"
+              >
+                <span
+                  aria-label="eye"
+                  class="anticon anticon-eye"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="eye"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 000 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"
+                    />
+                  </svg>
+                </span>
+              </a>
+            </span>
+          </div>
+        </div>
+        <div
+          class="ant-upload-list-item-container"
+        >
+          <div
+            class="ant-upload-list-item ant-upload-list-item-uploading"
+          >
+            <div
+              class="ant-upload-list-item-thumbnail"
+            >
+              Uploading...
+            </div>
+            <a
+              class="ant-upload-list-item-name"
+              href="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="image.png"
+            >
+              image.png
+            </a>
+          </div>
+        </div>
+        <div
+          class="ant-upload-list-item-container"
+        >
+          <div
+            class="ant-upload-list-item ant-upload-list-item-error"
+          >
+            <div
+              class="ant-upload-list-item-thumbnail ant-upload-list-item-file"
+            >
+              <span
+                aria-label="picture"
+                class="anticon anticon-picture"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="picture"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 632H136v-39.9l138.5-164.3 150.1 178L658.1 489 888 761.6V792zm0-129.8L664.2 396.8c-3.2-3.8-9-3.8-12.2 0L424.6 666.4l-144-170.7c-3.2-3.8-9-3.8-12.2 0L136 652.7V232h752v430.2z"
+                    fill="#1677ff"
+                  />
+                  <path
+                    d="M424.6 765.8l-150.1-178L136 752.1V792h752v-30.4L658.1 489z"
+                    fill="#e6f4ff"
+                  />
+                  <path
+                    d="M136 652.7l132.4-157c3.2-3.8 9-3.8 12.2 0l144 170.7L652 396.8c3.2-3.8 9-3.8 12.2 0L888 662.2V232H136v420.7zM304 280a88 88 0 110 176 88 88 0 010-176z"
+                    fill="#e6f4ff"
+                  />
+                  <path
+                    d="M276 368a28 28 0 1056 0 28 28 0 10-56 0z"
+                    fill="#e6f4ff"
+                  />
+                  <path
+                    d="M304 456a88 88 0 100-176 88 88 0 000 176zm0-116c15.5 0 28 12.5 28 28s-12.5 28-28 28-28-12.5-28-28 12.5-28 28-28z"
+                    fill="#1677ff"
+                  />
+                </svg>
+              </span>
+            </div>
+            <span
+              class="ant-upload-list-item-name"
+              title="image.png"
+            >
+              image.png
+            </span>
+            <span
+              class="ant-upload-list-item-actions"
+            />
+          </div>
+          <div
+            class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-top"
+            style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+          >
+            <div
+              class="ant-tooltip-arrow"
+              style="position: absolute; bottom: 0px; left: 0px;"
+            />
+            <div
+              class="ant-tooltip-content"
+            >
+              <div
+                class="ant-tooltip-inner"
+                role="tooltip"
+              >
+                Upload error
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-upload ant-upload-select ant-upload-disabled"
+        >
+          <span
+            class="ant-upload ant-upload-disabled"
+          >
+            <input
+              accept=""
+              disabled=""
+              style="display: none;"
+              type="file"
+            />
+            <button
+              style="border: 0px; background: none;"
+              type="button"
+            >
+              <span
+                aria-label="plus"
+                class="anticon anticon-plus"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="plus"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z"
+                  />
+                  <path
+                    d="M192 474h672q8 0 8 8v60q0 8-8 8H160q-8 0-8-8v-60q0-8 8-8z"
+                  />
+                </svg>
+              </span>
+              <div
+                style="margin-top: 8px;"
+              >
+                Upload
+              </div>
+            </button>
+          </span>
+        </div>
+      </div>
+    </span>
+  </div>
+  <div
+    class="ant-space-item"
+  >
+    <span
+      class="ant-upload-wrapper"
+    >
+      <div
+        class="ant-upload ant-upload-drag ant-upload-disabled"
+      >
+        <span
+          class="ant-upload ant-upload-disabled ant-upload-btn"
+          role="button"
+        >
+          <input
+            accept=""
+            disabled=""
+            style="display: none;"
+            type="file"
+          />
+          <div
+            class="ant-upload-drag-container"
+          >
+            <p
+              class="ant-upload-drag-icon"
+            >
+              <span
+                aria-label="inbox"
+                class="anticon anticon-inbox"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="inbox"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="0 0 1024 1024"
+                  width="1em"
+                >
+                  <path
+                    d="M885.2 446.3l-.2-.8-112.2-285.1c-5-16.1-19.9-27.2-36.8-27.2H281.2c-17 0-32.1 11.3-36.9 27.6L139.4 443l-.3.7-.2.8c-1.3 4.9-1.7 9.9-1 14.8-.1 1.6-.2 3.2-.2 4.8V830a60.9 60.9 0 0060.8 60.8h627.2c33.5 0 60.8-27.3 60.9-60.8V464.1c0-1.3 0-2.6-.1-3.7.4-4.9 0-9.6-1.3-14.1zm-295.8-43l-.3 15.7c-.8 44.9-31.8 75.1-77.1 75.1-22.1 0-41.1-7.1-54.8-20.6S436 441.2 435.6 419l-.3-15.7H229.5L309 210h399.2l81.7 193.3H589.4zm-375 76.8h157.3c24.3 57.1 76 90.8 140.4 90.8 33.7 0 65-9.4 90.3-27.2 22.2-15.6 39.5-37.4 50.7-63.6h156.5V814H214.4V480.1z"
+                  />
+                </svg>
+              </span>
+            </p>
+            <p
+              class="ant-upload-text"
+            >
+              Click or drag file to this area to upload
+            </p>
+            <p
+              class="ant-upload-hint"
+            >
+              Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files.
+            </p>
+          </div>
+        </span>
+      </div>
+      <div
+        class="ant-upload-list ant-upload-list-text"
+      />
+    </span>
+  </div>
+</div>
+`;
+
+exports[`renders components/upload/demo/debug-disabled.tsx extend context correctly 2`] = `[]`;
+
+exports[`renders components/upload/demo/defaultFileList.tsx extend context correctly 1`] = `
+<span
+  class="ant-upload-wrapper"
+>
+  <div
+    class="ant-upload ant-upload-select"
+  >
+    <span
+      class="ant-upload"
+    >
+      <input
+        accept=""
+        style="display: none;"
+        type="file"
+      />
+      <button
+        class="ant-btn ant-btn-default"
+        type="button"
+      >
+        <span
+          class="ant-btn-icon"
+        >
+          <span
+            aria-label="upload"
+            class="anticon anticon-upload"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              data-icon="upload"
+              fill="currentColor"
+              focusable="false"
+              height="1em"
+              viewBox="64 64 896 896"
+              width="1em"
+            >
+              <path
+                d="M400 317.7h73.9V656c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V317.7H624c6.7 0 10.4-7.7 6.3-12.9L518.3 163a8 8 0 00-12.6 0l-112 141.7c-4.1 5.3-.4 13 6.3 13zM878 626h-60c-4.4 0-8 3.6-8 8v154H214V634c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v198c0 17.7 14.3 32 32 32h684c17.7 0 32-14.3 32-32V634c0-4.4-3.6-8-8-8z"
+              />
+            </svg>
+          </span>
+        </span>
+        <span>
+          Upload
+        </span>
+      </button>
+    </span>
+  </div>
+  <div
+    class="ant-upload-list ant-upload-list-text"
+  >
+    <div
+      class="ant-upload-list-item-container"
+    >
+      <div
+        class="ant-upload-list-item ant-upload-list-item-uploading"
+      >
+        <div
+          class="ant-upload-icon"
+        >
+          <span
+            aria-label="loading"
+            class="anticon anticon-loading anticon-spin"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              data-icon="loading"
+              fill="currentColor"
+              focusable="false"
+              height="1em"
+              viewBox="0 0 1024 1024"
+              width="1em"
+            >
+              <path
+                d="M988 548c-19.9 0-36-16.1-36-36 0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 00-94.3-139.9 437.71 437.71 0 00-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.3C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3.1 19.9-16 36-35.9 36z"
+              />
+            </svg>
+          </span>
+        </div>
+        <a
+          class="ant-upload-list-item-name"
+          href="http://www.baidu.com/xxx.png"
+          rel="noopener noreferrer"
+          target="_blank"
+          title="xxx.png"
+        >
+          xxx.png
+        </a>
+        <span
+          class="ant-upload-list-item-actions"
+        >
+          <button
+            class="ant-btn ant-btn-text ant-btn-sm ant-btn-icon-only ant-upload-list-item-action"
+            title="Remove file"
+            type="button"
+          >
+            <span
+              class="ant-btn-icon"
+            >
+              <span
+                aria-label="delete"
+                class="anticon anticon-delete"
+                role="img"
+                tabindex="-1"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="delete"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M360 184h-8c4.4 0 8-3.6 8-8v8h304v-8c0 4.4 3.6 8 8 8h-8v72h72v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80h72v-72zm504 72H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zM731.3 840H292.7l-24.2-512h487l-24.2 512z"
+                  />
+                </svg>
+              </span>
+            </span>
+          </button>
+        </span>
+      </div>
+    </div>
+    <div
+      class="ant-upload-list-item-container"
+    >
+      <div
+        class="ant-upload-list-item ant-upload-list-item-done"
+      >
+        <div
+          class="ant-upload-icon"
+        >
+          <span
+            aria-label="paper-clip"
+            class="anticon anticon-paper-clip"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              data-icon="paper-clip"
+              fill="currentColor"
+              focusable="false"
+              height="1em"
+              viewBox="64 64 896 896"
+              width="1em"
+            >
+              <path
+                d="M779.3 196.6c-94.2-94.2-247.6-94.2-341.7 0l-261 260.8c-1.7 1.7-2.6 4-2.6 6.4s.9 4.7 2.6 6.4l36.9 36.9a9 9 0 0012.7 0l261-260.8c32.4-32.4 75.5-50.2 121.3-50.2s88.9 17.8 121.2 50.2c32.4 32.4 50.2 75.5 50.2 121.2 0 45.8-17.8 88.8-50.2 121.2l-266 265.9-43.1 43.1c-40.3 40.3-105.8 40.3-146.1 0-19.5-19.5-30.2-45.4-30.2-73s10.7-53.5 30.2-73l263.9-263.8c6.7-6.6 15.5-10.3 24.9-10.3h.1c9.4 0 18.1 3.7 24.7 10.3 6.7 6.7 10.3 15.5 10.3 24.9 0 9.3-3.7 18.1-10.3 24.7L372.4 653c-1.7 1.7-2.6 4-2.6 6.4s.9 4.7 2.6 6.4l36.9 36.9a9 9 0 0012.7 0l215.6-215.6c19.9-19.9 30.8-46.3 30.8-74.4s-11-54.6-30.8-74.4c-41.1-41.1-107.9-41-149 0L463 364 224.8 602.1A172.22 172.22 0 00174 724.8c0 46.3 18.1 89.8 50.8 122.5 33.9 33.8 78.3 50.7 122.7 50.7 44.4 0 88.8-16.9 122.6-50.7l309.2-309C824.8 492.7 850 432 850 367.5c.1-64.6-25.1-125.3-70.7-170.9z"
+              />
+            </svg>
+          </span>
+        </div>
+        <a
+          class="ant-upload-list-item-name"
+          href="http://www.baidu.com/yyy.png"
+          rel="noopener noreferrer"
+          target="_blank"
+          title="yyy.png"
+        >
+          yyy.png
+        </a>
+        <span
+          class="ant-upload-list-item-actions"
+        >
+          <button
+            class="ant-btn ant-btn-text ant-btn-sm ant-btn-icon-only ant-upload-list-item-action"
+            title="Remove file"
+            type="button"
+          >
+            <span
+              class="ant-btn-icon"
+            >
+              <span
+                aria-label="delete"
+                class="anticon anticon-delete"
+                role="img"
+                tabindex="-1"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="delete"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M360 184h-8c4.4 0 8-3.6 8-8v8h304v-8c0 4.4 3.6 8 8 8h-8v72h72v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80h72v-72zm504 72H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zM731.3 840H292.7l-24.2-512h487l-24.2 512z"
+                  />
+                </svg>
+              </span>
+            </span>
+          </button>
+        </span>
+      </div>
+    </div>
+    <div
+      class="ant-upload-list-item-container"
+    >
+      <div
+        class="ant-upload-list-item ant-upload-list-item-error"
+      >
+        <div
+          class="ant-upload-icon"
+        >
+          <span
+            aria-label="paper-clip"
+            class="anticon anticon-paper-clip"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              data-icon="paper-clip"
+              fill="currentColor"
+              focusable="false"
+              height="1em"
+              viewBox="64 64 896 896"
+              width="1em"
+            >
+              <path
+                d="M779.3 196.6c-94.2-94.2-247.6-94.2-341.7 0l-261 260.8c-1.7 1.7-2.6 4-2.6 6.4s.9 4.7 2.6 6.4l36.9 36.9a9 9 0 0012.7 0l261-260.8c32.4-32.4 75.5-50.2 121.3-50.2s88.9 17.8 121.2 50.2c32.4 32.4 50.2 75.5 50.2 121.2 0 45.8-17.8 88.8-50.2 121.2l-266 265.9-43.1 43.1c-40.3 40.3-105.8 40.3-146.1 0-19.5-19.5-30.2-45.4-30.2-73s10.7-53.5 30.2-73l263.9-263.8c6.7-6.6 15.5-10.3 24.9-10.3h.1c9.4 0 18.1 3.7 24.7 10.3 6.7 6.7 10.3 15.5 10.3 24.9 0 9.3-3.7 18.1-10.3 24.7L372.4 653c-1.7 1.7-2.6 4-2.6 6.4s.9 4.7 2.6 6.4l36.9 36.9a9 9 0 0012.7 0l215.6-215.6c19.9-19.9 30.8-46.3 30.8-74.4s-11-54.6-30.8-74.4c-41.1-41.1-107.9-41-149 0L463 364 224.8 602.1A172.22 172.22 0 00174 724.8c0 46.3 18.1 89.8 50.8 122.5 33.9 33.8 78.3 50.7 122.7 50.7 44.4 0 88.8-16.9 122.6-50.7l309.2-309C824.8 492.7 850 432 850 367.5c.1-64.6-25.1-125.3-70.7-170.9z"
+              />
+            </svg>
+          </span>
+        </div>
+        <a
+          class="ant-upload-list-item-name"
+          href="http://www.baidu.com/zzz.png"
+          rel="noopener noreferrer"
+          target="_blank"
+          title="zzz.png"
+        >
+          zzz.png
+        </a>
+        <span
+          class="ant-upload-list-item-actions"
+        >
+          <button
+            class="ant-btn ant-btn-text ant-btn-sm ant-btn-icon-only ant-upload-list-item-action"
+            title="Remove file"
+            type="button"
+          >
+            <span
+              class="ant-btn-icon"
+            >
+              <span
+                aria-label="delete"
+                class="anticon anticon-delete"
+                role="img"
+                tabindex="-1"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="delete"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M360 184h-8c4.4 0 8-3.6 8-8v8h304v-8c0 4.4 3.6 8 8 8h-8v72h72v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80h72v-72zm504 72H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zM731.3 840H292.7l-24.2-512h487l-24.2 512z"
+                  />
+                </svg>
+              </span>
+            </span>
+          </button>
+        </span>
+      </div>
+      <div
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-top"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      >
+        <div
+          class="ant-tooltip-arrow"
+          style="position: absolute; bottom: 0px; left: 0px;"
+        />
+        <div
+          class="ant-tooltip-content"
+        >
+          <div
+            class="ant-tooltip-inner"
+            role="tooltip"
+          >
+            Server Error 500
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</span>
+`;
+
+exports[`renders components/upload/demo/defaultFileList.tsx extend context correctly 2`] = `[]`;
+
 exports[`renders components/upload/demo/directory.tsx extend context correctly 1`] = `
 <span
   class="ant-upload-wrapper"
@@ -526,8 +1526,6 @@ exports[`renders components/upload/demo/directory.tsx extend context correctly 1
   >
     <span
       class="ant-upload"
-      role="button"
-      tabindex="0"
     >
       <input
         accept=""
@@ -574,6 +1572,8 @@ exports[`renders components/upload/demo/directory.tsx extend context correctly 1
   />
 </span>
 `;
+
+exports[`renders components/upload/demo/directory.tsx extend context correctly 2`] = `[]`;
 
 exports[`renders components/upload/demo/drag.tsx extend context correctly 1`] = `
 <span
@@ -638,6 +1638,8 @@ exports[`renders components/upload/demo/drag.tsx extend context correctly 1`] = 
 </span>
 `;
 
+exports[`renders components/upload/demo/drag.tsx extend context correctly 2`] = `[]`;
+
 exports[`renders components/upload/demo/drag-sorting.tsx extend context correctly 1`] = `
 Array [
   <span
@@ -648,8 +1650,6 @@ Array [
     >
       <span
         class="ant-upload"
-        role="button"
-        tabindex="0"
       >
         <input
           accept=""
@@ -1148,6 +2148,8 @@ Array [
 ]
 `;
 
+exports[`renders components/upload/demo/drag-sorting.tsx extend context correctly 2`] = `[]`;
+
 exports[`renders components/upload/demo/file-type.tsx extend context correctly 1`] = `
 <span
   class="ant-upload-wrapper ant-upload-picture-card-wrapper"
@@ -1442,32 +2444,6 @@ exports[`renders components/upload/demo/file-type.tsx extend context correctly 1
         <span
           class="ant-upload-list-item-actions"
         >
-          <a
-            rel="noopener noreferrer"
-            style="pointer-events: none; opacity: 0.5;"
-            target="_blank"
-            title="Preview file"
-          >
-            <span
-              aria-label="eye"
-              class="anticon anticon-eye"
-              role="img"
-            >
-              <svg
-                aria-hidden="true"
-                data-icon="eye"
-                fill="currentColor"
-                focusable="false"
-                height="1em"
-                viewBox="64 64 896 896"
-                width="1em"
-              >
-                <path
-                  d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 000 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"
-                />
-              </svg>
-            </span>
-          </a>
           <button
             class="ant-btn ant-btn-text ant-btn-sm ant-btn-icon-only ant-upload-list-item-action"
             title="Remove file"
@@ -1575,32 +2551,6 @@ exports[`renders components/upload/demo/file-type.tsx extend context correctly 1
         <span
           class="ant-upload-list-item-actions"
         >
-          <a
-            rel="noopener noreferrer"
-            style="pointer-events: none; opacity: 0.5;"
-            target="_blank"
-            title="Preview file"
-          >
-            <span
-              aria-label="eye"
-              class="anticon anticon-eye"
-              role="img"
-            >
-              <svg
-                aria-hidden="true"
-                data-icon="eye"
-                fill="currentColor"
-                focusable="false"
-                height="1em"
-                viewBox="64 64 896 896"
-                width="1em"
-              >
-                <path
-                  d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 000 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"
-                />
-              </svg>
-            </span>
-          </a>
           <button
             class="ant-btn ant-btn-text ant-btn-sm ant-btn-icon-only ant-upload-list-item-action"
             title="Remove file"
@@ -1700,32 +2650,6 @@ exports[`renders components/upload/demo/file-type.tsx extend context correctly 1
         <span
           class="ant-upload-list-item-actions"
         >
-          <a
-            rel="noopener noreferrer"
-            style="pointer-events: none; opacity: 0.5;"
-            target="_blank"
-            title="Preview file"
-          >
-            <span
-              aria-label="eye"
-              class="anticon anticon-eye"
-              role="img"
-            >
-              <svg
-                aria-hidden="true"
-                data-icon="eye"
-                fill="currentColor"
-                focusable="false"
-                height="1em"
-                viewBox="64 64 896 896"
-                width="1em"
-              >
-                <path
-                  d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 000 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"
-                />
-              </svg>
-            </span>
-          </a>
           <button
             class="ant-btn ant-btn-text ant-btn-sm ant-btn-icon-only ant-upload-list-item-action"
             title="Remove file"
@@ -1783,15 +2707,16 @@ exports[`renders components/upload/demo/file-type.tsx extend context correctly 1
     >
       <span
         class="ant-upload"
-        role="button"
-        tabindex="0"
       >
         <input
           accept=""
           style="display: none;"
           type="file"
         />
-        <div>
+        <button
+          style="border: 0px; background: none;"
+          type="button"
+        >
           <span
             aria-label="plus"
             class="anticon anticon-plus"
@@ -1806,14 +2731,11 @@ exports[`renders components/upload/demo/file-type.tsx extend context correctly 1
               viewBox="64 64 896 896"
               width="1em"
             >
-              <defs>
-                <style />
-              </defs>
               <path
                 d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z"
               />
               <path
-                d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z"
+                d="M192 474h672q8 0 8 8v60q0 8-8 8H160q-8 0-8-8v-60q0-8 8-8z"
               />
             </svg>
           </span>
@@ -1822,12 +2744,14 @@ exports[`renders components/upload/demo/file-type.tsx extend context correctly 1
           >
             Upload
           </div>
-        </div>
+        </button>
       </span>
     </div>
   </div>
 </span>
 `;
+
+exports[`renders components/upload/demo/file-type.tsx extend context correctly 2`] = `[]`;
 
 exports[`renders components/upload/demo/fileList.tsx extend context correctly 1`] = `
 <span
@@ -1838,8 +2762,6 @@ exports[`renders components/upload/demo/fileList.tsx extend context correctly 1`
   >
     <span
       class="ant-upload"
-      role="button"
-      tabindex="0"
     >
       <input
         accept=""
@@ -1961,14 +2883,15 @@ exports[`renders components/upload/demo/fileList.tsx extend context correctly 1`
 </span>
 `;
 
+exports[`renders components/upload/demo/fileList.tsx extend context correctly 2`] = `[]`;
+
 exports[`renders components/upload/demo/max-count.tsx extend context correctly 1`] = `
 <div
-  class="ant-space ant-space-vertical"
+  class="ant-space ant-space-vertical ant-space-gap-row-large ant-space-gap-col-large"
   style="width: 100%;"
 >
   <div
     class="ant-space-item"
-    style="margin-bottom: 24px;"
   >
     <span
       class="ant-upload-wrapper"
@@ -1978,8 +2901,6 @@ exports[`renders components/upload/demo/max-count.tsx extend context correctly 1
       >
         <span
           class="ant-upload"
-          role="button"
-          tabindex="0"
         >
           <input
             accept=""
@@ -2035,8 +2956,6 @@ exports[`renders components/upload/demo/max-count.tsx extend context correctly 1
       >
         <span
           class="ant-upload"
-          role="button"
-          tabindex="0"
         >
           <input
             accept=""
@@ -2084,6 +3003,8 @@ exports[`renders components/upload/demo/max-count.tsx extend context correctly 1
   </div>
 </div>
 `;
+
+exports[`renders components/upload/demo/max-count.tsx extend context correctly 2`] = `[]`;
 
 exports[`renders components/upload/demo/picture-card.tsx extend context correctly 1`] = `
 <span
@@ -2525,32 +3446,6 @@ exports[`renders components/upload/demo/picture-card.tsx extend context correctl
         <span
           class="ant-upload-list-item-actions"
         >
-          <a
-            rel="noopener noreferrer"
-            style="pointer-events: none; opacity: 0.5;"
-            target="_blank"
-            title="Preview file"
-          >
-            <span
-              aria-label="eye"
-              class="anticon anticon-eye"
-              role="img"
-            >
-              <svg
-                aria-hidden="true"
-                data-icon="eye"
-                fill="currentColor"
-                focusable="false"
-                height="1em"
-                viewBox="64 64 896 896"
-                width="1em"
-              >
-                <path
-                  d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 000 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"
-                />
-              </svg>
-            </span>
-          </a>
           <button
             class="ant-btn ant-btn-text ant-btn-sm ant-btn-icon-only ant-upload-list-item-action"
             title="Remove file"
@@ -2608,15 +3503,16 @@ exports[`renders components/upload/demo/picture-card.tsx extend context correctl
     >
       <span
         class="ant-upload"
-        role="button"
-        tabindex="0"
       >
         <input
           accept=""
           style="display: none;"
           type="file"
         />
-        <div>
+        <button
+          style="border: 0px; background: none;"
+          type="button"
+        >
           <span
             aria-label="plus"
             class="anticon anticon-plus"
@@ -2631,14 +3527,11 @@ exports[`renders components/upload/demo/picture-card.tsx extend context correctl
               viewBox="64 64 896 896"
               width="1em"
             >
-              <defs>
-                <style />
-              </defs>
               <path
                 d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z"
               />
               <path
-                d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z"
+                d="M192 474h672q8 0 8 8v60q0 8-8 8H160q-8 0-8-8v-60q0-8 8-8z"
               />
             </svg>
           </span>
@@ -2647,12 +3540,14 @@ exports[`renders components/upload/demo/picture-card.tsx extend context correctl
           >
             Upload
           </div>
-        </div>
+        </button>
       </span>
     </div>
   </div>
 </span>
 `;
+
+exports[`renders components/upload/demo/picture-card.tsx extend context correctly 2`] = `[]`;
 
 exports[`renders components/upload/demo/picture-circle.tsx extend context correctly 1`] = `
 <span
@@ -2827,32 +3722,6 @@ exports[`renders components/upload/demo/picture-circle.tsx extend context correc
         <span
           class="ant-upload-list-item-actions"
         >
-          <a
-            rel="noopener noreferrer"
-            style="pointer-events: none; opacity: 0.5;"
-            target="_blank"
-            title="Preview file"
-          >
-            <span
-              aria-label="eye"
-              class="anticon anticon-eye"
-              role="img"
-            >
-              <svg
-                aria-hidden="true"
-                data-icon="eye"
-                fill="currentColor"
-                focusable="false"
-                height="1em"
-                viewBox="64 64 896 896"
-                width="1em"
-              >
-                <path
-                  d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 000 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"
-                />
-              </svg>
-            </span>
-          </a>
           <button
             class="ant-btn ant-btn-text ant-btn-sm ant-btn-icon-only ant-upload-list-item-action"
             title="Remove file"
@@ -2910,15 +3779,16 @@ exports[`renders components/upload/demo/picture-circle.tsx extend context correc
     >
       <span
         class="ant-upload"
-        role="button"
-        tabindex="0"
       >
         <input
           accept=""
           style="display: none;"
           type="file"
         />
-        <div>
+        <button
+          style="border: 0px; background: none;"
+          type="button"
+        >
           <span
             aria-label="plus"
             class="anticon anticon-plus"
@@ -2933,14 +3803,11 @@ exports[`renders components/upload/demo/picture-circle.tsx extend context correc
               viewBox="64 64 896 896"
               width="1em"
             >
-              <defs>
-                <style />
-              </defs>
               <path
                 d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z"
               />
               <path
-                d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z"
+                d="M192 474h672q8 0 8 8v60q0 8-8 8H160q-8 0-8-8v-60q0-8 8-8z"
               />
             </svg>
           </span>
@@ -2949,12 +3816,14 @@ exports[`renders components/upload/demo/picture-circle.tsx extend context correc
           >
             Upload
           </div>
-        </div>
+        </button>
       </span>
     </div>
   </div>
 </span>
 `;
+
+exports[`renders components/upload/demo/picture-circle.tsx extend context correctly 2`] = `[]`;
 
 exports[`renders components/upload/demo/picture-style.tsx extend context correctly 1`] = `
 Array [
@@ -2966,8 +3835,6 @@ Array [
     >
       <span
         class="ant-upload"
-        role="button"
-        tabindex="0"
       >
         <input
           accept=""
@@ -3263,8 +4130,6 @@ Array [
     >
       <span
         class="ant-upload"
-        role="button"
-        tabindex="0"
       >
         <input
           accept=""
@@ -3553,6 +4418,8 @@ Array [
 ]
 `;
 
+exports[`renders components/upload/demo/picture-style.tsx extend context correctly 2`] = `[]`;
+
 exports[`renders components/upload/demo/preview-file.tsx extend context correctly 1`] = `
 <span
   class="ant-upload-wrapper"
@@ -3562,8 +4429,6 @@ exports[`renders components/upload/demo/preview-file.tsx extend context correctl
   >
     <span
       class="ant-upload"
-      role="button"
-      tabindex="0"
     >
       <input
         accept=""
@@ -3608,6 +4473,8 @@ exports[`renders components/upload/demo/preview-file.tsx extend context correctl
   />
 </span>
 `;
+
+exports[`renders components/upload/demo/preview-file.tsx extend context correctly 2`] = `[]`;
 
 exports[`renders components/upload/demo/transform-file.tsx extend context correctly 1`] = `
 <span
@@ -3618,8 +4485,6 @@ exports[`renders components/upload/demo/transform-file.tsx extend context correc
   >
     <span
       class="ant-upload"
-      role="button"
-      tabindex="0"
     >
       <input
         accept=""
@@ -3665,6 +4530,8 @@ exports[`renders components/upload/demo/transform-file.tsx extend context correc
 </span>
 `;
 
+exports[`renders components/upload/demo/transform-file.tsx extend context correctly 2`] = `[]`;
+
 exports[`renders components/upload/demo/upload-custom-action-icon.tsx extend context correctly 1`] = `
 <span
   class="ant-upload-wrapper"
@@ -3674,8 +4541,6 @@ exports[`renders components/upload/demo/upload-custom-action-icon.tsx extend con
   >
     <span
       class="ant-upload"
-      role="button"
-      tabindex="0"
     >
       <input
         accept=""
@@ -3981,6 +4846,8 @@ exports[`renders components/upload/demo/upload-custom-action-icon.tsx extend con
 </span>
 `;
 
+exports[`renders components/upload/demo/upload-custom-action-icon.tsx extend context correctly 2`] = `[]`;
+
 exports[`renders components/upload/demo/upload-manually.tsx extend context correctly 1`] = `
 Array [
   <span
@@ -3991,8 +4858,6 @@ Array [
     >
       <span
         class="ant-upload"
-        role="button"
-        tabindex="0"
       >
         <input
           accept=""
@@ -4049,6 +4914,8 @@ Array [
 ]
 `;
 
+exports[`renders components/upload/demo/upload-manually.tsx extend context correctly 2`] = `[]`;
+
 exports[`renders components/upload/demo/upload-png-only.tsx extend context correctly 1`] = `
 <span
   class="ant-upload-wrapper"
@@ -4058,8 +4925,6 @@ exports[`renders components/upload/demo/upload-png-only.tsx extend context corre
   >
     <span
       class="ant-upload"
-      role="button"
-      tabindex="0"
     >
       <input
         accept=""
@@ -4105,6 +4970,8 @@ exports[`renders components/upload/demo/upload-png-only.tsx extend context corre
 </span>
 `;
 
+exports[`renders components/upload/demo/upload-png-only.tsx extend context correctly 2`] = `[]`;
+
 exports[`renders components/upload/demo/upload-with-aliyun-oss.tsx extend context correctly 1`] = `
 <form
   class="ant-form ant-form-horizontal"
@@ -4143,8 +5010,6 @@ exports[`renders components/upload/demo/upload-with-aliyun-oss.tsx extend contex
               >
                 <span
                   class="ant-upload"
-                  role="button"
-                  tabindex="0"
                 >
                   <input
                     accept=""
@@ -4195,3 +5060,5 @@ exports[`renders components/upload/demo/upload-with-aliyun-oss.tsx extend contex
   </div>
 </form>
 `;
+
+exports[`renders components/upload/demo/upload-with-aliyun-oss.tsx extend context correctly 2`] = `[]`;

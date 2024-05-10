@@ -1,4 +1,5 @@
 import React from 'react';
+
 import ColorStyle from './Color/ColorStyle';
 import {
   BrowserMockup,
@@ -15,8 +16,9 @@ import {
   Responsive,
   SearchBar,
 } from './styles';
+import InlineCard from './styles/InlineCard';
 
-const GlobalStyles = () => (
+const GlobalStyles: React.FC = () => (
   <>
     <Reset />
     <Common />
@@ -29,6 +31,7 @@ const GlobalStyles = () => (
     <Responsive />
     <NProgress />
     <PreviewImage />
+    <InlineCard />
     <ColorStyle />
     <HeadingAnchor />
     <SearchBar />

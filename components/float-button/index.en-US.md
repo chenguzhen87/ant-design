@@ -1,14 +1,14 @@
 ---
 category: Components
-group: Other
+group: General
 title: FloatButton
-cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*HS-wTIIwu0kAAAAAAAAAAAAADrJ8AQ/original
-coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*a0hwTY_rOSUAAAAAAAAAAAAADrJ8AQ/original
+description: A button that floats at the top of the page.
+cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*tXAoQqyr-ioAAAAAAAAAAAAADrJ8AQ/original
+coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*hSAwR7cnabwAAAAAAAAAAAAADrJ8AQ/original
 demo:
   cols: 2
+tag: 5.0.0
 ---
-
-FloatButton. Available since `5.0.0`.
 
 ## When To Use
 
@@ -25,12 +25,15 @@ FloatButton. Available since `5.0.0`.
 <code src="./demo/tooltip.tsx" iframe="360">FloatButton with tooltip</code>
 <code src="./demo/group.tsx" iframe="360">FloatButton Group</code>
 <code src="./demo/group-menu.tsx" iframe="360">Menu mode</code>
+<code src="./demo/controlled.tsx" iframe="360">Controlled mode</code>
 <code src="./demo/back-top.tsx" iframe="360">BackTop</code>
 <code src="./demo/badge.tsx" iframe="360">badge</code>
 <code src="./demo/badge-debug.tsx" iframe="360" debug>debug dot</code>
 <code src="./demo/render-panel.tsx" debug>\_InternalPanelDoNotUseOrYouWillBeFired</code>
 
 ## API
+
+Common props ref：[Common props](/docs/react/common-props)
 
 > This component is available since `antd@5.0.0`.
 
@@ -54,8 +57,9 @@ FloatButton. Available since `5.0.0`.
 | --- | --- | --- | --- | --- |
 | shape | Setting button shape of children | `circle` \| `square` | `circle` |  |
 | trigger | Which action can trigger menu open/close | `click` \| `hover` | - |  |
-| open | Whether the menu is visible or not | boolean | - |  |
-| onOpenChange | Callback executed when active menu is changed | (open: boolean) => void | - |  |
+| open | Whether the menu is visible or not, use it with trigger | boolean | - |  |
+| closeIcon | Customize close button icon | React.ReactNode | `<CloseOutlined />` |  |
+| onOpenChange | Callback executed when active menu is changed, use it with trigger | (open: boolean) => void | - |  |
 
 ### FloatButton.BackTop
 

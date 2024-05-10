@@ -1,16 +1,20 @@
 import type * as React from 'react';
 
+import type { ClosableType } from '../_util/hooks/useClosable';
+
 interface DivProps extends React.HTMLProps<HTMLDivElement> {
   'data-testid'?: string;
 }
 
-export type NotificationPlacement =
-  | 'top'
-  | 'topLeft'
-  | 'topRight'
-  | 'bottom'
-  | 'bottomLeft'
-  | 'bottomRight';
+export const NotificationPlacements = [
+  'top',
+  'topLeft',
+  'topRight',
+  'bottom',
+  'bottomLeft',
+  'bottomRight',
+] as const;
+export type NotificationPlacement = (typeof NotificationPlacements)[number];
 
 export type IconType = 'success' | 'info' | 'error' | 'warning';
 
@@ -28,7 +32,9 @@ export interface ArgsProps {
   readonly type?: IconType;
   onClick?: () => void;
   closeIcon?: React.ReactNode;
+  closable?: ClosableType;
   props?: DivProps;
+  role?: 'alert' | 'status';
 }
 
 type StaticFn = (args: ArgsProps) => void;
@@ -50,6 +56,7 @@ export interface GlobalConfigProps {
   getContainer?: () => HTMLElement | ShadowRoot;
   placement?: NotificationPlacement;
   closeIcon?: React.ReactNode;
+  closable?: ClosableType;
   rtl?: boolean;
   maxCount?: number;
   props?: DivProps;
@@ -63,4 +70,6 @@ export interface NotificationConfig {
   placement?: NotificationPlacement;
   maxCount?: number;
   rtl?: boolean;
+  stack?: boolean | { threshold?: number };
+  duration?: number;
 }

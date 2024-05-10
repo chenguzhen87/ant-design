@@ -1,6 +1,7 @@
+import React from 'react';
 import { AudioOutlined } from '@ant-design/icons';
 import { Input, Space } from 'antd';
-import React from 'react';
+import type { SearchProps } from 'antd/es/input/Search';
 
 const { Search } = Input;
 
@@ -13,7 +14,7 @@ const suffix = (
   />
 );
 
-const onSearch = (value: string) => console.log(value);
+const onSearch: SearchProps['onSearch'] = (value, _e, info) => console.log(info?.source, value);
 
 const App: React.FC = () => (
   <Space direction="vertical">

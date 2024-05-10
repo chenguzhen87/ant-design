@@ -27,14 +27,7 @@ const initCollapseMotion = (rootCls: string = 'ant'): CSSMotionProps => ({
 
 const SelectPlacements = ['bottomLeft', 'bottomRight', 'topLeft', 'topRight'] as const;
 
-export type SelectCommonPlacement = typeof SelectPlacements[number];
-
-const getTransitionDirection = (placement?: SelectCommonPlacement) => {
-  if (placement !== undefined && (placement === 'topLeft' || placement === 'topRight')) {
-    return `slide-down`;
-  }
-  return `slide-up`;
-};
+export type SelectCommonPlacement = (typeof SelectPlacements)[number];
 
 const getTransitionName = (rootPrefixCls: string, motion: string, transitionName?: string) => {
   if (transitionName !== undefined) {
@@ -43,5 +36,5 @@ const getTransitionName = (rootPrefixCls: string, motion: string, transitionName
   return `${rootPrefixCls}-${motion}`;
 };
 
-export { getTransitionName, getTransitionDirection };
+export { getTransitionName };
 export default initCollapseMotion;

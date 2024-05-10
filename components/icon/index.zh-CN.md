@@ -4,7 +4,7 @@ subtitle: 图标
 description: 语义化的矢量图形。
 group: 通用
 title: Icon
-toc: false
+showImport: false
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*PdAYS7anRpoAAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*xEDOTJx2DEkAAAAAAAAAAAAADrJ8AQ/original
 demo:
@@ -13,11 +13,9 @@ demo:
 
 ## 使用方法
 
-使用图标组件，你需要安装 `@ant-design/icons` 图标组件包：
+使用图标组件，你需要安装 [@ant-design/icons](https://github.com/ant-design/ant-design-icons) 图标组件包：
 
-```bash
-npm install --save @ant-design/icons
-```
+<InstallDependencies npm='npm install @ant-design/icons --save' yarn='yarn add @ant-design/icons' pnpm='pnpm install @ant-design/icons --save' bun='bun add @ant-design/icons'></InstallDependencies>
 
 ## 设计师专属
 
@@ -48,7 +46,7 @@ npm install --save @ant-design/icons
 | rotate | 图标旋转角度（IE9 无效） | number | - |  |
 | spin | 是否有旋转动画 | boolean | false |  |
 | style | 设置图标的样式，例如 `fontSize` 和 `color` | CSSProperties | - |  |
-| twoToneColor | 仅适用双色图标。设置双色图标的主要颜色 | string (十六进制颜色) | - |  |
+| twoToneColor | 仅适用双色图标。设置双色图标的主要颜色，支持设置十六进制颜色字符串 | string \| string[] | - |  |
 
 其中我们提供了三种主题的图标，不同主题的 Icon 组件名为图标名加主题做为后缀。
 
@@ -105,8 +103,8 @@ getTwoToneColor(); // #eb2f96
 
 ```jsx
 import React from 'react';
-import ReactDOM from 'react-dom/client';
 import { createFromIconfontCN } from '@ant-design/icons';
+import ReactDOM from 'react-dom/client';
 
 const MyIcon = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js', // 在 iconfont.cn 上生成
@@ -154,9 +152,10 @@ module.exports = {
 
 ```jsx
 import React from 'react';
-import ReactDOM from 'react-dom/client';
 import Icon from '@ant-design/icons';
 import MessageSvg from 'path/to/message.svg'; // 你的 '*.svg' 文件路径
+import ReactDOM from 'react-dom/client';
+
 // in create-react-app:
 // import { ReactComponent as MessageSvg } from 'path/to/message.svg';
 
@@ -173,6 +172,6 @@ ReactDOM.createRoot(mountNode).render(<Icon component={MessageSvg} />);
 | style     | 计算后的 `svg` 元素样式 | CSSProperties    | -              |      |
 | width     | `svg` 元素宽度          | string \| number | `1em`          |      |
 
-## Design Token
+## 主题变量（Design Token）
 
 <ComponentTokenTable component="Icon"></ComponentTokenTable>

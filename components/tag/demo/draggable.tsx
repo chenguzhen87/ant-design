@@ -1,38 +1,37 @@
 import React, { useState } from 'react';
-import { Tag } from 'antd';
-import { DndContext, PointerSensor, useSensor, useSensors, closestCenter } from '@dnd-kit/core';
+import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core/dist/types/index';
 import {
   arrayMove,
-  useSortable,
-  SortableContext,
   horizontalListSortingStrategy,
+  SortableContext,
+  useSortable,
 } from '@dnd-kit/sortable';
-import type { FC } from 'react';
-import type { DragEndEvent } from '@dnd-kit/core/dist/types/index';
+import { Flex, Tag } from 'antd';
 
-type Item = {
+interface Item {
   id: number;
   text: string;
-};
+}
 
-type DraggableTagProps = {
+interface DraggableTagProps {
   tag: Item;
+}
+
+const commonStyle: React.CSSProperties = {
+  cursor: 'move',
+  transition: 'unset', // Prevent element from shaking after drag
 };
 
-const DraggableTag: FC<DraggableTagProps> = (props) => {
+const DraggableTag: React.FC<DraggableTagProps> = (props) => {
   const { tag } = props;
-  const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tag.id });
-
-  const commonStyle = {
-    cursor: 'move',
-    transition: 'unset', // 防止拖拽完毕之后元素抖动
-  };
+  const { listeners, transform, transition, isDragging, setNodeRef } = useSortable({ id: tag.id });
 
   const style = transform
     ? {
         ...commonStyle,
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-        transition: isDragging ? 'unset' : transition, // 处理拖拽中的元素不跟手的问题
+        transition: isDragging ? 'unset' : transition, // Improve performance/visual effect when dragging
       }
     : commonStyle;
 
@@ -43,33 +42,24 @@ const DraggableTag: FC<DraggableTagProps> = (props) => {
   );
 };
 
-const App = () => {
+const App: React.FC = () => {
   const [items, setItems] = useState<Item[]>([
-    {
-      id: 1,
-      text: 'Tag 1',
-    },
-    {
-      id: 2,
-      text: 'Tag 2',
-    },
-    {
-      id: 3,
-      text: 'Tag 3',
-    },
+    { id: 1, text: 'Tag 1' },
+    { id: 2, text: 'Tag 2' },
+    { id: 3, text: 'Tag 3' },
   ]);
 
   const sensors = useSensors(useSensor(PointerSensor));
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (!over) return;
-
+    if (!over) {
+      return;
+    }
     if (active.id !== over.id) {
       setItems((data) => {
         const oldIndex = data.findIndex((item) => item.id === active.id);
         const newIndex = data.findIndex((item) => item.id === over.id);
-
         return arrayMove(data, oldIndex, newIndex);
       });
     }
@@ -78,9 +68,11 @@ const App = () => {
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
       <SortableContext items={items} strategy={horizontalListSortingStrategy}>
-        {items.map((item) => (
-          <DraggableTag tag={item} key={item.id} />
-        ))}
+        <Flex gap="4px 0" wrap>
+          {items.map<React.ReactNode>((item) => (
+            <DraggableTag tag={item} key={item.id} />
+          ))}
+        </Flex>
       </SortableContext>
     </DndContext>
   );

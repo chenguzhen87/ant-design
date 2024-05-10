@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SmileOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Form, Input, InputNumber, Modal, Typography } from 'antd';
-import type { FormInstance } from 'antd/es/form';
+import { Avatar, Button, Form, Input, InputNumber, Modal, Space, Typography } from 'antd';
+import type { GetRef } from 'antd';
+
+type FormInstance = GetRef<typeof Form>;
 
 const layout = {
   labelCol: { span: 8 },
@@ -93,6 +95,10 @@ const App: React.FC = () => {
         <Form.Item name="group" label="Group Name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
+
+        {/* Create a hidden field to make Form instance record this */}
+        <Form.Item name="users" hidden />
+
         <Form.Item
           label="User List"
           shouldUpdate={(prevValues, curValues) => prevValues.users !== curValues.users}
@@ -103,8 +109,10 @@ const App: React.FC = () => {
               <ul>
                 {users.map((user) => (
                   <li key={user.name} className="user">
-                    <Avatar icon={<UserOutlined />} />
-                    {user.name} - {user.age}
+                    <Space>
+                      <Avatar icon={<UserOutlined />} />
+                      {`${user.name} - ${user.age}`}
+                    </Space>
                   </li>
                 ))}
               </ul>

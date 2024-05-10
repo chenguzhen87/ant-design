@@ -1,15 +1,14 @@
 ---
 category: Components
-subtitle: 树选择
 group: 数据录入
 title: TreeSelect
-cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*DfTMRYSDngEAAAAAAAAAAAAADrJ8AQ/original
-coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Y5pcQLplFu4AAAAAAAAAAAAADrJ8AQ/original
+subtitle: 树选择
+description: 树型选择控件。
+cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*1zcHQLltaJcAAAAAAAAAAAAADrJ8AQ/original
+coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*hjwGSIa4J8QAAAAAAAAAAAAADrJ8AQ/original
 demo:
   cols: 2
 ---
-
-树型选择控件。
 
 ## 何时使用
 
@@ -28,16 +27,18 @@ demo:
 <code src="./demo/status.tsx">自定义状态</code>
 <code src="./demo/suffix.tsx" debug>后缀图标</code>
 <code src="./demo/render-panel.tsx" debug>\_InternalPanelDoNotUseOrYouWillBeFired</code>
+<code src="./demo/component-token.tsx" debug>组件 Token</code>
 
 ## API
+
+通用属性参考：[通用属性](/docs/react/common-props)
 
 ### Tree props
 
 | 参数 | 说明 | 类型 | 默认值 | 版本 |
 | --- | --- | --- | --- | --- |
-| allowClear | 显示清除按钮 | boolean | false |  |
+| allowClear | 自定义清除按钮 | boolean \| { clearIcon?: ReactNode } | false | 5.8.0: 支持对象形式 |
 | autoClearSearchValue | 当多选模式下值被选择，自动清空搜索框 | boolean | true |  |
-| bordered | 是否显示边框 | boolean | true |  |
 | defaultValue | 指定默认选中的条目 | string \| string\[] | - |  |
 | disabled | 是否禁用 | boolean | false |  |
 | popupClassName | 下拉菜单的 className 属性 | string | - | 4.23.0 |
@@ -58,12 +59,11 @@ demo:
 | placeholder | 选择框默认文字 | string | - |  |
 | placement | 选择框弹出的位置 | `bottomLeft` `bottomRight` `topLeft` `topRight` | bottomLeft |  |
 | searchValue | 搜索框的值，可以通过 `onSearch` 获取用户输入 | string | - |  |
-| showArrow | 是否显示 `suffixIcon` | boolean | `true` |  |
 | showCheckedStrategy | 配置 `treeCheckable` 时，定义选中项回填的方式。`TreeSelect.SHOW_ALL`: 显示所有选中节点(包括父节点)。`TreeSelect.SHOW_PARENT`: 只显示父节点(当父节点下所有子节点都选中时)。 默认只显示子节点 | `TreeSelect.SHOW_ALL` \| `TreeSelect.SHOW_PARENT` \| `TreeSelect.SHOW_CHILD` | `TreeSelect.SHOW_CHILD` |  |
 | showSearch | 是否支持搜索框 | boolean | 单选：false \| 多选：true |  |
 | size | 选择框大小 | `large` \| `middle` \| `small` | - |  |
 | status | 设置校验状态 | 'error' \| 'warning' | - | 4.19.0 |
-| suffixIcon | 自定义的选择框后缀图标, 多选模式下必须同时设置 `showArrow` 为 true | ReactNode | - |  |
+| suffixIcon | 自定义的选择框后缀图标 | ReactNode | `<DownOutlined />` |  |
 | switcherIcon | 自定义树节点的展开/折叠图标 | ReactNode \| ((props: AntTreeNodeProps) => ReactNode) | - | renderProps: 4.20.0 |
 | tagRender | 自定义 tag 内容，多选时生效 | (props) => ReactNode | - |  |
 | treeCheckable | 显示 Checkbox | boolean | false |  |
@@ -80,12 +80,14 @@ demo:
 | treeNodeFilterProp | 输入项过滤对应的 treeNode 属性 | string | `value` |  |
 | treeNodeLabelProp | 作为显示的 prop 设置 | string | `title` |  |
 | value | 指定当前选中的条目 | string \| string\[] | - |  |
+| variant | 形态变体 | `outlined` \| `borderless` \| `filled` | `outlined` | 5.13.0 |
 | virtual | 设置 false 时关闭虚拟滚动 | boolean | true | 4.1.0 |
 | onChange | 选中树节点时调用此函数 | function(value, label, extra) | - |  |
 | onDropdownVisibleChange | 展开下拉菜单的回调 | function(open) | - |  |
 | onSearch | 文本框值变化时的回调 | function(value: string) | - |  |
 | onSelect | 被选中时调用 | function(value, node, extra) | - |  |
 | onTreeExpand | 展示节点时调用 | function(expandedKeys) | - |  |
+| onPopupScroll | 下拉列表滚动时的回调 | (event: MouseEvent) => void | - | 5.17.0 |
 
 ### Tree 方法
 
@@ -109,7 +111,7 @@ demo:
 | title           | 树节点显示的内容                                   | ReactNode | `---`  |      |
 | value           | 默认根据此属性值进行筛选（其值在整个树范围内唯一） | string    | -      |      |
 
-## Design Token
+## 主题变量（Design Token）
 
 <ComponentTokenTable component="TreeSelect"></ComponentTokenTable>
 
@@ -140,3 +142,7 @@ demo:
   }}
 />
 ```
+
+### 为何弹出框不能横向滚动？
+
+关闭虚拟滚动即可，因为开启虚拟滚动时无法准确的测量完整列表的 `scrollWidth`。

@@ -29,6 +29,12 @@ const genWaveStyle: GenerateStyle<WaveToken> = (token) => {
           boxShadow: `0 0 0 6px currentcolor`,
           opacity: 0,
         },
+        '&.wave-quick': {
+          transition: [
+            `box-shadow ${token.motionDurationSlow} ${token.motionEaseInOut}`,
+            `opacity ${token.motionDurationSlow} ${token.motionEaseInOut}`,
+          ].join(','),
+        },
       },
     },
   };

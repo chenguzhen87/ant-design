@@ -1,11 +1,12 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
+
 import AutoComplete from '..';
+import { resetWarned } from '../../_util/warning';
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
 import { render, screen } from '../../../tests/utils';
 import Input from '../../input';
-import { resetWarned } from '../../_util/warning';
 
 describe('AutoComplete', () => {
   mountTest(AutoComplete);
@@ -110,7 +111,7 @@ describe('AutoComplete', () => {
       />,
     );
     expect(errSpy).toHaveBeenCalledWith(
-      'Warning: [antd: AutoComplete] `dropdownClassName` is deprecated, please use `popupClassName` instead.',
+      'Warning: [antd: AutoComplete] `dropdownClassName` is deprecated. Please use `popupClassName` instead.',
     );
     expect(container.querySelector('.legacy')).toBeTruthy();
 

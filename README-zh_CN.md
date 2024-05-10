@@ -1,12 +1,8 @@
-<p align="center">
-  <a href="https://ant.design">
-    <img width="200" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg">
-  </a>
-</p>
+<div align="center"><a name="readme-top"></a>
 
-<h1 align="center">Ant Design</h1>
+<img height="180" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg">
 
-<div align="center">
+<h1>Ant Design</h1>
 
 一套企业级 UI 设计语言和 React 组件库。
 
@@ -15,6 +11,10 @@
 [![][bundlephobia-image]][bundlephobia-url] [![][bundlesize-js-image]][unpkg-js-url] [![FOSSA Status][fossa-image]][fossa-url]
 
 [![Follow Twitter][twitter-image]][twitter-url] [![Renovate status][renovate-image]][renovate-dashboard-url] [![][issues-helper-image]][issues-helper-url] [![dumi][dumi-image]][dumi-url] [![Issues need help][help-wanted-image]][help-wanted-url]
+
+[更新日志](./CHANGELOG.zh-CN.md) · [报告问题][github-issues-url] · [特性需求][github-issues-url] · [English](./README.md) · 中文
+
+![](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 [npm-image]: http://img.shields.io/npm/v/antd.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/antd
@@ -34,18 +34,17 @@
 [unpkg-js-url]: https://unpkg.com/browse/antd/dist/antd.min.js
 [bundlephobia-image]: https://badgen.net/bundlephobia/minzip/antd?style=flat-square
 [bundlephobia-url]: https://bundlephobia.com/package/antd
-[issues-helper-image]: https://img.shields.io/badge/using-issues--helper-orange?style=flat-square
-[issues-helper-url]: https://github.com/actions-cool/issues-helper
+[issues-helper-image]: https://img.shields.io/badge/using-actions--cool-blue?style=flat-square
+[issues-helper-url]: https://github.com/actions-cool
 [renovate-image]: https://img.shields.io/badge/renovate-enabled-brightgreen.svg?style=flat-square
 [renovate-dashboard-url]: https://github.com/ant-design/ant-design/issues/32498
 [dumi-image]: https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square
 [dumi-url]: https://github.com/umijs/dumi
+[github-issues-url]: https://new-issue.ant.design
 
 </div>
 
 [![](https://user-images.githubusercontent.com/507615/209472919-6f7e8561-be8c-4b0b-9976-eb3c692aa20a.png)](https://ant.design)
-
-[English](./README.md) | [Português](./README-pt_BR.md) | 简体中文 | [Українською](./README-uk_UA.md) | [Spanish](./README-sp_MX.md) | [日本語](./README-ja_JP.md) | [العربية](./README-ar_EG.md)
 
 ## ✨ 特性
 
@@ -76,9 +75,13 @@ npm install antd --save
 yarn add antd
 ```
 
+```bash
+pnpm add antd
+```
+
 ## 🔨 示例
 
-```jsx
+```tsx
 import React from 'react';
 import { Button, DatePicker } from 'antd';
 
@@ -88,6 +91,8 @@ const App = () => (
     <DatePicker />
   </>
 );
+
+export default App;
 ```
 
 ### 🌈 定制主题
@@ -96,7 +101,7 @@ const App = () => (
 
 ### 🛡 TypeScript
 
-参考 [在 TypeScript 中使用](https://ant.design/docs/react/use-in-typescript-cn)。
+`antd` 使用 TypeScript 编写，具有完整的类型定义，参考 [在 create-react-app 中使用](https://ant.design/docs/react/use-with-create-react-app-cn)。
 
 ## 🌍 国际化
 
@@ -133,6 +138,10 @@ const App = () => (
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/ant-design/ant-design)
 
+或者使用 opensumi.run 进行在线开发：
+
+[![opensumi.run](https://custom-icon-badges.demolab.com/badge/opensumi-run-blue.svg?logo=opensumi)](https://opensumi.run/ide/ant-design/ant-design)
+
 或者克隆到本地开发:
 
 ```bash
@@ -146,11 +155,42 @@ $ npm start
 
 ## 🤝 参与共建 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
+<table>
+<tr>
+  <td>
+    <a href="https://next.ossinsight.io/widgets/official/compose-recent-top-contributors?repo_id=34526884" target="_blank" style="display: block" align="center">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/compose-recent-top-contributors/thumbnail.png?repo_id=34526884&image_size=auto&color_scheme=dark" width="280">
+        <img alt="Top Contributors of ant-design/ant-design - Last 28 days" src="https://next.ossinsight.io/widgets/official/compose-recent-top-contributors/thumbnail.png?repo_id=34526884&image_size=auto&color_scheme=light" width="280">
+      </picture>
+    </a>
+  </td>
+  <td rowspan="2">
+    <a href="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats?repo_id=34526884" target="_blank" style="display: block" align="center">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=34526884&image_size=auto&color_scheme=dark" width="655" height="auto">
+        <img alt="Performance Stats of ant-design/ant-design - Last 28 days" src="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=34526884&image_size=auto&color_scheme=light" width="655" height="auto">
+      </picture>
+    </a>
+  </td>
+</tr>
+<tr>
+  <td>
+    <a href="https://next.ossinsight.io/widgets/official/compose-org-active-contributors?period=past_28_days&activity=new&owner_id=12101536&repo_ids=34526884" target="_blank" style="display: block" align="center">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/compose-org-active-contributors/thumbnail.png?period=past_28_days&activity=new&owner_id=12101536&repo_ids=34526884&image_size=2x3&color_scheme=dark" width="273" height="auto">
+        <img alt="New participants of ant-design - past 28 days" src="https://next.ossinsight.io/widgets/official/compose-org-active-contributors/thumbnail.png?period=past_28_days&activity=new&owner_id=12101536&repo_ids=34526884&image_size=2x3&color_scheme=light" width="273" height="auto">
+      </picture>
+    </a>
+  </td>
+</tr>
+</table>
+
 请参考[贡献指南](https://ant.design/docs/react/contributing-cn).
 
 > 强烈推荐阅读 [《提问的智慧》](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way)、[《如何向开源社区提问题》](https://github.com/seajs/seajs/issues/545) 和 [《如何有效地报告 Bug》](http://www.chiark.greenend.org.uk/%7Esgtatham/bugs-cn.html)、[《如何向开源项目提交无法解答的问题》](https://zhuanlan.zhihu.com/p/25795393)，更好的问题更容易获得帮助。
 
-[![Let's fund issues in this repository](https://issuehunt.io/static/embed/issuehunt-button-v1.svg)](https://issuehunt.io/repos/34526884)
+[![赞助链接](https://raw.githubusercontent.com/BoostIO/issuehunt-materials/master/v1/issuehunt-button-v1.svg)](https://issuehunt.io/repos/34526884)
 
 ## 👥 社区互助
 

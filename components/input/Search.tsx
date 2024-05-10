@@ -1,7 +1,8 @@
+import * as React from 'react';
 import SearchOutlined from '@ant-design/icons/SearchOutlined';
 import classNames from 'classnames';
 import { composeRef } from 'rc-util/lib/ref';
-import * as React from 'react';
+
 import { cloneElement } from '../_util/reactNode';
 import Button from '../button';
 import { ConfigContext } from '../config-provider';
@@ -18,6 +19,9 @@ export interface SearchProps extends InputProps {
       | React.ChangeEvent<HTMLInputElement>
       | React.MouseEvent<HTMLElement>
       | React.KeyboardEvent<HTMLInputElement>,
+    info?: {
+      source?: 'clear' | 'input';
+    },
   ) => void;
   enterButton?: React.ReactNode;
   loading?: boolean;
@@ -49,13 +53,15 @@ const Search = React.forwardRef<InputRef, SearchProps>((props, ref) => {
   const inputPrefixCls = getPrefixCls('input', customizeInputPrefixCls);
   const { compactSize } = useCompactItemContext(prefixCls, direction);
 
-  const size = useSize((ctx) => compactSize ?? customizeSize ?? ctx);
+  const size = useSize((ctx) => customizeSize ?? compactSize ?? ctx);
 
   const inputRef = React.useRef<InputRef>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e && e.target && e.type === 'click' && customOnSearch) {
-      customOnSearch((e as React.ChangeEvent<HTMLInputElement>).target.value, e);
+      customOnSearch((e as React.ChangeEvent<HTMLInputElement>).target.value, e, {
+        source: 'clear',
+      });
     }
     if (customOnChange) {
       customOnChange(e);
@@ -70,7 +76,9 @@ const Search = React.forwardRef<InputRef, SearchProps>((props, ref) => {
 
   const onSearch = (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLInputElement>) => {
     if (customOnSearch) {
-      customOnSearch(inputRef.current?.input?.value!, e);
+      customOnSearch(inputRef.current?.input?.value!, e, {
+        source: 'input',
+      });
     }
   };
 
@@ -167,6 +175,7 @@ const Search = React.forwardRef<InputRef, SearchProps>((props, ref) => {
     />
   );
 });
+
 if (process.env.NODE_ENV !== 'production') {
   Search.displayName = 'Search';
 }

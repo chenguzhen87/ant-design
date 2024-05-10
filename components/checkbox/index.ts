@@ -1,15 +1,13 @@
-import type * as React from 'react';
-import type { CheckboxProps } from './Checkbox';
+import type { CheckboxRef } from 'rc-checkbox';
+
 import InternalCheckbox from './Checkbox';
 import Group from './Group';
 
 export type { CheckboxChangeEvent, CheckboxProps } from './Checkbox';
 export type { CheckboxGroupProps, CheckboxOptionType } from './Group';
-export type { CheckboxRef } from 'rc-checkbox';
+export type { CheckboxRef };
 
-type CompoundedComponent = React.ForwardRefExoticComponent<
-  CheckboxProps & React.RefAttributes<HTMLInputElement>
-> & {
+type CompoundedComponent = typeof InternalCheckbox & {
   Group: typeof Group;
   /** @internal */
   __ANT_CHECKBOX: boolean;

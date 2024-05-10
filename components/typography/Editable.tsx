@@ -1,12 +1,13 @@
+import * as React from 'react';
 import EnterOutlined from '@ant-design/icons/EnterOutlined';
 import classNames from 'classnames';
 import type { AutoSizeType } from 'rc-textarea';
 import KeyCode from 'rc-util/lib/KeyCode';
-import * as React from 'react';
-import type { DirectionType } from '../config-provider';
-import TextArea from '../input/TextArea';
-import type { TextAreaRef } from '../input/TextArea';
+
 import { cloneElement } from '../_util/reactNode';
+import type { DirectionType } from '../config-provider';
+import type { TextAreaRef } from '../input/TextArea';
+import TextArea from '../input/TextArea';
 import useStyle from './style';
 
 interface EditableProps {
@@ -25,21 +26,22 @@ interface EditableProps {
   component?: string;
 }
 
-const Editable: React.FC<EditableProps> = ({
-  prefixCls,
-  'aria-label': ariaLabel,
-  className,
-  style,
-  direction,
-  maxLength,
-  autoSize = true,
-  value,
-  onSave,
-  onCancel,
-  onEnd,
-  component,
-  enterIcon = <EnterOutlined />,
-}) => {
+const Editable: React.FC<EditableProps> = (props) => {
+  const {
+    prefixCls,
+    'aria-label': ariaLabel,
+    className,
+    style,
+    direction,
+    maxLength,
+    autoSize = true,
+    value,
+    onSave,
+    onCancel,
+    onEnd,
+    component,
+    enterIcon = <EnterOutlined />,
+  } = props;
   const ref = React.useRef<TextAreaRef>(null);
 
   const inComposition = React.useRef(false);
@@ -114,7 +116,7 @@ const Editable: React.FC<EditableProps> = ({
 
   const textClassName = component ? `${prefixCls}-${component}` : '';
 
-  const [wrapSSR, hashId] = useStyle(prefixCls);
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
 
   const textAreaClassName = classNames(
     prefixCls,
@@ -125,9 +127,10 @@ const Editable: React.FC<EditableProps> = ({
     className,
     textClassName,
     hashId,
+    cssVarCls,
   );
 
-  return wrapSSR(
+  return wrapCSSVar(
     <div className={textAreaClassName} style={style}>
       <TextArea
         ref={ref}

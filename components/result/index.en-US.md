@@ -2,11 +2,10 @@
 group: Feedback
 category: Components
 title: Result
+description: Used to feedback the processing results of a series of operations.
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*-e2IRroDJyEAAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*-0kxQrbHx2kAAAAAAAAAAAAADrJ8AQ/original
 ---
-
-Used to feed back the results of a series of operational tasks.
 
 ## When To Use
 
@@ -26,6 +25,8 @@ Use when important operations need to inform the user to process the results and
 <code src="./demo/component-token.tsx" debug>Component Token</code>
 
 ## API
+
+Common props ref：[Common props](/docs/react/common-props)
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |

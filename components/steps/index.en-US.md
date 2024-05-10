@@ -2,11 +2,10 @@
 category: Components
 group: Navigation
 title: Steps
+description: A navigation bar that guides users through the steps of a task.
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*677sTqCpE3wAAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*cFsBQLA0b7UAAAAAAAAAAAAADrJ8AQ/original
 ---
-
-`Steps` is a navigation bar that guides users through the steps of a task.
 
 ## When To Use
 
@@ -36,6 +35,8 @@ When a given task is complicated or has a certain sequence in the series of subt
 <code src="./demo/component-token.tsx" debug>Component Token</code>
 
 ## API
+
+Common props ref：[Common props](/docs/react/common-props)
 
 ### Steps
 

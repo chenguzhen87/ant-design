@@ -5,7 +5,7 @@ export function toLowercaseSeparator(key: string) {
 
 export function getStyleStr(style: React.CSSProperties): string {
   return Object.keys(style)
-    .map((key: keyof React.CSSProperties) => `${toLowercaseSeparator(key)}: ${style[key]};`)
+    .map((key) => `${toLowercaseSeparator(key)}: ${style[key as keyof React.CSSProperties]};`)
     .join(' ');
 }
 
@@ -14,27 +14,15 @@ export function getPixelRatio() {
   return window.devicePixelRatio || 1;
 }
 
-/** Rotate with the watermark as the center point */
-export function rotateWatermark(
-  ctx: CanvasRenderingContext2D,
-  rotateX: number,
-  rotateY: number,
-  rotate: number,
-) {
-  ctx.translate(rotateX, rotateY);
-  ctx.rotate((Math.PI / 180) * Number(rotate));
-  ctx.translate(-rotateX, -rotateY);
-}
-
 /** Whether to re-render the watermark */
-export const reRendering = (mutation: MutationRecord, watermarkElement?: HTMLElement) => {
+export const reRendering = (mutation: MutationRecord, isWatermarkEle: (ele: Node) => boolean) => {
   let flag = false;
   // Whether to delete the watermark node
   if (mutation.removedNodes.length) {
-    flag = Array.from(mutation.removedNodes).some((node) => node === watermarkElement);
+    flag = Array.from<Node>(mutation.removedNodes).some((node) => isWatermarkEle(node));
   }
   // Whether the watermark dom property value has been modified
-  if (mutation.type === 'attributes' && mutation.target === watermarkElement) {
+  if (mutation.type === 'attributes' && isWatermarkEle(mutation.target)) {
     flag = true;
   }
   return flag;

@@ -1,6 +1,8 @@
+import { unit } from '@ant-design/cssinjs';
 import type { CSSObject } from '@ant-design/cssinjs';
+
 import type { GenerateStyle } from '../../theme/internal';
-import genColorBlockStyle, { getTransBg } from './color-block';
+import { getTransBg } from './color-block';
 import type { ColorPickerToken } from './index';
 
 const genPickerStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
@@ -16,13 +18,12 @@ const genPickerStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
     colorPickerHandlerSize,
     colorPickerHandlerSizeSM,
     colorPickerSliderHeight,
-    colorPickerPreviewSize,
   } = token;
 
   return {
     [`${componentCls}-select`]: {
       [`${componentCls}-palette`]: {
-        minHeight: controlHeightLG * 4,
+        minHeight: token.calc(controlHeightLG).mul(4).equal(),
         overflow: 'hidden',
         borderRadius: borderRadiusSM,
       },
@@ -38,7 +39,7 @@ const genPickerStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
     [`${componentCls}-handler`]: {
       width: colorPickerHandlerSize,
       height: colorPickerHandlerSize,
-      border: `${lineWidthBold}px solid ${colorBgElevated}`,
+      border: `${unit(lineWidthBold)} solid ${colorBgElevated}`,
       position: 'relative',
       borderRadius: '50%',
       cursor: 'pointer',
@@ -50,27 +51,34 @@ const genPickerStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
     },
 
     [`${componentCls}-slider`]: {
-      borderRadius: colorPickerSliderHeight / 2,
+      borderRadius: token.calc(colorPickerSliderHeight).div(2).equal(),
       [`${componentCls}-palette`]: {
         height: colorPickerSliderHeight,
       },
       [`${componentCls}-gradient`]: {
-        borderRadius: colorPickerSliderHeight / 2,
+        borderRadius: token.calc(colorPickerSliderHeight).div(2).equal(),
         boxShadow: colorPickerInsetShadow,
       },
-      '&-alpha': getTransBg(`${colorPickerSliderHeight}px`),
-      marginBottom: marginSM,
+      '&-alpha': getTransBg(`${unit(colorPickerSliderHeight)}`, token.colorFillSecondary),
+      '&-hue': { marginBottom: marginSM },
     },
 
     [`${componentCls}-slider-container`]: {
       display: 'flex',
       gap: marginSM,
+      marginBottom: marginSM,
       [`${componentCls}-slider-group`]: {
         flex: 1,
+        '&-disabled-alpha': {
+          display: 'flex',
+          alignItems: 'center',
+          [`${componentCls}-slider`]: {
+            flex: 1,
+            marginBottom: 0,
+          },
+        },
       },
     },
-
-    ...genColorBlockStyle(token, colorPickerPreviewSize),
   };
 };
 

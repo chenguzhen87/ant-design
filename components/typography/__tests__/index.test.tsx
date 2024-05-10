@@ -1,11 +1,12 @@
+import React from 'react';
 import { CheckOutlined, HighlightOutlined, LikeOutlined, SmileOutlined } from '@ant-design/icons';
 import copy from 'copy-to-clipboard';
 import KeyCode from 'rc-util/lib/KeyCode';
 import { resetWarned } from 'rc-util/lib/warning';
-import React from 'react';
+
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
-import { fireEvent, render, waitFor, act, waitFakeTimer } from '../../../tests/utils';
+import { act, fireEvent, render, waitFakeTimer, waitFor } from '../../../tests/utils';
 import Base from '../Base';
 import Link from '../Link';
 import Paragraph from '../Paragraph';
@@ -48,6 +49,7 @@ describe('Typography', () => {
       },
     });
     mockGetBoundingClientRect.mockImplementation(function fn() {
+      // @ts-ignore
       let html = this.innerHTML;
       html = html.replace(/<[^>]*>/g, '');
       const lines = Math.ceil(html.length / LINE_STR_COUNT);
@@ -251,7 +253,7 @@ describe('Typography', () => {
           const onChange = jest.fn();
 
           const className = 'test';
-          const style = { padding: 'unset' };
+          const style: React.CSSProperties = { padding: 'unset' };
 
           const { container: wrapper } = render(
             <Paragraph

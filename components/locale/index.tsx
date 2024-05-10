@@ -1,6 +1,7 @@
-import type { ValidateMessages } from 'rc-field-form/lib/interface';
 import * as React from 'react';
-import warning from '../_util/warning';
+import type { ValidateMessages } from 'rc-field-form/lib/interface';
+
+import { devUseWarning } from '../_util/warning';
 import type { PickerLocale as DatePickerLocale } from '../date-picker/generatePicker';
 import type { TransferLocale as TransferLocaleForEmpty } from '../empty';
 import type { ModalLocale } from '../modal/locale';
@@ -33,13 +34,13 @@ export interface Locale {
   Upload?: UploadLocale;
   Empty?: TransferLocaleForEmpty;
   global?: Record<string, any>;
-  PageHeader?: { back: string };
   Icon?: Record<string, any>;
   Text?: {
     edit?: any;
     copy?: any;
     copied?: any;
     expand?: any;
+    collapse?: any;
   };
   Form?: {
     optional?: string;
@@ -49,8 +50,9 @@ export interface Locale {
     preview: string;
   };
   QRCode?: {
-    expired: string;
-    refresh: string;
+    expired?: string;
+    refresh?: string;
+    scanned?: string;
   };
   ColorPicker?: {
     presetEmpty: string;
@@ -68,18 +70,18 @@ const LocaleProvider: React.FC<LocaleProviderProps> = (props) => {
   const { locale = {} as Locale, children, _ANT_MARK__ } = props;
 
   if (process.env.NODE_ENV !== 'production') {
+    const warning = devUseWarning('LocaleProvider');
+
     warning(
       _ANT_MARK__ === ANT_MARK,
-      'LocaleProvider',
+      'deprecated',
       '`LocaleProvider` is deprecated. Please use `locale` with `ConfigProvider` instead: http://u.ant.design/locale',
     );
   }
 
   React.useEffect(() => {
-    changeConfirmLocale(locale && locale.Modal);
-    return () => {
-      changeConfirmLocale();
-    };
+    const clearLocale = changeConfirmLocale(locale && locale.Modal);
+    return clearLocale;
   }, [locale]);
 
   const getMemoizedContextValue = React.useMemo<LocaleContextProps>(

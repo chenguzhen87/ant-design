@@ -3,11 +3,10 @@ category: Components
 group: 导航
 title: Menu
 subtitle: 导航菜单
+description: 为页面和功能提供导航的菜单列表。
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*KeyQQL5iKkkAAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Vn4XSqJFAxcAAAAAAAAAAAAADrJ8AQ/original
 ---
-
-为页面和功能提供导航的菜单列表。
 
 ## 何时使用
 
@@ -34,8 +33,11 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Vn4XSqJFAxcAAA
 <code src="./demo/switch-mode.tsx">切换菜单类型</code>
 <code src="./demo/style-debug.tsx" debug>Style debug</code>
 <code src="./demo/menu-v4.tsx" debug>v4 版本 Menu</code>
+<code src="./demo/component-token.tsx" debug>组件 Token</code>
 
 ## API
+
+通用属性参考：[通用属性](/docs/react/common-props)
 
 ### Menu
 
@@ -143,6 +145,6 @@ Menu 初始化时会先全部渲染，然后根据宽度裁剪内容。当处于
 </div>
 ```
 
-## Design Token
+## 主题变量（Design Token）
 
 <ComponentTokenTable component="Menu"></ComponentTokenTable>

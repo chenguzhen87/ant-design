@@ -2,13 +2,12 @@
 category: Components
 group: Data Entry
 title: TreeSelect
-cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*DfTMRYSDngEAAAAAAAAAAAAADrJ8AQ/original
-coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Y5pcQLplFu4AAAAAAAAAAAAADrJ8AQ/original
+description: Tree selection control.
+cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*1zcHQLltaJcAAAAAAAAAAAAADrJ8AQ/original
+coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*hjwGSIa4J8QAAAAAAAAAAAAADrJ8AQ/original
 demo:
   cols: 2
 ---
-
-Tree selection control.
 
 ## When To Use
 
@@ -27,16 +26,18 @@ Tree selection control.
 <code src="./demo/status.tsx">Status</code>
 <code src="./demo/suffix.tsx" debug>Suffix</code>
 <code src="./demo/render-panel.tsx" debug>_InternalPanelDoNotUseOrYouWillBeFired</code>
+<code src="./demo/component-token.tsx" debug>Component Token</code>
 
 ## API
+
+Common props ref：[Common props](/docs/react/common-props)
 
 ### Tree props
 
 | Property | Description | Type | Default | Version |
 | --- | --- | --- | --- | --- |
-| allowClear | Whether allow clear | boolean | false |  |
+| allowClear | Customize clear icon | boolean \| { clearIcon?: ReactNode } | false | 5.8.0: Support object type |
 | autoClearSearchValue | If auto clear search input value when multiple select is selected/deselected | boolean | true |  |
-| bordered | Whether has border style | boolean | true |  |
 | defaultValue | To set the initial selected treeNode(s) | string \| string\[] | - |  |
 | disabled | Disabled or not | boolean | false |  |
 | popupClassName | The className of dropdown menu | string | - | 4.23.0 |
@@ -57,12 +58,11 @@ Tree selection control.
 | placeholder | Placeholder of the select input | string | - |  |
 | placement | The position where the selection box pops up | `bottomLeft` `bottomRight` `topLeft` `topRight` | bottomLeft |  |
 | searchValue | Work with `onSearch` to make search value controlled | string | - |  |
-| showArrow | Whether to show the `suffixIcon` | boolean | `true` |  |
 | showCheckedStrategy | The way show selected item in box when `treeCheckable` set. **Default:** just show child nodes. **`TreeSelect.SHOW_ALL`:** show all checked treeNodes (include parent treeNode). **`TreeSelect.SHOW_PARENT`:** show checked treeNodes (just show parent treeNode) | `TreeSelect.SHOW_ALL` \| `TreeSelect.SHOW_PARENT` \| `TreeSelect.SHOW_CHILD` | `TreeSelect.SHOW_CHILD` |  |
 | showSearch | Support search or not | boolean | single: false \| multiple: true |  |
 | size | To set the size of the select input | `large` \| `middle` \| `small` | - |  |
 | status | Set validation status | 'error' \| 'warning' | - | 4.19.0 |
-| suffixIcon | The custom suffix icon,you must set `showArrow` to `true` manually in multiple selection mode | ReactNode | - |  |
+| suffixIcon | The custom suffix icon | ReactNode | `<DownOutlined />` |  |
 | switcherIcon | Customize collapse/expand icon of tree node | ReactNode \| ((props: AntTreeNodeProps) => ReactNode) | - | renderProps: 4.20.0 |
 | tagRender | Customize tag render when `multiple` | (props) => ReactNode | - |  |
 | treeCheckable | Whether to show checkbox on the treeNodes | boolean | false |  |
@@ -79,12 +79,14 @@ Tree selection control.
 | treeNodeFilterProp | Will be used for filtering if `filterTreeNode` returns true | string | `value` |  |
 | treeNodeLabelProp | Will render as content of select | string | `title` |  |
 | value | To set the current selected treeNode(s) | string \| string\[] | - |  |
+| variant | Variants of selector | `outlined` \| `borderless` \| `filled` | `outlined` | 5.13.0 |
 | virtual | Disable virtual scroll when set to false | boolean | true | 4.1.0 |
 | onChange | A callback function, can be executed when selected treeNodes or input value change | function(value, label, extra) | - |  |
 | onDropdownVisibleChange | Called when dropdown open | function(open) | - |  |
 | onSearch | A callback function, can be executed when the search input changes | function(value: string) | - |  |
 | onSelect | A callback function, can be executed when you select a treeNode | function(value, node, extra) | - |  |
 | onTreeExpand | A callback function, can be executed when treeNode expanded | function(expandedKeys) | - |  |
+| onPopupScroll | Called when dropdown scrolls | (event: MouseEvent) => void | - | 5.17.0 |
 
 ### Tree Methods
 
@@ -139,3 +141,7 @@ In earlier version, `loadData` will be triggered when searching. But we got feed
   }}
 />
 ```
+
+### Why can't popup scroll horizontally?
+
+Just turn off virtual scrolling, because the `scrollWidth` of the complete list cannot be accurately measured when virtual scrolling is turned on.

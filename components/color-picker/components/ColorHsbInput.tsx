@@ -1,10 +1,10 @@
-import type { HSB } from '@rc-component/color-picker';
-import { getRoundNumber } from '@rc-component/color-picker/lib/util';
 import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
+import type { HSB } from '@rc-component/color-picker';
+
 import type { Color } from '../color';
 import type { ColorPickerBaseProps } from '../interface';
-import { generateColor } from '../util';
+import { generateColor, getRoundNumber } from '../util';
 import ColorSteppers from './ColorSteppers';
 
 interface ColorHsbInputProps extends Pick<ColorPickerBaseProps, 'prefixCls'> {

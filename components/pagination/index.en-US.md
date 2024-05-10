@@ -2,11 +2,10 @@
 category: Components
 group: Navigation
 title: Pagination
+description: A long list can be divided into several pages, and only one page will be loaded at a time.
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*8y_iTJGY_aUAAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*WM86SrBC8TsAAAAAAAAAAAAADrJ8AQ/original
 ---
-
-A long list can be divided into several pages using `Pagination`, and only one page will be loaded at a time.
 
 ## When To Use
 
@@ -27,8 +26,11 @@ A long list can be divided into several pages using `Pagination`, and only one p
 <code src="./demo/all.tsx">Show All</code>
 <code src="./demo/itemRender.tsx">Prev and next</code>
 <code src="./demo/wireframe.tsx" debug>Wireframe</code>
+<code src="./demo/component-token.tsx" debug>component Token</code>
 
 ## API
+
+Common props ref：[Common props](/docs/react/common-props)
 
 ```jsx
 <Pagination onChange={onChange} total={50} />

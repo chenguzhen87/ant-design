@@ -1,10 +1,10 @@
-import { css, Global } from '@emotion/react';
 import React from 'react';
 import { TinyColor } from '@ctrl/tinycolor';
-import useSiteToken from '../../../hooks/useSiteToken';
+import { css, Global } from '@emotion/react';
+import { useTheme } from 'antd-style';
 
-export default () => {
-  const { token } = useSiteToken();
+const GlobalStyle: React.FC = () => {
+  const token = useTheme();
 
   const { antCls } = token;
 
@@ -15,7 +15,7 @@ export default () => {
       styles={css`
         .markdown {
           color: ${token.colorText};
-          font-size: 14px;
+          font-size: ${token.fontSize}px;
           line-height: 2;
         }
 
@@ -28,9 +28,17 @@ export default () => {
           max-height: 100%;
         }
 
+        .markdown > a > img,
+        .markdown > img {
+          display: block;
+          margin: 0 auto;
+        }
+
         .markdown p > img {
-          margin: 34px 0;
+          margin: 34px auto;
           box-shadow: 0 8px 20px rgba(143, 168, 191, 0.35);
+          max-width: 1024px;
+          display: block;
         }
 
         .markdown p > img.markdown-inline-image {
@@ -39,8 +47,8 @@ export default () => {
         }
 
         .markdown h1 {
-          margin-top: 8px;
-          margin-bottom: 20px;
+          margin-top: ${token.marginXS}px;
+          margin-bottom: ${token.marginMD}px;
           color: ${token.colorTextHeading};
           font-weight: 500;
           font-size: 30px;
@@ -48,7 +56,7 @@ export default () => {
           line-height: 38px;
 
           .subtitle {
-            margin-left: 12px;
+            margin-inline-start: ${token.marginSM}px;
           }
         }
 
@@ -74,21 +82,21 @@ export default () => {
         }
 
         .markdown h4 {
-          font-size: 16px;
+          font-size: ${token.fontSizeLG}px;
         }
 
         .markdown h5 {
-          font-size: 14px;
+          font-size: ${token.fontSize}px;
         }
 
         .markdown h6 {
-          font-size: 12px;
+          font-size: ${token.fontSizeSM}px;
         }
 
         .markdown hr {
           clear: both;
           height: 1px;
-          margin: 24px 0;
+          margin: ${token.marginLG}px 0;
           background: ${token.colorSplit};
           border: 0;
         }
@@ -104,15 +112,15 @@ export default () => {
         }
 
         .markdown ul > li {
-          margin-left: 20px;
-          padding-left: 4px;
+          margin-inline-start: ${token.marginMD}px;
+          padding-inline-start: ${token.paddingXXS}px;
           list-style-type: circle;
 
           .rtl & {
-            margin-right: 20px;
-            margin-left: 0;
-            padding-right: 4px;
-            padding-left: 0;
+            margin-inline-end: ${token.marginMD}px;
+            margin-inline-start: 0;
+            padding-inline-end: ${token.paddingXXS}px;
+            padding-inline-start: 0;
           }
 
           &:empty {
@@ -121,15 +129,15 @@ export default () => {
         }
 
         .markdown ol > li {
-          margin-left: 20px;
-          padding-left: 4px;
+          margin-inline-start: ${token.marginMD}px;
+          padding-inline-start: ${token.paddingXXS}px;
           list-style-type: decimal;
 
           ${antCls}-row-rtl & {
-            margin-right: 20px;
-            margin-left: 0;
-            padding-right: 4px;
-            padding-left: 0;
+            margin-inline-end: ${token.marginMD}px;
+            margin-inline-start: 0;
+            padding-inline-end: ${token.paddingXXS}px;
+            padding-inline-start: 0;
           }
         }
 
@@ -144,7 +152,7 @@ export default () => {
           font-size: 0.9em;
           background: ${token.siteMarkdownCodeBg};
           border: 1px solid ${token.colorSplit};
-          border-radius: 3px;
+          border-radius: ${token.borderRadiusSM}px;
         }
 
         .markdown pre {
@@ -161,7 +169,7 @@ export default () => {
           font-size: ${Math.max(token.fontSize - 1, 12)}px;
           direction: ltr;
           text-align: left;
-          background: #f5f5f5;
+          background-color: ${token.colorBgLayout};
           border: none;
         }
 
@@ -175,14 +183,25 @@ export default () => {
           background-color: ${token.siteMarkdownCodeBg};
           border-radius: ${token.borderRadius}px;
           > pre.prism-code {
-            padding: 12px 20px;
-            font-size: 13px;
+            padding: ${token.paddingSM}px ${token.paddingMD}px;
+            font-size: ${token.fontSize}px;
             line-height: 2;
+          }
+        }
+        .pic-plus {
+          & > * {
+            display: inline-block !important;
+            vertical-align: middle;
+          }
+          span {
+            margin: 0 ${token.marginMD}px;
+            color: #aaa;
+            font-size: 30px;
           }
         }
 
         .markdown table td > a:not(:last-child) {
-          margin-right: 0 !important;
+          margin-inline-end: 0 !important;
 
           &::after {
             position: relative !important;
@@ -191,14 +210,14 @@ export default () => {
 
         .markdown blockquote {
           margin: 1em 0;
-          padding-left: 0.8em;
+          padding-inline-start: 0.8em;
           color: ${token.colorTextSecondary};
           font-size: 90%;
           border-left: 4px solid ${token.colorSplit};
 
           .rtl & {
-            padding-right: 0.8em;
-            padding-left: 0;
+            padding-inline-end: 0.8em;
+            padding-inline-start: 0;
             border-right: 4px solid ${token.colorSplit};
             border-left: none;
           }
@@ -209,13 +228,13 @@ export default () => {
         }
 
         .markdown .anchor {
-          margin-left: 8px;
+          margin-inline-start: ${token.marginXS}px;
           opacity: 0;
-          transition: opacity 0.3s;
+          transition: opacity ${token.motionDurationSlow};
 
           .rtl & {
-            margin-right: 8px;
-            margin-left: 0;
+            margin-inline-end: ${token.marginXS}px;
+            margin-inline-start: 0;
           }
         }
 
@@ -226,20 +245,20 @@ export default () => {
 
         .markdown a.edit-button {
           display: inline-block;
-          margin-left: 8px;
+          margin-inline-start: ${token.marginXS}px;
           text-decoration: none;
 
           .rtl & {
-            margin-right: 8px;
-            margin-left: 0;
+            margin-inline-end: ${token.marginXS}px;
+            margin-inline-start: 0;
             transform: rotateY(180deg);
           }
 
           ${antCls}icon {
             display: block;
             color: ${token.colorTextSecondary};
-            font-size: 16px;
-            transition: all 0.3s;
+            font-size: ${token.fontSizeLG}px;
+            transition: all ${token.motionDurationSlow};
 
             &:hover {
               color: ${token.colorText};
@@ -275,7 +294,7 @@ export default () => {
 
             th,
             td {
-              padding: 12px 24px;
+              padding: ${token.paddingSM}px ${token.paddingLG}px;
               text-align: left;
               border: 1px solid ${token.colorSplit};
 
@@ -301,7 +320,7 @@ export default () => {
             }
 
             tbody tr {
-              transition: all 0.3s;
+              transition: all ${token.motionDurationSlow};
 
               &:hover {
                 background: rgba(60, 90, 100, 0.04);
@@ -328,13 +347,12 @@ export default () => {
               &:first-child {
                 width: 18%;
                 min-width: 58px;
-                color: #595959;
-                font-weight: 600;
+                color: ${token.colorText};
+                font-weight: ${token.fontWeightStrong};
                 white-space: nowrap;
               }
 
               &:nth-child(2) {
-                width: 55%;
                 min-width: 160px;
               }
 
@@ -370,15 +388,15 @@ export default () => {
           ${antCls}-row > div,
             .code-box-demo ${antCls}-row > div {
             min-height: 30px;
-            margin-top: 8px;
-            margin-bottom: 8px;
+            margin-top: ${token.marginXS}px;
+            margin-bottom: ${token.marginXS}px;
             color: #fff;
             text-align: center;
             border-radius: 0;
           }
 
           .code-box-demo ${antCls}-row > div:not(.gutter-row) {
-            padding: 16px 0;
+            padding: ${token.padding}px 0;
             background: ${demoGridColor};
 
             &:nth-child(2n + 1) {
@@ -455,3 +473,5 @@ export default () => {
     />
   );
 };
+
+export default GlobalStyle;
