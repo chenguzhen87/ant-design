@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/fr_FR';
+import Pagination from '@rc-component/pagination/lib/locale/fr_FR';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/fr_FR';
@@ -14,12 +13,15 @@ const localeValues: Locale = {
   DatePicker,
   TimePicker,
   Calendar,
+  global: {
+    close: 'Fermer',
+  },
   Table: {
     filterTitle: 'Filtrer',
     filterConfirm: 'OK',
     filterReset: 'Réinitialiser',
     filterEmptyText: 'Aucun filtre',
-    filterCheckall: 'Tout sélectionner',
+    filterCheckAll: 'Tout sélectionner',
     filterSearchPlaceholder: 'Chercher dans les filtres',
     emptyText: 'Aucune donnée',
     selectAll: 'Sélectionner la page actuelle',
@@ -33,15 +35,15 @@ const localeValues: Locale = {
     triggerAsc: 'Trier par ordre croissant',
     cancelSort: 'Annuler le tri',
   },
-  Modal: {
-    okText: 'OK',
-    cancelText: 'Annuler',
-    justOkText: 'OK',
-  },
   Tour: {
     Next: 'Étape suivante',
     Previous: 'Étape précédente',
     Finish: 'Fin de la visite guidée',
+  },
+  Modal: {
+    okText: 'OK',
+    cancelText: 'Annuler',
+    justOkText: 'OK',
   },
   Popconfirm: {
     okText: 'OK',
@@ -127,9 +129,6 @@ const localeValues: Locale = {
         mismatch: 'La valeur du champ ${label} ne correspond pas au modèle ${pattern}',
       },
     },
-  },
-  Image: {
-    preview: 'Aperçu',
   },
 };
 

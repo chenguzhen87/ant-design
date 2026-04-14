@@ -1,9 +1,8 @@
-// deps-lint-skip-all
 import type { CSSProperties } from 'react';
 import type { CSSObject } from '@ant-design/cssinjs';
 import { Keyframes } from '@ant-design/cssinjs';
 
-import { CONTAINER_MAX_OFFSET } from '../../_util/hooks/useZIndex';
+import { CONTAINER_MAX_OFFSET } from '../../_util/hooks';
 import { resetComponent } from '../../style';
 import type { FullToken, GenerateStyle, GetDefaultToken } from '../../theme/internal';
 import { genStyleHooks, mergeToken } from '../../theme/internal';
@@ -28,8 +27,16 @@ export interface ComponentToken {
   contentPadding: CSSProperties['padding'];
 }
 
+/**
+ * @desc Message 组件的 Token
+ * @descEN Token for Message component
+ */
 interface MessageToken extends FullToken<'Message'> {
   // Custom token here
+  /**
+   * @desc 提示框高度
+   * @descEN Height of Message
+   */
   height: number;
 }
 
@@ -88,8 +95,12 @@ const genMessageStyle: GenerateStyle<MessageToken> = (token) => {
     padding: paddingXS,
     textAlign: 'center',
 
+    [`${componentCls}-custom-content`]: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+
     [`${componentCls}-custom-content > ${iconCls}`]: {
-      verticalAlign: 'text-bottom',
       marginInlineEnd: marginXS, // affected by ltr or rtl
       fontSize: fontSizeLG,
     },
@@ -199,10 +210,8 @@ export default genStyleHooks(
   'Message',
   (token) => {
     // Gen-style functions here
-    const combinedToken = mergeToken<MessageToken>(token, {
-      height: 150,
-    });
-    return [genMessageStyle(combinedToken)];
+    const combinedToken = mergeToken<MessageToken>(token, { height: 150 });
+    return genMessageStyle(combinedToken);
   },
   prepareComponentToken,
 );

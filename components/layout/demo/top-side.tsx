@@ -18,8 +18,7 @@ const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOu
       key: `sub${key}`,
       icon: React.createElement(icon),
       label: `subnav ${key}`,
-
-      children: new Array(4).fill(null).map((_, j) => {
+      children: Array.from({ length: 4 }).map((_, j) => {
         const subKey = index * 4 + j + 1;
         return {
           key: subKey,
@@ -35,6 +34,8 @@ const App: React.FC = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <Layout>
       <Header style={{ display: 'flex', alignItems: 'center' }}>
@@ -47,12 +48,11 @@ const App: React.FC = () => {
           style={{ flex: 1, minWidth: 0 }}
         />
       </Header>
-      <Content style={{ padding: '0 48px' }}>
-        <Breadcrumb style={{ margin: '16px 0' }}>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
-          <Breadcrumb.Item>List</Breadcrumb.Item>
-          <Breadcrumb.Item>App</Breadcrumb.Item>
-        </Breadcrumb>
+      <div style={{ padding: '0 48px' }}>
+        <Breadcrumb
+          style={{ margin: '16px 0' }}
+          items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
+        />
         <Layout
           style={{ padding: '24px 0', background: colorBgContainer, borderRadius: borderRadiusLG }}
         >
@@ -67,10 +67,8 @@ const App: React.FC = () => {
           </Sider>
           <Content style={{ padding: '0 24px', minHeight: 280 }}>Content</Content>
         </Layout>
-      </Content>
-      <Footer style={{ textAlign: 'center' }}>
-        Ant Design ©{new Date().getFullYear()} Created by Ant UED
-      </Footer>
+      </div>
+      <Footer style={{ textAlign: 'center' }}>Ant Design ©{currentYear} Created by Ant UED</Footer>
     </Layout>
   );
 };

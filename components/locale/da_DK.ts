@@ -1,4 +1,4 @@
-import Pagination from 'rc-pagination/lib/locale/da_DK';
+import Pagination from '@rc-component/pagination/lib/locale/da_DK';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/da_DK';
@@ -12,6 +12,9 @@ const localeValues: Locale = {
   TimePicker,
   Calendar,
   Pagination,
+  global: {
+    close: 'Luk',
+  },
   Table: {
     filterTitle: 'Filtermenu',
     filterConfirm: 'OK',
@@ -28,6 +31,11 @@ const localeValues: Locale = {
     triggerDesc: 'Klik for at sortere faldende',
     triggerAsc: 'Klik for at sortere stigende',
     cancelSort: 'Klik for at annullere sortering',
+  },
+  Tour: {
+    Next: 'Næste',
+    Previous: 'Forrige',
+    Finish: 'Færdiggørelse',
   },
   Modal: {
     okText: 'OK',

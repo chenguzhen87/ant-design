@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { createStyles, css } from 'antd-style';
-import classNames from 'classnames';
-import { CSSMotionList } from 'rc-motion';
+import { CSSMotionList } from '@rc-component/motion';
+import { createStaticStyles } from 'antd-style';
+import { clsx } from 'clsx';
 
 import { COLOR_IMAGES, getClosetColor } from './colorUtil';
 
@@ -10,11 +10,11 @@ export interface BackgroundImageProps {
   isLight?: boolean;
 }
 
-const useStyle = createStyles(({ token }) => ({
+const styles = createStaticStyles(({ css, cssVar }) => ({
   image: css`
-    transition: all ${token.motionDurationSlow};
+    transition: all ${cssVar.motionDurationSlow};
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
     top: 0;
     height: 100%;
     width: 100%;
@@ -29,7 +29,6 @@ const onHide = () => ({ opacity: 0 });
 
 const BackgroundImage: React.FC<BackgroundImageProps> = ({ colorPrimary, isLight }) => {
   const activeColor = useMemo(() => getClosetColor(colorPrimary), [colorPrimary]);
-  const { styles } = useStyle();
 
   const [keyList, setKeyList] = useState<string[]>([]);
 
@@ -50,7 +49,7 @@ const BackgroundImage: React.FC<BackgroundImageProps> = ({ colorPrimary, isLight
       motionDeadline={500}
     >
       {({ key: color, className, style }) => {
-        const cls = classNames(styles.image, className);
+        const cls = clsx(styles.image, className);
         const entity = COLOR_IMAGES.find((ent) => ent.color === color);
 
         if (!entity || !entity.url) {
@@ -64,10 +63,11 @@ const BackgroundImage: React.FC<BackgroundImageProps> = ({ colorPrimary, isLight
             <source srcSet={entity.webp} type="image/webp" />
             <source srcSet={entity.url} type="image/jpeg" />
             <img
+              draggable={false}
               className={cls}
               style={{ ...style, opacity: isLight ? opacity : 0 }}
               src={entity.url}
-              alt=""
+              alt="bg"
             />
           </picture>
         );

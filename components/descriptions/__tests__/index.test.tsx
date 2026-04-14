@@ -37,7 +37,6 @@ describe('Descriptions', () => {
   });
 
   it('when max-width: 575px, column=2', () => {
-    // eslint-disable-next-line global-require
     const wrapper = render(
       <Descriptions column={{ xs: 2 }}>
         <Descriptions.Item label="Product">Cloud Database</Descriptions.Item>
@@ -51,7 +50,6 @@ describe('Descriptions', () => {
   });
 
   it('when max-width: 575px, column=2, span=2', () => {
-    // eslint-disable-next-line global-require
     const { container } = render(
       <Descriptions
         column={{ xs: 2 }}
@@ -80,8 +78,45 @@ describe('Descriptions', () => {
     expect(container.querySelectorAll('.ant-descriptions-item')[2]).toHaveAttribute('colSpan', '1');
   });
 
+  it('span = filled', () => {
+    const { container } = render(
+      <Descriptions
+        column={3}
+        items={[
+          { label: '0', children: '', span: 2 },
+          { label: '1', children: '' },
+          { label: '2', children: '' },
+          { label: '3', children: '', span: 'filled' },
+          { label: '4', children: '', span: 'filled' },
+          { label: '5', children: '' },
+          { label: '6', children: '', span: 1 },
+        ]}
+      />,
+    );
+    expect(container.querySelectorAll('.ant-descriptions-item')[0]).toHaveAttribute('colSpan', '2');
+    expect(container.querySelectorAll('.ant-descriptions-item')[1]).toHaveAttribute('colSpan', '1');
+    expect(container.querySelectorAll('.ant-descriptions-item')[2]).toHaveAttribute('colSpan', '1');
+    expect(container.querySelectorAll('.ant-descriptions-item')[3]).toHaveAttribute('colSpan', '2');
+    expect(container.querySelectorAll('.ant-descriptions-item')[4]).toHaveAttribute('colSpan', '3');
+    expect(container.querySelectorAll('.ant-descriptions-item')[5]).toHaveAttribute('colSpan', '1');
+    expect(container.querySelectorAll('.ant-descriptions-item')[6]).toHaveAttribute('colSpan', '2');
+  });
+
+  it('when column=6, last item span should be 5', () => {
+    const { container } = render(
+      <Descriptions
+        column={6}
+        items={[
+          { label: '0', children: '' },
+          { label: '1', children: '', span: 2 },
+        ]}
+      />,
+    );
+    expect(container.querySelectorAll('.ant-descriptions-item')[0]).toHaveAttribute('colSpan', '1');
+    expect(container.querySelectorAll('.ant-descriptions-item')[1]).toHaveAttribute('colSpan', '5');
+  });
+
   it('column is number', () => {
-    // eslint-disable-next-line global-require
     const wrapper = render(
       <Descriptions column={3}>
         <Descriptions.Item label="Product">Cloud Database</Descriptions.Item>
@@ -146,7 +181,6 @@ describe('Descriptions', () => {
   });
 
   it('vertical layout', () => {
-    // eslint-disable-next-line global-require
     const wrapper = render(
       <Descriptions layout="vertical">
         <Descriptions.Item label="Product">Cloud Database</Descriptions.Item>
@@ -250,7 +284,7 @@ describe('Descriptions', () => {
     );
 
     function matchSpan(rowIndex: number, spans: number[]) {
-      const trs = Array.from(wrapper.container.querySelectorAll('tr')).at(rowIndex);
+      const trs = Array.from(wrapper.container.querySelectorAll('tr'))[rowIndex];
       const tds = Array.from(trs?.querySelectorAll('th')!);
       expect(tds).toHaveLength(spans.length);
       tds.forEach((td, index) => {
@@ -291,7 +325,10 @@ describe('Descriptions', () => {
   it('number 0 should render correct', () => {
     const wrapper = render(
       <Descriptions>
-        <Descriptions.Item label={0} labelStyle={{ color: 'red' }} contentStyle={{ color: 'red' }}>
+        <Descriptions.Item
+          label={0}
+          styles={{ label: { color: 'red' }, content: { color: 'red' } }}
+        >
           {0}
         </Descriptions.Item>
       </Descriptions>,
@@ -356,10 +393,9 @@ describe('Descriptions', () => {
         </Descriptions.Item>
       </Descriptions>,
     );
-
     const nestDesc = container.querySelectorAll('.ant-descriptions')[1];
     const view = nestDesc.querySelector('.ant-descriptions-view');
-    expect(getComputedStyle(view!).border).toBeFalsy();
+    expect(view).toHaveStyle({ border: '' });
   });
 
   it('Should Descriptions not throw react key prop error in jsx mode', () => {

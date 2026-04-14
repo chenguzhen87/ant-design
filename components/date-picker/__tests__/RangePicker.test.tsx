@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { CloseCircleFilled } from '@ant-design/icons';
+import { warning } from '@rc-component/util';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 import DatePicker from '..';
-import { resetWarned } from '../../_util/warning';
 import focusTest from '../../../tests/shared/focusTest';
 import { render, resetMockDate, setMockDate } from '../../../tests/utils';
 import enUS from '../locale/en_US';
 import { closePicker, getClearButton, openPicker, selectCell } from './utils';
+
+const { resetWarned } = warning;
 
 dayjs.extend(customParseFormat);
 
@@ -148,15 +150,40 @@ describe('RangePicker', () => {
     expect(container.querySelectorAll('input')[1]?.placeholder).toEqual('End quarter');
   });
 
-  it('legacy dropdownClassName', () => {
+  it('legacy dropdownClassName & popupClassName', () => {
     resetWarned();
 
     const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    const { container } = render(<DatePicker.RangePicker dropdownClassName="legacy" open />);
+    const { container, rerender } = render(
+      <DatePicker.RangePicker dropdownClassName="legacy" open />,
+    );
     expect(errSpy).toHaveBeenCalledWith(
-      'Warning: [antd: DatePicker.RangePicker] `dropdownClassName` is deprecated. Please use `popupClassName` instead.',
+      'Warning: [antd: DatePicker.RangePicker] `dropdownClassName` is deprecated. Please use `classNames.popup.root` instead.',
     );
     expect(container.querySelector('.legacy')).toBeTruthy();
+
+    rerender(<DatePicker.RangePicker popupClassName="legacy" open />);
+    expect(errSpy).toHaveBeenCalledWith(
+      'Warning: [antd: DatePicker.RangePicker] `popupClassName` is deprecated. Please use `classNames.popup.root` instead.',
+    );
+    expect(container.querySelector('.legacy')).toBeTruthy();
+
+    errSpy.mockRestore();
+  });
+
+  it('legacy popupStyle', () => {
+    resetWarned();
+
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const { container } = render(
+      <DatePicker.RangePicker popupStyle={{ backgroundColor: 'red' }} open />,
+    );
+    expect(errSpy).toHaveBeenCalledWith(
+      'Warning: [antd: DatePicker.RangePicker] `popupStyle` is deprecated. Please use `styles.popup.root` instead.',
+    );
+    expect(container.querySelector('.ant-picker-dropdown')).toHaveStyle(
+      'background-color: rgb(255, 0, 0)',
+    );
 
     errSpy.mockRestore();
   });
@@ -192,5 +219,27 @@ describe('RangePicker', () => {
 
     rerender(<RangePicker locale={enUS} value={[somePoint, somePoint]} allowClear={{}} />);
     expect(getClearButton()).toBeTruthy();
+  });
+
+  it('should support deep merge locale with partial fields', () => {
+    setMockDate();
+
+    const { container } = render(
+      <RangePicker
+        open
+        locale={{ lang: { shortWeekDays: ['一', '二', '三', '四', '五', '六', '日'] } } as any}
+      />,
+    );
+
+    expect(container.querySelector('.ant-picker-content thead')?.textContent).toBe(
+      '一二三四五六日',
+    );
+
+    expect(container.querySelector<HTMLInputElement>('input')).toHaveAttribute(
+      'placeholder',
+      'Start date',
+    );
+
+    resetMockDate();
   });
 });

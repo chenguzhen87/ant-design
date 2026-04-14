@@ -6,7 +6,7 @@ export function isFragment(child: any): boolean {
   return child && React.isValidElement(child) && child.type === React.Fragment;
 }
 
-type RenderProps = AnyObject | ((originProps: AnyObject) => AnyObject | void);
+type RenderProps = AnyObject | ((originProps: AnyObject) => AnyObject | undefined);
 
 export const replaceElement = <P>(
   element: React.ReactNode,
@@ -23,5 +23,5 @@ export const replaceElement = <P>(
 };
 
 export function cloneElement<P>(element: React.ReactNode, props?: RenderProps) {
-  return replaceElement<P>(element, element, props) as React.ReactElement;
+  return replaceElement<P>(element, element, props) as React.ReactElement<P>;
 }

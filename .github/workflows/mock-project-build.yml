@@ -11,20 +11,21 @@ concurrency:
   group: unique
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   pr-check-ci:
     if: github.repository == 'ant-design/ant-design'
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     name: Build Project
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
+      - uses: utooland/setup-utoo@3a51006d0b66afcc32d1b9177a4b200b74f4a8cb # v1
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: ~tmpProj/yarn.lock
           key: primes-${{ runner.os }}-${{ github.run_id }}
@@ -42,7 +43,7 @@ jobs:
 
       - name: Download success lock file as `success.lock`
         if: ${{ failure() }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ~tmpProj/yarn.lock
           key: primes-${{ runner.os }}-${{ github.run_id }}
@@ -54,11 +55,15 @@ jobs:
 
       - name: 🎨 Diff Report
         if: ${{ failure() }}
-        run: npx diff-yarn-lock --source=~tmpProj/yarn.lock --target=~tmpProj/yarn.lock.failed
+        run: utx diff-yarn-lock --source=~tmpProj/yarn.lock --target=~tmpProj/yarn.lock.failed
 
-      - uses: actions-cool/ci-notice@v1
+      - uses: actions-cool/ci-notice@89af4a933717226a062cbf65c439beda5eb8aa5d # v1
         if: ${{ failure() }}
         with:
-          notice-types: 'dingding'
+          notice-types: dingding
+          # Exit directly with non-zero to trigger the failure logic of ci-notice.
+          ci: |
+            echo "❌ CI Mock Project Build Failed"
+            exit 1
           dingding-token: ${{ secrets.DINGDING_BOT_COLLABORATOR_TOKEN }}
-          notice-title: 'CI Mock Project Build Failed'
+          notice-title: CI Mock Project Build Failed

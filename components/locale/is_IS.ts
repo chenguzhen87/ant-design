@@ -1,4 +1,4 @@
-import Pagination from 'rc-pagination/lib/locale/is_IS';
+import Pagination from '@rc-component/pagination/lib/locale/is_IS';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/is_IS';
@@ -13,12 +13,20 @@ const localeValues: Locale = {
   DatePicker,
   TimePicker,
   Calendar,
+  global: {
+    close: 'Loka',
+  },
   Table: {
     filterTitle: 'Afmarkanir',
     filterConfirm: 'Staðfesta',
     filterReset: 'Núllstilla',
     selectAll: 'Velja allt',
     selectInvert: 'Viðsnúa vali',
+  },
+  Tour: {
+    Next: 'Áfram',
+    Previous: 'Til baka',
+    Finish: 'Lokið',
   },
   Modal: {
     okText: 'Áfram',

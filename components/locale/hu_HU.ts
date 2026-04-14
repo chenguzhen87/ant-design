@@ -1,4 +1,4 @@
-import Pagination from 'rc-pagination/lib/locale/hu_HU';
+import Pagination from '@rc-component/pagination/lib/locale/hu_HU';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/hu_HU';
@@ -11,6 +11,9 @@ const localeValues: Locale = {
   DatePicker,
   TimePicker,
   Calendar,
+  global: {
+    close: 'Bezárás',
+  },
   Table: {
     filterTitle: 'Szűrők',
     filterConfirm: 'Alkalmazás',
@@ -43,6 +46,11 @@ const localeValues: Locale = {
   },
   Empty: {
     description: 'Nincs adat',
+  },
+  Tour: {
+    Next: 'Következő',
+    Previous: 'Előző',
+    Finish: 'Befejezés',
   },
 };
 

@@ -1,19 +1,24 @@
 import React from 'react';
+import { warning } from '@rc-component/util';
 import userEvent from '@testing-library/user-event';
-import { resetWarned } from 'rc-util/lib/warning';
 
 import Alert from '..';
-import accessibilityTest from '../../../tests/shared/accessibilityTest';
+import { accessibilityTest } from '../../../tests/shared/accessibilityTest';
+import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
-import { act, render, screen, waitFakeTimer } from '../../../tests/utils';
+import { act, fireEvent, render, screen, waitFakeTimer } from '../../../tests/utils';
 import Button from '../../button';
+import ConfigProvider from '../../config-provider';
 import Popconfirm from '../../popconfirm';
 import Tooltip from '../../tooltip';
-import type { AlertRef } from '../Alert';
+import type { AlertProps, AlertRef } from '../Alert';
+
+const { resetWarned } = warning;
 
 const { ErrorBoundary } = Alert;
 
 describe('Alert', () => {
+  mountTest(Alert);
   rtlTest(Alert);
   accessibilityTest(Alert);
 
@@ -28,21 +33,38 @@ describe('Alert', () => {
   it('should show close button and could be closed', async () => {
     const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const onClose = jest.fn();
-    render(
+    const { container } = render(
       <Alert
-        message="Warning Text Warning Text Warning TextW arning Text Warning Text Warning TextWarning Text"
+        title="Warning Text Warning Text Warning TextW arning Text Warning Text Warning TextWarning Text"
         type="warning"
         closable
         onClose={onClose}
       />,
     );
 
-    await act(async () => {
-      await userEvent.click(screen.getByRole('button', { name: /close/i }));
-      jest.runAllTimers();
-    });
-
+    fireEvent.click(container.querySelector('.ant-alert-close-icon')!);
     expect(onClose).toHaveBeenCalledTimes(1);
+    expect(errSpy).not.toHaveBeenCalled();
+    errSpy.mockRestore();
+  });
+
+  it('onClose and closable.onClose', async () => {
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const onClose = jest.fn();
+    const handleClosableClose = jest.fn();
+    const { container } = render(
+      <Alert
+        title="Warning Text Warning Text Warning TextW arning Text Warning Text Warning TextWarning Text"
+        type="warning"
+        closable={{ onClose: handleClosableClose, closeIcon: true }}
+        onClose={onClose}
+      />,
+    );
+
+    fireEvent.click(container.querySelector('.ant-alert-close-icon')!);
+
+    expect(onClose).toHaveBeenCalledTimes(0);
+    expect(handleClosableClose).toHaveBeenCalledTimes(1);
     expect(errSpy).not.toHaveBeenCalled();
     errSpy.mockRestore();
   });
@@ -83,18 +105,15 @@ describe('Alert', () => {
   it('should show error as ErrorBoundary when children have error', () => {
     const warnSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     expect(warnSpy).toHaveBeenCalledTimes(0);
-    // @ts-expect-error
-    // eslint-disable-next-line react/jsx-no-undef
-    const ThrowError = () => <NotExisted />;
+    const ThrowError: React.FC = () => {
+      throw new Error('This is a test error');
+    };
     render(
       <ErrorBoundary>
         <ThrowError />
       </ErrorBoundary>,
     );
-
-    expect(screen.getByRole('alert')).toHaveTextContent(
-      'ReferenceError: NotExisted is not defined',
-    );
+    expect(screen.getByRole('alert')).toHaveTextContent('Error: This is a test error');
     warnSpy.mockRestore();
   });
 
@@ -134,15 +153,15 @@ describe('Alert', () => {
   });
 
   it('could accept none react element icon', () => {
-    render(<Alert message="Success Tips" type="success" showIcon icon="icon" />);
+    render(<Alert title="Success Tips" type="success" showIcon icon="icon" />);
 
     expect(screen.getByRole('alert')).toHaveTextContent(/success tips/i);
     expect(screen.getByRole('alert')).toHaveTextContent(/icon/i);
   });
 
-  it('should not render message div when no message', () => {
+  it('should not render title div when no title', () => {
     const { container } = render(<Alert description="description" />);
-    expect(!!container.querySelector('.ant-alert-message')).toBe(false);
+    expect(!!container.querySelector('.ant-alert-title')).toBe(false);
   });
 
   it('close button should be hidden when closeIcon setting to null or false', () => {
@@ -203,5 +222,80 @@ describe('Alert', () => {
     expect(element).toBeTruthy();
     expect(alertRef.current?.nativeElement).toBeTruthy();
     expect(alertRef.current?.nativeElement).toBe(element);
+  });
+
+  it('should apply custom styles to Alert', () => {
+    const customClassNames: AlertProps['classNames'] = {
+      root: 'custom-root',
+      icon: 'custom-icon',
+      section: 'custom-section',
+      title: 'custom-title',
+      description: 'custom-description',
+      actions: 'custom-actions',
+      close: 'custom-close',
+    };
+
+    const customStyles: AlertProps['styles'] = {
+      root: { color: 'rgb(255, 0, 0)' },
+      icon: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+      section: { padding: '20px' },
+      title: { backgroundColor: 'rgb(0, 0, 255)' },
+      description: { fontSize: '20px' },
+      actions: { color: 'rgb(0, 128, 0)' },
+      close: { color: 'rgb(128, 0, 128)' },
+    };
+
+    render(
+      <Alert
+        closable
+        styles={customStyles}
+        classNames={customClassNames}
+        title="Info Text"
+        showIcon
+        description="Info Description Info Description Info Description Info Description"
+        type="info"
+        action={
+          <div>
+            <button type="button">Accept</button>
+            <button type="button">Decline</button>
+          </div>
+        }
+      />,
+    );
+
+    const rootElement = document.querySelector<HTMLElement>('.ant-alert');
+    const iconElement = document.querySelector<HTMLElement>('.ant-alert-icon');
+    const sectionElement = document.querySelector<HTMLElement>('.ant-alert-section');
+    const titleElement = document.querySelector<HTMLElement>('.ant-alert-title');
+    const descriptionElement = document.querySelector<HTMLElement>('.ant-alert-description');
+    const actionElement = document.querySelector<HTMLElement>('.ant-alert-actions');
+    const closeElement = document.querySelector<HTMLElement>('.ant-alert-close-icon');
+
+    // check classNames
+    expect(rootElement).toHaveClass(customClassNames.root!);
+    expect(iconElement).toHaveClass(customClassNames.icon!);
+    expect(sectionElement).toHaveClass(customClassNames.section!);
+    expect(titleElement).toHaveClass(customClassNames.title!);
+    expect(descriptionElement).toHaveClass(customClassNames.description!);
+    expect(actionElement).toHaveClass(customClassNames.actions!);
+    expect(closeElement).toHaveClass(customClassNames.close!);
+
+    // check styles
+    expect(rootElement).toHaveStyle({ color: customStyles.root?.color });
+    expect(iconElement).toHaveStyle({ backgroundColor: customStyles.icon?.backgroundColor });
+    expect(sectionElement).toHaveStyle({ padding: customStyles.section?.padding });
+    expect(titleElement).toHaveStyle({ backgroundColor: customStyles.title?.backgroundColor });
+    expect(descriptionElement).toHaveStyle({ fontSize: customStyles.description?.fontSize });
+    expect(actionElement).toHaveStyle({ color: customStyles.actions?.color });
+    expect(closeElement).toHaveStyle({ color: customStyles.close?.color });
+  });
+
+  it('should support custom success icon', () => {
+    render(
+      <ConfigProvider alert={{ successIcon: 'foobar' }}>
+        <Alert title="Success Tips" type="success" showIcon />
+      </ConfigProvider>,
+    );
+    expect(screen.getByRole('alert')).toHaveTextContent(/foobar/i);
   });
 });

@@ -6,20 +6,19 @@ subtitle: 弹性布局
 description: 用于对齐的弹性布局容器。
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*SMzgSJZE_AwAAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*8yArQ43EGccAAAAAAAAAAAAADrJ8AQ/original
-tag: 5.10.0
 ---
 
-## 何时使用
+## 何时使用 {#when-to-use}
 
 - 适合设置元素之间的间距。
 - 适合设置各种水平、垂直对齐方式。
 
-### 与 Space 组件的区别
+### 与 Space 组件的区别 {#difference-with-space-component}
 
 - Space 为内联元素提供间距，其本身会为每一个子元素添加包裹元素用于内联对齐。适用于行、列中多个子元素的等距排列。
 - Flex 为块级元素提供间距，其本身不会添加包裹元素。适用于垂直或水平方向上的子元素布局，并提供了更多的灵活性和控制能力。
 
-## 代码演示
+## 代码演示 {#examples}
 
 <!-- prettier-ignore -->
 <code src="./demo/basic.tsx">基本布局</code>
@@ -42,8 +41,9 @@ tag: 5.10.0
 | justify | 设置元素在主轴方向上的对齐方式 | [justify-content](https://developer.mozilla.org/zh-CN/docs/Web/CSS/justify-content) | normal |  |
 | align | 设置元素在交叉轴方向上的对齐方式 | [align-items](https://developer.mozilla.org/zh-CN/docs/Web/CSS/align-items) | normal |  |
 | flex | flex CSS 简写属性 | [flex](https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex) | normal |  |
-| gap | 设置网格之间的间隙 | `small` \| `middle` \| `large` \| string \| number | - |  |
+| gap | 设置网格之间的间隙 | `small` \| `medium` \| `large` \| string \| number | - |  |
 | component | 自定义元素类型 | React.ComponentType | `div` |  |
+| orientation | 主轴的方向类型 | `horizontal` \| `vertical` | `horizontal` | - |
 
 ## Design Token
 

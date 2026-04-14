@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { FastColor } from '@ant-design/fast-color';
 import {
   AntDesignOutlined,
   BgColorsOutlined,
@@ -9,11 +10,10 @@ import {
   MediumOutlined,
   MessageOutlined,
   QuestionCircleOutlined,
-  TwitterOutlined,
   UsergroupAddOutlined,
+  XOutlined,
   ZhihuOutlined,
 } from '@ant-design/icons';
-import { TinyColor } from '@ctrl/tinycolor';
 import { createStyles } from 'antd-style';
 import getAlphaColor from 'antd/es/theme/util/getAlphaColor';
 import { FormattedMessage, Link } from 'dumi';
@@ -34,64 +34,57 @@ const locales = {
   },
 };
 
-const useStyle = () => {
-  const { isMobile } = useContext(SiteContext);
-  return createStyles(({ token, css }) => {
-    const background = new TinyColor(getAlphaColor('#f0f3fa', '#fff'))
-      .onBackground(token.colorBgContainer)
-      .toHexString();
+const useStyle = createStyles(({ cssVar, token, css }, isMobile: boolean) => {
+  const background = new FastColor(getAlphaColor('#f0f3fa', '#fff'))
+    .onBackground(token.colorBgContainer)
+    .toHexString();
+  return {
+    holder: css`
+      background: ${background};
+    `,
 
-    return {
-      holder: css`
-        background: ${background};
-      `,
+    footer: css`
+      background: ${background};
+      color: ${cssVar.colorTextSecondary};
+      box-shadow: inset 0 106px 36px -116px rgba(0, 0, 0, 0.14);
 
-      footer: css`
-        background: ${background};
-        color: ${token.colorTextSecondary};
+      * {
+        box-sizing: border-box;
+      }
+
+      h2,
+      a {
+        color: ${cssVar.colorText};
+      }
+      .rc-footer-column {
+        margin-bottom: ${isMobile ? 60 : 0}px;
+        :last-child {
+          margin-bottom: ${isMobile ? 20 : 0}px;
+        }
+      }
+      .rc-footer-item-icon {
+        top: -1.5px;
+      }
+      .rc-footer-container {
+        max-width: 1208px;
+        margin-inline: auto;
+        padding-inline: ${cssVar.marginXXL};
+      }
+      .rc-footer-bottom {
         box-shadow: inset 0 106px 36px -116px rgba(0, 0, 0, 0.14);
-
-        * {
-          box-sizing: border-box;
+        .rc-footer-bottom-container {
+          font-size: ${cssVar.fontSize};
         }
-
-        h2,
-        a {
-          color: ${token.colorText};
-        }
-
-        .rc-footer-column {
-          margin-bottom: ${isMobile ? 60 : 0}px;
-          :last-child {
-            margin-bottom: ${isMobile ? 20 : 0}px;
-          }
-        }
-
-        .rc-footer-item-icon {
-          top: -1.5px;
-        }
-
-        .rc-footer-container {
-          max-width: 1208px;
-          margin-inline: auto;
-          padding-inline: ${token.marginXXL}px;
-        }
-
-        .rc-footer-bottom {
-          box-shadow: inset 0 106px 36px -116px rgba(0, 0, 0, 0.14);
-          .rc-footer-bottom-container {
-            font-size: ${token.fontSize}px;
-          }
-        }
-      `,
-    };
-  })();
-};
+      }
+    `,
+  };
+});
 
 const Footer: React.FC = () => {
   const location = useLocation();
   const [locale, lang] = useLocale(locales);
-  const { styles } = useStyle();
+  const { isMobile } = React.use(SiteContext);
+  const { styles } = useStyle(isMobile);
 
   const { getLink } = location;
 
@@ -101,6 +94,11 @@ const Footer: React.FC = () => {
     const col1 = {
       title: <FormattedMessage id="app.footer.resources" />,
       items: [
+        {
+          title: 'Ant Design X',
+          url: isZhCN ? 'https://ant-design-x.antgroup.com' : 'https://x.ant.design',
+          openExternal: true,
+        },
         {
           title: 'Ant Design Charts',
           url: isZhCN ? 'https://ant-design-charts.antgroup.com' : 'https://charts.ant.design',
@@ -112,8 +110,10 @@ const Footer: React.FC = () => {
           openExternal: true,
         },
         {
-          title: 'Ant Design Pro Components',
-          url: 'https://procomponents.ant.design',
+          title: 'Pro Components',
+          url: isZhCN
+            ? 'https://pro-components.antdigital.dev'
+            : 'https://procomponents.ant.design',
           openExternal: true,
         },
         {
@@ -124,6 +124,11 @@ const Footer: React.FC = () => {
         {
           title: 'Ant Design Mini',
           url: isZhCN ? 'https://ant-design-mini.antgroup.com/' : 'https://mini.ant.design',
+          openExternal: true,
+        },
+        {
+          title: 'Ant Design Web3',
+          url: isZhCN ? 'https://web3.antdigital.dev' : 'https://web3.ant.design',
           openExternal: true,
         },
         {
@@ -157,12 +162,6 @@ const Footer: React.FC = () => {
           openExternal: true,
         },
         {
-          title: 'ahooks',
-          description: <FormattedMessage id="app.footer.hooks" />,
-          url: 'https://github.com/alibaba/hooks',
-          openExternal: true,
-        },
-        {
           title: 'Ant Motion',
           description: <FormattedMessage id="app.footer.motion" />,
           url: 'https://motion.ant.design',
@@ -191,18 +190,19 @@ const Footer: React.FC = () => {
           openExternal: true,
         },
         {
-          icon: <TwitterOutlined style={{ color: '#1DA1F2' }} />,
-          title: 'Twitter',
-          url: 'http://twitter.com/antdesignui',
+          icon: <XOutlined />,
+          title: 'X',
+          url: 'http://x.com/antdesignui',
           openExternal: true,
         },
         {
           icon: (
             <img
+              draggable={false}
               src="https://gw.alipayobjects.com/zos/rmsportal/XuVpGqBFxXplzvLjJBZB.svg"
               width={16}
               height={16}
-              alt="yuque"
+              alt="yuque logo"
             />
           ),
           title: <FormattedMessage id="app.footer.yuque.repo" />,
@@ -224,10 +224,11 @@ const Footer: React.FC = () => {
         {
           icon: (
             <img
+              draggable={false}
               src="https://gw.alipayobjects.com/zos/rmsportal/mZBWtboYbnMkTBaRIuWQ.png"
               width={16}
               height={16}
-              alt="seeconf"
+              alt="seeconf logo"
             />
           ),
           title: 'SEE Conf',
@@ -307,10 +308,11 @@ const Footer: React.FC = () => {
     const col4 = {
       icon: (
         <img
+          draggable={false}
           src="https://gw.alipayobjects.com/zos/rmsportal/nBVXkrFdWHxbZlmMbsaH.svg"
           width={22}
           height={22}
-          alt="Ant XTech"
+          alt="Ant XTech logo"
         />
       ),
       title: <FormattedMessage id="app.footer.more-product" />,
@@ -318,10 +320,11 @@ const Footer: React.FC = () => {
         {
           icon: (
             <img
+              draggable={false}
               src="https://gw.alipayobjects.com/zos/rmsportal/XuVpGqBFxXplzvLjJBZB.svg"
               width={16}
               height={16}
-              alt="yuque"
+              alt="yuque logo"
             />
           ),
           title: <FormattedMessage id="app.footer.yuque" />,
@@ -332,10 +335,11 @@ const Footer: React.FC = () => {
         {
           icon: (
             <img
+              draggable={false}
               src="https://gw.alipayobjects.com/zos/antfincdn/nc7Fc0XBg5/8a6844f5-a6ed-4630-9177-4fa5d0b7dd47.png"
               width={16}
               height={16}
-              alt="AntV"
+              alt="AntV logo"
             />
           ),
           title: 'AntV',
@@ -344,7 +348,15 @@ const Footer: React.FC = () => {
           openExternal: true,
         },
         {
-          icon: <img src="https://www.eggjs.org/logo.svg" alt="Egg" width={16} height={16} />,
+          icon: (
+            <img
+              draggable={false}
+              src="https://www.eggjs.org/logo.svg"
+              alt="Egg logo"
+              width={16}
+              height={16}
+            />
+          ),
           title: 'Egg',
           url: 'https://eggjs.org',
           description: <FormattedMessage id="app.footer.egg.slogan" />,
@@ -353,10 +365,11 @@ const Footer: React.FC = () => {
         {
           icon: (
             <img
+              draggable={false}
               src="https://gw.alipayobjects.com/zos/rmsportal/DMDOlAUhmktLyEODCMBR.ico"
               width={16}
               height={16}
-              alt="kitchen"
+              alt="Kitchen logo"
             />
           ),
           title: 'Kitchen',
@@ -367,10 +380,11 @@ const Footer: React.FC = () => {
         {
           icon: (
             <img
+              draggable={false}
               src="https://mdn.alipayobjects.com/huamei_j9rjmc/afts/img/A*3ittT5OEo2gAAAAAAAAAAAAADvGmAQ/original"
               width={16}
               height={16}
-              alt="Galacean"
+              alt="Galacean logo"
             />
           ),
           title: <FormattedMessage id="app.footer.galacean" />,
@@ -381,10 +395,26 @@ const Footer: React.FC = () => {
         {
           icon: (
             <img
+              draggable={false}
+              src="https://mdn.alipayobjects.com/huamei_4qpv3u/afts/img/iH6wQKX4WCYAAAAAAAAAAAAAeocTAQFr/original"
+              width={16}
+              height={16}
+              alt="WeaveFox logo"
+            />
+          ),
+          title: <FormattedMessage id="app.footer.weavefox" />,
+          description: <FormattedMessage id="app.footer.weavefox.slogan" />,
+          url: 'https://weavefox.cn/',
+          openExternal: true,
+        },
+        {
+          icon: (
+            <img
+              draggable={false}
               src="https://gw.alipayobjects.com/zos/rmsportal/nBVXkrFdWHxbZlmMbsaH.svg"
               width={16}
               height={16}
-              alt="xtech"
+              alt="xtech logo"
             />
           ),
           title: <FormattedMessage id="app.footer.xtech" />,
@@ -400,7 +430,7 @@ const Footer: React.FC = () => {
       ],
     };
     return [col1, col2, col3, col4];
-  }, [lang, location.search]);
+  }, [getLink, lang]);
 
   return (
     <>

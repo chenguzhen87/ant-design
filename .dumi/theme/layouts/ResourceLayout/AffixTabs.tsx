@@ -1,22 +1,22 @@
 import * as React from 'react';
 import { Tabs } from 'antd';
 import { createStyles } from 'antd-style';
-import classNames from 'classnames';
+import scrollTo from 'antd/lib/_util/scrollTo';
+import { clsx } from 'clsx';
 import throttle from 'lodash/throttle';
 
-import scrollTo from '../../../../components/_util/scrollTo';
+const listenerEvents: (keyof WindowEventMap)[] = ['scroll', 'resize'];
 
-const listenerEvents = ['scroll', 'resize'] as const;
-
-const useStyle = createStyles(({ token, css }) => {
-  const { boxShadowSecondary, antCls } = token;
+const useStyle = createStyles(({ cssVar, token, css }) => {
+  const { antCls } = token;
+  const { boxShadowSecondary } = cssVar;
 
   return {
     affixTabs: css`
       position: fixed;
       top: 0;
-      right: 0;
-      left: 0;
+      inset-inline-end: 0;
+      inset-inline-start: 0;
       z-index: 1001;
       padding: 0 40px;
       background: #fff;
@@ -24,8 +24,8 @@ const useStyle = createStyles(({ token, css }) => {
       transform: translate3d(0, -100%, 0);
       opacity: 0;
       transition:
-        opacity ${token.motionDurationSlow},
-        transform ${token.motionDurationSlow};
+        opacity ${cssVar.motionDurationSlow},
+        transform ${cssVar.motionDurationSlow};
 
       ${antCls}-tabs {
         max-width: 1208px;
@@ -111,15 +111,19 @@ const AffixTabs: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
-    listenerEvents.forEach((event) => window.addEventListener(event, onSyncAffix));
+    listenerEvents.forEach((event) => {
+      window.addEventListener(event, onSyncAffix);
+    });
     onSyncAffix();
     return () => {
-      listenerEvents.forEach((event) => window.removeEventListener(event, onSyncAffix));
+      listenerEvents.forEach((event) => {
+        window.removeEventListener(event, onSyncAffix);
+      });
     };
-  }, []);
+  }, [onSyncAffix]);
 
   return (
-    <div className={classNames(affixTabs, fixedId && affixTabsFixed)} ref={containerRef}>
+    <div className={clsx(affixTabs, fixedId && affixTabsFixed)} ref={containerRef}>
       <Tabs
         activeKey={fixedId}
         centered

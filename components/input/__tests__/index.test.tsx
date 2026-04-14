@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 
-// eslint-disable-next-line import/no-unresolved
 import type { InputProps, InputRef } from '..';
 import Input from '..';
 import { resetWarned } from '../../_util/warning';
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
-import { fireEvent, render } from '../../../tests/utils';
+import { fireEvent, render, waitFor } from '../../../tests/utils';
+import ConfigProvider from '../../config-provider';
 import Form from '../../form';
 import { triggerFocus } from '../Input';
 
@@ -41,7 +41,7 @@ describe('Input', () => {
 
   it('should support size', () => {
     const { asFragment, container } = render(<Input size="large" />);
-    expect(container.querySelector('input')?.classList.contains('ant-input-lg')).toBe(true);
+    expect(container.querySelector('input')).toHaveClass('ant-input-lg');
     expect(asFragment().firstChild).toMatchSnapshot();
   });
 
@@ -53,7 +53,7 @@ describe('Input', () => {
         </Form.Item>
       </Form>,
     );
-    expect(container.querySelector('input')?.classList.contains('ant-input-lg')).toBe(true);
+    expect(container.querySelector('input')).toHaveClass('ant-input-lg');
     expect(asFragment().firstChild).toMatchSnapshot();
   });
 
@@ -153,6 +153,23 @@ describe('prefix and suffix', () => {
 
     expect(container.querySelector('.prefix-with-hidden')?.getAttribute('hidden')).toBe('');
     expect(container.querySelector('.suffix-with-hidden')?.getAttribute('hidden')).toBe('');
+  });
+
+  it('should apply colorText token to filled variant without affix', async () => {
+    const colorText = '#445566';
+
+    const { container } = render(
+      <ConfigProvider theme={{ token: { colorText } }}>
+        <Input variant="filled" placeholder="Filled" defaultValue="Default" />
+      </ConfigProvider>,
+    );
+
+    const input = container.querySelector('input') as HTMLInputElement;
+
+    await waitFor(() => {
+      const computed = getComputedStyle(input).color;
+      expect(computed).toBe('var(--ant-color-text)');
+    });
   });
 });
 
@@ -440,13 +457,12 @@ describe('Input allowClear', () => {
     expect(container.querySelector('.ant-input-clear-icon')?.textContent).toBe('clear');
   });
 
-  it('should support classNames and styles', () => {
+  it('semantic dom snapshot', () => {
     const { container } = render(
       <>
         <Input
           value="123"
           showCount
-          prefixCls="rc-input"
           prefix="prefix"
           suffix="suffix"
           className="custom-class"
@@ -468,7 +484,6 @@ describe('Input allowClear', () => {
           value="123"
           addonAfter="addon"
           showCount
-          prefixCls="rc-input"
           prefix="prefix"
           suffix="suffix"
           className="custom-class"
@@ -488,7 +503,6 @@ describe('Input allowClear', () => {
         />
         <Input
           value="123"
-          prefixCls="rc-input"
           className="custom-class"
           style={{ backgroundColor: 'red' }}
           classNames={{
@@ -500,7 +514,6 @@ describe('Input allowClear', () => {
         />
         <Input
           value="123"
-          prefixCls="rc-input"
           className="custom-class"
           addonAfter="addon"
           style={{ backgroundColor: 'red' }}
@@ -534,6 +547,14 @@ describe('Input allowClear', () => {
     const { container } = render(<Input bordered={false} />);
     expect(container.querySelector('input')).toHaveClass('ant-input-borderless');
     expect(errSpy).toHaveBeenCalledWith(expect.stringContaining('`bordered` is deprecated'));
+    errSpy.mockRestore();
+  });
+
+  it('legacy addon should work', () => {
+    const errSpy = jest.spyOn(console, 'error');
+    render(<Input addonAfter="addonAfter" addonBefore="addonBefore" />);
+    expect(errSpy).toHaveBeenCalledWith(expect.stringContaining('`addonAfter` is deprecated'));
+    expect(errSpy).toHaveBeenCalledWith(expect.stringContaining('`addonBefore` is deprecated'));
     errSpy.mockRestore();
   });
 });

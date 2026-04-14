@@ -13,8 +13,8 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*HdS6Q5vUCDcAAA
 
 The first level navigation is left aligned near a logo, and the secondary menu is right aligned.
 
-- Top Navigation: the height of the first level navigation `64px`, the second level navigation `48px`.
-- Top Navigation (for landing pages): the height of the first level navigation `80px`, the second level navigation `56px`.
+- Top Navigation: the height of the first level navigation is `64px`, and the second level navigation is `48px`.
+- Top Navigation (for landing pages): the height of the first level navigation is `80px`, and the second level navigation is `56px`.
 - Calculation formula of a top navigation: `48+8n`.
 - Calculation formula of an aside navigation: `200+8n`.
 
@@ -31,11 +31,11 @@ Style of a navigation should conform to its level.
 
 - **Emphasis by colorblock**
 
-  When background color is a deep color, you can use this pattern for the parent level navigation item of the current page.
+  When the background color is a deep color, you can use this pattern for the parent level navigation item of the current page.
 
 - **The highlight match stick**
 
-  When background color is a light color, you can use this pattern for the current page navigation item; we recommend using it for the last item of the navigation path.
+  When the background color is a light color, you can use this pattern for the current page navigation item; we recommend using it for the last item of the navigation path.
 
 - **Highlighted font**
 
@@ -100,22 +100,22 @@ The wrapper.
 
 The sidebar.
 
-| Property | Description | Type | Default |
-| --- | --- | --- | --- |
-| breakpoint | [Breakpoints](/components/grid/#col) of the responsive layout | `xs` \| `sm` \| `md` \| `lg` \| `xl` \| `xxl` | - |
-| className | Container className | string | - |
-| collapsed | To set the current status | boolean | - |
-| collapsedWidth | Width of the collapsed sidebar, by setting to 0 a special trigger will appear | number | 80 |
-| collapsible | Whether can be collapsed | boolean | false |
-| defaultCollapsed | To set the initial status | boolean | false |
-| reverseArrow | Reverse direction of arrow, for a sider that expands from the right | boolean | false |
-| style | To customize the styles | CSSProperties | - |
-| theme | Color theme of the sidebar | `light` \| `dark` | `dark` |
-| trigger | Specify the customized trigger, set to null to hide the trigger | ReactNode | - |
-| width | Width of the sidebar | number \| string | 200 |
-| zeroWidthTriggerStyle | To customize the styles of the special trigger that appears when `collapsedWidth` is 0 | object | - |
-| onBreakpoint | The callback function, executed when [breakpoints](/components/grid/#api) changed | (broken) => {} | - |
-| onCollapse | The callback function, executed by clicking the trigger or activating the responsive layout | (collapsed, type) => {} | - |
+| Property | Description | Type | Default | Version |
+| --- | --- | --- | --- | --- |
+| breakpoint | [Breakpoints](/components/grid/#col) of the responsive layout | `xs` \| `sm` \| `md` \| `lg` \| `xl` \| `xxl` \| `xxxl` | - | xxxl: 6.3.0 |
+| className | Container className | string | - |  |
+| collapsed | To set the current status | boolean | - |  |
+| collapsedWidth | Width of the collapsed sidebar, by setting to 0 a special trigger will appear | number | 80 |  |
+| collapsible | Whether can be collapsed | boolean | false |  |
+| defaultCollapsed | To set the initial status | boolean | false |  |
+| reverseArrow | Reverse direction of arrow, for a sider that expands from the right | boolean | false |  |
+| style | To customize the styles | CSSProperties | - |  |
+| theme | Color theme of the sidebar | `light` \| `dark` | `dark` |  |
+| trigger | Specify the customized trigger, set to null to hide the trigger | ReactNode | - |  |
+| width | Width of the sidebar | number \| string | 200 |  |
+| zeroWidthTriggerStyle | To customize the styles of the special trigger that appears when `collapsedWidth` is 0 | object | - |  |
+| onBreakpoint | The callback function, executed when [breakpoints](/components/grid/#api) changed | (broken) => {} | - |  |
+| onCollapse | The callback function, executed by clicking the trigger or activating the responsive layout | (collapsed, type) => {} | - |  |
 
 #### breakpoint width
 
@@ -127,6 +127,7 @@ The sidebar.
   lg: '992px',
   xl: '1200px',
   xxl: '1600px',
+  xxxl: '1920px',
 }
 ```
 

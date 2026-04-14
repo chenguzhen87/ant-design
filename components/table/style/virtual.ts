@@ -15,15 +15,20 @@ const genVirtualStyle: GenerateStyle<TableToken, CSSObject> = (token) => {
     [`${componentCls}-wrapper`]: {
       // ========================== Row ==========================
       [`${componentCls}-tbody-virtual`]: {
-        [`${componentCls}-row:not(tr)`]: {
-          display: 'flex',
-          boxSizing: 'border-box',
-          width: '100%',
+        [`${componentCls}-tbody-virtual-holder-inner`]: {
+          [`
+            & > ${componentCls}-row,
+            & > div:not(${componentCls}-row) > ${componentCls}-row
+          `]: {
+            display: 'flex',
+            boxSizing: 'border-box',
+            width: '100%',
+          },
         },
 
         [`${componentCls}-cell`]: {
           borderBottom: tableBorder,
-          transition: `background ${motionDurationMid}`,
+          transition: `background-color ${motionDurationMid}`,
         },
 
         [`${componentCls}-expanded-row`]: {

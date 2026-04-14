@@ -3,22 +3,23 @@ import FileTwoTone from '@ant-design/icons/FileTwoTone';
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
 import PaperClipOutlined from '@ant-design/icons/PaperClipOutlined';
 import PictureTwoTone from '@ant-design/icons/PictureTwoTone';
-import classNames from 'classnames';
-import type { CSSMotionListProps } from 'rc-motion';
-import CSSMotion, { CSSMotionList } from 'rc-motion';
+import type { CSSMotionListProps } from '@rc-component/motion';
+import CSSMotion, { CSSMotionList } from '@rc-component/motion';
+import { omit } from '@rc-component/util';
+import { clsx } from 'clsx';
 
-import useForceUpdate from '../../_util/hooks/useForceUpdate';
+import { useForceUpdate } from '../../_util/hooks';
 import initCollapseMotion from '../../_util/motion';
 import { cloneElement } from '../../_util/reactNode';
-import type { ButtonProps } from '../../button';
-import Button from '../../button';
+import type { ButtonProps } from '../../button/Button';
+import Button from '../../button/Button';
 import { ConfigContext } from '../../config-provider';
 import type { UploadFile, UploadListProps } from '../interface';
 import { isImageUrl, previewImage } from '../utils';
 import ListItem from './ListItem';
 
 interface UploadListRef {
-  handlePreview: (file: UploadFile, e?: React.SyntheticEvent<HTMLElement>) => void;
+  handlePreview: (file: UploadFile, e: React.SyntheticEvent<HTMLElement>) => void;
   handleDownload: (file: UploadFile) => void;
 }
 
@@ -43,38 +44,38 @@ const InternalUploadList: React.ForwardRefRenderFunction<UploadListRef, UploadLi
     removeIcon,
     previewIcon,
     downloadIcon,
+    extra,
     progress = { size: [-1, 2], showInfo: false },
     appendAction,
     appendActionVisible = true,
     itemRender,
     disabled,
+    classNames: uploadListClassNames,
+    styles,
   } = props;
-  const forceUpdate = useForceUpdate();
+
+  const [, forceUpdate] = useForceUpdate();
   const [motionAppear, setMotionAppear] = React.useState(false);
+  const isPictureCardOrCirle = ['picture-card', 'picture-circle'].includes(listType);
 
   // ============================= Effect =============================
   React.useEffect(() => {
-    if (listType !== 'picture' && listType !== 'picture-card' && listType !== 'picture-circle') {
+    if (!listType.startsWith('picture')) {
       return;
     }
     (items || []).forEach((file) => {
       if (
-        typeof document === 'undefined' ||
-        typeof window === 'undefined' ||
-        !(window as any).FileReader ||
-        !(window as any).File ||
-        !(file.originFileObj instanceof File || file.originFileObj) ||
+        !(file.originFileObj instanceof File || (file.originFileObj as any) instanceof Blob) ||
         file.thumbUrl !== undefined
       ) {
         return;
       }
-      if (previewFile) {
-        previewFile(file.originFileObj as File).then((previewDataUrl: string) => {
-          // Need append '' to avoid dead loop
-          file.thumbUrl = previewDataUrl || '';
-          forceUpdate();
-        });
-      }
+      file.thumbUrl = '';
+      previewFile?.(file.originFileObj as File).then((previewDataUrl: string) => {
+        // Need append '' to avoid dead loop
+        file.thumbUrl = previewDataUrl || '';
+        forceUpdate();
+      });
     });
   }, [listType, items, previewFile]);
 
@@ -83,7 +84,7 @@ const InternalUploadList: React.ForwardRefRenderFunction<UploadListRef, UploadLi
   }, []);
 
   // ============================= Events =============================
-  const onInternalPreview = (file: UploadFile, e?: React.SyntheticEvent<HTMLElement>) => {
+  const onInternalPreview = (file: UploadFile, e: React.SyntheticEvent<HTMLElement>) => {
     if (!onPreview) {
       return;
     }
@@ -108,14 +109,12 @@ const InternalUploadList: React.ForwardRefRenderFunction<UploadListRef, UploadLi
       return iconRender(file, listType);
     }
     const isLoading = file.status === 'uploading';
-    const fileIcon = isImgUrl && isImgUrl(file) ? <PictureTwoTone /> : <FileTwoTone />;
-    let icon: React.ReactNode = isLoading ? <LoadingOutlined /> : <PaperClipOutlined />;
-    if (listType === 'picture') {
-      icon = isLoading ? <LoadingOutlined /> : fileIcon;
-    } else if (listType === 'picture-card' || listType === 'picture-circle') {
-      icon = isLoading ? locale.uploading : fileIcon;
+    if (listType.startsWith('picture')) {
+      const loadingIcon = listType === 'picture' ? <LoadingOutlined /> : locale.uploading;
+      const fileIcon = isImgUrl?.(file) ? <PictureTwoTone /> : <FileTwoTone />;
+      return isLoading ? loadingIcon : fileIcon;
     }
-    return icon;
+    return isLoading ? <LoadingOutlined /> : <PaperClipOutlined />;
   };
 
   const actionIconRender = (
@@ -131,24 +130,20 @@ const InternalUploadList: React.ForwardRefRenderFunction<UploadListRef, UploadLi
       title,
       onClick: (e: React.MouseEvent<HTMLElement>) => {
         callback();
-        if (React.isValidElement(customIcon)) {
+        if (React.isValidElement<{ onClick?: React.MouseEventHandler<HTMLElement> }>(customIcon)) {
           customIcon.props.onClick?.(e);
         }
       },
       className: `${prefixCls}-list-item-action`,
+      disabled: acceptUploadDisabled ? disabled : false,
     };
-    if (acceptUploadDisabled) {
-      btnProps.disabled = disabled;
-    }
-    if (React.isValidElement(customIcon)) {
-      const btnIcon = cloneElement(customIcon, {
-        ...customIcon.props,
-        onClick: () => {},
-      });
 
-      return <Button {...btnProps} icon={btnIcon} />;
-    }
-    return (
+    return React.isValidElement<object>(customIcon) ? (
+      <Button
+        {...btnProps}
+        icon={cloneElement(customIcon, { ...customIcon.props, onClick: () => {} })}
+      />
+    ) : (
       <Button {...btnProps}>
         <span>{customIcon}</span>
       </Button>
@@ -168,43 +163,26 @@ const InternalUploadList: React.ForwardRefRenderFunction<UploadListRef, UploadLi
   const prefixCls = getPrefixCls('upload', customizePrefixCls);
   const rootPrefixCls = getPrefixCls();
 
-  const listClassNames = classNames(`${prefixCls}-list`, `${prefixCls}-list-${listType}`);
+  const listClassNames = clsx(
+    `${prefixCls}-list`,
+    `${prefixCls}-list-${listType}`,
+    uploadListClassNames?.list,
+  );
 
-  // >>> Motion config
-  const motionKeyList = [...items.map((file) => ({ key: file.uid, file }))];
-
-  const animationDirection =
-    listType === 'picture-card' || listType === 'picture-circle' ? 'animate-inline' : 'animate';
-  // const transitionName = list.length === 0 ? '' : `${prefixCls}-${animationDirection}`;
-
-  let motionConfig: Omit<CSSMotionListProps, 'onVisibleChanged'> = {
+  const listItemMotion = React.useMemo(
+    () => omit(initCollapseMotion(rootPrefixCls), ['onAppearEnd', 'onEnterEnd', 'onLeaveEnd']),
+    [rootPrefixCls],
+  );
+  const motionConfig: Omit<CSSMotionListProps, 'onVisibleChanged'> = {
+    ...(isPictureCardOrCirle ? {} : listItemMotion),
     motionDeadline: 2000,
-    motionName: `${prefixCls}-${animationDirection}`,
-    keys: motionKeyList,
+    motionName: `${prefixCls}-${isPictureCardOrCirle ? 'animate-inline' : 'animate'}`,
+    keys: [...items.map((file) => ({ key: file.uid, file }))],
     motionAppear,
   };
 
-  const listItemMotion = React.useMemo<Partial<CSSMotionListProps>>(() => {
-    const motion = {
-      ...initCollapseMotion(rootPrefixCls),
-    };
-
-    delete motion.onAppearEnd;
-    delete motion.onEnterEnd;
-    delete motion.onLeaveEnd;
-
-    return motion;
-  }, [rootPrefixCls]);
-
-  if (listType !== 'picture-card' && listType !== 'picture-circle') {
-    motionConfig = {
-      ...listItemMotion,
-      ...motionConfig,
-    };
-  }
-
   return (
-    <div className={listClassNames}>
+    <div className={listClassNames} style={styles?.list}>
       <CSSMotionList {...motionConfig} component={false}>
         {({ key, file, className: motionClassName, style: motionStyle }) => (
           <ListItem
@@ -213,6 +191,8 @@ const InternalUploadList: React.ForwardRefRenderFunction<UploadListRef, UploadLi
             prefixCls={prefixCls}
             className={motionClassName}
             style={motionStyle}
+            classNames={uploadListClassNames}
+            styles={styles}
             file={file}
             items={items}
             progress={progress}
@@ -224,6 +204,7 @@ const InternalUploadList: React.ForwardRefRenderFunction<UploadListRef, UploadLi
             removeIcon={removeIcon}
             previewIcon={previewIcon}
             downloadIcon={downloadIcon}
+            extra={extra}
             iconRender={internalIconRender}
             actionIconRender={actionIconRender}
             itemRender={itemRender}
@@ -239,7 +220,7 @@ const InternalUploadList: React.ForwardRefRenderFunction<UploadListRef, UploadLi
         <CSSMotion {...motionConfig} visible={appendActionVisible} forceRender>
           {({ className: motionClassName, style: motionStyle }) =>
             cloneElement(appendAction, (oriProps) => ({
-              className: classNames(oriProps.className, motionClassName),
+              className: clsx(oriProps.className, motionClassName),
               style: {
                 ...motionStyle,
                 // prevent the element has hover css pseudo-class that may cause animation to end prematurely.

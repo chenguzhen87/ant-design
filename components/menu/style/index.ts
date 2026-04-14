@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import type { CSSObject } from '@ant-design/cssinjs';
 import { unit } from '@ant-design/cssinjs';
-import { TinyColor } from '@ctrl/tinycolor';
+import { FastColor } from '@ant-design/fast-color';
 import type { CssUtil } from 'antd-style';
 
 import { clearFix, resetComponent, resetIcon } from '../../style';
@@ -19,7 +19,7 @@ export interface ComponentToken {
    * @desc 弹出菜单的宽度
    * @descEN Width of popup menu
    */
-  dropdownWidth: number;
+  dropdownWidth: number | string;
   /**
    * @desc 弹出菜单的 z-index
    * @descEN z-index of popup menu
@@ -95,6 +95,11 @@ export interface ComponentToken {
    * @descEN Color of selected menu item text
    */
   itemSelectedColor: string;
+  /**
+   * @desc 子菜单内有选中项时，子菜单标题色
+   * @descEN Color of submenu title when submenu has selected item
+   */
+  subMenuItemSelectedColor: string;
 
   /** @deprecated Use `horizontalItemSelectedColor` instead */
   colorItemTextSelectedHorizontal: string;
@@ -141,16 +146,16 @@ export interface ComponentToken {
   /** @deprecated Use `dangerItemActiveBg` instead */
   colorDangerItemBgActive: string;
   /**
-   * @desc 危险菜单项文字激活颜色
-   * @descEN Color of active danger menu item text
+   * @desc 危险菜单项激活态背景色
+   * @descEN Background color of danger menu item when active
    */
   dangerItemActiveBg: string;
 
   /** @deprecated Use `dangerItemSelectedBg` instead */
   colorDangerItemBgSelected: string;
   /**
-   * @desc 危险菜单项文字选中颜色
-   * @descEN Color of selected danger menu item text
+   * @desc 危险菜单项选中背景色
+   * @descEN Background color of selected danger menu item
    */
   dangerItemSelectedBg: string;
 
@@ -205,12 +210,12 @@ export interface ComponentToken {
 
   // Ink Bar
   /** @deprecated Use `activeBarWidth` instead */
-  colorActiveBarWidth: number;
+  colorActiveBarWidth: number | string;
   /**
    * @desc 菜单项指示条宽度
    * @descEN Width of menu item active bar
    */
-  activeBarWidth: number;
+  activeBarWidth: number | string;
 
   /** @deprecated Use `activeBarHeight` instead */
   colorActiveBarHeight: number;
@@ -226,7 +231,7 @@ export interface ComponentToken {
    * @desc 菜单项指示条边框宽度
    * @descEN Border width of menu item active bar
    */
-  activeBarBorderWidth: number;
+  activeBarBorderWidth: number | string;
 
   /**
    * @desc 菜单项横向外间距
@@ -247,12 +252,12 @@ export interface ComponentToken {
    * @desc 菜单项高度
    * @descEN Height of menu item
    */
-  itemHeight: number;
+  itemHeight: number | string;
   /**
    * @desc 收起后的宽度
    * @descEN Width when collapsed
    */
-  collapsedWidth: number;
+  collapsedWidth: number | string;
   /**
    * @desc 弹出框背景色
    * @descEN Background color of popup
@@ -366,18 +371,42 @@ export interface ComponentToken {
    */
   darkDangerItemActiveBg: string;
   /** @internal */
-  itemWidth: string;
+  itemWidth: number | string;
 }
 
+/**
+ * @desc Menu 组件的 Token
+ * @descEN Token for Menu component
+ */
 export interface MenuToken extends FullToken<'Menu'> {
+  /**
+   * @desc 水平菜单高度
+   * @descEN Height of horizontal menu
+   */
   menuHorizontalHeight: number | string;
+  /**
+   * @desc 菜单箭头尺寸
+   * @descEN Size of menu arrow
+   */
   menuArrowSize: number | string;
+  /**
+   * @desc 菜单箭头偏移量
+   * @descEN Offset of menu arrow
+   */
   menuArrowOffset: number | string;
+  /**
+   * @desc 子菜单背景色
+   * @descEN Background color of sub-menu
+   */
   menuSubMenuBg: string;
+  /**
+   * @desc 暗色模式下的浮层菜单背景色
+   * @descEN Background color of popup menu in dark mode
+   */
   darkPopupBg: string;
 }
 
-const genMenuItemStyle = (token: MenuToken): CSSObject => {
+const genMenuItemStyle: GenerateStyle<MenuToken, CSSObject> = (token) => {
   const {
     componentCls,
     motionDurationSlow,
@@ -399,8 +428,8 @@ const genMenuItemStyle = (token: MenuToken): CSSObject => {
       cursor: 'pointer',
       transition: [
         `border-color ${motionDurationSlow}`,
-        `background ${motionDurationSlow}`,
-        `padding ${motionDurationSlow} ${motionEaseInOut}`,
+        `background-color ${motionDurationSlow}`,
+        `padding calc(${motionDurationSlow} + 0.1s) ${motionEaseInOut}`,
       ].join(','),
 
       [`${componentCls}-item-icon, ${iconCls}`]: {
@@ -445,6 +474,8 @@ const genMenuItemStyle = (token: MenuToken): CSSObject => {
 
       a: {
         color: 'inherit !important',
+        cursor: 'not-allowed',
+        pointerEvents: 'none',
       },
 
       [`> ${componentCls}-submenu-title`]: {
@@ -455,7 +486,7 @@ const genMenuItemStyle = (token: MenuToken): CSSObject => {
   };
 };
 
-const genSubMenuArrowStyle = (token: MenuToken): CSSObject => {
+const genSubMenuArrowStyle: GenerateStyle<MenuToken, CSSObject> = (token) => {
   const {
     componentCls,
     motionDurationSlow,
@@ -467,14 +498,16 @@ const genSubMenuArrowStyle = (token: MenuToken): CSSObject => {
 
   return {
     [`${componentCls}-submenu`]: {
-      [`&-expand-icon, &-arrow`]: {
+      '&-expand-icon, &-arrow': {
         position: 'absolute',
         top: '50%',
         insetInlineEnd: token.margin,
         width: menuArrowSize,
         color: 'currentcolor',
         transform: 'translateY(-50%)',
-        transition: `transform ${motionDurationSlow} ${motionEaseInOut}, opacity ${motionDurationSlow}`,
+        transition: ['transform', 'opacity']
+          .map((prop) => `${prop} ${motionDurationSlow}`)
+          .join(','),
       },
 
       '&-arrow': {
@@ -485,12 +518,9 @@ const genSubMenuArrowStyle = (token: MenuToken): CSSObject => {
           height: token.calc(menuArrowSize).mul(0.15).equal(),
           backgroundColor: 'currentcolor',
           borderRadius,
-          transition: [
-            `background ${motionDurationSlow} ${motionEaseInOut}`,
-            `transform ${motionDurationSlow} ${motionEaseInOut}`,
-            `top ${motionDurationSlow} ${motionEaseInOut}`,
-            `color ${motionDurationSlow} ${motionEaseInOut}`,
-          ].join(','),
+          transition: [`background-color`, `transform`, `top`, `color`]
+            .map((prop) => `${prop} ${motionDurationSlow} ${motionEaseInOut}`)
+            .join(','),
           content: '""',
         },
 
@@ -535,11 +565,11 @@ const getBaseStyle: GenerateStyle<MenuToken> = (token) => {
     // Misc
     {
       '': {
-        [`${componentCls}`]: {
+        [componentCls]: {
           ...clearFix(),
 
           // Hidden
-          [`&-hidden`]: {
+          '&-hidden': {
             display: 'none',
           },
         },
@@ -562,14 +592,14 @@ const getBaseStyle: GenerateStyle<MenuToken> = (token) => {
         // Magic cubic here but smooth transition
         transition: `width ${motionDurationSlow} cubic-bezier(0.2, 0, 0, 1) 0s`,
 
-        [`ul, ol`]: {
+        'ul, ol': {
           margin: 0,
           padding: 0,
           listStyle: 'none',
         },
 
         // Overflow ellipsis
-        [`&-overflow`]: {
+        '&-overflow': {
           display: 'flex',
 
           [`${componentCls}-item`]: {
@@ -588,35 +618,46 @@ const getBaseStyle: GenerateStyle<MenuToken> = (token) => {
         },
 
         [`&-horizontal ${componentCls}-submenu`]: {
-          transition: [
-            `border-color ${motionDurationSlow} ${motionEaseInOut}`,
-            `background ${motionDurationSlow} ${motionEaseInOut}`,
-          ].join(','),
+          transition: [`border-color`, `background-color`]
+            .map((prop) => `${prop} ${motionDurationSlow} ${motionEaseInOut}`)
+            .join(','),
         },
 
         [`${componentCls}-submenu, ${componentCls}-submenu-inline`]: {
           transition: [
-            `border-color ${motionDurationSlow} ${motionEaseInOut}`,
-            `background ${motionDurationSlow} ${motionEaseInOut}`,
-            `padding ${motionDurationMid} ${motionEaseInOut}`,
-          ].join(','),
+            `border-color ${motionDurationSlow}`,
+            `background-color ${motionDurationSlow}`,
+            `padding ${motionDurationMid}`,
+          ]
+            .map((prop) => `${prop} ${motionEaseInOut}`)
+            .join(','),
         },
 
         [`${componentCls}-submenu ${componentCls}-sub`]: {
           cursor: 'initial',
-          transition: [
-            `background ${motionDurationSlow} ${motionEaseInOut}`,
-            `padding ${motionDurationSlow} ${motionEaseInOut}`,
-          ].join(','),
+          transition: [`background-color`, `padding`]
+            .map((prop) => `${prop} ${motionDurationSlow} ${motionEaseInOut}`)
+            .join(','),
         },
 
         [`${componentCls}-title-content`]: {
           transition: `color ${motionDurationSlow}`,
 
+          '&-with-extra': {
+            display: 'inline-flex',
+            alignItems: 'center',
+            width: '100%',
+          },
+
           // https://github.com/ant-design/ant-design/issues/41143
           [`> ${antCls}-typography-ellipsis-single-line`]: {
             display: 'inline',
             verticalAlign: 'unset',
+          },
+
+          [`${componentCls}-item-extra`]: {
+            marginInlineStart: 'auto',
+            paddingInlineStart: token.padding,
           },
         },
 
@@ -702,59 +743,35 @@ const getBaseStyle: GenerateStyle<MenuToken> = (token) => {
             },
           },
 
-          [`
-          &-placement-leftTop,
-          &-placement-bottomRight,
-          `]: {
+          '&-placement-leftTop, &-placement-bottomRight': {
             transformOrigin: '100% 0',
           },
 
-          [`
-          &-placement-leftBottom,
-          &-placement-topRight,
-          `]: {
+          '&-placement-leftBottom, &-placement-topRight': {
             transformOrigin: '100% 100%',
           },
 
-          [`
-          &-placement-rightBottom,
-          &-placement-topLeft,
-          `]: {
+          '&-placement-rightBottom, &-placement-topLeft': {
             transformOrigin: '0 100%',
           },
 
-          [`
-          &-placement-bottomLeft,
-          &-placement-rightTop,
-          `]: {
+          '&-placement-bottomLeft, &-placement-rightTop': {
             transformOrigin: '0 0',
           },
 
-          [`
-          &-placement-leftTop,
-          &-placement-leftBottom
-          `]: {
+          '&-placement-leftTop, &-placement-leftBottom': {
             paddingInlineEnd: token.paddingXS,
           },
 
-          [`
-          &-placement-rightTop,
-          &-placement-rightBottom
-          `]: {
+          '&-placement-rightTop, &-placement-rightBottom': {
             paddingInlineStart: token.paddingXS,
           },
 
-          [`
-          &-placement-topRight,
-          &-placement-topLeft
-          `]: {
+          '&-placement-topRight, &-placement-topLeft': {
             paddingBottom: token.paddingXS,
           },
 
-          [`
-          &-placement-bottomRight,
-          &-placement-bottomLeft
-          `]: {
+          '&-placement-bottomRight, &-placement-bottomLeft': {
             paddingTop: token.paddingXS,
           },
         },
@@ -835,7 +852,7 @@ export const prepareComponentToken: GetDefaultToken<'Menu'> = (token) => {
   const activeBarBorderWidth = token.activeBarBorderWidth ?? lineWidth;
   const itemMarginInline = token.itemMarginInline ?? token.marginXXS;
 
-  const colorTextDark = new TinyColor(colorTextLightSolid).setAlpha(0.65).toRgbString();
+  const colorTextDark = new FastColor(colorTextLightSolid).setA(0.65).toRgbString();
 
   return {
     dropdownWidth: 160,
@@ -854,6 +871,7 @@ export const prepareComponentToken: GetDefaultToken<'Menu'> = (token) => {
     groupTitleColor: colorTextDescription,
     colorItemTextSelected: colorPrimary,
     itemSelectedColor: colorPrimary,
+    subMenuItemSelectedColor: colorPrimary,
     colorItemTextSelectedHorizontal: colorPrimary,
     horizontalItemSelectedColor: colorPrimary,
     colorItemBg: colorBgContainer,
@@ -908,7 +926,7 @@ export const prepareComponentToken: GetDefaultToken<'Menu'> = (token) => {
     groupTitleFontSize: fontSize,
 
     // Disabled
-    darkItemDisabledColor: new TinyColor(colorTextLightSolid).setAlpha(0.25).toRgbString(),
+    darkItemDisabledColor: new FastColor(colorTextLightSolid).setA(0.25).toRgbString(),
 
     // Dark
     darkItemColor: colorTextDark,
@@ -934,7 +952,7 @@ export const prepareComponentToken: GetDefaultToken<'Menu'> = (token) => {
 };
 
 // ============================== Export ==============================
-export default (prefixCls: string, rootCls: string = prefixCls, injectStyle: boolean = true) => {
+export default (prefixCls: string, rootCls: string = prefixCls, injectStyle = true) => {
   const useStyle = genStyleHooks(
     'Menu',
     (token) => {
@@ -977,6 +995,7 @@ export default (prefixCls: string, rootCls: string = prefixCls, injectStyle: boo
         itemHoverColor: darkItemHoverColor,
         groupTitleColor: darkGroupTitleColor,
         itemSelectedColor: darkItemSelectedColor,
+        subMenuItemSelectedColor: darkItemSelectedColor,
         itemBg: darkItemBg,
         popupBg: darkPopupBg,
         subMenuItemBg: darkSubMenuItemBg,

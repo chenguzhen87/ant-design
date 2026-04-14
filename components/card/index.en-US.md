@@ -24,6 +24,7 @@ A card can be used to display content related to a single subject. The content c
 <code src="./demo/inner.tsx">Inner card</code>
 <code src="./demo/tabs.tsx">With tabs</code>
 <code src="./demo/meta.tsx">Support more content configuration</code>
+<code src="./demo/style-class.tsx" version="6.0.0">Custom semantic dom styling</code>
 <code src="./demo/component-token.tsx" debug>Component Token</code>
 
 ## API
@@ -34,26 +35,25 @@ Common props ref：[Common props](/docs/react/common-props)
 <Card title="Card title">Card content</Card>
 ```
 
-### Card
-
 | Property | Description | Type | Default | Version |
 | --- | --- | --- | --- | --- |
 | actions | The action list, shows at the bottom of the Card | Array&lt;ReactNode> | - |  |
 | activeTabKey | Current TabPane's key | string | - |  |
-| bordered | Toggles rendering of the border around the card | boolean | true |  |
+| ~~bordered~~ | Toggles rendering of the border around the card, please use `variant` instead | boolean | true |  |
+| variant | Variants of Card | `outlined` \| `borderless` \| | `outlined` | 5.24.0 |
+| classNames | Customize class for each semantic structure inside the component. Supports object or function. | Record<[SemanticDOM](#semantic-dom), string> \| (info: { props })=> Record<[SemanticDOM](#semantic-dom), string> | - |  |
 | cover | Card cover | ReactNode | - |  |
 | defaultActiveTabKey | Initial active TabPane's key, if `activeTabKey` is not set | string | `The key of first tab` |  |
 | extra | Content to render in the top-right corner of the card | ReactNode | - |  |
 | hoverable | Lift up when hovering card | boolean | false |  |
 | loading | Shows a loading indicator while the contents of the card are being fetched | boolean | false |  |
-| size | Size of card | `default` \| `small` | `default` |  |
+| size | Size of card | `medium` \| `small` | `medium` |  |
 | tabBarExtraContent | Extra content in tab bar | ReactNode | - |  |
 | tabList | List of TabPane's head | [TabItemType](/components/tabs#tabitemtype)[] | - |  |
 | tabProps | [Tabs](/components/tabs/#tabs) | - | - |  |
 | title | Card title | ReactNode | - |  |
 | type | Card style type, can be set to `inner` or not set | string | - |  |
-| classNames | Config Card build-in module's className | Record<SemanticDOM, string> | - | 5.14.0 |
-| styles | Config Card build-in module's style | Record<SemanticDOM, string> | - | 5.14.0 |
+| styles | Customize inline style for each semantic structure inside the component. Supports object or function. | Record<[SemanticDOM](#semantic-dom), CSSProperties> \| (info: { props })=> Record<[SemanticDOM](#semantic-dom), CSSProperties> | - |  |
 | onTabChange | Callback when tab is switched | (key) => void | - |  |
 
 ### Card.Grid
@@ -74,16 +74,15 @@ Common props ref：[Common props](/docs/react/common-props)
 | style       | The style object of container | CSSProperties | -       |         |
 | title       | Title content                 | ReactNode     | -       |         |
 
-### `styles` 和 `classNames` attribute
+## Semantic DOM
 
-| Property | Description           | Version |
-| -------- | --------------------- | ------- |
-| header   | set `header` of card  | 5.14.0  |
-| body     | set `body` of card    | 5.14.0  |
-| extra    | set `extra` of card   | 5.14.0  |
-| title    | set `title` of card   | 5.14.0  |
-| actions  | set `actions` of card | 5.14.0  |
-| cover    | set `cover` of card   | 5.14.0  |
+### Card
+
+<code src="./demo/_semantic.tsx" simplify="true"></code>
+
+### Card.Meta
+
+<code src="./demo/_semantic_meta.tsx" simplify="true"></code>
 
 ## Design Token
 

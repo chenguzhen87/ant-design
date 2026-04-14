@@ -1,18 +1,32 @@
+import type { CSSObject } from '@ant-design/cssinjs';
 import { unit } from '@ant-design/cssinjs';
-import { TinyColor } from '@ctrl/tinycolor';
+import { FastColor } from '@ant-design/fast-color';
 
 import { resetComponent } from '../../style';
 import type { FullToken, GenerateStyle, GetDefaultToken } from '../../theme/internal';
 import { genStyleHooks, mergeToken } from '../../theme/internal';
 
+// biome-ignore lint/suspicious/noEmptyInterface: ComponentToken need to be empty by default
 export interface ComponentToken {}
 
+/**
+ * @desc QRCode 组件的 Token
+ * @descEN Token for QRCode component
+ */
 interface QRCodeToken extends FullToken<'QRCode'> {
+  /**
+   * @desc QRCode 文字颜色
+   * @descEN Text color of QRCode
+   */
   QRCodeTextColor: string;
-  QRCodeMaskBackgroundColor: string;
+  /**
+   * @desc QRCode 遮罩背景颜色
+   * @descEN Cover background color of QRCode
+   */
+  QRCodeCoverBackgroundColor: string;
 }
 
-const genQRCodeStyle: GenerateStyle<QRCodeToken> = (token) => {
+const genQRCodeStyle: GenerateStyle<QRCodeToken, CSSObject> = (token) => {
   const { componentCls, lineWidth, lineType, colorSplit } = token;
   return {
     [componentCls]: {
@@ -27,7 +41,7 @@ const genQRCodeStyle: GenerateStyle<QRCodeToken> = (token) => {
       position: 'relative',
       overflow: 'hidden',
 
-      [`& > ${componentCls}-mask`]: {
+      [`& > ${componentCls}-cover`]: {
         position: 'absolute',
         insetBlockStart: 0,
         insetInlineStart: 0,
@@ -40,7 +54,7 @@ const genQRCodeStyle: GenerateStyle<QRCodeToken> = (token) => {
         height: '100%',
         color: token.colorText,
         lineHeight: token.lineHeight,
-        background: token.QRCodeMaskBackgroundColor,
+        background: token.QRCodeCoverBackgroundColor,
         textAlign: 'center',
         [`& > ${componentCls}-expired, & > ${componentCls}-scanned`]: {
           color: token.QRCodeTextColor,
@@ -67,7 +81,7 @@ const genQRCodeStyle: GenerateStyle<QRCodeToken> = (token) => {
 };
 
 export const prepareComponentToken: GetDefaultToken<'QRCode'> = (token) => ({
-  QRCodeMaskBackgroundColor: new TinyColor(token.colorBgContainer).setAlpha(0.96).toRgbString(),
+  QRCodeCoverBackgroundColor: new FastColor(token.colorBgContainer).setA(0.96).toRgbString(),
 });
 
 export default genStyleHooks<'QRCode'>(

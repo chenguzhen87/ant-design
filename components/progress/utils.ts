@@ -1,5 +1,6 @@
 import { presetPrimaryColors } from '@ant-design/colors';
 
+import { isNumber } from '../_util/is';
 import type { CircleProps } from './Circle';
 import type { ProgressProps } from './progress';
 
@@ -13,20 +14,16 @@ export function validProgress(progress?: number) {
   return progress;
 }
 
-export function getSuccessPercent({ success, successPercent }: ProgressProps) {
-  let percent = successPercent;
-  /** @deprecated Use `percent` instead */
-  if (success && 'progress' in success) {
-    percent = success.progress;
-  }
+export function getSuccessPercent({ success }: ProgressProps) {
+  let percent: number | undefined;
   if (success && 'percent' in success) {
     percent = success.percent;
   }
   return percent;
 }
 
-export const getPercentage = ({ percent, success, successPercent }: ProgressProps) => {
-  const realSuccessPercent = validProgress(getSuccessPercent({ success, successPercent }));
+export const getPercentage = ({ percent, success }: ProgressProps) => {
+  const realSuccessPercent = validProgress(getSuccessPercent({ success }));
   return [realSuccessPercent, validProgress(validProgress(percent) - realSuccessPercent)];
 };
 
@@ -41,40 +38,44 @@ export const getStrokeColor = ({
 export const getSize = (
   size: ProgressProps['size'],
   type: ProgressProps['type'] | 'step',
-  extra?: {
-    steps?: number;
-    strokeWidth?: number;
-  },
+  extra?: { steps?: number; strokeWidth?: number },
 ): [number, number] => {
-  let width: number = -1;
-  let height: number = -1;
+  let width = -1;
+  let height = -1;
   if (type === 'step') {
     const steps = extra!.steps!;
     const strokeWidth = extra!.strokeWidth!;
     if (typeof size === 'string' || typeof size === 'undefined') {
       width = size === 'small' ? 2 : 14;
       height = strokeWidth ?? 8;
-    } else if (typeof size === 'number') {
+    } else if (isNumber(size)) {
       [width, height] = [size, size];
     } else {
-      [width = 14, height = 8] = size as [number, number];
+      [width = 14, height = 8] = (Array.isArray(size) ? size : [size.width, size.height]) as [
+        number,
+        number,
+      ];
     }
+
     width *= steps;
   } else if (type === 'line') {
     const strokeWidth = extra?.strokeWidth;
     if (typeof size === 'string' || typeof size === 'undefined') {
       height = strokeWidth || (size === 'small' ? 6 : 8);
-    } else if (typeof size === 'number') {
+    } else if (isNumber(size)) {
       [width, height] = [size, size];
     } else {
-      [width = -1, height = 8] = size as [number, number];
+      [width = -1, height = 8] = (Array.isArray(size) ? size : [size.width, size.height]) as [
+        number,
+        number,
+      ];
     }
   } else if (type === 'circle' || type === 'dashboard') {
     if (typeof size === 'string' || typeof size === 'undefined') {
       [width, height] = size === 'small' ? [60, 60] : [120, 120];
-    } else if (typeof size === 'number') {
+    } else if (isNumber(size)) {
       [width, height] = [size, size];
-    } else {
+    } else if (Array.isArray(size)) {
       width = (size[0] ?? size[1] ?? 120) as number;
       height = (size[0] ?? size[1] ?? 120) as number;
     }

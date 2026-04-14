@@ -1,4 +1,3 @@
-/* eslint-disable default-case */
 import type { AlignType, BuildInPlacements } from '@rc-component/trigger';
 
 import { getArrowOffsetToken } from '../style/placementArrow';
@@ -153,6 +152,12 @@ export default function getPlacements(config: PlacementsConfig) {
 
   const placementMap: BuildInPlacements = {};
 
+  // Dynamic offset
+  const arrowOffset = getArrowOffsetToken({
+    contentRadius: borderRadius,
+    limitVerticalRadius: true,
+  });
+
   Object.keys(PlacementAlignMap).forEach((key: PlacementType) => {
     const template =
       (arrowPointAtCenter && ArrowCenterPlacementAlignMap[key]) || PlacementAlignMap[key];
@@ -196,12 +201,6 @@ export default function getPlacements(config: PlacementsConfig) {
         break;
     }
 
-    // Dynamic offset
-    const arrowOffset = getArrowOffsetToken({
-      contentRadius: borderRadius,
-      limitVerticalRadius: true,
-    });
-
     if (arrowPointAtCenter) {
       switch (key) {
         case 'topLeft':
@@ -216,12 +215,12 @@ export default function getPlacements(config: PlacementsConfig) {
 
         case 'leftTop':
         case 'rightTop':
-          placementInfo.offset[1] = -arrowOffset.arrowOffsetHorizontal - halfArrowWidth;
+          placementInfo.offset[1] = -arrowOffset.arrowOffsetHorizontal * 2 + halfArrowWidth;
           break;
 
         case 'leftBottom':
         case 'rightBottom':
-          placementInfo.offset[1] = arrowOffset.arrowOffsetHorizontal + halfArrowWidth;
+          placementInfo.offset[1] = arrowOffset.arrowOffsetHorizontal * 2 - halfArrowWidth;
           break;
       }
     }

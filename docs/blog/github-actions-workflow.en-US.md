@@ -2,6 +2,7 @@
 title: Hi, GitHub Actions
 date: 2023-06-06
 author: Wxh16144
+zhihu_url: https://zhuanlan.zhihu.com/p/639266855
 ---
 
 Hi, I'm [Wxh16144](https://github.com/Wxh16144). I have discovered some tools that can improve development efficiency and code quality through learning Ant Design's component library and participating in community contributions. I'd like to take this opportunity to share my experience with you. To help better understand Ant Design, and to apply these techniques to your own projects.
@@ -175,10 +176,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      - name: Setup utoo
+        uses: utooland/setup-utoo@v1
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2

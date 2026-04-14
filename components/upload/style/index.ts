@@ -1,3 +1,5 @@
+import type { CSSObject } from '@ant-design/cssinjs';
+
 import { resetComponent } from '../../style';
 import { genCollapseMotion } from '../../style/motion';
 import type { FullToken, GenerateStyle, GetDefaultToken } from '../../theme/internal';
@@ -14,6 +16,11 @@ export interface ComponentToken {
    * @descEN Action button color
    */
   actionsColor: string;
+  /**
+   * @desc 卡片类型文件列表项的尺寸（对 picture-card 和 picture-circle 生效）
+   * @descEN Size of list items in card type (affects both picture-card and picture-circle)
+   */
+  pictureCardSize: number;
 }
 
 export interface UploadToken extends FullToken<'Upload'> {
@@ -22,7 +29,7 @@ export interface UploadToken extends FullToken<'Upload'> {
   uploadPicCardSize: number | string;
 }
 
-const genBaseStyle: GenerateStyle<UploadToken> = (token) => {
+const genBaseStyle: GenerateStyle<UploadToken, CSSObject> = (token) => {
   const { componentCls, colorTextDisabled } = token;
 
   return {
@@ -40,6 +47,10 @@ const genBaseStyle: GenerateStyle<UploadToken> = (token) => {
         display: 'inline-block',
       },
 
+      [`${componentCls}-hidden`]: {
+        display: 'none',
+      },
+
       [`${componentCls}-disabled`]: {
         color: colorTextDisabled,
         cursor: 'not-allowed',
@@ -49,19 +60,20 @@ const genBaseStyle: GenerateStyle<UploadToken> = (token) => {
 };
 
 export const prepareComponentToken: GetDefaultToken<'Upload'> = (token) => ({
-  actionsColor: token.colorTextDescription,
+  actionsColor: token.colorIcon,
+  pictureCardSize: token.controlHeightLG * 2.55,
 });
 
 // ============================== Export ==============================
 export default genStyleHooks(
   'Upload',
   (token) => {
-    const { fontSizeHeading3, fontHeight, lineWidth, controlHeightLG, calc } = token;
+    const { fontSizeHeading3, marginXS, lineWidth, pictureCardSize, calc } = token;
 
     const uploadToken = mergeToken<UploadToken>(token, {
       uploadThumbnailSize: calc(fontSizeHeading3).mul(2).equal(),
-      uploadProgressOffset: calc(calc(fontHeight).div(2)).add(lineWidth).equal(),
-      uploadPicCardSize: calc(controlHeightLG).mul(2.55).equal(),
+      uploadProgressOffset: calc(calc(marginXS).div(2)).add(lineWidth).equal(),
+      uploadPicCardSize: pictureCardSize,
     });
 
     return [

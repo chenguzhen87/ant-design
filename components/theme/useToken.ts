@@ -2,10 +2,11 @@ import React from 'react';
 import type { Theme } from '@ant-design/cssinjs';
 import { useCacheToken } from '@ant-design/cssinjs';
 
+import { ConfigContext } from '../config-provider/context';
 import version from '../version';
 import type { DesignTokenProviderProps } from './context';
 import { defaultTheme, DesignTokenContext } from './context';
-import type { AliasToken, GlobalToken, MapToken, SeedToken } from './interface';
+import type { AliasToken, GlobalToken, SeedToken } from './interface';
 import defaultSeedToken from './themes/seed';
 import formatToken from './util/alias';
 
@@ -24,22 +25,12 @@ export const unitless: {
   fontWeightStrong: true,
   zIndexPopupBase: true,
   zIndexBase: true,
+  opacityImage: true,
 };
 
 export const ignore: {
   [key in keyof AliasToken]?: boolean;
 } = {
-  size: true,
-  sizeSM: true,
-  sizeLG: true,
-  sizeMD: true,
-  sizeXS: true,
-  sizeXXS: true,
-  sizeMS: true,
-  sizeXL: true,
-  sizeXXL: true,
-  sizeUnit: true,
-  sizeStep: true,
   motionBase: true,
   motionUnit: true,
 };
@@ -64,6 +55,9 @@ const preserve: {
   screenXLMax: true,
   screenXXL: true,
   screenXXLMin: true,
+  screenXXLMax: true,
+  screenXXXL: true,
+  screenXXXLMin: true,
 };
 
 export const getComputedToken = (
@@ -111,19 +105,28 @@ export const getComputedToken = (
 
 // ================================== Hook ==================================
 export default function useToken(): [
-  theme: Theme<SeedToken, MapToken>,
+  theme: Theme<SeedToken, AliasToken>,
   token: GlobalToken,
   hashId: string,
   realToken: GlobalToken,
-  cssVar?: DesignTokenProviderProps['cssVar'],
+  cssVar: DesignTokenProviderProps['cssVar'],
+  zeroRuntime: boolean,
 ] {
   const {
     token: rootDesignToken,
     hashed,
     theme,
     override,
-    cssVar,
+    cssVar: ctxCssVar,
+    zeroRuntime,
   } = React.useContext(DesignTokenContext);
+
+  const { csp } = React.useContext(ConfigContext);
+
+  const cssVar = {
+    prefix: ctxCssVar?.prefix ?? 'ant',
+    key: ctxCssVar?.key ?? 'css-var-root',
+  };
 
   const salt = `${version}-${hashed || ''}`;
 
@@ -136,18 +139,15 @@ export default function useToken(): [
       salt,
       override,
       getComputedToken,
-      // formatToken will not be consumed after 1.15.0 with getComputedToken.
-      // But token will break if @ant-design/cssinjs is under 1.15.0 without it
-      formatToken,
-      cssVar: cssVar && {
-        prefix: cssVar.prefix,
-        key: cssVar.key,
+      cssVar: {
+        ...cssVar,
         unitless,
         ignore,
         preserve,
       },
+      nonce: csp?.nonce,
     },
   );
 
-  return [mergedTheme, realToken, hashed ? hashId : '', token, cssVar];
+  return [mergedTheme, realToken, hashed ? hashId : '', token, cssVar, !!zeroRuntime];
 }

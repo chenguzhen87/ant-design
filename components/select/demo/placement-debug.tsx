@@ -15,12 +15,12 @@ const randomOptions = (count?: number) => {
 };
 
 const App: React.FC = () => {
-  const [placement, SetPlacement] = useState<SelectCommonPlacement>('topLeft');
+  const [placement, setPlacement] = useState<SelectCommonPlacement>('topLeft');
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState(() => randomOptions(3));
 
   const placementChange = (e: RadioChangeEvent) => {
-    SetPlacement(e.target.value);
+    setPlacement(e.target.value);
   };
 
   return (
@@ -35,7 +35,14 @@ const App: React.FC = () => {
         position: 'relative',
       }}
     >
-      <Space style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)' }}>
+      <Space
+        style={{
+          position: 'absolute',
+          top: 0,
+          insetInlineStart: '50%',
+          transform: 'translateX(-50%)',
+        }}
+      >
         <Radio.Group value={placement} onChange={placementChange}>
           <Radio.Button value="topLeft">TL</Radio.Button>
           <Radio.Button value="topRight">TR</Radio.Button>

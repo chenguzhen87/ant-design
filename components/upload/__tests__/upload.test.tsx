@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
+import type { UploadRequestOption } from '@rc-component/upload/lib/interface';
 import { produce } from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
-import type { UploadRequestOption } from 'rc-upload/lib/interface';
 
 import type { RcFile, UploadFile, UploadProps } from '..';
 import Upload from '..';
@@ -9,6 +9,7 @@ import { resetWarned } from '../../_util/warning';
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
 import { act, fireEvent, render, waitFakeTimer } from '../../../tests/utils';
+import ConfigProvider from '../../config-provider';
 import Form from '../../form';
 import { getFileItem, isImageUrl, removeFileItem } from '../utils';
 import { setup, teardown } from './mock';
@@ -23,22 +24,22 @@ describe('Upload', () => {
     jest.useFakeTimers();
   });
   beforeEach(() => setup());
-  afterAll(() => {
-    jest.useRealTimers();
-  });
   afterEach(() => {
     jest.clearAllTimers();
     return teardown();
   });
+  afterAll(() => {
+    jest.useRealTimers();
+  });
 
-  // Mock for rc-util raf
+  // Mock for rc-component/util raf
   window.requestAnimationFrame = (callback) => window.setTimeout(callback, 16);
 
   window.cancelAnimationFrame = (id) => window.clearTimeout(id);
 
   // https://github.com/react-component/upload/issues/36
   it('should get refs inside Upload in componentDidMount', () => {
-    let ref: React.RefObject<HTMLInputElement>;
+    let ref: React.RefObject<HTMLInputElement | null>;
     const App: React.FC = () => {
       const inputRef = useRef<HTMLInputElement>(null);
       useEffect(() => {
@@ -341,14 +342,8 @@ describe('Upload', () => {
       const file = { uid: '-3', name: 'item3.jpg' };
       const fileList = produce(
         [
-          {
-            uid: '-1',
-            name: 'item.jpg',
-          },
-          {
-            uid: '-2',
-            name: 'item2.jpg',
-          },
+          { uid: '-1', name: 'item.jpg' },
+          { uid: '-2', name: 'item2.jpg' },
         ],
         (draftState) => {
           draftState.push({
@@ -460,7 +455,7 @@ describe('Upload', () => {
       url: 'http://www.baidu.com/xxx.png',
     };
 
-    let removePromise: (value: boolean | Promise<void | boolean>) => void;
+    let removePromise: (value: boolean | Promise<undefined | boolean>) => void;
 
     const onRemove: UploadProps['onRemove'] = () =>
       new Promise((resolve) => {
@@ -630,7 +625,7 @@ describe('Upload', () => {
 
     const customRequest = jest.fn(async (options) => {
       // stop here to make sure new fileList has been set and passed to Upload
-      // eslint-disable-next-line no-promise-executor-return
+
       await new Promise((resolve) => setTimeout(resolve, 0));
       options.onProgress({ percent: 0 });
       const url = Promise.resolve('https://ant.design');
@@ -1042,7 +1037,7 @@ describe('Upload', () => {
 
     const customRequest = jest.fn(async (options) => {
       // stop here to make sure new fileList has been set and passed to Upload
-      // eslint-disable-next-line no-promise-executor-return
+
       await new Promise((resolve) => setTimeout(resolve, 0));
       options.onProgress({ percent: 0 });
       const url = Promise.resolve<string>('https://ant.design');
@@ -1088,5 +1083,122 @@ describe('Upload', () => {
     render(<Upload ref={ref} />);
     expect(ref.current?.nativeElement).toBeTruthy();
     expect(ref.current?.nativeElement instanceof HTMLElement).toBeTruthy();
+  });
+
+  it('should support paste', async () => {
+    const done = jest.fn();
+
+    const { container } = render(
+      <Upload
+        pastable
+        onChange={({ file }) => {
+          if (file.status !== 'uploading') {
+            done();
+          }
+        }}
+      >
+        <button type="button">upload</button>
+      </Upload>,
+    );
+
+    fireEvent.paste(container.querySelector('input')!, {
+      clipboardData: {
+        files: [{ name: 'success.jpg' }],
+      },
+    });
+
+    await waitFakeTimer();
+    expect(done).toHaveBeenCalled();
+  });
+
+  it('should apply style to all types of Upload components', () => {
+    // Normal type
+    const { container: normalContainer } = render(
+      <Upload style={{ background: 'red' }}>
+        <button type="button">upload</button>
+      </Upload>,
+    );
+    const normalEl = normalContainer.querySelector('.ant-upload');
+    expect(normalEl).toBeTruthy();
+    expect(normalEl).toHaveStyle({ background: 'rgb(255, 0, 0)' });
+
+    // Drag type
+    const { container: dragContainer } = render(
+      <Upload type="drag" style={{ background: 'green' }}>
+        <button type="button">upload</button>
+      </Upload>,
+    );
+    const dragEl = dragContainer.querySelector('.ant-upload-drag');
+    expect(dragEl).toBeTruthy();
+    expect(dragEl).toHaveStyle({ background: 'rgb(0, 128, 0)' });
+
+    // Picture-card type
+    const { container: pictureCardContainer } = render(
+      <Upload listType="picture-card" style={{ background: 'blue' }}>
+        <button type="button">upload</button>
+      </Upload>,
+    );
+    const pictureCardEl = pictureCardContainer.querySelector('.ant-upload');
+    expect(pictureCardEl).toBeTruthy();
+    expect(pictureCardEl).toHaveStyle({ background: 'rgb(0, 0, 255)' });
+
+    // Dragger component
+    const { container: draggerContainer } = render(
+      <Upload.Dragger style={{ background: 'yellow' }}>
+        <button type="button">upload</button>
+      </Upload.Dragger>,
+    );
+    const draggerEl = draggerContainer.querySelector('.ant-upload-drag');
+    expect(draggerEl).toBeTruthy();
+    expect(draggerEl).toHaveStyle({ background: 'rgb(255, 255, 0)' });
+  });
+
+  it('supports ConfigProvider customRequest', async () => {
+    const mockFile1 = new File(['bamboo'], 'bamboo.png', { type: 'image/png' });
+    const mockFile2 = new File(['light'], 'light.png', { type: 'image/png' });
+
+    const customRequest = jest.fn(async (options) => {
+      // stop here to make sure new fileList has been set and passed to Upload
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      options.onProgress({ percent: 0 });
+      const url = Promise.resolve<string>('https://ant.design');
+      options.onProgress({ percent: 100 });
+      options.onSuccess({}, { ...options.file, url });
+    });
+
+    let fileListOut: UploadProps['fileList'] = [];
+
+    const Demo: React.FC = () => {
+      const [fileList, setFileList] = React.useState<UploadFile[]>([]);
+
+      const onChange: UploadProps['onChange'] = async (e) => {
+        const newFileList = Array.isArray(e) ? e : e.fileList;
+        setFileList(newFileList);
+
+        fileListOut = newFileList;
+      };
+
+      return (
+        <ConfigProvider upload={{ customRequest }}>
+          <Upload onChange={onChange} fileList={fileList}>
+            <button type="button">Upload</button>
+          </Upload>
+        </ConfigProvider>
+      );
+    };
+
+    const { container } = render(<Demo />);
+
+    fireEvent.change(container.querySelector<HTMLInputElement>('input')!, {
+      target: { files: [mockFile1, mockFile2] },
+    });
+
+    // React 18 is async now
+    await waitFakeTimer();
+
+    fileListOut.forEach((file) => {
+      expect(file.status).toBe('done');
+    });
   });
 });

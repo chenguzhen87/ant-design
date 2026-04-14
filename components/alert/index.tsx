@@ -1,0 +1,16 @@
+import InternalAlert from './Alert';
+import ErrorBoundary from './ErrorBoundary';
+
+export type { AlertProps, AlertSemanticType } from './Alert';
+
+export type { ErrorBoundaryProps } from './ErrorBoundary';
+
+type CompoundedComponent = typeof InternalAlert & {
+  ErrorBoundary: typeof ErrorBoundary;
+};
+
+const Alert = InternalAlert as CompoundedComponent;
+
+Alert.ErrorBoundary = ErrorBoundary;
+
+export default Alert;

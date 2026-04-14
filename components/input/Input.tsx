@@ -1,70 +1,100 @@
 import React, { forwardRef, useContext, useEffect, useRef } from 'react';
-import classNames from 'classnames';
-import type { InputRef, InputProps as RcInputProps } from 'rc-input';
-import RcInput from 'rc-input';
-import { composeRef } from 'rc-util/lib/ref';
+import type { InputRef, InputProps as RcInputProps } from '@rc-component/input';
+import RcInput from '@rc-component/input';
+import type { InputFocusOptions } from '@rc-component/util/lib/Dom/focus';
+import { triggerFocus } from '@rc-component/util/lib/Dom/focus';
+import { composeRef } from '@rc-component/util/lib/ref';
+import { clsx } from 'clsx';
 
+import ContextIsolator from '../_util/ContextIsolator';
 import getAllowClear from '../_util/getAllowClear';
+import { useMergeSemantic } from '../_util/hooks';
+import type { SemanticClassNamesType, SemanticStylesType } from '../_util/hooks';
 import type { InputStatus } from '../_util/statusUtils';
 import { getMergedStatus, getStatusClassNames } from '../_util/statusUtils';
 import { devUseWarning } from '../_util/warning';
-import { ConfigContext } from '../config-provider';
+import type { Variant } from '../config-provider';
+import { useComponentConfig } from '../config-provider/context';
 import DisabledContext from '../config-provider/DisabledContext';
 import useCSSVarCls from '../config-provider/hooks/useCSSVarCls';
 import useSize from '../config-provider/hooks/useSize';
 import type { SizeType } from '../config-provider/SizeContext';
-import { FormItemInputContext, NoFormStyle } from '../form/context';
-import type { Variant } from '../form/hooks/useVariants';
+import { FormItemInputContext } from '../form/context';
 import useVariant from '../form/hooks/useVariants';
-import { NoCompactStyle, useCompactItemContext } from '../space/Compact';
+import { useCompactItemContext } from '../space/Compact';
 import useRemovePasswordTimeout from './hooks/useRemovePasswordTimeout';
-import useStyle from './style';
+import useStyle, { useSharedStyle } from './style';
 import { hasPrefixSuffix } from './utils';
 
-export interface InputFocusOptions extends FocusOptions {
-  cursor?: 'start' | 'end' | 'all';
-}
-
+export type { InputFocusOptions };
 export type { InputRef };
+export { triggerFocus };
 
-export function triggerFocus(
-  element?: HTMLInputElement | HTMLTextAreaElement,
-  option?: InputFocusOptions,
-) {
-  if (!element) {
-    return;
-  }
+export type InputSemanticName = keyof InputSemanticClassNames & keyof InputSemanticStyles;
 
-  element.focus(option);
+export type InputSemanticClassNames = {
+  root?: string;
+  prefix?: string;
+  suffix?: string;
+  input?: string;
+  count?: string;
+};
 
-  // Selection content
-  const { cursor } = option || {};
-  if (cursor) {
-    const len = element.value.length;
+export type InputSemanticStyles = {
+  root?: React.CSSProperties;
+  prefix?: React.CSSProperties;
+  suffix?: React.CSSProperties;
+  input?: React.CSSProperties;
+  count?: React.CSSProperties;
+};
 
-    switch (cursor) {
-      case 'start':
-        element.setSelectionRange(0, 0);
-        break;
-      case 'end':
-        element.setSelectionRange(len, len);
-        break;
-      default:
-        element.setSelectionRange(0, len);
-        break;
-    }
-  }
-}
+export type InputClassNamesType = SemanticClassNamesType<InputProps, InputSemanticClassNames>;
+
+export type InputStylesType = SemanticStylesType<InputProps, InputSemanticStyles>;
 
 export interface InputProps
   extends Omit<
     RcInputProps,
-    'wrapperClassName' | 'groupClassName' | 'inputClassName' | 'affixWrapperClassName' | 'classes'
+    | 'wrapperClassName'
+    | 'groupClassName'
+    | 'inputClassName'
+    | 'affixWrapperClassName'
+    | 'classes'
+    | 'classNames'
+    | 'styles'
   > {
   rootClassName?: string;
   size?: SizeType;
   disabled?: boolean;
   status?: InputStatus;
+  /**
+   * @deprecated Use `Space.Compact` instead.
+   *
+   * @example
+   * ```tsx
+   * import { Space, Input } from 'antd';
+   *
+   * <Space.Compact>
+   *   {addon}
+   *   <Input defaultValue="name" />
+   * </Space.Compact>
+   * ```
+   */
+  addonBefore?: React.ReactNode;
+  /**
+   * @deprecated Use `Space.Compact` instead.
+   *
+   * @example
+   * ```tsx
+   * import { Space, Input } from 'antd';
+   *
+   * <Space.Compact>
+   *   <Input defaultValue="name" />
+   *   {addon}
+   * </Space.Compact>
+   * ```
+   */
+  addonAfter?: React.ReactNode;
   /** @deprecated Use `variant="borderless"` instead. */
   bordered?: boolean;
   /**
@@ -72,6 +102,8 @@ export interface InputProps
    * @default "outlined"
    */
   variant?: Variant;
+  classNames?: InputClassNamesType;
+  styles?: InputStylesType;
   [key: `data-${string}`]: string | undefined;
 }
 
@@ -93,24 +125,40 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
     styles,
     rootClassName,
     onChange,
-    classNames: classes,
+    classNames,
     variant: customVariant,
     ...rest
   } = props;
 
   if (process.env.NODE_ENV !== 'production') {
     const { deprecated } = devUseWarning('Input');
-    deprecated(!('bordered' in props), 'bordered', 'variant');
+    [
+      ['bordered', 'variant'],
+      ['addonAfter', 'Space.Compact'],
+      ['addonBefore', 'Space.Compact'],
+    ].forEach(([prop, newProp]) => {
+      deprecated(!(prop in props), prop, newProp);
+    });
   }
 
-  const { getPrefixCls, direction, input } = React.useContext(ConfigContext);
+  const {
+    getPrefixCls,
+    direction,
+    allowClear: contextAllowClear,
+    autoComplete: contextAutoComplete,
+    className: contextClassName,
+    style: contextStyle,
+    classNames: contextClassNames,
+    styles: contextStyles,
+  } = useComponentConfig('input');
 
   const prefixCls = getPrefixCls('input', customizePrefixCls);
   const inputRef = useRef<InputRef>(null);
 
   // Style
   const rootCls = useCSSVarCls(prefixCls);
-  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls, rootCls);
+  const [hashId, cssVarCls] = useSharedStyle(prefixCls, rootClassName);
+  useStyle(prefixCls, rootCls);
 
   // ===================== Compact Item =====================
   const { compactSize, compactItemClassnames } = useCompactItemContext(prefixCls, direction);
@@ -122,27 +170,43 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
   const disabled = React.useContext(DisabledContext);
   const mergedDisabled = customDisabled ?? disabled;
 
+  // =========== Merged Props for Semantic ==========
+  const mergedProps: InputProps = {
+    ...props,
+    size: mergedSize,
+    disabled: mergedDisabled,
+  };
+
+  const [mergedClassNames, mergedStyles] = useMergeSemantic<
+    InputClassNamesType,
+    InputStylesType,
+    InputProps
+  >([contextClassNames, classNames], [contextStyles, styles], {
+    props: mergedProps,
+  });
+
   // ===================== Status =====================
   const { status: contextStatus, hasFeedback, feedbackIcon } = useContext(FormItemInputContext);
   const mergedStatus = getMergedStatus(contextStatus, customStatus);
 
   // ===================== Focus warning =====================
   const inputHasPrefixSuffix = hasPrefixSuffix(props) || !!hasFeedback;
-  const prevHasPrefixSuffix = useRef<boolean>(inputHasPrefixSuffix);
+  const prevHasPrefixSuffixRef = useRef<boolean>(inputHasPrefixSuffix);
 
   /* eslint-disable react-hooks/rules-of-hooks */
   if (process.env.NODE_ENV !== 'production') {
     const warning = devUseWarning('Input');
 
+    // biome-ignore lint/correctness/useHookAtTopLevel: Development-only warning hook called conditionally
     useEffect(() => {
-      if (inputHasPrefixSuffix && !prevHasPrefixSuffix.current) {
+      if (inputHasPrefixSuffix && !prevHasPrefixSuffixRef.current) {
         warning(
           document.activeElement === inputRef.current?.input,
           'usage',
           `When Input is focused, dynamic add or remove prefix / suffix will make it lose focus caused by dom structure change. Read more: https://ant.design/components/input/#FAQ`,
         );
       }
-      prevHasPrefixSuffix.current = inputHasPrefixSuffix;
+      prevHasPrefixSuffixRef.current = inputHasPrefixSuffix;
     }, [inputHasPrefixSuffix]);
   }
   /* eslint-enable */
@@ -172,70 +236,65 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
     </>
   );
 
-  const mergedAllowClear = getAllowClear(allowClear ?? input?.allowClear);
+  const mergedAllowClear = getAllowClear(allowClear ?? contextAllowClear);
 
-  const [variant, enableVariantCls] = useVariant(customVariant, bordered);
+  const [variant, enableVariantCls] = useVariant('input', customVariant, bordered);
 
-  return wrapCSSVar(
+  return (
     <RcInput
       ref={composeRef(ref, inputRef)}
       prefixCls={prefixCls}
-      autoComplete={input?.autoComplete}
+      autoComplete={contextAutoComplete}
       {...rest}
       disabled={mergedDisabled}
       onBlur={handleBlur}
       onFocus={handleFocus}
-      style={{ ...input?.style, ...style }}
-      styles={{ ...input?.styles, ...styles }}
+      style={{ ...mergedStyles.root, ...contextStyle, ...style }}
+      styles={mergedStyles}
       suffix={suffixNode}
       allowClear={mergedAllowClear}
-      className={classNames(
+      className={clsx(
         className,
         rootClassName,
         cssVarCls,
         rootCls,
         compactItemClassnames,
-        input?.className,
+        contextClassName,
+        mergedClassNames.root,
       )}
       onChange={handleChange}
-      addonAfter={
-        addonAfter && (
-          <NoCompactStyle>
-            <NoFormStyle override status>
-              {addonAfter}
-            </NoFormStyle>
-          </NoCompactStyle>
-        )
-      }
       addonBefore={
         addonBefore && (
-          <NoCompactStyle>
-            <NoFormStyle override status>
-              {addonBefore}
-            </NoFormStyle>
-          </NoCompactStyle>
+          <ContextIsolator form space>
+            {addonBefore}
+          </ContextIsolator>
+        )
+      }
+      addonAfter={
+        addonAfter && (
+          <ContextIsolator form space>
+            {addonAfter}
+          </ContextIsolator>
         )
       }
       classNames={{
-        ...classes,
-        ...input?.classNames,
-        input: classNames(
+        ...mergedClassNames,
+        input: clsx(
           {
             [`${prefixCls}-sm`]: mergedSize === 'small',
             [`${prefixCls}-lg`]: mergedSize === 'large',
             [`${prefixCls}-rtl`]: direction === 'rtl',
           },
-          classes?.input,
-          input?.classNames?.input,
+          mergedClassNames.input,
           hashId,
         ),
-        variant: classNames(
+        variant: clsx(
           {
             [`${prefixCls}-${variant}`]: enableVariantCls,
           },
           getStatusClassNames(prefixCls, mergedStatus),
         ),
-        affixWrapper: classNames(
+        affixWrapper: clsx(
           {
             [`${prefixCls}-affix-wrapper-sm`]: mergedSize === 'small',
             [`${prefixCls}-affix-wrapper-lg`]: mergedSize === 'large',
@@ -243,13 +302,13 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
           },
           hashId,
         ),
-        wrapper: classNames(
+        wrapper: clsx(
           {
             [`${prefixCls}-group-rtl`]: direction === 'rtl',
           },
           hashId,
         ),
-        groupWrapper: classNames(
+        groupWrapper: clsx(
           {
             [`${prefixCls}-group-wrapper-sm`]: mergedSize === 'small',
             [`${prefixCls}-group-wrapper-lg`]: mergedSize === 'large',
@@ -260,7 +319,7 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
           hashId,
         ),
       }}
-    />,
+    />
   );
 });
 

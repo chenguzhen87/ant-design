@@ -1,5 +1,5 @@
 import React from 'react';
-import { Space, Table, Tag } from 'antd';
+import { Flex, Space, Table, Tag } from 'antd';
 
 const { Column, ColumnGroup } = Table;
 
@@ -27,7 +27,7 @@ const data: DataType[] = [
     lastName: 'Green',
     age: 42,
     address: 'London No. 1 Lake Park',
-    tags: ['loser'],
+    tags: ['kawaii'],
   },
   {
     key: '3',
@@ -40,7 +40,7 @@ const data: DataType[] = [
 ];
 
 const App: React.FC = () => (
-  <Table dataSource={data}>
+  <Table<DataType> dataSource={data}>
     <ColumnGroup title="Name">
       <Column title="First Name" dataIndex="firstName" key="firstName" />
       <Column title="Last Name" dataIndex="lastName" key="lastName" />
@@ -52,10 +52,10 @@ const App: React.FC = () => (
       dataIndex="tags"
       key="tags"
       render={(tags: string[]) => (
-        <>
+        <Flex gap="small" align="center" wrap>
           {tags.map((tag) => {
             let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
+            if (tag === 'kawaii') {
               color = 'volcano';
             }
             return (
@@ -64,14 +64,14 @@ const App: React.FC = () => (
               </Tag>
             );
           })}
-        </>
+        </Flex>
       )}
     />
     <Column
       title="Action"
       key="action"
       render={(_: any, record: DataType) => (
-        <Space size="middle">
+        <Space size="medium">
           <a>Invite {record.lastName}</a>
           <a>Delete</a>
         </Space>

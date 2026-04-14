@@ -5,11 +5,9 @@ import type { ColorPickerProps } from 'antd';
 
 type Presets = Required<ColorPickerProps>['presets'][number];
 
-const genPresets = (presets = presetPalettes) =>
-  Object.entries(presets).map<Presets>(([label, colors]) => ({
-    label,
-    colors,
-  }));
+function genPresets(presets = presetPalettes) {
+  return Object.entries(presets).map<Presets>(([label, colors]) => ({ label, colors, key: label }));
+}
 
 const HorizontalLayoutDemo = () => {
   const { token } = theme.useToken();
@@ -29,7 +27,7 @@ const HorizontalLayoutDemo = () => {
       <Col span={12}>
         <Presets />
       </Col>
-      <Divider type="vertical" style={{ height: 'auto' }} />
+      <Divider vertical style={{ height: 'auto' }} />
       <Col flex="auto">
         <Picker />
       </Col>
@@ -68,7 +66,7 @@ const BasicDemo = () => (
 );
 
 export default () => (
-  <Space direction="vertical">
+  <Space vertical>
     <Space>
       <span>Add title:</span>
       <BasicDemo />

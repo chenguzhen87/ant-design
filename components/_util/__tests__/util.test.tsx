@@ -1,11 +1,7 @@
-/* eslint-disable class-methods-use-this */
-import React from 'react';
-import KeyCode from 'rc-util/lib/KeyCode';
-
-import { fireEvent, render, waitFakeTimer } from '../../../tests/utils';
+import { waitFakeTimer } from '../../../tests/utils';
 import { isStyleSupport } from '../styleChecker';
 import throttleByAnimationFrame from '../throttleByAnimationFrame';
-import TransButton from '../transButton';
+import toList from '../toList';
 
 describe('Test utils function', () => {
   describe('throttle', () => {
@@ -13,12 +9,12 @@ describe('Test utils function', () => {
       jest.useFakeTimers();
     });
 
-    afterAll(() => {
-      jest.useRealTimers();
-    });
-
     afterEach(() => {
       jest.clearAllTimers();
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
     });
 
     it('throttle function should work', async () => {
@@ -44,28 +40,19 @@ describe('Test utils function', () => {
 
       expect(callback).not.toHaveBeenCalled();
     });
-  });
+    it('should work with different argument types', async () => {
+      const callback = jest.fn();
+      const throttled = throttleByAnimationFrame(callback);
 
-  describe('TransButton', () => {
-    it('can be focus/blur', () => {
-      const ref = React.createRef<HTMLDivElement>();
-      render(<TransButton ref={ref}>TransButton</TransButton>);
-      expect(typeof ref.current?.focus).toBe('function');
-      expect(typeof ref.current?.blur).toBe('function');
-    });
+      const obj = { key: 'value' };
+      const arr = [1, 2, 3];
+      const fn = () => {};
 
-    it('should trigger onClick when press enter', () => {
-      const onClick = jest.fn();
+      throttled(obj, arr, fn, null, undefined, 0, false, '');
 
-      const { container } = render(<TransButton onClick={onClick}>TransButton</TransButton>);
+      await waitFakeTimer();
 
-      // callback should trigger
-      fireEvent.keyUp(container.querySelector('div')!, { keyCode: KeyCode.ENTER });
-      expect(onClick).toHaveBeenCalledTimes(1);
-
-      // callback should not trigger
-      fireEvent.keyDown(container.querySelector('div')!, { keyCode: KeyCode.ENTER });
-      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(callback).toHaveBeenCalledWith(obj, arr, fn, null, undefined, 0, false, '');
     });
   });
 
@@ -82,6 +69,15 @@ describe('Test utils function', () => {
       expect(isStyleSupport('color')).toBe(false);
       expect(isStyleSupport('not-existed')).toBe(false);
       spy.mockRestore();
+    });
+  });
+  describe('toList', () => {
+    it('toList should work', () => {
+      expect(toList(123)).toEqual([123]);
+      expect(toList([123])).toEqual([123]);
+      expect(toList(false)).toEqual([false]);
+      expect(toList(null, { skipEmpty: true })).toEqual([]);
+      expect(toList(undefined, { skipEmpty: true })).toEqual([]);
     });
   });
 });

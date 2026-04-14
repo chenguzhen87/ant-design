@@ -2,6 +2,9 @@
 title: Unnecessary Rerender
 date: 2022-12-31
 author: zombieJ
+zhihu_url: https://zhuanlan.zhihu.com/p/633328911
+yuque_url: https://www.yuque.com/ant-design/ant-design/uz7b7d6wq05e4wvo
+juejin_url: https://juejin.cn/post/7322352551088537627
 ---
 
 For heavy components, some bug fixes or new features can easily destroy the original performance optimization inadvertently over time. Recently, we are refactoring the Table to troubleshoot and restore the performance loss caused by some historical updates. Here, we introduce some common troubleshooting method and frequently meet problems.
@@ -14,7 +17,7 @@ In most cases, invalid rendering is not as dramatic as an un-optimized loop. How
 
 For example, in antd v4, in order to improve Table hover highlighting experience of `rowSpan`, we added an event listener for `tr`, and added an additional `className` for the selected row in `td` to support multiple row highlighting capability. However, because `td` consumes `hoverStartRow` and `hoverEndRow` data in the context, non-related rows will [re-render](https://github.com/ant-design/ant-design/issues/33342) due to changes of `hoverStartRow` and `hoverEndRow`.
 
-Problems like this are repeated in heavy components, so we need some helper way to determine the number of renders. In the latest [`rc-table`](https://github.com/react-component/table), we encapsulate a [`useRenderTimes`](https://github.com/react-component/table/blob/ecf3fdb77523b370ee86e19164e95f00e65281a8/src/hooks/useRenderTimes.tsx) method. It will mark the monitored rendering times on React Dev Tools through React's `useDebugValue` in development mode:
+Problems like this are repeated in heavy components, so we need some helper way to determine the number of renders. In the latest [`@rc-component/table`](https://github.com/react-component/table), we encapsulate a [`useRenderTimes`](https://github.com/react-component/table/blob/ecf3fdb77523b370ee86e19164e95f00e65281a8/src/hooks/useRenderTimes.tsx) method. It will mark the monitored rendering times on React Dev Tools through React's `useDebugValue` in development mode:
 
 ![VDM](https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*vlwQQIcEXFkAAAAAAAAAAAAADrJ8AQ/original)
 
@@ -106,7 +109,7 @@ const { prop1 } = React.useContext(MyContext1);
 </MyContext1.Provider>;
 ```
 
-In `rc-table`, we split it into multiple to optimize rendering performance:
+In `@rc-component/table`, we split it into multiple to optimize rendering performance:
 
 - BodyContext
 - ExpandedRowContext
@@ -140,7 +143,7 @@ After optimizing in various ways, we still have to face a problem. If some rende
 // pseudocode
 import React from 'react';
 
-const MyComponent = React.memo(({ valueRender }: { valueRender: () => React.ReactElement }) =>
+const MyComponent = React.memo<{ valueRender: () => React.ReactElement<any> }>(({ valueRender }) =>
   valueRender(),
 );
 

@@ -56,10 +56,10 @@ Before starting the project, let's install some more dependencies that will be u
 
 ```bash
 $ pnpm i @umijs/plugins -D
-$ pnpm i antd axios @ant-design/pro-layout -S
+$ pnpm i antd axios @ant-design/pro-components -S
 ```
 
-`@umijs/plugins` is the official plugin set of Umi, containing a large number of plugins such as valtio, react-query, styled-components, locale, access, qiankun, etc. `antd` needs no introduction. `axios` is the request library; `@ant-design/pro-layout` is the component used to generate the layouts.
+`@umijs/plugins` is the official plugin set of Umi, containing a large number of plugins such as valtio, react-query, styled-components, locale, access, qiankun, etc. `antd` needs no introduction. `axios` is the request library; `@ant-design/pro-components` is the component used to generate the layouts.
 
 When finished, execute the following command to start the project.
 
@@ -249,7 +249,9 @@ export default function Page() {
       queryClient.invalidateQueries({ queryKey: ['products'] });
     },
   });
-  if (productsQuery.isLoading) return null;
+  if (productsQuery.isLoading) {
+    return null;
+  }
   return (
     <div>
       <h1 className={styles.title}>Page products</h1>
@@ -297,7 +299,7 @@ export default defineConfig({
 Edit `src/layouts/index.tsx` with the following code.
 
 ```tsx
-import { ProLayout } from '@ant-design/pro-layout';
+import { ProLayout } from '@ant-design/pro-components';
 import { Link, Outlet, useAppData, useLocation } from 'umi';
 
 export default function Layout() {

@@ -28,13 +28,13 @@ type MouseEvent = 'click' | 'mouseEnter' | 'mouseLeave';
 const { SubMenu } = Menu;
 
 describe('Menu', () => {
-  function triggerAllTimer() {
+  const triggerAllTimer = () => {
     for (let i = 0; i < 10; i += 1) {
       act(() => {
         jest.runAllTimers();
       });
     }
-  }
+  };
 
   const expectSubMenuBehavior = (
     defaultTestProps: MenuProps,
@@ -45,11 +45,12 @@ describe('Menu', () => {
     const { container } = instance;
 
     expect(container.querySelectorAll('ul.ant-menu-sub')).toHaveLength(0);
-    const AnimationClassNames = {
+    const animationClassNames = {
       horizontal: 'ant-slide-up-leave',
       inline: 'ant-motion-collapse-leave',
       vertical: 'ant-zoom-big-leave',
     };
+
     const mode = defaultTestProps.mode || 'horizontal';
 
     act(() => {
@@ -59,16 +60,16 @@ describe('Menu', () => {
     // React concurrent may delay creating this
     triggerAllTimer();
 
-    function getSubMenu() {
-      return container.querySelector<HTMLUListElement | HTMLDivElement>(
+    const getSubMenu = () =>
+      container.querySelector<HTMLElement>(
         mode === 'inline' ? 'ul.ant-menu-sub.ant-menu-inline' : 'div.ant-menu-submenu-popup',
       );
-    }
 
-    expect(
-      getSubMenu()?.classList.contains('ant-menu-hidden') ||
-        getSubMenu()?.classList.contains(AnimationClassNames[mode]),
-    ).toBeFalsy();
+    if (getSubMenu()) {
+      expect(getSubMenu()).not.toHaveClass(
+        new RegExp(`(${['ant-menu-hidden', animationClassNames[mode]].join('|')})`),
+      );
+    }
 
     act(() => {
       leave();
@@ -78,23 +79,24 @@ describe('Menu', () => {
     triggerAllTimer();
 
     if (getSubMenu()) {
-      expect(
-        getSubMenu()?.classList.contains('ant-menu-hidden') ||
-          getSubMenu()?.classList.contains(AnimationClassNames[mode]),
-      ).toBeTruthy();
+      expect(getSubMenu()).toHaveClass(
+        new RegExp(`(${['ant-menu-hidden', animationClassNames[mode]].join('|')})`),
+      );
     }
   };
 
-  // window.requestAnimationFrame = callback => window.setTimeout(callback, 16);
-  // window.cancelAnimationFrame = window.clearTimeout;
+  let div: HTMLDivElement;
 
   beforeEach(() => {
     jest.useFakeTimers();
     jest.clearAllTimers();
+    div = document.createElement('div');
+    document.body.appendChild(div);
   });
 
   afterEach(() => {
     jest.useRealTimers();
+    document.body.removeChild(div);
   });
 
   mountTest(() => (
@@ -113,14 +115,11 @@ describe('Menu', () => {
         <Menu.SubMenu />
         {null}
       </>
-      {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
       <>
         <Menu.Item />
       </>
       {undefined}
-      {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
       <>
-        {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
         <>
           <Menu.Item />
         </>
@@ -137,17 +136,6 @@ describe('Menu', () => {
   );
 
   rtlTest(RtlDemo);
-
-  let div: HTMLDivElement;
-
-  beforeEach(() => {
-    div = document.createElement('div');
-    document.body.appendChild(div);
-  });
-
-  afterEach(() => {
-    document.body.removeChild(div);
-  });
 
   it('If has select nested submenu item ,the menu items on the grandfather level should be highlight', () => {
     const { container } = render(
@@ -524,10 +512,97 @@ describe('Menu', () => {
 
     triggerAllTimer();
     // when title is null or '' and false, tooltip will not render.
-    expect(container.querySelectorAll('.ant-tooltip-inner').length).toBe(3);
-    expect(container.querySelectorAll('.ant-tooltip-inner')[0].textContent).toBe('item');
-    expect(container.querySelectorAll('.ant-tooltip-inner')[1].textContent).toBe('title');
-    expect(container.querySelectorAll('.ant-tooltip-inner')[2].textContent).toBe('item');
+    expect(container.querySelectorAll('.ant-tooltip-container').length).toBe(3);
+    expect(container.querySelectorAll('.ant-tooltip-container')[0].textContent).toBe('item');
+    expect(container.querySelectorAll('.ant-tooltip-container')[1].textContent).toBe('title');
+    expect(container.querySelectorAll('.ant-tooltip-container')[2].textContent).toBe('item');
+  });
+
+  it('inlineCollapsed Menu.Item Tooltip can be disabled by prop', () => {
+    const { container } = render(
+      <Menu
+        defaultOpenKeys={['not-existed']}
+        mode="inline"
+        inlineCollapsed
+        tooltip={false}
+        getPopupContainer={(node) => node.parentNode as HTMLElement}
+      >
+        <Menu.Item key="menu1">item</Menu.Item>
+      </Menu>,
+    );
+
+    fireEvent.mouseEnter(container.querySelectorAll('li.ant-menu-item')[0]);
+    triggerAllTimer();
+
+    expect(container.querySelector('.ant-tooltip-container')).toBeFalsy();
+  });
+
+  it('inlineCollapsed Menu.Item Tooltip should support custom props', () => {
+    const { container } = render(
+      <Menu
+        defaultOpenKeys={['not-existed']}
+        mode="inline"
+        inlineCollapsed
+        tooltip={{ title: 'Custom Title', placement: 'left', classNames: { root: 'custom-root' } }}
+        getPopupContainer={(node) => node.parentNode as HTMLElement}
+      >
+        <Menu.Item key="menu1" title="title">
+          item
+        </Menu.Item>
+      </Menu>,
+    );
+
+    fireEvent.mouseEnter(container.querySelectorAll('li.ant-menu-item')[0]);
+    triggerAllTimer();
+
+    const tooltipNode = container.querySelector('.ant-tooltip');
+    expect(container.querySelector('.ant-tooltip-container')?.textContent).toBe('Custom Title');
+    expect(tooltipNode).toHaveClass('ant-tooltip-placement-left');
+    expect(tooltipNode).toHaveClass('custom-root');
+    expect(tooltipNode).toHaveClass('ant-menu-inline-collapsed-tooltip');
+  });
+
+  it('inlineCollapsed Menu.Item Tooltip should support classNames function', () => {
+    const classNamesFn = jest.fn(() => ({ root: 'fn-root' }));
+    const { container } = render(
+      <Menu
+        defaultOpenKeys={['not-existed']}
+        mode="inline"
+        inlineCollapsed
+        tooltip={{ classNames: classNamesFn }}
+        getPopupContainer={(node) => node.parentNode as HTMLElement}
+      >
+        <Menu.Item key="menu1">item</Menu.Item>
+      </Menu>,
+    );
+
+    fireEvent.mouseEnter(container.querySelectorAll('li.ant-menu-item')[0]);
+    triggerAllTimer();
+
+    expect(classNamesFn).toHaveBeenCalled();
+    const tooltipNode = container.querySelector('.ant-tooltip');
+    expect(tooltipNode).toHaveClass('fn-root');
+    expect(tooltipNode).toHaveClass('ant-menu-inline-collapsed-tooltip');
+  });
+
+  it('Menu.Item should not render Tooltip when inlineCollapsed is false even with tooltip prop', () => {
+    const { container } = render(
+      <Menu
+        defaultSelectedKeys={['1']}
+        mode="inline"
+        inlineCollapsed={false}
+        tooltip={{ title: 'Custom Title' }}
+      >
+        <Menu.Item key="1">item</Menu.Item>
+      </Menu>,
+    );
+
+    fireEvent.mouseEnter(container.querySelectorAll('li.ant-menu-item')[0]);
+    act(() => {
+      jest.runAllTimers();
+    });
+
+    expect(container.querySelector('.ant-tooltip-container')).toBeFalsy();
   });
 
   describe('open submenu when click submenu title', () => {
@@ -693,7 +768,7 @@ describe('Menu', () => {
     );
     fireEvent.mouseEnter(container.querySelector('.ant-menu-item')!);
     triggerAllTimer();
-    expect(container.querySelector('.ant-tooltip-inner')?.textContent).toBe('bamboo lucky');
+    expect(container.querySelector('.ant-tooltip-container')?.textContent).toBe('bamboo lucky');
   });
 
   it('render correctly when using with Layout.Sider', () => {
@@ -767,7 +842,7 @@ describe('Menu', () => {
       jest.runAllTimers();
     });
 
-    expect(container.querySelectorAll('.ant-tooltip-inner').length).toBe(0);
+    expect(container.querySelector('.ant-tooltip-container')).toBeFalsy();
   });
 
   it('MenuItem should render icon and icon should be the first child when icon exists', () => {
@@ -817,7 +892,7 @@ describe('Menu', () => {
       jest.runAllTimers();
     });
 
-    expect(container.querySelectorAll('.ant-tooltip-inner').length).toBeFalsy();
+    expect(container.querySelector('.ant-tooltip-container')).toBeFalsy();
 
     jest.useRealTimers();
   });
@@ -1096,11 +1171,8 @@ describe('Menu', () => {
       />,
     );
 
-    expect(container.querySelector('.bamboo')).toBeTruthy();
-    expect(getComputedStyle(container.querySelector('.bamboo') as HTMLElement)).toHaveProperty(
-      'opacity',
-      '0',
-    );
+    expect(container.querySelector<HTMLElement>('.bamboo')).toBeTruthy();
+    expect(container.querySelector<HTMLElement>('.bamboo')).toHaveStyle({ opacity: 0 });
   });
 
   it('Overflow indicator className should not override menu class', () => {
@@ -1169,5 +1241,80 @@ describe('Menu', () => {
       </OverrideContext.Provider>,
     );
     expect(container.querySelector('.ant-menu-submenu-arrow')).toBeFalsy();
+  });
+
+  it('menu item with extra prop', () => {
+    const text = '⌘P';
+    const { container } = render(<Menu items={[{ label: 'profile', key: '1', extra: text }]} />);
+
+    expect(container.querySelector('.ant-menu-title-content-with-extra')).toBeInTheDocument();
+    expect(container.querySelector('.ant-menu-item-extra')?.textContent).toBe(text);
+  });
+
+  it('should prevent click events when disabled MenuItem with link', () => {
+    const onClick = jest.fn();
+    const { container } = render(
+      <Menu
+        mode="vertical"
+        items={[
+          {
+            key: '1',
+            disabled: true,
+            label: (
+              <a href="https://ant.design" onClick={onClick}>
+                Disabled Link
+              </a>
+            ),
+          },
+        ]}
+      />,
+    );
+    const link = container.querySelector('a')!;
+    expect(container.querySelector('.ant-menu-item')).toHaveClass('ant-menu-item-disabled');
+    expect(link).toHaveStyle({ pointerEvents: 'none', cursor: 'not-allowed' });
+  });
+  it('test classNames for popup', () => {
+    const items = [
+      {
+        key: 'SubMenu',
+        label: 'Navigation One',
+        icon: <MailOutlined />,
+        children: [
+          {
+            key: 'g1',
+            label: 'Item 1',
+            type: 'group',
+            children: [
+              { key: '1', label: 'Option 1', icon: <MailOutlined /> },
+              { key: '2', label: 'Option 2' },
+            ],
+          },
+        ],
+      },
+    ];
+    const testClassNames = {
+      popup: 'test-popup',
+    };
+    const testStyles = {
+      popup: {
+        root: {
+          color: 'rgba(130, 113, 65, 0.7)',
+        },
+      },
+    };
+    render(
+      <TriggerMockContext.Provider value={{ popupVisible: true }}>
+        <Menu
+          selectedKeys={['mail']}
+          mode="vertical"
+          items={items}
+          openKeys={['SubMenu']}
+          classNames={testClassNames}
+          styles={testStyles}
+        />
+      </TriggerMockContext.Provider>,
+    );
+    const popup = document.querySelector<HTMLElement>(`.${testClassNames.popup}`);
+    expect(popup).toHaveStyle(testStyles.popup.root);
   });
 });

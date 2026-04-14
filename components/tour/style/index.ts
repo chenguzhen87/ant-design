@@ -1,5 +1,5 @@
 import { unit } from '@ant-design/cssinjs';
-import { TinyColor } from '@ctrl/tinycolor';
+import { FastColor } from '@ant-design/fast-color';
 
 import { genFocusStyle, resetComponent } from '../../style';
 import type { ArrowOffsetToken } from '../../style/placementArrow';
@@ -11,6 +11,7 @@ import type { ArrowToken } from '../../style/roundedArrow';
 import { getArrowToken } from '../../style/roundedArrow';
 import type { FullToken, GenerateStyle, GetDefaultToken } from '../../theme/internal';
 import { genStyleHooks, mergeToken } from '../../theme/internal';
+import { genCssVar } from '../../theme/util/genStyleUtils';
 
 export interface ComponentToken extends ArrowOffsetToken, ArrowToken {
   /**
@@ -36,9 +37,8 @@ export interface ComponentToken extends ArrowOffsetToken, ArrowToken {
 }
 
 interface TourToken extends FullToken<'Tour'> {
-  tourZIndexPopup: number;
-  indicatorWidth: number;
-  indicatorHeight: number;
+  indicatorWidth: number | string;
+  indicatorHeight: number | string;
   tourBorderRadius: number;
 }
 
@@ -46,19 +46,16 @@ interface TourToken extends FullToken<'Tour'> {
 const genBaseStyle: GenerateStyle<TourToken> = (token) => {
   const {
     componentCls,
-    lineHeight,
     padding,
     paddingXS,
     borderRadius,
     borderRadiusXS,
     colorPrimary,
-    colorText,
     colorFill,
     indicatorHeight,
     indicatorWidth,
     boxShadowTertiary,
-    tourZIndexPopup,
-    fontSize,
+    zIndexPopup,
     colorBgElevated,
     fontWeightStrong,
     marginXS,
@@ -70,22 +67,22 @@ const genBaseStyle: GenerateStyle<TourToken> = (token) => {
     motionDurationSlow,
     antCls,
     primaryPrevBtnBg,
+    motionDurationMid,
   } = token;
+
+  const [varName, varRef] = genCssVar(antCls, 'tooltip');
 
   return [
     {
       [componentCls]: {
         ...resetComponent(token),
 
-        color: colorText,
         position: 'absolute',
-        zIndex: tourZIndexPopup,
-        display: 'block',
+        zIndex: zIndexPopup,
+        maxWidth: 'fit-content',
         visibility: 'visible',
-        fontSize,
-        lineHeight,
         width: 520,
-        '--antd-arrow-background-color': colorBgElevated,
+        [varName('arrow-background-color')]: colorBgElevated,
 
         '&-pure': {
           maxWidth: '100%',
@@ -97,10 +94,11 @@ const genBaseStyle: GenerateStyle<TourToken> = (token) => {
         },
 
         // ============================= panel content ============================
-        [`${componentCls}-content`]: {
+        [`${componentCls}-panel`]: {
           position: 'relative',
         },
-        [`${componentCls}-inner`]: {
+
+        [`${componentCls}-section`]: {
           textAlign: 'start',
           textDecoration: 'none',
           borderRadius: tourBorderRadius,
@@ -120,7 +118,11 @@ const genBaseStyle: GenerateStyle<TourToken> = (token) => {
             width: closeBtnSize,
             height: closeBtnSize,
             borderRadius: token.borderRadiusSM,
-            transition: `background-color ${token.motionDurationMid}, color ${token.motionDurationMid}`,
+
+            transition: ['color', 'background-color']
+              .map((prop) => `${prop} ${motionDurationMid}`)
+              .join(', '),
+
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -149,17 +151,15 @@ const genBaseStyle: GenerateStyle<TourToken> = (token) => {
           },
           [`${componentCls}-header`]: {
             padding: `${unit(padding)} ${unit(padding)} ${unit(paddingXS)}`,
-
+            width: `calc(100% - ${unit(closeBtnSize)})`,
+            wordBreak: 'break-word',
             [`${componentCls}-title`]: {
-              lineHeight,
-              fontSize,
               fontWeight: fontWeightStrong,
             },
           },
 
           [`${componentCls}-description`]: {
             padding: `0 ${unit(padding)}`,
-            lineHeight,
             wordWrap: 'break-word',
           },
 
@@ -185,7 +185,7 @@ const genBaseStyle: GenerateStyle<TourToken> = (token) => {
                 },
               },
             },
-            [`${componentCls}-buttons`]: {
+            [`${componentCls}-actions`]: {
               marginInlineStart: 'auto',
               [`${antCls}-btn`]: {
                 marginInlineStart: marginXS,
@@ -197,9 +197,9 @@ const genBaseStyle: GenerateStyle<TourToken> = (token) => {
         // =============================  primary type  ===========================
         // `$` for panel, `&$` for pure panel
         [`${componentCls}-primary, &${componentCls}-primary`]: {
-          '--antd-arrow-background-color': colorPrimary,
+          [varName('arrow-background-color')]: colorPrimary,
 
-          [`${componentCls}-inner`]: {
+          [`${componentCls}-section`]: {
             color: colorTextLightSolid,
             textAlign: 'start',
             textDecoration: 'none',
@@ -260,14 +260,14 @@ const genBaseStyle: GenerateStyle<TourToken> = (token) => {
         '&-placement-rightTop',
         '&-placement-rightBottom',
       ].join(',')]: {
-        [`${componentCls}-inner`]: {
+        [`${componentCls}-section`]: {
           borderRadius: token.min(tourBorderRadius, MAX_VERTICAL_CONTENT_RADIUS),
         },
       },
     },
 
     // ============================= Arrow ===========================
-    getArrowStyle<TourToken>(token, 'var(--antd-arrow-background-color)'),
+    getArrowStyle<TourToken>(token, varRef('arrow-background-color')),
   ];
 };
 
@@ -275,8 +275,8 @@ const genBaseStyle: GenerateStyle<TourToken> = (token) => {
 export const prepareComponentToken: GetDefaultToken<'Tour'> = (token) => ({
   zIndexPopup: token.zIndexPopupBase + 70,
   closeBtnSize: token.fontSize * token.lineHeight,
-  primaryPrevBtnBg: new TinyColor(token.colorTextLightSolid).setAlpha(0.15).toRgbString(),
-  primaryNextBtnHoverBg: new TinyColor(token.colorBgTextHover)
+  primaryPrevBtnBg: new FastColor(token.colorTextLightSolid).setA(0.15).toRgbString(),
+  primaryNextBtnHoverBg: new FastColor(token.colorBgTextHover)
     .onBackground(token.colorWhite)
     .toRgbString(),
   ...getArrowOffsetToken({
@@ -290,12 +290,12 @@ export default genStyleHooks(
   'Tour',
   (token) => {
     const { borderRadiusLG } = token;
-    const TourToken = mergeToken<TourToken>(token, {
+    const tourToken = mergeToken<TourToken>(token, {
       indicatorWidth: 6,
       indicatorHeight: 6,
       tourBorderRadius: borderRadiusLG,
     });
-    return [genBaseStyle(TourToken)];
+    return genBaseStyle(tourToken);
   },
   prepareComponentToken,
 );

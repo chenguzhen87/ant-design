@@ -1,50 +1,58 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Table.filter clearFilters should support params 1`] = `
 <div
   class="ant-dropdown-custom-view"
   id="customFilter"
 >
-  <span
+  <button
     id="setNoParams"
+    type="button"
   >
     setSelectedKeys
-  </span>
-  <span
+  </button>
+  <button
     id="resetNoParams"
+    type="button"
   >
     Reset
-  </span>
-  <span
+  </button>
+  <button
     id="setConfirm"
+    type="button"
   >
     setSelectedKeys
-  </span>
-  <span
+  </button>
+  <button
     id="resetConfirm"
+    type="button"
   >
     Reset
-  </span>
-  <span
+  </button>
+  <button
     id="setClose"
+    type="button"
   >
     setSelectedKeys
-  </span>
-  <span
+  </button>
+  <button
     id="resetClose"
+    type="button"
   >
     Reset
-  </span>
-  <span
+  </button>
+  <button
     id="setParams"
+    type="button"
   >
     setSelectedKeys
-  </span>
-  <span
+  </button>
+  <button
     id="resetParams"
+    type="button"
   >
     Reset
-  </span>
+  </button>
 </div>
 `;
 
@@ -90,16 +98,18 @@ exports[`Table.filter renders custom content correctly 1`] = `
 
 exports[`Table.filter renders custom filter icon as ReactNode 1`] = `
 <div
-  class="ant-table-wrapper"
+  class="css-var-root ant-table-css-var ant-table-wrapper"
 >
   <div
-    class="ant-spin-nested-loading"
+    aria-busy="false"
+    aria-live="polite"
+    class="ant-spin css-var-root"
   >
     <div
       class="ant-spin-container"
     >
       <div
-        class="ant-table"
+        class="ant-table css-var-root ant-table-css-var"
       >
         <div
           class="ant-table-container"
@@ -110,7 +120,6 @@ exports[`Table.filter renders custom filter icon as ReactNode 1`] = `
             <table
               style="table-layout: auto;"
             >
-              <colgroup />
               <thead
                 class="ant-table-thead"
               >
@@ -195,16 +204,18 @@ exports[`Table.filter renders custom filter icon as ReactNode 1`] = `
 
 exports[`Table.filter renders custom filter icon as string correctly 1`] = `
 <div
-  class="ant-table-wrapper"
+  class="css-var-root ant-table-css-var ant-table-wrapper"
 >
   <div
-    class="ant-spin-nested-loading"
+    aria-busy="false"
+    aria-live="polite"
+    class="ant-spin css-var-root"
   >
     <div
       class="ant-spin-container"
     >
       <div
-        class="ant-table"
+        class="ant-table css-var-root ant-table-css-var"
       >
         <div
           class="ant-table-container"
@@ -215,7 +226,6 @@ exports[`Table.filter renders custom filter icon as string correctly 1`] = `
             <table
               style="table-layout: auto;"
             >
-              <colgroup />
               <thead
                 class="ant-table-thead"
               >
@@ -306,16 +316,18 @@ exports[`Table.filter renders custom filter icon correctly 1`] = `
 
 exports[`Table.filter renders custom filter icon with right Tooltip title 1`] = `
 <div
-  class="ant-table-wrapper"
+  class="css-var-root ant-table-css-var ant-table-wrapper"
 >
   <div
-    class="ant-spin-nested-loading"
+    aria-busy="false"
+    aria-live="polite"
+    class="ant-spin css-var-root"
   >
     <div
       class="ant-spin-container"
     >
       <div
-        class="ant-table"
+        class="ant-table css-var-root ant-table-css-var"
       >
         <div
           class="ant-table-container"
@@ -326,7 +338,6 @@ exports[`Table.filter renders custom filter icon with right Tooltip title 1`] = 
             <table
               style="table-layout: auto;"
             >
-              <colgroup />
               <thead
                 class="ant-table-thead"
               >
@@ -349,27 +360,29 @@ exports[`Table.filter renders custom filter icon with right Tooltip title 1`] = 
                         tabindex="-1"
                       >
                         <span
+                          aria-describedby="test-id"
                           class="ant-tooltip-open"
                         >
                           Tooltip
                         </span>
                         <div
-                          class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-top"
-                          style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+                          class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-css-var css-var-root ant-tooltip-placement-top"
+                          style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; right: auto; bottom: auto; box-sizing: border-box;"
                         >
                           <div
                             class="ant-tooltip-arrow"
                             style="position: absolute; bottom: 0px; left: 0px;"
-                          />
-                          <div
-                            class="ant-tooltip-content"
                           >
-                            <div
-                              class="ant-tooltip-inner"
-                              role="tooltip"
-                            >
-                              title
-                            </div>
+                            <span
+                              class="ant-tooltip-arrow-content"
+                            />
+                          </div>
+                          <div
+                            class="ant-tooltip-container"
+                            id="test-id"
+                            role="tooltip"
+                          >
+                            title
                           </div>
                         </div>
                       </span>
@@ -432,16 +445,18 @@ exports[`Table.filter renders custom filter icon with right Tooltip title 1`] = 
 
 exports[`Table.filter renders filter correctly 1`] = `
 <div
-  class="ant-table-wrapper"
+  class="css-var-root ant-table-css-var ant-table-wrapper"
 >
   <div
-    class="ant-spin-nested-loading"
+    aria-busy="false"
+    aria-live="polite"
+    class="ant-spin css-var-root"
   >
     <div
       class="ant-spin-container"
     >
       <div
-        class="ant-table"
+        class="ant-table css-var-root ant-table-css-var"
       >
         <div
           class="ant-table-container"
@@ -452,7 +467,6 @@ exports[`Table.filter renders filter correctly 1`] = `
             <table
               style="table-layout: auto;"
             >
-              <colgroup />
               <thead
                 class="ant-table-thead"
               >
@@ -556,14 +570,14 @@ exports[`Table.filter renders menu correctly 1`] = `
   class="ant-table-filter-dropdown"
 >
   <ul
-    class="ant-dropdown-menu ant-dropdown-menu-root ant-dropdown-menu-vertical ant-dropdown-menu-light"
+    class="ant-dropdown-menu ant-dropdown-menu-root ant-dropdown-menu-vertical ant-dropdown-menu-light css-var-root ant-dropdown-css-var css-var-root ant-dropdown-menu-css-var"
     data-menu-list="true"
     role="menu"
     tabindex="0"
   >
     <li
       class="ant-dropdown-menu-item"
-      data-menu-id="rc-menu-uuid-test-boy"
+      data-menu-id="rc-menu-uuid-boy"
       role="menuitem"
       tabindex="-1"
     >
@@ -571,7 +585,7 @@ exports[`Table.filter renders menu correctly 1`] = `
         class="ant-dropdown-menu-title-content"
       >
         <label
-          class="ant-checkbox-wrapper"
+          class="ant-checkbox-wrapper css-var-root ant-checkbox-css-var"
         >
           <span
             class="ant-checkbox ant-wave-target"
@@ -579,9 +593,6 @@ exports[`Table.filter renders menu correctly 1`] = `
             <input
               class="ant-checkbox-input"
               type="checkbox"
-            />
-            <span
-              class="ant-checkbox-inner"
             />
           </span>
         </label>
@@ -592,7 +603,7 @@ exports[`Table.filter renders menu correctly 1`] = `
     </li>
     <li
       class="ant-dropdown-menu-item"
-      data-menu-id="rc-menu-uuid-test-girl"
+      data-menu-id="rc-menu-uuid-girl"
       role="menuitem"
       tabindex="-1"
     >
@@ -600,7 +611,7 @@ exports[`Table.filter renders menu correctly 1`] = `
         class="ant-dropdown-menu-title-content"
       >
         <label
-          class="ant-checkbox-wrapper"
+          class="ant-checkbox-wrapper css-var-root ant-checkbox-css-var"
         >
           <span
             class="ant-checkbox ant-wave-target"
@@ -608,9 +619,6 @@ exports[`Table.filter renders menu correctly 1`] = `
             <input
               class="ant-checkbox-input"
               type="checkbox"
-            />
-            <span
-              class="ant-checkbox-inner"
             />
           </span>
         </label>
@@ -624,11 +632,11 @@ exports[`Table.filter renders menu correctly 1`] = `
       role="none"
     >
       <div
-        aria-controls="rc-menu-uuid-test-title-popup"
+        aria-controls="rc-menu-uuid-title-popup"
         aria-expanded="false"
         aria-haspopup="true"
         class="ant-dropdown-menu-submenu-title"
-        data-menu-id="rc-menu-uuid-test-title"
+        data-menu-id="rc-menu-uuid-title"
         role="menuitem"
         tabindex="-1"
       >
@@ -671,7 +679,7 @@ exports[`Table.filter renders menu correctly 1`] = `
     class="ant-table-filter-dropdown-btns"
   >
     <button
-      class="ant-btn ant-btn-link ant-btn-sm"
+      class="ant-btn css-var-root ant-btn-link ant-btn-color-link ant-btn-variant-link ant-btn-sm"
       disabled=""
       type="button"
     >
@@ -680,7 +688,7 @@ exports[`Table.filter renders menu correctly 1`] = `
       </span>
     </button>
     <button
-      class="ant-btn ant-btn-primary ant-btn-sm"
+      class="ant-btn css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid ant-btn-sm"
       type="button"
     >
       <span>
@@ -696,14 +704,14 @@ exports[`Table.filter renders radio filter correctly 1`] = `
   class="ant-table-filter-dropdown"
 >
   <ul
-    class="ant-dropdown-menu ant-dropdown-menu-root ant-dropdown-menu-vertical ant-dropdown-menu-light"
+    class="ant-dropdown-menu ant-dropdown-menu-root ant-dropdown-menu-vertical ant-dropdown-menu-light css-var-root ant-dropdown-css-var css-var-root ant-dropdown-menu-css-var"
     data-menu-list="true"
     role="menu"
     tabindex="0"
   >
     <li
       class="ant-dropdown-menu-item"
-      data-menu-id="rc-menu-uuid-test-boy"
+      data-menu-id="rc-menu-uuid-boy"
       role="menuitem"
       tabindex="-1"
     >
@@ -711,7 +719,7 @@ exports[`Table.filter renders radio filter correctly 1`] = `
         class="ant-dropdown-menu-title-content"
       >
         <label
-          class="ant-radio-wrapper"
+          class="ant-radio-wrapper css-var-root ant-radio-css-var"
         >
           <span
             class="ant-radio ant-wave-target"
@@ -719,9 +727,6 @@ exports[`Table.filter renders radio filter correctly 1`] = `
             <input
               class="ant-radio-input"
               type="radio"
-            />
-            <span
-              class="ant-radio-inner"
             />
           </span>
         </label>
@@ -732,7 +737,7 @@ exports[`Table.filter renders radio filter correctly 1`] = `
     </li>
     <li
       class="ant-dropdown-menu-item"
-      data-menu-id="rc-menu-uuid-test-girl"
+      data-menu-id="rc-menu-uuid-girl"
       role="menuitem"
       tabindex="-1"
     >
@@ -740,7 +745,7 @@ exports[`Table.filter renders radio filter correctly 1`] = `
         class="ant-dropdown-menu-title-content"
       >
         <label
-          class="ant-radio-wrapper"
+          class="ant-radio-wrapper css-var-root ant-radio-css-var"
         >
           <span
             class="ant-radio ant-wave-target"
@@ -748,9 +753,6 @@ exports[`Table.filter renders radio filter correctly 1`] = `
             <input
               class="ant-radio-input"
               type="radio"
-            />
-            <span
-              class="ant-radio-inner"
             />
           </span>
         </label>
@@ -764,11 +766,11 @@ exports[`Table.filter renders radio filter correctly 1`] = `
       role="none"
     >
       <div
-        aria-controls="rc-menu-uuid-test-title-popup"
+        aria-controls="rc-menu-uuid-title-popup"
         aria-expanded="false"
         aria-haspopup="true"
         class="ant-dropdown-menu-submenu-title"
-        data-menu-id="rc-menu-uuid-test-title"
+        data-menu-id="rc-menu-uuid-title"
         role="menuitem"
         tabindex="-1"
       >
@@ -811,7 +813,7 @@ exports[`Table.filter renders radio filter correctly 1`] = `
     class="ant-table-filter-dropdown-btns"
   >
     <button
-      class="ant-btn ant-btn-link ant-btn-sm"
+      class="ant-btn css-var-root ant-btn-link ant-btn-color-link ant-btn-variant-link ant-btn-sm"
       disabled=""
       type="button"
     >
@@ -820,7 +822,7 @@ exports[`Table.filter renders radio filter correctly 1`] = `
       </span>
     </button>
     <button
-      class="ant-btn ant-btn-primary ant-btn-sm"
+      class="ant-btn css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid ant-btn-sm"
       type="button"
     >
       <span>

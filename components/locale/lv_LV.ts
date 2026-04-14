@@ -1,4 +1,4 @@
-import Pagination from 'rc-pagination/lib/locale/lv_LV';
+import Pagination from '@rc-component/pagination/lib/locale/lv_LV';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/lv_LV';
@@ -11,12 +11,20 @@ const localeValues: Locale = {
   DatePicker,
   TimePicker,
   Calendar,
+  global: {
+    close: 'Aizvērt',
+  },
   Table: {
     filterTitle: 'Filtrēšanas izvēlne',
     filterConfirm: 'OK',
     filterReset: 'Atiestatīt',
     selectAll: 'Atlasiet pašreizējo lapu',
     selectInvert: 'Pārvērst pašreizējo lapu',
+  },
+  Tour: {
+    Next: 'Nākamais',
+    Previous: 'Iepriekšējais',
+    Finish: 'Pabeigt',
   },
   Modal: {
     okText: 'OK',

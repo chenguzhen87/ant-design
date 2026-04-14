@@ -8,11 +8,11 @@ cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*QXO1SKEdIzYAAAAAAA
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*5WDvQp_H7LUAAAAAAAAAAAAADrJ8AQ/original
 ---
 
-## 何时使用
+## 何时使用 {#when-to-use}
 
 最基础的卡片容器，可承载文字、列表、图片、段落，常用于后台概览页面。
 
-## 代码演示
+## 代码演示 {#examples}
 
 <!-- prettier-ignore -->
 <code src="./demo/basic.tsx">典型卡片</code>
@@ -25,6 +25,7 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*5WDvQp_H7LUAAA
 <code src="./demo/inner.tsx">内部卡片</code>
 <code src="./demo/tabs.tsx">带页签的卡片</code>
 <code src="./demo/meta.tsx">支持更多内容配置</code>
+<code src="./demo/style-class.tsx" version="6.0.0">自定义语义结构的样式和类</code>
 <code src="./demo/component-token.tsx" debug>组件 Token</code>
 
 ## API
@@ -35,26 +36,25 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*5WDvQp_H7LUAAA
 <Card title="卡片标题">卡片内容</Card>
 ```
 
-### Card
-
 | 参数 | 说明 | 类型 | 默认值 | 版本 |
 | --- | --- | --- | --- | --- |
 | actions | 卡片操作组，位置在卡片底部 | Array&lt;ReactNode> | - |  |
 | activeTabKey | 当前激活页签的 key | string | - |  |
-| bordered | 是否有边框 | boolean | true |  |
+| ~~bordered~~ | 是否有边框, 请使用 `variant` 替换 | boolean | true |  |
+| variant | 形态变体 | `outlined` \| `borderless` \| | `outlined` | 5.24.0 |
+| classNames | 用于自定义组件内部各语义化结构的 class，支持对象或函数 | Record<[SemanticDOM](#semantic-dom), string> \| (info: { props })=> Record<[SemanticDOM](#semantic-dom), string> | - |  |
 | cover | 卡片封面 | ReactNode | - |  |
 | defaultActiveTabKey | 初始化选中页签的 key，如果没有设置 activeTabKey | string | `第一个页签的 key` |  |
 | extra | 卡片右上角的操作区域 | ReactNode | - |  |
 | hoverable | 鼠标移过时可浮起 | boolean | false |  |
 | loading | 当卡片内容还在加载中时，可以用 loading 展示一个占位 | boolean | false |  |
-| size | card 的尺寸 | `default` \| `small` | `default` |  |
+| size | card 的尺寸 | `medium` \| `small` | `medium` |  |
 | tabBarExtraContent | tab bar 上额外的元素 | ReactNode | - |  |
-| tabList | 页签标题列表 | [TabItemType](/components/tabs#tabitemtype)[] | - |  |
+| tabList | 页签标题列表 | [TabItemType](/components/tabs-cn#tabitemtype)[] | - |  |
 | tabProps | [Tabs](/components/tabs-cn#tabs) | - | - |  |
 | title | 卡片标题 | ReactNode | - |  |
 | type | 卡片类型，可设置为 `inner` 或 不设置 | string | - |  |
-| classNames | 配置卡片内置模块的 className | Record<SemanticDOM, string> | - | 5.14.0 |
-| styles | 配置卡片内置模块的 style | Record<SemanticDOM, string> | - | 5.14.0 |
+| styles | 用于自定义组件内部各语义化结构的行内 style，支持对象或函数 | Record<[SemanticDOM](#semantic-dom), CSSProperties> \| (info: { props })=> Record<[SemanticDOM](#semantic-dom), CSSProperties> | - |  |
 | onTabChange | 页签切换的回调 | (key) => void | - |  |
 
 ### Card.Grid
@@ -75,17 +75,16 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*5WDvQp_H7LUAAA
 | style       | 定义容器类名的样式 | CSSProperties | -      |      |
 | title       | 标题内容           | ReactNode     | -      |      |
 
-### `styles` 和 `classNames` 属性
+## Semantic DOM
 
-| 名称    | 说明                     | 版本   |
-| ------- | ------------------------ | ------ |
-| header  | 设置卡片头部区域         | 5.14.0 |
-| body    | 设置卡片内容区域         | 5.14.0 |
-| extra   | 设置卡片右上角的操作区域 | 5.14.0 |
-| title   | 设置卡片标题             | 5.14.0 |
-| actions | 设置卡片底部操作组       | 5.14.0 |
-| cover   | 设置标题封面             | 5.14.0 |
+### Card
 
-## 主题变量（Design Token）
+<code src="./demo/_semantic.tsx" simplify="true"></code>
+
+### Card.Meta
+
+<code src="./demo/_semantic_meta.tsx" simplify="true"></code>
+
+## 主题变量（Design Token）{#design-token}
 
 <ComponentTokenTable component="Card"></ComponentTokenTable>

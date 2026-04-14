@@ -1,16 +1,18 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`renders components/progress/demo/circle.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-wrap-wrap ant-flex-gap-small"
+  class="ant-flex css-var-test-id ant-flex-wrap-wrap ant-flex-gap-small"
 >
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="75"
-    class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-inner"
+      class="ant-progress-body"
       style="width:120px;height:120px;font-size:24px"
     >
       <svg
@@ -19,7 +21,7 @@ exports[`renders components/progress/demo/circle.tsx correctly 1`] = `
         viewBox="0 0 100 100"
       >
         <circle
-          class="ant-progress-circle-trail"
+          class="ant-progress-circle-rail"
           cx="50"
           cy="50"
           r="47"
@@ -49,7 +51,7 @@ exports[`renders components/progress/demo/circle.tsx correctly 1`] = `
         />
       </svg>
       <span
-        class="ant-progress-text"
+        class="ant-progress-indicator"
         title="75%"
       >
         75%
@@ -57,12 +59,14 @@ exports[`renders components/progress/demo/circle.tsx correctly 1`] = `
     </div>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="70"
-    class="ant-progress ant-progress-status-exception ant-progress-circle ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-exception ant-progress-circle ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-inner"
+      class="ant-progress-body"
       style="width:120px;height:120px;font-size:24px"
     >
       <svg
@@ -71,7 +75,7 @@ exports[`renders components/progress/demo/circle.tsx correctly 1`] = `
         viewBox="0 0 100 100"
       >
         <circle
-          class="ant-progress-circle-trail"
+          class="ant-progress-circle-rail"
           cx="50"
           cy="50"
           r="47"
@@ -101,7 +105,7 @@ exports[`renders components/progress/demo/circle.tsx correctly 1`] = `
         />
       </svg>
       <span
-        class="ant-progress-text"
+        class="ant-progress-indicator"
       >
         <span
           aria-label="close"
@@ -127,12 +131,14 @@ exports[`renders components/progress/demo/circle.tsx correctly 1`] = `
     </div>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="100"
-    class="ant-progress ant-progress-status-success ant-progress-circle ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-success ant-progress-circle ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-inner"
+      class="ant-progress-body"
       style="width:120px;height:120px;font-size:24px"
     >
       <svg
@@ -141,7 +147,7 @@ exports[`renders components/progress/demo/circle.tsx correctly 1`] = `
         viewBox="0 0 100 100"
       >
         <circle
-          class="ant-progress-circle-trail"
+          class="ant-progress-circle-rail"
           cx="50"
           cy="50"
           r="47"
@@ -171,7 +177,7 @@ exports[`renders components/progress/demo/circle.tsx correctly 1`] = `
         />
       </svg>
       <span
-        class="ant-progress-text"
+        class="ant-progress-indicator"
       >
         <span
           aria-label="check"
@@ -200,15 +206,17 @@ exports[`renders components/progress/demo/circle.tsx correctly 1`] = `
 
 exports[`renders components/progress/demo/circle-micro.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-align-center ant-flex-gap-small"
+  class="ant-flex css-var-test-id ant-flex-align-center ant-flex-gap-small"
 >
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="60"
-    class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-inline-circle ant-progress-show-info"
+    class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-inline-circle ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-inner"
+      class="ant-progress-body"
       style="width:14px;height:14px;font-size:8.1px"
     >
       <svg
@@ -217,7 +225,7 @@ exports[`renders components/progress/demo/circle-micro.tsx correctly 1`] = `
         viewBox="0 0 100 100"
       >
         <circle
-          class="ant-progress-circle-trail"
+          class="ant-progress-circle-rail"
           cx="50"
           cy="50"
           r="40"
@@ -257,15 +265,17 @@ exports[`renders components/progress/demo/circle-micro.tsx correctly 1`] = `
 
 exports[`renders components/progress/demo/circle-mini.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-wrap-wrap ant-flex-gap-small"
+  class="ant-flex css-var-test-id ant-flex-wrap-wrap ant-flex-gap-small"
 >
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="30"
-    class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info"
+    class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-inner"
+      class="ant-progress-body"
       style="width:80px;height:80px;font-size:18px"
     >
       <svg
@@ -274,7 +284,7 @@ exports[`renders components/progress/demo/circle-mini.tsx correctly 1`] = `
         viewBox="0 0 100 100"
       >
         <circle
-          class="ant-progress-circle-trail"
+          class="ant-progress-circle-rail"
           cx="50"
           cy="50"
           r="47"
@@ -304,7 +314,7 @@ exports[`renders components/progress/demo/circle-mini.tsx correctly 1`] = `
         />
       </svg>
       <span
-        class="ant-progress-text"
+        class="ant-progress-indicator"
         title="30%"
       >
         30%
@@ -312,12 +322,14 @@ exports[`renders components/progress/demo/circle-mini.tsx correctly 1`] = `
     </div>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="70"
-    class="ant-progress ant-progress-status-exception ant-progress-circle ant-progress-show-info"
+    class="ant-progress ant-progress-status-exception ant-progress-circle ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-inner"
+      class="ant-progress-body"
       style="width:80px;height:80px;font-size:18px"
     >
       <svg
@@ -326,7 +338,7 @@ exports[`renders components/progress/demo/circle-mini.tsx correctly 1`] = `
         viewBox="0 0 100 100"
       >
         <circle
-          class="ant-progress-circle-trail"
+          class="ant-progress-circle-rail"
           cx="50"
           cy="50"
           r="47"
@@ -356,7 +368,7 @@ exports[`renders components/progress/demo/circle-mini.tsx correctly 1`] = `
         />
       </svg>
       <span
-        class="ant-progress-text"
+        class="ant-progress-indicator"
       >
         <span
           aria-label="close"
@@ -382,12 +394,14 @@ exports[`renders components/progress/demo/circle-mini.tsx correctly 1`] = `
     </div>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="100"
-    class="ant-progress ant-progress-status-success ant-progress-circle ant-progress-show-info"
+    class="ant-progress ant-progress-status-success ant-progress-circle ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-inner"
+      class="ant-progress-body"
       style="width:80px;height:80px;font-size:18px"
     >
       <svg
@@ -396,7 +410,7 @@ exports[`renders components/progress/demo/circle-mini.tsx correctly 1`] = `
         viewBox="0 0 100 100"
       >
         <circle
-          class="ant-progress-circle-trail"
+          class="ant-progress-circle-rail"
           cx="50"
           cy="50"
           r="47"
@@ -426,7 +440,7 @@ exports[`renders components/progress/demo/circle-mini.tsx correctly 1`] = `
         />
       </svg>
       <span
-        class="ant-progress-text"
+        class="ant-progress-indicator"
       >
         <span
           aria-label="check"
@@ -456,12 +470,12 @@ exports[`renders components/progress/demo/circle-mini.tsx correctly 1`] = `
 exports[`renders components/progress/demo/circle-steps.tsx correctly 1`] = `
 Array [
   <h5
-    class="ant-typography"
+    class="ant-typography css-var-test-id"
   >
     Custom count:
   </h5>,
   <div
-    class="ant-slider ant-slider-horizontal"
+    class="ant-slider css-var-test-id ant-slider-horizontal"
   >
     <div
       class="ant-slider-rail"
@@ -486,12 +500,12 @@ Array [
     />
   </div>,
   <h5
-    class="ant-typography"
+    class="ant-typography css-var-test-id"
   >
     Custom gap:
   </h5>,
   <div
-    class="ant-slider ant-slider-horizontal"
+    class="ant-slider css-var-test-id ant-slider-horizontal"
   >
     <div
       class="ant-slider-rail"
@@ -516,16 +530,18 @@ Array [
     />
   </div>,
   <div
-    class="ant-flex ant-flex-wrap-wrap ant-flex-gap-middle"
+    class="ant-flex css-var-test-id ant-flex-wrap-wrap ant-flex-gap-medium"
     style="margin-top:16px"
   >
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-steps ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-steps ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -607,7 +623,7 @@ Array [
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="50%"
         >
           50%
@@ -615,12 +631,14 @@ Array [
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="100"
-      class="ant-progress ant-progress-status-success ant-progress-circle ant-progress-steps ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-success ant-progress-circle ant-progress-steps ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -675,7 +693,7 @@ Array [
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
         >
           <span
             aria-label="check"
@@ -706,112 +724,123 @@ Array [
 exports[`renders components/progress/demo/component-token.tsx correctly 1`] = `
 Array [
   <div
-    class="ant-space ant-space-vertical ant-space-gap-row-small ant-space-gap-col-small"
+    class="ant-space ant-space-vertical ant-space-gap-row-small ant-space-gap-col-small css-var-test-id"
   >
     <div
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-show-info ant-progress-default"
+        class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-outer"
-          style="width:100%;height:8px"
+          class="ant-progress-body"
+          style="width:100%"
         >
           <div
-            class="ant-progress-inner"
+            class="ant-progress-rail"
+            style="height:8px"
           >
             <div
-              class="ant-progress-bg"
-              style="width:50%;height:8px;--progress-percent:0.5"
+              class="ant-progress-track"
+              style="width:50%;height:8px"
             />
           </div>
+          <span
+            class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+            title="50%"
+          >
+            50%
+          </span>
         </div>
-        <span
-          class="ant-progress-text"
-          title="50%"
-        >
-          50%
-        </span>
       </div>
     </div>
     <div
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-show-info ant-progress-small"
+        class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info ant-progress-small css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-outer"
-          style="width:100%;height:6px"
+          class="ant-progress-body"
+          style="width:100%"
         >
           <div
-            class="ant-progress-inner"
+            class="ant-progress-rail"
+            style="height:6px"
           >
             <div
-              class="ant-progress-bg"
-              style="width:50%;height:6px;--progress-percent:0.5"
+              class="ant-progress-track"
+              style="width:50%;height:6px"
             />
           </div>
+          <span
+            class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+            title="50%"
+          >
+            50%
+          </span>
         </div>
-        <span
-          class="ant-progress-text"
-          title="50%"
-        >
-          50%
-        </span>
       </div>
     </div>
     <div
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-show-info"
+        class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-outer"
-          style="width:300px;height:20px"
+          class="ant-progress-body"
+          style="width:300px"
         >
           <div
-            class="ant-progress-inner"
+            class="ant-progress-rail"
+            style="height:20px"
           >
             <div
-              class="ant-progress-bg"
-              style="width:50%;height:20px;--progress-percent:0.5"
+              class="ant-progress-track"
+              style="width:50%;height:20px"
             />
           </div>
+          <span
+            class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+            title="50%"
+          >
+            50%
+          </span>
         </div>
-        <span
-          class="ant-progress-text"
-          title="50%"
-        >
-          50%
-        </span>
       </div>
     </div>
   </div>,
   <br />,
   <br />,
   <div
-    class="ant-space ant-space-horizontal ant-space-align-center"
+    class="ant-space ant-space-horizontal ant-space-align-center css-var-test-id"
     style="column-gap:30px;row-gap:30px"
   >
     <div
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+        class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-inner"
+          class="ant-progress-body"
           style="width:120px;height:120px;font-size:24px"
         >
           <svg
@@ -820,7 +849,7 @@ Array [
             viewBox="0 0 100 100"
           >
             <circle
-              class="ant-progress-circle-trail"
+              class="ant-progress-circle-rail"
               cx="50"
               cy="50"
               r="47"
@@ -850,7 +879,7 @@ Array [
             />
           </svg>
           <span
-            class="ant-progress-text"
+            class="ant-progress-indicator"
             title="50%"
           >
             50%
@@ -862,12 +891,14 @@ Array [
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-small"
+        class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-small css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-inner"
+          class="ant-progress-body"
           style="width:60px;height:60px;font-size:15px"
         >
           <svg
@@ -876,7 +907,7 @@ Array [
             viewBox="0 0 100 100"
           >
             <circle
-              class="ant-progress-circle-trail"
+              class="ant-progress-circle-rail"
               cx="50"
               cy="50"
               r="47"
@@ -906,7 +937,7 @@ Array [
             />
           </svg>
           <span
-            class="ant-progress-text"
+            class="ant-progress-indicator"
             title="50%"
           >
             50%
@@ -918,12 +949,14 @@ Array [
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-inline-circle ant-progress-show-info"
+        class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-inline-circle ant-progress-show-info css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-inner"
+          class="ant-progress-body"
           style="width:20px;height:20px;font-size:9px"
         >
           <svg
@@ -932,7 +965,7 @@ Array [
             viewBox="0 0 100 100"
           >
             <circle
-              class="ant-progress-circle-trail"
+              class="ant-progress-circle-rail"
               cx="50"
               cy="50"
               r="42.5"
@@ -968,19 +1001,21 @@ Array [
   <br />,
   <br />,
   <div
-    class="ant-space ant-space-horizontal ant-space-align-center"
+    class="ant-space ant-space-horizontal ant-space-align-center css-var-test-id"
     style="column-gap:30px;row-gap:30px"
   >
     <div
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+        class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-inner"
+          class="ant-progress-body"
           style="width:120px;height:120px;font-size:24px"
         >
           <svg
@@ -989,7 +1024,7 @@ Array [
             viewBox="0 0 100 100"
           >
             <circle
-              class="ant-progress-circle-trail"
+              class="ant-progress-circle-rail"
               cx="50"
               cy="50"
               r="47"
@@ -1019,7 +1054,7 @@ Array [
             />
           </svg>
           <span
-            class="ant-progress-text"
+            class="ant-progress-indicator"
             title="50%"
           >
             50%
@@ -1031,12 +1066,14 @@ Array [
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-small"
+        class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-small css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-inner"
+          class="ant-progress-body"
           style="width:60px;height:60px;font-size:15px"
         >
           <svg
@@ -1045,7 +1082,7 @@ Array [
             viewBox="0 0 100 100"
           >
             <circle
-              class="ant-progress-circle-trail"
+              class="ant-progress-circle-rail"
               cx="50"
               cy="50"
               r="47"
@@ -1075,7 +1112,7 @@ Array [
             />
           </svg>
           <span
-            class="ant-progress-text"
+            class="ant-progress-indicator"
             title="50%"
           >
             50%
@@ -1087,12 +1124,14 @@ Array [
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info"
+        class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-inner"
+          class="ant-progress-body"
           style="width:20px;height:20px;font-size:9px"
         >
           <svg
@@ -1101,7 +1140,7 @@ Array [
             viewBox="0 0 100 100"
           >
             <circle
-              class="ant-progress-circle-trail"
+              class="ant-progress-circle-rail"
               cx="50"
               cy="50"
               r="42.5"
@@ -1137,19 +1176,21 @@ Array [
   <br />,
   <br />,
   <div
-    class="ant-space ant-space-horizontal ant-space-align-center"
+    class="ant-space ant-space-horizontal ant-space-align-center css-var-test-id"
     style="flex-wrap:wrap;column-gap:30px;row-gap:30px"
   >
     <div
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info ant-progress-default"
+        class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-steps-outer"
+          class="ant-progress-steps-body"
         >
           <div
             class="ant-progress-steps-item ant-progress-steps-item-active"
@@ -1164,7 +1205,7 @@ Array [
             style="width:14px;height:8px"
           />
           <span
-            class="ant-progress-text"
+            class="ant-progress-indicator"
             title="50%"
           >
             50%
@@ -1176,12 +1217,14 @@ Array [
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info ant-progress-small"
+        class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info ant-progress-small css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-steps-outer"
+          class="ant-progress-steps-body"
         >
           <div
             class="ant-progress-steps-item ant-progress-steps-item-active"
@@ -1196,7 +1239,7 @@ Array [
             style="width:2px;height:8px"
           />
           <span
-            class="ant-progress-text"
+            class="ant-progress-indicator"
             title="50%"
           >
             50%
@@ -1208,12 +1251,14 @@ Array [
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info"
+        class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-steps-outer"
+          class="ant-progress-steps-body"
         >
           <div
             class="ant-progress-steps-item ant-progress-steps-item-active"
@@ -1228,7 +1273,7 @@ Array [
             style="width:20px;height:20px"
           />
           <span
-            class="ant-progress-text"
+            class="ant-progress-indicator"
             title="50%"
           >
             50%
@@ -1240,12 +1285,14 @@ Array [
       class="ant-space-item"
     >
       <div
+        aria-valuemax="100"
+        aria-valuemin="0"
         aria-valuenow="50"
-        class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info"
+        class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info css-var-test-id"
         role="progressbar"
       >
         <div
-          class="ant-progress-steps-outer"
+          class="ant-progress-steps-body"
         >
           <div
             class="ant-progress-steps-item ant-progress-steps-item-active"
@@ -1260,7 +1307,7 @@ Array [
             style="width:20px;height:30px"
           />
           <span
-            class="ant-progress-text"
+            class="ant-progress-indicator"
             title="50%"
           >
             50%
@@ -1274,67 +1321,139 @@ Array [
 
 exports[`renders components/progress/demo/dashboard.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-wrap-wrap ant-flex-gap-small"
+  class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-large ant-flex-vertical"
 >
-  <div
-    aria-valuenow="75"
-    class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
-    role="progressbar"
-  >
+  <div>
+    gapDegree:
     <div
-      class="ant-progress-inner"
-      style="width:120px;height:120px;font-size:24px"
+      aria-label="segmented control"
+      aria-orientation="horizontal"
+      class="ant-segmented css-var-test-id"
+      role="radiogroup"
+      tabindex="0"
     >
-      <svg
-        class="ant-progress-circle"
-        role="presentation"
-        viewBox="0 0 100 100"
+      <div
+        class="ant-segmented-group"
       >
-        <circle
-          class="ant-progress-circle-trail"
-          cx="50"
-          cy="50"
-          r="47"
-          stroke-linecap="round"
-          stroke-width="6"
-          style="stroke-dasharray:233.78685330464043px 295.3097094374406;stroke-dashoffset:0;transform:rotate(127.5deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
-        />
-        <circle
-          class="ant-progress-circle-path"
-          cx="50"
-          cy="50"
-          opacity="1"
-          r="47"
-          stroke-linecap="round"
-          stroke-width="6"
-          style="stroke-dasharray:233.78685330464043px 295.3097094374406;stroke-dashoffset:61.44671332616011;transform:rotate(127.5deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
-        />
-        <circle
-          class="ant-progress-circle-path"
-          cx="50"
-          cy="50"
-          opacity="0"
-          r="47"
-          stroke-linecap="round"
-          stroke-width="6"
-          style="stroke:#52C41A;stroke-dasharray:233.78685330464043px 295.3097094374406;stroke-dashoffset:233.77685330464044;transform:rotate(127.5deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
-        />
-      </svg>
-      <span
-        class="ant-progress-text"
-        title="75%"
+        <label
+          class="ant-segmented-item ant-segmented-item-selected"
+        >
+          <input
+            checked=""
+            class="ant-segmented-item-input"
+            name="test-id"
+            type="radio"
+          />
+          <div
+            class="ant-segmented-item-label"
+            title="50"
+          >
+            50
+          </div>
+        </label>
+        <label
+          class="ant-segmented-item"
+        >
+          <input
+            class="ant-segmented-item-input"
+            name="test-id"
+            type="radio"
+          />
+          <div
+            class="ant-segmented-item-label"
+            title="100"
+          >
+            100
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div>
+    gapPlacement:
+    <div
+      aria-label="segmented control"
+      aria-orientation="horizontal"
+      class="ant-segmented css-var-test-id"
+      role="radiogroup"
+      tabindex="0"
+    >
+      <div
+        class="ant-segmented-group"
       >
-        75%
-      </span>
+        <label
+          class="ant-segmented-item"
+        >
+          <input
+            class="ant-segmented-item-input"
+            name="test-id"
+            type="radio"
+          />
+          <div
+            class="ant-segmented-item-label"
+            title="start"
+          >
+            start
+          </div>
+        </label>
+        <label
+          class="ant-segmented-item"
+        >
+          <input
+            class="ant-segmented-item-input"
+            name="test-id"
+            type="radio"
+          />
+          <div
+            class="ant-segmented-item-label"
+            title="end"
+          >
+            end
+          </div>
+        </label>
+        <label
+          class="ant-segmented-item"
+        >
+          <input
+            class="ant-segmented-item-input"
+            name="test-id"
+            type="radio"
+          />
+          <div
+            class="ant-segmented-item-label"
+            title="top"
+          >
+            top
+          </div>
+        </label>
+        <label
+          class="ant-segmented-item ant-segmented-item-selected"
+        >
+          <input
+            checked=""
+            class="ant-segmented-item-input"
+            name="test-id"
+            type="radio"
+          />
+          <div
+            class="ant-segmented-item-label"
+            title="bottom"
+          >
+            bottom
+          </div>
+        </label>
+      </div>
     </div>
   </div>
   <div
-    aria-valuenow="75"
-    class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="30"
+    class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-inner"
+      class="ant-progress-body"
       style="width:120px;height:120px;font-size:24px"
     >
       <svg
@@ -1343,13 +1462,13 @@ exports[`renders components/progress/demo/dashboard.tsx correctly 1`] = `
         viewBox="0 0 100 100"
       >
         <circle
-          class="ant-progress-circle-trail"
+          class="ant-progress-circle-rail"
           cx="50"
           cy="50"
           r="47"
           stroke-linecap="round"
           stroke-width="6"
-          style="stroke-dasharray:270.7005669843205px 295.3097094374406;stroke-dashoffset:0;transform:rotate(105deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
+          style="stroke-dasharray:254.29447201557383px 295.3097094374406;stroke-dashoffset:0;transform:rotate(115deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
         />
         <circle
           class="ant-progress-circle-path"
@@ -1359,7 +1478,7 @@ exports[`renders components/progress/demo/dashboard.tsx correctly 1`] = `
           r="47"
           stroke-linecap="round"
           stroke-width="6"
-          style="stroke-dasharray:270.7005669843205px 295.3097094374406;stroke-dashoffset:70.67514174608013;transform:rotate(105deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
+          style="stroke-dasharray:254.29447201557383px 295.3097094374406;stroke-dashoffset:181.00613041090168;transform:rotate(115deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
         />
         <circle
           class="ant-progress-circle-path"
@@ -1369,14 +1488,14 @@ exports[`renders components/progress/demo/dashboard.tsx correctly 1`] = `
           r="47"
           stroke-linecap="round"
           stroke-width="6"
-          style="stroke:#52C41A;stroke-dasharray:270.7005669843205px 295.3097094374406;stroke-dashoffset:270.6905669843205;transform:rotate(105deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
+          style="stroke:#52C41A;stroke-dasharray:254.29447201557383px 295.3097094374406;stroke-dashoffset:254.28447201557384;transform:rotate(115deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
         />
       </svg>
       <span
-        class="ant-progress-text"
-        title="75%"
+        class="ant-progress-indicator"
+        title="30%"
       >
-        75%
+        30%
       </span>
     </div>
   </div>
@@ -1385,43 +1504,48 @@ exports[`renders components/progress/demo/dashboard.tsx correctly 1`] = `
 
 exports[`renders components/progress/demo/dynamic.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
+  class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
 >
   <div
-    class="ant-flex ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
+    class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
   >
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="0"
-      class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-outer"
-        style="width:100%;height:8px"
+        class="ant-progress-body"
+        style="width:100%"
       >
         <div
-          class="ant-progress-inner"
+          class="ant-progress-rail"
+          style="height:8px"
         >
           <div
-            class="ant-progress-bg"
-            style="width:0%;height:8px;--progress-percent:0"
+            class="ant-progress-track"
+            style="width:0%;height:8px"
           />
         </div>
+        <span
+          class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+          title="0%"
+        >
+          0%
+        </span>
       </div>
-      <span
-        class="ant-progress-text"
-        title="0%"
-      >
-        0%
-      </span>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="0"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -1430,7 +1554,7 @@ exports[`renders components/progress/demo/dynamic.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -1460,7 +1584,7 @@ exports[`renders components/progress/demo/dynamic.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="0%"
         >
           0%
@@ -1469,10 +1593,10 @@ exports[`renders components/progress/demo/dynamic.tsx correctly 1`] = `
     </div>
   </div>
   <div
-    class="ant-btn-group"
+    class="ant-space-compact"
   >
     <button
-      class="ant-btn ant-btn-default ant-btn-icon-only"
+      class="ant-btn css-var-test-id ant-btn-default ant-btn-color-default ant-btn-variant-outlined ant-btn-icon-only ant-btn-compact-item ant-btn-compact-first-item"
       type="button"
     >
       <span
@@ -1500,7 +1624,7 @@ exports[`renders components/progress/demo/dynamic.tsx correctly 1`] = `
       </span>
     </button>
     <button
-      class="ant-btn ant-btn-default ant-btn-icon-only"
+      class="ant-btn css-var-test-id ant-btn-default ant-btn-color-default ant-btn-variant-outlined ant-btn-icon-only ant-btn-compact-item ant-btn-compact-last-item"
       type="button"
     >
       <span
@@ -1536,15 +1660,17 @@ exports[`renders components/progress/demo/dynamic.tsx correctly 1`] = `
 
 exports[`renders components/progress/demo/format.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-wrap-wrap ant-flex-gap-small"
+  class="ant-flex css-var-test-id ant-flex-wrap-wrap ant-flex-gap-small"
 >
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="75"
-    class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-inner"
+      class="ant-progress-body"
       style="width:120px;height:120px;font-size:24px"
     >
       <svg
@@ -1553,7 +1679,7 @@ exports[`renders components/progress/demo/format.tsx correctly 1`] = `
         viewBox="0 0 100 100"
       >
         <circle
-          class="ant-progress-circle-trail"
+          class="ant-progress-circle-rail"
           cx="50"
           cy="50"
           r="47"
@@ -1583,7 +1709,7 @@ exports[`renders components/progress/demo/format.tsx correctly 1`] = `
         />
       </svg>
       <span
-        class="ant-progress-text"
+        class="ant-progress-indicator"
         title="75 Days"
       >
         75 Days
@@ -1591,12 +1717,14 @@ exports[`renders components/progress/demo/format.tsx correctly 1`] = `
     </div>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="100"
-    class="ant-progress ant-progress-status-success ant-progress-circle ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-success ant-progress-circle ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-inner"
+      class="ant-progress-body"
       style="width:120px;height:120px;font-size:24px"
     >
       <svg
@@ -1605,7 +1733,7 @@ exports[`renders components/progress/demo/format.tsx correctly 1`] = `
         viewBox="0 0 100 100"
       >
         <circle
-          class="ant-progress-circle-trail"
+          class="ant-progress-circle-rail"
           cx="50"
           cy="50"
           r="47"
@@ -1635,7 +1763,7 @@ exports[`renders components/progress/demo/format.tsx correctly 1`] = `
         />
       </svg>
       <span
-        class="ant-progress-text"
+        class="ant-progress-indicator"
         title="Done"
       >
         Done
@@ -1647,68 +1775,76 @@ exports[`renders components/progress/demo/format.tsx correctly 1`] = `
 
 exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-align-stretch ant-flex-gap-middle ant-flex-vertical"
+  class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-medium ant-flex-vertical"
 >
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="99"
-    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-outer"
-      style="width:100%;height:8px"
+      class="ant-progress-body"
+      style="width:100%"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-rail"
+        style="height:8px"
       >
         <div
-          class="ant-progress-bg"
-          style="width:99.9%;height:8px;background:linear-gradient(to right, #108ee9 0%, #87d068 100%);--progress-line-stroke-color:linear-gradient(to right, #108ee9 0%, #87d068 100%);--progress-percent:0.9990000000000001"
+          class="ant-progress-track"
+          style="width:99.9%;height:8px;background:linear-gradient(to right, #108ee9 0%, #87d068 100%);--progress-line-stroke-color:linear-gradient(to right, #108ee9 0%, #87d068 100%)"
         />
       </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="99.9%"
+      >
+        99.9%
+      </span>
     </div>
-    <span
-      class="ant-progress-text"
-      title="99.9%"
-    >
-      99.9%
-    </span>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="50"
-    class="ant-progress ant-progress-status-active ant-progress-line ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-active ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-outer"
-      style="width:100%;height:8px"
+      class="ant-progress-body"
+      style="width:100%"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-rail"
+        style="height:8px"
       >
         <div
-          class="ant-progress-bg"
-          style="width:50%;height:8px;background:linear-gradient(to right, #108ee9, #87d068);--progress-line-stroke-color:linear-gradient(to right, #108ee9, #87d068);--progress-percent:0.5"
+          class="ant-progress-track"
+          style="width:50%;height:8px;background:linear-gradient(to right, #108ee9, #87d068);--progress-line-stroke-color:linear-gradient(to right, #108ee9, #87d068)"
         />
       </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="50%"
+      >
+        50%
+      </span>
     </div>
-    <span
-      class="ant-progress-text"
-      title="50%"
-    >
-      50%
-    </span>
   </div>
   <div
-    class="ant-flex ant-flex-wrap-wrap ant-flex-gap-small"
+    class="ant-flex css-var-test-id ant-flex-wrap-wrap ant-flex-gap-small"
   >
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="90"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner ant-progress-circle-gradient"
+        class="ant-progress-body ant-progress-circle-gradient"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -1717,7 +1853,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -1726,7 +1862,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
             style="stroke-dasharray:295.3097094374406px 295.3097094374406;stroke-dashoffset:0;transform:rotate(-90deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
           />
           <mask
-            id="undefined-gradient-conic"
+            id="test-id-gradient-conic"
           >
             <circle
               class="ant-progress-circle-path"
@@ -1742,7 +1878,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           </mask>
           <foreignobject
             height="100"
-            mask="url(#undefined-gradient-conic)"
+            mask="url(#test-id-gradient-conic)"
             width="100"
             x="0"
             y="0"
@@ -1767,7 +1903,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="90%"
         >
           90%
@@ -1775,12 +1911,14 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="100"
-      class="ant-progress ant-progress-status-success ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-success ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner ant-progress-circle-gradient"
+        class="ant-progress-body ant-progress-circle-gradient"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -1789,7 +1927,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -1798,7 +1936,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
             style="stroke-dasharray:295.3097094374406px 295.3097094374406;stroke-dashoffset:0;transform:rotate(-90deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
           />
           <mask
-            id="undefined-gradient-conic"
+            id="test-id-gradient-conic"
           >
             <circle
               class="ant-progress-circle-path"
@@ -1814,7 +1952,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           </mask>
           <foreignobject
             height="100"
-            mask="url(#undefined-gradient-conic)"
+            mask="url(#test-id-gradient-conic)"
             width="100"
             x="0"
             y="0"
@@ -1839,7 +1977,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
         >
           <span
             aria-label="check"
@@ -1864,12 +2002,14 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="93"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner ant-progress-circle-gradient"
+        class="ant-progress-body ant-progress-circle-gradient"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -1878,7 +2018,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -1887,7 +2027,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
             style="stroke-dasharray:295.3097094374406px 295.3097094374406;stroke-dashoffset:0;transform:rotate(-90deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
           />
           <mask
-            id="undefined-gradient-conic"
+            id="test-id-gradient-conic"
           >
             <circle
               class="ant-progress-circle-path"
@@ -1903,7 +2043,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           </mask>
           <foreignobject
             height="100"
-            mask="url(#undefined-gradient-conic)"
+            mask="url(#test-id-gradient-conic)"
             width="100"
             x="0"
             y="0"
@@ -1928,7 +2068,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="93%"
         >
           93%
@@ -1937,15 +2077,17 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
     </div>
   </div>
   <div
-    class="ant-flex ant-flex-wrap-wrap ant-flex-gap-small"
+    class="ant-flex css-var-test-id ant-flex-wrap-wrap ant-flex-gap-small"
   >
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="90"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner ant-progress-circle-gradient"
+        class="ant-progress-body ant-progress-circle-gradient"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -1954,7 +2096,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -1963,7 +2105,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
             style="stroke-dasharray:233.78685330464043px 295.3097094374406;stroke-dashoffset:0;transform:rotate(127.5deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
           />
           <mask
-            id="undefined-gradient-conic"
+            id="test-id-gradient-conic"
           >
             <circle
               class="ant-progress-circle-path"
@@ -1979,7 +2121,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           </mask>
           <foreignobject
             height="100"
-            mask="url(#undefined-gradient-conic)"
+            mask="url(#test-id-gradient-conic)"
             width="100"
             x="0"
             y="0"
@@ -2004,7 +2146,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="90%"
         >
           90%
@@ -2012,12 +2154,14 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="100"
-      class="ant-progress ant-progress-status-success ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-success ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner ant-progress-circle-gradient"
+        class="ant-progress-body ant-progress-circle-gradient"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -2026,7 +2170,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -2035,7 +2179,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
             style="stroke-dasharray:233.78685330464043px 295.3097094374406;stroke-dashoffset:0;transform:rotate(127.5deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
           />
           <mask
-            id="undefined-gradient-conic"
+            id="test-id-gradient-conic"
           >
             <circle
               class="ant-progress-circle-path"
@@ -2051,7 +2195,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           </mask>
           <foreignobject
             height="100"
-            mask="url(#undefined-gradient-conic)"
+            mask="url(#test-id-gradient-conic)"
             width="100"
             x="0"
             y="0"
@@ -2076,7 +2220,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
         >
           <span
             aria-label="check"
@@ -2101,12 +2245,14 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="93"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner ant-progress-circle-gradient"
+        class="ant-progress-body ant-progress-circle-gradient"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -2115,7 +2261,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -2124,7 +2270,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
             style="stroke-dasharray:233.78685330464043px 295.3097094374406;stroke-dashoffset:0;transform:rotate(127.5deg);transform-origin:50px 50px;transition:stroke-dashoffset .3s ease 0s, stroke-dasharray .3s ease 0s, stroke .3s, stroke-width .06s ease .3s, opacity .3s ease 0s;fill-opacity:0"
           />
           <mask
-            id="undefined-gradient-conic"
+            id="test-id-gradient-conic"
           >
             <circle
               class="ant-progress-circle-path"
@@ -2140,7 +2286,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           </mask>
           <foreignobject
             height="100"
-            mask="url(#undefined-gradient-conic)"
+            mask="url(#test-id-gradient-conic)"
             width="100"
             x="0"
             y="0"
@@ -2165,7 +2311,7 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="93%"
         >
           93%
@@ -2176,160 +2322,473 @@ exports[`renders components/progress/demo/gradient-line.tsx correctly 1`] = `
 </div>
 `;
 
-exports[`renders components/progress/demo/line.tsx correctly 1`] = `
+exports[`renders components/progress/demo/info-position.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
+  class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
 >
   <div
-    aria-valuenow="30"
-    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-show-info ant-progress-default"
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="0"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-center ant-progress-line-position-inner ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-outer"
-      style="width:100%;height:8px"
+      class="ant-progress-body"
+      style="width:200px"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-rail"
+        style="height:20px"
       >
         <div
-          class="ant-progress-bg"
-          style="width:30%;height:8px;--progress-percent:0.3"
-        />
-      </div>
-    </div>
-    <span
-      class="ant-progress-text"
-      title="30%"
-    >
-      30%
-    </span>
-  </div>
-  <div
-    aria-valuenow="50"
-    class="ant-progress ant-progress-status-active ant-progress-line ant-progress-show-info ant-progress-default"
-    role="progressbar"
-  >
-    <div
-      class="ant-progress-outer"
-      style="width:100%;height:8px"
-    >
-      <div
-        class="ant-progress-inner"
-      >
-        <div
-          class="ant-progress-bg"
-          style="width:50%;height:8px;--progress-percent:0.5"
-        />
-      </div>
-    </div>
-    <span
-      class="ant-progress-text"
-      title="50%"
-    >
-      50%
-    </span>
-  </div>
-  <div
-    aria-valuenow="70"
-    class="ant-progress ant-progress-status-exception ant-progress-line ant-progress-show-info ant-progress-default"
-    role="progressbar"
-  >
-    <div
-      class="ant-progress-outer"
-      style="width:100%;height:8px"
-    >
-      <div
-        class="ant-progress-inner"
-      >
-        <div
-          class="ant-progress-bg"
-          style="width:70%;height:8px;--progress-percent:0.7"
-        />
-      </div>
-    </div>
-    <span
-      class="ant-progress-text"
-    >
-      <span
-        aria-label="close-circle"
-        class="anticon anticon-close-circle"
-        role="img"
-      >
-        <svg
-          aria-hidden="true"
-          data-icon="close-circle"
-          fill="currentColor"
-          fill-rule="evenodd"
-          focusable="false"
-          height="1em"
-          viewBox="64 64 896 896"
-          width="1em"
+          class="ant-progress-track"
+          style="width:0%;height:20px;--progress-line-stroke-color:#E6F4FF;background:#E6F4FF"
         >
-          <path
-            d="M512 64c247.4 0 448 200.6 448 448S759.4 960 512 960 64 759.4 64 512 264.6 64 512 64zm127.98 274.82h-.04l-.08.06L512 466.75 384.14 338.88c-.04-.05-.06-.06-.08-.06a.12.12 0 00-.07 0c-.03 0-.05.01-.09.05l-45.02 45.02a.2.2 0 00-.05.09.12.12 0 000 .07v.02a.27.27 0 00.06.06L466.75 512 338.88 639.86c-.05.04-.06.06-.06.08a.12.12 0 000 .07c0 .03.01.05.05.09l45.02 45.02a.2.2 0 00.09.05.12.12 0 00.07 0c.02 0 .04-.01.08-.05L512 557.25l127.86 127.87c.04.04.06.05.08.05a.12.12 0 00.07 0c.03 0 .05-.01.09-.05l45.02-45.02a.2.2 0 00.05-.09.12.12 0 000-.07v-.02a.27.27 0 00-.05-.06L557.25 512l127.87-127.86c.04-.04.05-.06.05-.08a.12.12 0 000-.07c0-.03-.01-.05-.05-.09l-45.02-45.02a.2.2 0 00-.09-.05.12.12 0 00-.07 0z"
-          />
-        </svg>
-      </span>
-    </span>
+          <span
+            class="ant-progress-indicator ant-progress-indicator-bright ant-progress-indicator-center ant-progress-indicator-inner"
+            title="0%"
+          >
+            0%
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="10"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-center ant-progress-line-position-inner ant-progress-show-info css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:300px"
+    >
+      <div
+        class="ant-progress-rail"
+        style="height:20px"
+      >
+        <div
+          class="ant-progress-track"
+          style="width:10%;height:20px"
+        >
+          <span
+            class="ant-progress-indicator ant-progress-indicator-center ant-progress-indicator-inner"
+            title="10%"
+          >
+            10%
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="50"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-start ant-progress-line-position-inner ant-progress-show-info css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:300px"
+    >
+      <div
+        class="ant-progress-rail"
+        style="height:20px"
+      >
+        <div
+          class="ant-progress-track"
+          style="width:50%;height:20px;--progress-line-stroke-color:#B7EB8F;background:#B7EB8F"
+        >
+          <span
+            class="ant-progress-indicator ant-progress-indicator-bright ant-progress-indicator-start ant-progress-indicator-inner"
+            title="50%"
+          >
+            50%
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="60"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-inner ant-progress-show-info css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:300px"
+    >
+      <div
+        class="ant-progress-rail"
+        style="height:20px"
+      >
+        <div
+          class="ant-progress-track"
+          style="width:60%;height:20px;--progress-line-stroke-color:#001342;background:#001342"
+        >
+          <span
+            class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-inner"
+            title="60%"
+          >
+            60%
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="100"
-    class="ant-progress ant-progress-status-success ant-progress-line ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-success ant-progress-line ant-progress-line-align-center ant-progress-line-position-inner ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-outer"
-      style="width:100%;height:8px"
+      class="ant-progress-body"
+      style="width:400px"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-rail"
+        style="height:20px"
       >
         <div
-          class="ant-progress-bg"
-          style="width:100%;height:8px;--progress-percent:1"
-        />
+          class="ant-progress-track"
+          style="width:100%;height:20px"
+        >
+          <span
+            class="ant-progress-indicator ant-progress-indicator-center ant-progress-indicator-inner"
+            title="100%"
+          >
+            100%
+          </span>
+        </div>
       </div>
     </div>
-    <span
-      class="ant-progress-text"
-    >
-      <span
-        aria-label="check-circle"
-        class="anticon anticon-check-circle"
-        role="img"
-      >
-        <svg
-          aria-hidden="true"
-          data-icon="check-circle"
-          fill="currentColor"
-          focusable="false"
-          height="1em"
-          viewBox="64 64 896 896"
-          width="1em"
-        >
-          <path
-            d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 01-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"
-          />
-        </svg>
-      </span>
-    </span>
   </div>
   <div
-    aria-valuenow="50"
-    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-default"
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="60"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-start ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-outer"
-      style="width:100%;height:8px"
+      class="ant-progress-body"
+      style="width:100%"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-rail"
+        style="height:8px"
       >
         <div
-          class="ant-progress-bg"
-          style="width:50%;height:8px;--progress-percent:0.5"
+          class="ant-progress-track"
+          style="width:60%;height:8px"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-start ant-progress-indicator-outer"
+        title="60%"
+      >
+        60%
+      </span>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="100"
+    class="ant-progress ant-progress-status-success ant-progress-line ant-progress-line-align-start ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail"
+        style="height:8px"
+      >
+        <div
+          class="ant-progress-track"
+          style="width:100%;height:8px"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-start ant-progress-indicator-outer"
+      >
+        <span
+          aria-label="check-circle"
+          class="anticon anticon-check-circle"
+          role="img"
+        >
+          <svg
+            aria-hidden="true"
+            data-icon="check-circle"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            viewBox="64 64 896 896"
+            width="1em"
+          >
+            <path
+              d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 01-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"
+            />
+          </svg>
+        </span>
+      </span>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="60"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-center ant-progress-line-position-outer ant-progress-show-info ant-progress-small css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body ant-progress-body-layout-bottom"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail"
+        style="height:6px"
+      >
+        <div
+          class="ant-progress-track"
+          style="width:60%;height:6px"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-center ant-progress-indicator-outer"
+        title="60%"
+      >
+        60%
+      </span>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="100"
+    class="ant-progress ant-progress-status-success ant-progress-line ant-progress-line-align-center ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body ant-progress-body-layout-bottom"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail"
+        style="height:8px"
+      >
+        <div
+          class="ant-progress-track"
+          style="width:100%;height:8px"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-center ant-progress-indicator-outer"
+      >
+        <span
+          aria-label="check-circle"
+          class="anticon anticon-check-circle"
+          role="img"
+        >
+          <svg
+            aria-hidden="true"
+            data-icon="check-circle"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            viewBox="64 64 896 896"
+            width="1em"
+          >
+            <path
+              d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 01-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"
+            />
+          </svg>
+        </span>
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`renders components/progress/demo/line.tsx correctly 1`] = `
+<div
+  class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
+>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="30"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail"
+        style="height:8px"
+      >
+        <div
+          class="ant-progress-track"
+          style="width:30%;height:8px"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="30%"
+      >
+        30%
+      </span>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="50"
+    class="ant-progress ant-progress-status-active ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail"
+        style="height:8px"
+      >
+        <div
+          class="ant-progress-track"
+          style="width:50%;height:8px"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="50%"
+      >
+        50%
+      </span>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="70"
+    class="ant-progress ant-progress-status-exception ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail"
+        style="height:8px"
+      >
+        <div
+          class="ant-progress-track"
+          style="width:70%;height:8px"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+      >
+        <span
+          aria-label="close-circle"
+          class="anticon anticon-close-circle"
+          role="img"
+        >
+          <svg
+            aria-hidden="true"
+            data-icon="close-circle"
+            fill="currentColor"
+            fill-rule="evenodd"
+            focusable="false"
+            height="1em"
+            viewBox="64 64 896 896"
+            width="1em"
+          >
+            <path
+              d="M512 64c247.4 0 448 200.6 448 448S759.4 960 512 960 64 759.4 64 512 264.6 64 512 64zm127.98 274.82h-.04l-.08.06L512 466.75 384.14 338.88c-.04-.05-.06-.06-.08-.06a.12.12 0 00-.07 0c-.03 0-.05.01-.09.05l-45.02 45.02a.2.2 0 00-.05.09.12.12 0 000 .07v.02a.27.27 0 00.06.06L466.75 512 338.88 639.86c-.05.04-.06.06-.06.08a.12.12 0 000 .07c0 .03.01.05.05.09l45.02 45.02a.2.2 0 00.09.05.12.12 0 00.07 0c.02 0 .04-.01.08-.05L512 557.25l127.86 127.87c.04.04.06.05.08.05a.12.12 0 00.07 0c.03 0 .05-.01.09-.05l45.02-45.02a.2.2 0 00.05-.09.12.12 0 000-.07v-.02a.27.27 0 00-.05-.06L557.25 512l127.87-127.86c.04-.04.05-.06.05-.08a.12.12 0 000-.07c0-.03-.01-.05-.05-.09l-45.02-45.02a.2.2 0 00-.09-.05.12.12 0 00-.07 0z"
+            />
+          </svg>
+        </span>
+      </span>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="100"
+    class="ant-progress ant-progress-status-success ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail"
+        style="height:8px"
+      >
+        <div
+          class="ant-progress-track"
+          style="width:100%;height:8px"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+      >
+        <span
+          aria-label="check-circle"
+          class="anticon anticon-check-circle"
+          role="img"
+        >
+          <svg
+            aria-hidden="true"
+            data-icon="check-circle"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            viewBox="64 64 896 896"
+            width="1em"
+          >
+            <path
+              d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 01-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"
+            />
+          </svg>
+        </span>
+      </span>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="50"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail"
+        style="height:8px"
+      >
+        <div
+          class="ant-progress-track"
+          style="width:50%;height:8px"
         />
       </div>
     </div>
@@ -2339,187 +2798,203 @@ exports[`renders components/progress/demo/line.tsx correctly 1`] = `
 
 exports[`renders components/progress/demo/line-mini.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
+  class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
   style="width:180px"
 >
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="30"
-    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-show-info ant-progress-small"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info ant-progress-small css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-outer"
-      style="width:100%;height:6px"
+      class="ant-progress-body"
+      style="width:100%"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-rail"
+        style="height:6px"
       >
         <div
-          class="ant-progress-bg"
-          style="width:30%;height:6px;--progress-percent:0.3"
+          class="ant-progress-track"
+          style="width:30%;height:6px"
         />
       </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="30%"
+      >
+        30%
+      </span>
     </div>
-    <span
-      class="ant-progress-text"
-      title="30%"
-    >
-      30%
-    </span>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="50"
-    class="ant-progress ant-progress-status-active ant-progress-line ant-progress-show-info ant-progress-small"
+    class="ant-progress ant-progress-status-active ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info ant-progress-small css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-outer"
-      style="width:100%;height:6px"
+      class="ant-progress-body"
+      style="width:100%"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-rail"
+        style="height:6px"
       >
         <div
-          class="ant-progress-bg"
-          style="width:50%;height:6px;--progress-percent:0.5"
+          class="ant-progress-track"
+          style="width:50%;height:6px"
         />
       </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="50%"
+      >
+        50%
+      </span>
     </div>
-    <span
-      class="ant-progress-text"
-      title="50%"
-    >
-      50%
-    </span>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="70"
-    class="ant-progress ant-progress-status-exception ant-progress-line ant-progress-show-info ant-progress-small"
+    class="ant-progress ant-progress-status-exception ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info ant-progress-small css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-outer"
-      style="width:100%;height:6px"
+      class="ant-progress-body"
+      style="width:100%"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-rail"
+        style="height:6px"
       >
         <div
-          class="ant-progress-bg"
-          style="width:70%;height:6px;--progress-percent:0.7"
+          class="ant-progress-track"
+          style="width:70%;height:6px"
         />
       </div>
-    </div>
-    <span
-      class="ant-progress-text"
-    >
       <span
-        aria-label="close-circle"
-        class="anticon anticon-close-circle"
-        role="img"
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
       >
-        <svg
-          aria-hidden="true"
-          data-icon="close-circle"
-          fill="currentColor"
-          fill-rule="evenodd"
-          focusable="false"
-          height="1em"
-          viewBox="64 64 896 896"
-          width="1em"
+        <span
+          aria-label="close-circle"
+          class="anticon anticon-close-circle"
+          role="img"
         >
-          <path
-            d="M512 64c247.4 0 448 200.6 448 448S759.4 960 512 960 64 759.4 64 512 264.6 64 512 64zm127.98 274.82h-.04l-.08.06L512 466.75 384.14 338.88c-.04-.05-.06-.06-.08-.06a.12.12 0 00-.07 0c-.03 0-.05.01-.09.05l-45.02 45.02a.2.2 0 00-.05.09.12.12 0 000 .07v.02a.27.27 0 00.06.06L466.75 512 338.88 639.86c-.05.04-.06.06-.06.08a.12.12 0 000 .07c0 .03.01.05.05.09l45.02 45.02a.2.2 0 00.09.05.12.12 0 00.07 0c.02 0 .04-.01.08-.05L512 557.25l127.86 127.87c.04.04.06.05.08.05a.12.12 0 00.07 0c.03 0 .05-.01.09-.05l45.02-45.02a.2.2 0 00.05-.09.12.12 0 000-.07v-.02a.27.27 0 00-.05-.06L557.25 512l127.87-127.86c.04-.04.05-.06.05-.08a.12.12 0 000-.07c0-.03-.01-.05-.05-.09l-45.02-45.02a.2.2 0 00-.09-.05.12.12 0 00-.07 0z"
-          />
-        </svg>
+          <svg
+            aria-hidden="true"
+            data-icon="close-circle"
+            fill="currentColor"
+            fill-rule="evenodd"
+            focusable="false"
+            height="1em"
+            viewBox="64 64 896 896"
+            width="1em"
+          >
+            <path
+              d="M512 64c247.4 0 448 200.6 448 448S759.4 960 512 960 64 759.4 64 512 264.6 64 512 64zm127.98 274.82h-.04l-.08.06L512 466.75 384.14 338.88c-.04-.05-.06-.06-.08-.06a.12.12 0 00-.07 0c-.03 0-.05.01-.09.05l-45.02 45.02a.2.2 0 00-.05.09.12.12 0 000 .07v.02a.27.27 0 00.06.06L466.75 512 338.88 639.86c-.05.04-.06.06-.06.08a.12.12 0 000 .07c0 .03.01.05.05.09l45.02 45.02a.2.2 0 00.09.05.12.12 0 00.07 0c.02 0 .04-.01.08-.05L512 557.25l127.86 127.87c.04.04.06.05.08.05a.12.12 0 00.07 0c.03 0 .05-.01.09-.05l45.02-45.02a.2.2 0 00.05-.09.12.12 0 000-.07v-.02a.27.27 0 00-.05-.06L557.25 512l127.87-127.86c.04-.04.05-.06.05-.08a.12.12 0 000-.07c0-.03-.01-.05-.05-.09l-45.02-45.02a.2.2 0 00-.09-.05.12.12 0 00-.07 0z"
+            />
+          </svg>
+        </span>
       </span>
-    </span>
+    </div>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="100"
-    class="ant-progress ant-progress-status-success ant-progress-line ant-progress-show-info ant-progress-small"
+    class="ant-progress ant-progress-status-success ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info ant-progress-small css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-outer"
-      style="width:100%;height:6px"
+      class="ant-progress-body"
+      style="width:100%"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-rail"
+        style="height:6px"
       >
         <div
-          class="ant-progress-bg"
-          style="width:100%;height:6px;--progress-percent:1"
+          class="ant-progress-track"
+          style="width:100%;height:6px"
         />
       </div>
-    </div>
-    <span
-      class="ant-progress-text"
-    >
       <span
-        aria-label="check-circle"
-        class="anticon anticon-check-circle"
-        role="img"
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
       >
-        <svg
-          aria-hidden="true"
-          data-icon="check-circle"
-          fill="currentColor"
-          focusable="false"
-          height="1em"
-          viewBox="64 64 896 896"
-          width="1em"
+        <span
+          aria-label="check-circle"
+          class="anticon anticon-check-circle"
+          role="img"
         >
-          <path
-            d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 01-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"
-          />
-        </svg>
+          <svg
+            aria-hidden="true"
+            data-icon="check-circle"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            viewBox="64 64 896 896"
+            width="1em"
+          >
+            <path
+              d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 01-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"
+            />
+          </svg>
+        </span>
       </span>
-    </span>
+    </div>
   </div>
 </div>
 `;
 
 exports[`renders components/progress/demo/linecap.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
+  class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
 >
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="75"
-    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-outer"
-      style="width:100%;height:8px"
+      class="ant-progress-body"
+      style="width:100%"
     >
       <div
-        class="ant-progress-inner"
-        style="border-radius:0"
+        class="ant-progress-rail"
+        style="border-radius:0;height:8px"
       >
         <div
-          class="ant-progress-bg"
-          style="width:75%;height:8px;border-radius:0;--progress-percent:0.75"
+          class="ant-progress-track"
+          style="width:75%;height:8px;border-radius:0"
         />
       </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="75%"
+      >
+        75%
+      </span>
     </div>
-    <span
-      class="ant-progress-text"
-      title="75%"
-    >
-      75%
-    </span>
   </div>
   <div
-    class="ant-flex ant-flex-wrap-wrap ant-flex-gap-small"
+    class="ant-flex css-var-test-id ant-flex-wrap-wrap ant-flex-gap-small"
   >
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="75"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -2528,7 +3003,7 @@ exports[`renders components/progress/demo/linecap.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -2558,7 +3033,7 @@ exports[`renders components/progress/demo/linecap.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="75%"
         >
           75%
@@ -2566,12 +3041,14 @@ exports[`renders components/progress/demo/linecap.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="75"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -2580,7 +3057,7 @@ exports[`renders components/progress/demo/linecap.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -2610,7 +3087,7 @@ exports[`renders components/progress/demo/linecap.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="75%"
         >
           75%
@@ -2623,47 +3100,52 @@ exports[`renders components/progress/demo/linecap.tsx correctly 1`] = `
 
 exports[`renders components/progress/demo/segment.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
+  class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
 >
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="30"
-    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-outer"
-      style="width:100%;height:8px"
+      class="ant-progress-body"
+      style="width:100%"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-rail"
+        style="height:8px"
       >
         <div
-          class="ant-progress-bg"
-          style="width:60%;height:8px;--progress-percent:0.6"
+          class="ant-progress-track"
+          style="width:60%;height:8px"
         />
         <div
-          class="ant-progress-success-bg"
+          class="ant-progress-track ant-progress-track-success"
           style="width:30%;height:8px"
         />
       </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="60%"
+      >
+        60%
+      </span>
     </div>
-    <span
-      class="ant-progress-text"
-      title="60%"
-    >
-      60%
-    </span>
   </div>
   <div
-    class="ant-flex ant-flex-wrap-wrap ant-flex-gap-small"
+    class="ant-flex css-var-test-id ant-flex-wrap-wrap ant-flex-gap-small"
   >
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="30"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -2672,7 +3154,7 @@ exports[`renders components/progress/demo/segment.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -2702,7 +3184,7 @@ exports[`renders components/progress/demo/segment.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="60%"
         >
           60%
@@ -2710,12 +3192,14 @@ exports[`renders components/progress/demo/segment.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="30"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -2724,7 +3208,7 @@ exports[`renders components/progress/demo/segment.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -2754,7 +3238,7 @@ exports[`renders components/progress/demo/segment.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="60%"
         >
           60%
@@ -2767,99 +3251,110 @@ exports[`renders components/progress/demo/segment.tsx correctly 1`] = `
 
 exports[`renders components/progress/demo/size.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-align-stretch ant-flex-gap-middle ant-flex-vertical"
+  class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-medium ant-flex-vertical"
 >
   <div
-    class="ant-flex ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
+    class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
     style="width:300px"
   >
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-outer"
-        style="width:100%;height:8px"
+        class="ant-progress-body"
+        style="width:100%"
       >
         <div
-          class="ant-progress-inner"
+          class="ant-progress-rail"
+          style="height:8px"
         >
           <div
-            class="ant-progress-bg"
-            style="width:50%;height:8px;--progress-percent:0.5"
+            class="ant-progress-track"
+            style="width:50%;height:8px"
           />
         </div>
+        <span
+          class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+          title="50%"
+        >
+          50%
+        </span>
       </div>
-      <span
-        class="ant-progress-text"
-        title="50%"
-      >
-        50%
-      </span>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-show-info ant-progress-small"
+      class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info ant-progress-small css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-outer"
-        style="width:100%;height:6px"
+        class="ant-progress-body"
+        style="width:100%"
       >
         <div
-          class="ant-progress-inner"
+          class="ant-progress-rail"
+          style="height:6px"
         >
           <div
-            class="ant-progress-bg"
-            style="width:50%;height:6px;--progress-percent:0.5"
+            class="ant-progress-track"
+            style="width:50%;height:6px"
           />
         </div>
+        <span
+          class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+          title="50%"
+        >
+          50%
+        </span>
       </div>
-      <span
-        class="ant-progress-text"
-        title="50%"
-      >
-        50%
-      </span>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-show-info"
+      class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-outer"
-        style="width:300px;height:20px"
+        class="ant-progress-body"
+        style="width:300px"
       >
         <div
-          class="ant-progress-inner"
+          class="ant-progress-rail"
+          style="height:20px"
         >
           <div
-            class="ant-progress-bg"
-            style="width:50%;height:20px;--progress-percent:0.5"
+            class="ant-progress-track"
+            style="width:50%;height:20px"
           />
         </div>
+        <span
+          class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+          title="50%"
+        >
+          50%
+        </span>
       </div>
-      <span
-        class="ant-progress-text"
-        title="50%"
-      >
-        50%
-      </span>
     </div>
   </div>
   <div
-    class="ant-flex ant-flex-wrap-wrap ant-flex-align-center"
+    class="ant-flex css-var-test-id ant-flex-wrap-wrap ant-flex-align-center"
     style="gap:30px"
   >
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -2868,7 +3363,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -2898,7 +3393,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="50%"
         >
           50%
@@ -2906,12 +3401,14 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-small"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-small css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:60px;height:60px;font-size:15px"
       >
         <svg
@@ -2920,7 +3417,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -2950,7 +3447,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="50%"
         >
           50%
@@ -2958,12 +3455,14 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-inline-circle ant-progress-show-info"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-inline-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:20px;height:20px;font-size:9px"
       >
         <svg
@@ -2972,7 +3471,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="42.5"
@@ -3005,16 +3504,18 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
     </div>
   </div>
   <div
-    class="ant-flex ant-flex-wrap-wrap ant-flex-align-center"
+    class="ant-flex css-var-test-id ant-flex-wrap-wrap ant-flex-align-center"
     style="gap:30px"
   >
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:120px;height:120px;font-size:24px"
       >
         <svg
@@ -3023,7 +3524,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -3053,7 +3554,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="50%"
         >
           50%
@@ -3061,12 +3562,14 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-small"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info ant-progress-small css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:60px;height:60px;font-size:15px"
       >
         <svg
@@ -3075,7 +3578,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="47"
@@ -3105,7 +3608,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           />
         </svg>
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="50%"
         >
           50%
@@ -3113,12 +3616,14 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info"
+      class="ant-progress ant-progress-status-normal ant-progress-circle ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-inner"
+        class="ant-progress-body"
         style="width:20px;height:20px;font-size:9px"
       >
         <svg
@@ -3127,7 +3632,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           viewBox="0 0 100 100"
         >
           <circle
-            class="ant-progress-circle-trail"
+            class="ant-progress-circle-rail"
             cx="50"
             cy="50"
             r="42.5"
@@ -3160,16 +3665,18 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
     </div>
   </div>
   <div
-    class="ant-flex ant-flex-wrap-wrap ant-flex-align-center"
+    class="ant-flex css-var-test-id ant-flex-wrap-wrap ant-flex-align-center"
     style="gap:30px"
   >
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info ant-progress-default"
+      class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-steps-outer"
+        class="ant-progress-steps-body"
       >
         <div
           class="ant-progress-steps-item ant-progress-steps-item-active"
@@ -3184,7 +3691,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           style="width:14px;height:8px"
         />
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="50%"
         >
           50%
@@ -3192,12 +3699,14 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info ant-progress-small"
+      class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info ant-progress-small css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-steps-outer"
+        class="ant-progress-steps-body"
       >
         <div
           class="ant-progress-steps-item ant-progress-steps-item-active"
@@ -3212,7 +3721,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           style="width:2px;height:8px"
         />
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="50%"
         >
           50%
@@ -3220,12 +3729,14 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info"
+      class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-steps-outer"
+        class="ant-progress-steps-body"
       >
         <div
           class="ant-progress-steps-item ant-progress-steps-item-active"
@@ -3240,7 +3751,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           style="width:20px;height:20px"
         />
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="50%"
         >
           50%
@@ -3248,12 +3759,14 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
       </div>
     </div>
     <div
+      aria-valuemax="100"
+      aria-valuemin="0"
       aria-valuenow="50"
-      class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info"
+      class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info css-var-test-id"
       role="progressbar"
     >
       <div
-        class="ant-progress-steps-outer"
+        class="ant-progress-steps-body"
       >
         <div
           class="ant-progress-steps-item ant-progress-steps-item-active"
@@ -3268,7 +3781,7 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
           style="width:20px;height:30px"
         />
         <span
-          class="ant-progress-text"
+          class="ant-progress-indicator"
           title="50%"
         >
           50%
@@ -3281,15 +3794,17 @@ exports[`renders components/progress/demo/size.tsx correctly 1`] = `
 
 exports[`renders components/progress/demo/steps.tsx correctly 1`] = `
 <div
-  class="ant-flex ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
+  class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-small ant-flex-vertical"
 >
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="50"
-    class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-steps-outer"
+      class="ant-progress-steps-body"
     >
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
@@ -3304,7 +3819,7 @@ exports[`renders components/progress/demo/steps.tsx correctly 1`] = `
         style="width:14px;height:8px"
       />
       <span
-        class="ant-progress-text"
+        class="ant-progress-indicator"
         title="50%"
       >
         50%
@@ -3312,12 +3827,14 @@ exports[`renders components/progress/demo/steps.tsx correctly 1`] = `
     </div>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="30"
-    class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-steps-outer"
+      class="ant-progress-steps-body"
     >
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
@@ -3340,7 +3857,7 @@ exports[`renders components/progress/demo/steps.tsx correctly 1`] = `
         style="width:14px;height:8px"
       />
       <span
-        class="ant-progress-text"
+        class="ant-progress-indicator"
         title="30%"
       >
         30%
@@ -3348,12 +3865,14 @@ exports[`renders components/progress/demo/steps.tsx correctly 1`] = `
     </div>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="100"
-    class="ant-progress ant-progress-status-success ant-progress-steps ant-progress-show-info ant-progress-small"
+    class="ant-progress ant-progress-status-success ant-progress-steps ant-progress-show-info ant-progress-small css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-steps-outer"
+      class="ant-progress-steps-body"
     >
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
@@ -3376,7 +3895,7 @@ exports[`renders components/progress/demo/steps.tsx correctly 1`] = `
         style="background-color:#389e0d;width:2px;height:8px"
       />
       <span
-        class="ant-progress-text"
+        class="ant-progress-indicator"
       >
         <span
           aria-label="check-circle"
@@ -3401,12 +3920,14 @@ exports[`renders components/progress/demo/steps.tsx correctly 1`] = `
     </div>
   </div>
   <div
+    aria-valuemax="100"
+    aria-valuemin="0"
     aria-valuenow="60"
-    class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info ant-progress-default"
+    class="ant-progress ant-progress-status-normal ant-progress-steps ant-progress-show-info css-var-test-id"
     role="progressbar"
   >
     <div
-      class="ant-progress-steps-outer"
+      class="ant-progress-steps-body"
     >
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
@@ -3429,10 +3950,209 @@ exports[`renders components/progress/demo/steps.tsx correctly 1`] = `
         style="width:14px;height:8px"
       />
       <span
-        class="ant-progress-text"
+        class="ant-progress-indicator"
         title="60%"
       >
         60%
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`renders components/progress/demo/style-class.tsx correctly 1`] = `
+<div
+  class="ant-flex css-var-test-id ant-flex-align-stretch ant-flex-gap-large ant-flex-vertical"
+>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="10"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info demo-progress-root css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail demo-progress-rail"
+        style="background-color:rgba(0, 0, 0, 0.1);border-radius:8px;height:8px"
+      >
+        <div
+          class="ant-progress-track demo-progress-track"
+          style="width:10%;height:8px;border-radius:8px;background-image:linear-gradient(
+          to right,
+          hsla(180, 85%, 65%, 1),
+          hsla(210, 90%, 55%, 0.95)
+        );transition:all 0.3s ease"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="10%"
+      >
+        10%
+      </span>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="20"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info demo-progress-root css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail demo-progress-rail"
+        style="background-color:rgba(0, 0, 0, 0.1);border-radius:8px;height:8px"
+      >
+        <div
+          class="ant-progress-track demo-progress-track"
+          style="width:20%;height:8px;border-radius:8px;background-image:linear-gradient(
+          to right,
+          hsla(160, 85%, 65%, 1),
+          hsla(190, 90%, 55%, 0.95)
+        );transition:all 0.3s ease"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="20%"
+      >
+        20%
+      </span>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="40"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info demo-progress-root css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail demo-progress-rail"
+        style="background-color:rgba(0, 0, 0, 0.1);border-radius:8px;height:8px"
+      >
+        <div
+          class="ant-progress-track demo-progress-track"
+          style="width:40%;height:8px;border-radius:8px;background-image:linear-gradient(
+          to right,
+          hsla(120, 85%, 65%, 1),
+          hsla(150, 90%, 55%, 0.95)
+        );transition:all 0.3s ease"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="40%"
+      >
+        40%
+      </span>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="60"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info demo-progress-root css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail demo-progress-rail"
+        style="background-color:rgba(0, 0, 0, 0.1);border-radius:8px;height:8px"
+      >
+        <div
+          class="ant-progress-track demo-progress-track"
+          style="width:60%;height:8px;border-radius:8px;background-image:linear-gradient(
+          to right,
+          hsla(80, 85%, 65%, 1),
+          hsla(110, 90%, 55%, 0.95)
+        );transition:all 0.3s ease"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="60%"
+      >
+        60%
+      </span>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="80"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info demo-progress-root css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail demo-progress-rail"
+        style="background-color:rgba(0, 0, 0, 0.1);border-radius:8px;height:8px"
+      >
+        <div
+          class="ant-progress-track demo-progress-track"
+          style="width:80%;height:8px;border-radius:8px;background-image:linear-gradient(
+          to right,
+          hsla(40, 85%, 65%, 1),
+          hsla(70, 90%, 55%, 0.95)
+        );transition:all 0.3s ease"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="80%"
+      >
+        80%
+      </span>
+    </div>
+  </div>
+  <div
+    aria-valuemax="100"
+    aria-valuemin="0"
+    aria-valuenow="99"
+    class="ant-progress ant-progress-status-normal ant-progress-line ant-progress-line-align-end ant-progress-line-position-outer ant-progress-show-info demo-progress-root css-var-test-id"
+    role="progressbar"
+  >
+    <div
+      class="ant-progress-body"
+      style="width:100%"
+    >
+      <div
+        class="ant-progress-rail demo-progress-rail"
+        style="background-color:rgba(0, 0, 0, 0.1);border-radius:8px;height:8px"
+      >
+        <div
+          class="ant-progress-track demo-progress-track"
+          style="width:99%;height:8px;border-radius:8px;background-image:linear-gradient(
+          to right,
+          hsla(2, 85%, 65%, 1),
+          hsla(32, 90%, 55%, 0.95)
+        );transition:all 0.3s ease"
+        />
+      </div>
+      <span
+        class="ant-progress-indicator ant-progress-indicator-end ant-progress-indicator-outer"
+        title="99%"
+      >
+        99%
       </span>
     </div>
   </div>

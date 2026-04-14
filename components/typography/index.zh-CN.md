@@ -8,12 +8,12 @@ cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*MLt3R6m9huoAAAAAAA
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*LT2jR41Uj2EAAAAAAAAAAAAADrJ8AQ/original
 ---
 
-## 何时使用
+## 何时使用 {#when-to-use}
 
 - 当需要展示标题、段落、列表内容时使用，如文章/博客/日志的文本样式。
 - 当需要一列基于文本的基础操作时，如拷贝/省略/可编辑。
 
-## 代码演示
+## 代码演示 {#examples}
 
 <!-- prettier-ignore -->
 <code src="./demo/basic.tsx">基本</code>
@@ -28,6 +28,7 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*LT2jR41Uj2EAAA
 <code src="./demo/ellipsis-debug.tsx" debug>省略号 Debug</code>
 <code src="./demo/suffix.tsx">后缀</code>
 <code src="./demo/componentToken-debug.tsx" debug>组件 Token</code>
+<code src="./demo/link-danger-debug.tsx" debug>Link danger Debug</code>
 
 ## API
 
@@ -38,11 +39,11 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*LT2jR41Uj2EAAA
 | 参数 | 说明 | 类型 | 默认值 | 版本 |
 | --- | --- | --- | --- | --- |
 | code | 添加代码样式 | boolean | false |  |
-| copyable | 是否可拷贝，为对象时可进行各种自定义 | boolean \| [copyable](#copyable) | false | [copyable](#copyable) |
+| copyable | 是否可拷贝，为对象时可进行各种自定义 | boolean \| [copyable](#copyable) | false |  |
 | delete | 添加删除线样式 | boolean | false |  |
 | disabled | 禁用文本 | boolean | false |  |
-| editable | 是否可编辑，为对象时可对编辑进行控制 | boolean \| [editable](#editable) | false | [editable](#editable) |
-| ellipsis | 自动溢出省略，为对象时不能设置省略行数、是否可展开、onExpand 展开事件。不同于 Typography.Paragraph，Text 组件自身不带 100% 宽度样式，因而默认情况下初次缩略后宽度便不再变化。如果需要自适应宽度，请手工配置宽度样式 | boolean \| [Omit<ellipsis, 'expandable' \| 'rows' \| 'onExpand'>](#ellipsis) | false | [ellipsis](#ellipsis) |
+| editable | 是否可编辑，为对象时可对编辑进行控制 | boolean \| [editable](#editable) | false |  |
+| ellipsis | 自动溢出省略，为对象时不能设置省略行数、是否可展开、onExpand 展开事件。不同于 Typography.Paragraph，Text 组件自身不带 100% 宽度样式，因而默认情况下初次缩略后宽度便不再变化。如果需要自适应宽度，请手动配置宽度样式 | boolean \| [Omit<ellipsis, 'expandable' \| 'rows' \| 'onExpand'>](#ellipsis) | false |  |
 | keyboard | 添加键盘样式 | boolean | false | 4.3.0 |
 | mark | 添加标记样式 | boolean | false |  |
 | onClick | 点击 Text 时的回调 | (event) => void | - |  |
@@ -56,11 +57,11 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*LT2jR41Uj2EAAA
 | 参数 | 说明 | 类型 | 默认值 | 版本 |
 | --- | --- | --- | --- | --- |
 | code | 添加代码样式 | boolean | false |  |
-| copyable | 是否可拷贝，为对象时可进行各种自定义 | boolean \| [copyable](#copyable) | false | [copyable](#copyable) |
+| copyable | 是否可拷贝，为对象时可进行各种自定义 | boolean \| [copyable](#copyable) | false |  |
 | delete | 添加删除线样式 | boolean | false |  |
 | disabled | 禁用文本 | boolean | false |  |
-| editable | 是否可编辑，为对象时可对编辑进行控制 | boolean \| [editable](#editable) | false | [editable](#editable) |
-| ellipsis | 自动溢出省略，为对象时可设置省略行数、是否可展开、添加后缀等 | boolean \| [ellipsis](#ellipsis) | false | [ellipsis](#ellipsis) |
+| editable | 是否可编辑，为对象时可对编辑进行控制 | boolean \| [editable](#editable) | false |  |
+| ellipsis | 自动溢出省略，为对象时可设置省略行数、是否可展开、添加后缀等 | boolean \| [ellipsis](#ellipsis) | false |  |
 | level | 重要程度，相当于 `h1`、`h2`、`h3`、`h4`、`h5` | number: 1, 2, 3, 4, 5 | 1 | 5: 4.6.0 |
 | mark | 添加标记样式 | boolean | false |  |
 | onClick | 点击 Title 时的回调 | (event) => void | - |  |
@@ -73,11 +74,11 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*LT2jR41Uj2EAAA
 | 参数 | 说明 | 类型 | 默认值 | 版本 |
 | --- | --- | --- | --- | --- |
 | code | 添加代码样式 | boolean | false |  |
-| copyable | 是否可拷贝，为对象时可进行各种自定义 | boolean \| [copyable](#copyable) | false | [copyable](#copyable) |
+| copyable | 是否可拷贝，为对象时可进行各种自定义 | boolean \| [copyable](#copyable) | false |  |
 | delete | 添加删除线样式 | boolean | false |  |
 | disabled | 禁用文本 | boolean | false |  |
-| editable | 是否可编辑，为对象时可对编辑进行控制 | boolean \| [editable](#editable) | false | [editable](#editable) |
-| ellipsis | 自动溢出省略，为对象时可设置省略行数、是否可展开、添加后缀等 | boolean \| [ellipsis](#ellipsis) | false | [ellipsis](#ellipsis) |
+| editable | 是否可编辑，为对象时可对编辑进行控制 | boolean \| [editable](#editable) | false |  |
+| ellipsis | 自动溢出省略，为对象时可设置省略行数、是否可展开、添加后缀等 | boolean \| [ellipsis](#ellipsis) | false |  |
 | mark | 添加标记样式 | boolean | false |  |
 | onClick | 点击 Paragraph 时的回调 | (event) => void | - |  |
 | strong | 是否加粗 | boolean | false |  |
@@ -109,7 +110,7 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*LT2jR41Uj2EAAA
 
     {
       icon: ReactNode,
-      tooltip: boolean | ReactNode,
+      tooltip: ReactNode,
       editing: boolean,
       maxLength: number,
       autoSize: boolean | { minRows: number, maxRows: number },
@@ -149,7 +150,7 @@ interface EllipsisConfig {
   suffix: string;
   /** `5.16.0` 新增渲染函数 */
   symbol: ReactNode | ((expanded: boolean) => ReactNode);
-  tooltip: boolean | ReactNode | TooltipProps;
+  tooltip: ReactNode | TooltipProps;
   /** `5.16.0` 新增 */
   defaultExpanded: boolean;
   /** `5.16.0` 新增 */
@@ -172,18 +173,6 @@ interface EllipsisConfig {
 | onEllipsis | 触发省略时的回调 | function(ellipsis) | - | 4.2.0 |
 | onExpand | 点击展开或收起时的回调 | function(event, { expanded: boolean }) | - | `info`: 5.16.0 |
 
-## 主题变量（Design Token）
+## 主题变量（Design Token）{#design-token}
 
 <ComponentTokenTable component="Typography"></ComponentTokenTable>
-
-## FAQ
-
-### Typography.Link 如何与 react-router 库集成？
-
-`react-router` 支持[自定义](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/Link.md#component-reactcomponent)渲染组件：
-
-```tsx
-<Link to="/" component={Typography.Link} />
-```
-
-**注意：** 这并不是和 react-router 的 Link 的执行逻辑等价 [参考](https://github.com/ant-design/ant-design/pull/26737/files#r488769888)

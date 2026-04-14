@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/ar_EG';
+import Pagination from '@rc-component/pagination/lib/locale/ar_EG';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/ar_EG';
@@ -16,6 +15,7 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'يرجى التحديد',
+    close: 'إغلاق',
   },
   Table: {
     filterTitle: 'الفلاتر',
@@ -30,6 +30,11 @@ const localeValues: Locale = {
     triggerDesc: 'ترتيب تنازلي',
     triggerAsc: 'ترتيب تصاعدي',
     cancelSort: 'إلغاء الترتيب',
+  },
+  Tour: {
+    Next: 'التالي',
+    Previous: 'السابق',
+    Finish: 'إنهاء',
   },
   Modal: {
     okText: 'تأكيد',
@@ -113,6 +118,17 @@ const localeValues: Locale = {
         mismatch: 'لا يتطابق ${label} مع ${pattern}',
       },
     },
+  },
+  QRCode: {
+    expired: 'انتهت صلاحية رمز الاستجابة السريعة',
+    refresh: 'انقر للتحديث',
+    scanned: 'تم المسح',
+  },
+  ColorPicker: {
+    presetEmpty: 'لا يوجد',
+    transparent: 'شفاف',
+    singleColor: 'لون واحد',
+    gradientColor: 'تدرج لوني',
   },
 };
 

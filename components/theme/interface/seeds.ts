@@ -189,6 +189,8 @@ export interface SeedToken extends PresetColorType {
   /**
    * @nameZH 图片不透明度
    * @nameEN Define default Image opacity. Useful when in dark-like theme
+   * @desc 控制图片不透明度
+   * @descEN Control image opacity
    */
   opacityImage: number;
 
@@ -207,6 +209,8 @@ export interface SeedToken extends PresetColorType {
   /**
    * @nameZH 动画基础时长。
    * @nameEN Animation Base Duration.
+   * @desc 动画基础时长。
+   * @descEN Animation Base Duration.
    */
   motionBase: number;
 

@@ -28,6 +28,7 @@ const genInputStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
       [`${componentCls}-steppers${antCls}-input-number`]: {
         fontSize: fontSizeSM,
         lineHeight: lineHeightSM,
+        padding: 0,
         [`${antCls}-input-number-input`]: {
           paddingInlineStart: paddingXXS,
           paddingInlineEnd: 0,
@@ -56,7 +57,7 @@ const genInputStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
           [`${antCls}-select-selection-item`]: {
             paddingInlineEnd: token.calc(fontSizeIcon).add(marginXXS).equal(),
             fontSize: fontSizeSM,
-            lineHeight: `${unit(controlHeightSM)}`,
+            lineHeight: unit(controlHeightSM),
           },
           [`${antCls}-select-item-option-content`]: {
             fontSize: fontSizeSM,
@@ -76,6 +77,7 @@ const genInputStyle: GenerateStyle<ColorPickerToken, CSSObject> = (token) => {
         flex: 1,
         width: 0,
         [`${componentCls}-hsb-input,${componentCls}-rgb-input`]: {
+          height: controlHeightSM,
           display: 'flex',
           gap: marginXXS,
           alignItems: 'center',

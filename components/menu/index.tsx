@@ -1,11 +1,22 @@
 import * as React from 'react';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
-import type { MenuRef as RcMenuRef } from 'rc-menu';
-import { ItemGroup } from 'rc-menu';
+import type { MenuRef as RcMenuRef } from '@rc-component/menu';
+import { ItemGroup } from '@rc-component/menu';
 
 import { SiderContext } from '../layout/Sider';
-import type { ItemType, MenuItemType } from './hooks/useItems';
-import type { MenuProps } from './menu';
+import type { ItemType, MenuItemType } from './interface';
+import type {
+  MenuPopupSemanticClassNames,
+  MenuPopupSemanticName,
+  MenuPopupSemanticStyles,
+  MenuProps,
+  MenuSemanticClassNames,
+  MenuSemanticName,
+  MenuSemanticStyles,
+  SubMenuSemanticClassNames,
+  SubMenuSemanticName,
+  SubMenuSemanticStyles,
+} from './menu';
 import InternalMenu from './menu';
 import type { MenuTheme } from './MenuContext';
 import MenuDivider from './MenuDivider';
@@ -14,9 +25,25 @@ import type { MenuItemProps } from './MenuItem';
 import SubMenu from './SubMenu';
 import type { SubMenuProps } from './SubMenu';
 
-export type { MenuItemGroupProps } from 'rc-menu';
 export type { MenuDividerProps } from './MenuDivider';
-export type { MenuItemProps, MenuProps, MenuTheme, SubMenuProps };
+
+export type { MenuItemGroupProps } from '@rc-component/menu';
+
+export type {
+  MenuItemProps,
+  MenuPopupSemanticClassNames,
+  MenuPopupSemanticName,
+  MenuPopupSemanticStyles,
+  MenuProps,
+  MenuSemanticClassNames,
+  MenuSemanticName,
+  MenuSemanticStyles,
+  MenuTheme,
+  SubMenuProps,
+  SubMenuSemanticClassNames,
+  SubMenuSemanticName,
+  SubMenuSemanticStyles,
+};
 
 export type MenuRef = {
   menu: RcMenuRef | null;
@@ -42,9 +69,8 @@ type CompoundedComponent = React.ForwardRefExoticComponent<GenericComponentProps
   ItemGroup: typeof ItemGroup;
 };
 
-interface GenericComponent extends Omit<CompoundedComponent, ''> {
-  <T extends MenuItemType>(props: GenericComponentProps<T>): ReturnType<CompoundedComponent>;
-}
+type GenericComponent = Omit<CompoundedComponent, ''> &
+  (<T extends MenuItemType>(props: GenericComponentProps<T>) => ReturnType<CompoundedComponent>);
 
 const Menu = forwardRef<MenuRef, MenuProps>((props, ref) => {
   const menuRef = useRef<RcMenuRef>(null);

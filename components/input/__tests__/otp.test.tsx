@@ -4,7 +4,8 @@ import Input from '..';
 import focusTest from '../../../tests/shared/focusTest';
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
-import { fireEvent, render, waitFakeTimer } from '../../../tests/utils';
+import { createEvent, fireEvent, render, waitFakeTimer } from '../../../tests/utils';
+import type { OTPProps } from '../OTP';
 
 const { OTP } = Input;
 
@@ -108,7 +109,7 @@ describe('Input.OTP', () => {
   });
 
   it('arrow key to switch', () => {
-    const { container } = render(<OTP autoFocus />);
+    const { container } = render(<OTP autoFocus defaultValue="12" />);
 
     const inputList = Array.from(container.querySelectorAll('input'));
     expect(document.activeElement).toEqual(inputList[0]);
@@ -118,6 +119,22 @@ describe('Input.OTP', () => {
 
     fireEvent.keyDown(document.activeElement!, { key: 'ArrowLeft' });
     expect(document.activeElement).toEqual(inputList[0]);
+  });
+
+  it('should not switch to next input when value is empty', () => {
+    const onFocus = jest.fn();
+    const { container } = render(<OTP autoFocus onFocus={onFocus} />);
+
+    const inputList = Array.from(container.querySelectorAll('input'));
+    expect(document.activeElement).toEqual(inputList[0]);
+
+    // Key operation
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowRight' });
+    expect(document.activeElement).toBe(inputList[0]);
+
+    // Focus directly
+    fireEvent.focus(inputList[3]);
+    expect(document.activeElement).toBe(inputList[0]);
   });
 
   it('fill last cell', () => {
@@ -145,11 +162,11 @@ describe('Input.OTP', () => {
 
     // support string
     rerender(<OTP defaultValue="bamboo" mask="*" />);
-    expect(getText(container)).toBe('******');
+    expect(getText(container)).toBe('bamboo');
 
     // support emoji
     rerender(<OTP defaultValue="bamboo" mask="🔒" />);
-    expect(getText(container)).toBe('🔒🔒🔒🔒🔒🔒');
+    expect(getText(container)).toBe('bamboo');
   });
 
   it('should throw Error when mask.length > 1', () => {
@@ -166,5 +183,145 @@ describe('Input.OTP', () => {
     render(<OTP mask="x" />);
     expect(errSpy).not.toHaveBeenCalled();
     errSpy.mockRestore();
+  });
+
+  it('support type', () => {
+    const { container } = render(<OTP type="number" />);
+    expect(container.querySelector('input')).toHaveAttribute('type', 'number');
+  });
+
+  it('support autoComplete', () => {
+    const { container } = render(<OTP autoComplete="one-time-code" />);
+    const inputs = container.querySelectorAll('input');
+    expect(inputs).toHaveLength(6);
+    inputs.forEach((input) => {
+      expect(input).toHaveAttribute('autocomplete', 'one-time-code');
+    });
+  });
+
+  it('should call onInput with a string array when input changes', () => {
+    const onInput = jest.fn();
+    const { container } = render(<OTP length={4} onInput={onInput} />);
+
+    const inputs = Array.from(container.querySelectorAll('input'));
+
+    fireEvent.input(inputs[0], { target: { value: '1' } });
+    expect(onInput).toHaveBeenCalledWith(['1']);
+
+    fireEvent.input(inputs[2], { target: { value: '3' } });
+    expect(onInput).toHaveBeenCalledWith(['1', '', '3']);
+
+    fireEvent.input(inputs[1], { target: { value: '2' } });
+    expect(onInput).toHaveBeenCalledWith(['1', '2', '3']);
+
+    fireEvent.input(inputs[3], { target: { value: '4' } });
+    expect(onInput).toHaveBeenCalledWith(['1', '2', '3', '4']);
+  });
+
+  it('disabled ctrl + z', () => {
+    const { container } = render(<OTP length={4} defaultValue="1234" />);
+    const inputEle = container.querySelector('input')!;
+    const event = createEvent.keyDown(inputEle, { key: 'z', ctrlKey: true });
+    fireEvent(inputEle, event);
+
+    expect(event.defaultPrevented).toBeTruthy();
+  });
+
+  it('renders separator between input fields', () => {
+    const { container } = render(
+      <OTP
+        length={4}
+        separator={(index) => (
+          <span key={index} className="custom-separator">
+            |
+          </span>
+        )}
+      />,
+    );
+    const separators = container.querySelectorAll('.custom-separator');
+    expect(separators.length).toBe(3);
+    separators.forEach((separator) => {
+      expect(separator.textContent).toBe('|');
+    });
+  });
+
+  it('renders separator when separator is a string', () => {
+    const { container } = render(<OTP length={4} separator="-" />);
+    const separators = container.querySelectorAll(`.ant-otp-separator`);
+    expect(separators.length).toBe(3);
+    separators.forEach((separator) => {
+      expect(separator.textContent).toBe('-');
+    });
+  });
+
+  it('renders separator when separator is a element', () => {
+    const customSeparator = <div data-testid="custom-separator">X</div>;
+    const { getAllByTestId } = render(<OTP length={4} separator={customSeparator} />);
+    const separators = getAllByTestId('custom-separator');
+    expect(separators.length).toBe(3);
+    separators.forEach((separator) => {
+      expect(separator.textContent).toBe('X');
+    });
+  });
+
+  it('support function classNames and styles', () => {
+    const functionClassNames = (info: { props: OTPProps }) => {
+      const { props } = info;
+      const { disabled } = props;
+      return {
+        root: 'dynamic-root',
+        input: disabled ? 'dynamic-input-disabled' : 'dynamic-input-enabled',
+        separator: 'dynamic-separator',
+      };
+    };
+    const functionStyles = (info: { props: OTPProps }) => {
+      const { props } = info;
+      const { disabled } = props;
+      return {
+        root: { color: 'rgb(255, 0, 0)' },
+        input: { color: disabled ? 'rgb(0, 255, 0)' : 'rgb(255, 0, 0)' },
+        separator: { color: 'rgb(0, 0, 255)' },
+      };
+    };
+    const { container, rerender } = render(
+      <OTP
+        length={3}
+        separator="-"
+        classNames={functionClassNames}
+        styles={functionStyles}
+        disabled
+      />,
+    );
+    const root = container.querySelector('.ant-otp');
+    const input = container.querySelector('.ant-input');
+    const separator = container.querySelector('.ant-otp-separator');
+
+    expect(root).toHaveClass('dynamic-root');
+    expect(input).toHaveClass('dynamic-input-disabled');
+    expect(separator).toHaveClass('dynamic-separator');
+
+    expect(root).toHaveStyle('color: rgb(255, 0, 0)');
+    expect(input).toHaveStyle('color: rgb(0, 255, 0)');
+    expect(separator).toHaveStyle('color: rgb(0, 0, 255)');
+
+    const objectClassNames = {
+      root: 'dynamic-root-default',
+      input: 'dynamic-input-enabled',
+      separator: 'dynamic-separator-default',
+    };
+    const objectStyles = {
+      root: { color: 'rgb(0, 255, 0)' },
+      input: { color: 'rgb(255, 0, 0)' },
+      separator: { color: 'rgb(0, 0, 255)' },
+    };
+
+    rerender(<OTP length={4} separator="-" classNames={objectClassNames} styles={objectStyles} />);
+
+    expect(root).toHaveClass('dynamic-root-default');
+    expect(input).toHaveClass('dynamic-input-enabled');
+    expect(separator).toHaveClass('dynamic-separator-default');
+    expect(root).toHaveStyle('color: rgb(0, 255, 0)');
+    expect(input).toHaveStyle('color: rgb(255, 0, 0)');
+    expect(separator).toHaveStyle('color: rgb(0, 0, 255)');
   });
 });

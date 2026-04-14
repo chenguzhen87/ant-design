@@ -1,3 +1,4 @@
+import type { CSSObject } from '@ant-design/cssinjs';
 import { unit } from '@ant-design/cssinjs';
 
 import { resetComponent, textEllipsis } from '../../style';
@@ -17,15 +18,35 @@ export interface ComponentToken {
   linkPaddingInlineStart: number;
 }
 
+/**
+ * @desc Anchor 组件的 Token
+ * @descEN Token for Anchor component
+ */
 interface AnchorToken extends FullToken<'Anchor'> {
+  /**
+   * @desc 容器块偏移量
+   * @descEN Holder block offset
+   */
   holderOffsetBlock: number;
+  /**
+   * @desc 次级锚点块内间距
+   * @descEN Secondary anchor block padding
+   */
   anchorPaddingBlockSecondary: number | string;
+  /**
+   * @desc 锚点球大小
+   * @descEN Anchor ball size
+   */
   anchorBallSize: number | string;
+  /**
+   * @desc 锚点标题块
+   * @descEN Anchor title block
+   */
   anchorTitleBlock: number | string;
 }
 
 // ============================== Shared ==============================
-const genSharedAnchorStyle: GenerateStyle<AnchorToken> = (token) => {
+const genSharedAnchorStyle: GenerateStyle<AnchorToken, CSSObject> = (token) => {
   const {
     componentCls,
     holderOffsetBlock,
@@ -111,7 +132,7 @@ const genSharedAnchorStyle: GenerateStyle<AnchorToken> = (token) => {
   };
 };
 
-const genSharedAnchorHorizontalStyle: GenerateStyle<AnchorToken> = (token) => {
+const genSharedAnchorHorizontalStyle: GenerateStyle<AnchorToken, CSSObject> = (token) => {
   const { componentCls, motionDurationSlow, lineWidthBold, colorPrimary } = token;
 
   return {
@@ -150,7 +171,9 @@ const genSharedAnchorHorizontalStyle: GenerateStyle<AnchorToken> = (token) => {
         [`${componentCls}-ink`]: {
           position: 'absolute',
           bottom: 0,
-          transition: `left ${motionDurationSlow} ease-in-out, width ${motionDurationSlow} ease-in-out`,
+          transition: [`left`, `width`]
+            .map((prop) => `${prop} ${motionDurationSlow} ease-in-out`)
+            .join(', '),
           height: lineWidthBold,
           backgroundColor: colorPrimary,
         },

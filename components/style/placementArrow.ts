@@ -1,7 +1,8 @@
 import type { CSSInterpolation, CSSObject } from '@ant-design/cssinjs';
+import { unit } from '@ant-design/cssinjs';
 
-import type { AliasToken } from '../theme/internal';
-import type { TokenWithCommonCls } from '../theme/util/genComponentStyleHook';
+import type { AliasToken, TokenWithCommonCls } from '../theme/internal';
+import { genCssVar } from '../theme/util/genStyleUtils';
 import type { ArrowToken } from './roundedArrow';
 import { genRoundedArrow } from './roundedArrow';
 
@@ -31,7 +32,7 @@ function isInject(valid: boolean, code: CSSObject): CSSObject {
   return code;
 }
 
-export default function getArrowStyle<
+const getArrowStyle = <
   Token extends TokenWithCommonCls<AliasToken> & ArrowOffsetToken & ArrowToken,
 >(
   token: Token,
@@ -45,8 +46,16 @@ export default function getArrowStyle<
       bottom?: boolean;
     };
   },
-): CSSInterpolation {
-  const { componentCls, boxShadowPopoverArrow, arrowOffsetVertical, arrowOffsetHorizontal } = token;
+): CSSInterpolation => {
+  const {
+    componentCls,
+    boxShadowPopoverArrow,
+    arrowOffsetVertical,
+    arrowOffsetHorizontal,
+    antCls,
+  } = token;
+
+  const [varName] = genCssVar(antCls, 'tooltip');
 
   const {
     arrowDistance = 0,
@@ -96,17 +105,25 @@ export default function getArrowStyle<
           transform: 'translateX(-50%) translateY(100%) rotate(180deg)',
         },
 
-        [`&-placement-topLeft > ${componentCls}-arrow`]: {
-          left: {
-            _skip_check_: true,
-            value: arrowOffsetHorizontal,
+        '&-placement-topLeft': {
+          [varName('arrow-offset-x')]: arrowOffsetHorizontal,
+
+          [`> ${componentCls}-arrow`]: {
+            left: {
+              _skip_check_: true,
+              value: arrowOffsetHorizontal,
+            },
           },
         },
 
-        [`&-placement-topRight > ${componentCls}-arrow`]: {
-          right: {
-            _skip_check_: true,
-            value: arrowOffsetHorizontal,
+        '&-placement-topRight': {
+          [varName('arrow-offset-x')]: `calc(100% - ${unit(arrowOffsetHorizontal)})`,
+
+          [`> ${componentCls}-arrow`]: {
+            right: {
+              _skip_check_: true,
+              value: arrowOffsetHorizontal,
+            },
           },
         },
       }),
@@ -130,17 +147,25 @@ export default function getArrowStyle<
           transform: `translateX(-50%) translateY(-100%)`,
         },
 
-        [`&-placement-bottomLeft > ${componentCls}-arrow`]: {
-          left: {
-            _skip_check_: true,
-            value: arrowOffsetHorizontal,
+        '&-placement-bottomLeft': {
+          [varName('arrow-offset-x')]: arrowOffsetHorizontal,
+
+          [`> ${componentCls}-arrow`]: {
+            left: {
+              _skip_check_: true,
+              value: arrowOffsetHorizontal,
+            },
           },
         },
 
-        [`&-placement-bottomRight > ${componentCls}-arrow`]: {
-          right: {
-            _skip_check_: true,
-            value: arrowOffsetHorizontal,
+        '&-placement-bottomRight': {
+          [varName('arrow-offset-x')]: `calc(100% - ${unit(arrowOffsetHorizontal)})`,
+
+          [`> ${componentCls}-arrow`]: {
+            right: {
+              _skip_check_: true,
+              value: arrowOffsetHorizontal,
+            },
           },
         },
       }),
@@ -208,4 +233,6 @@ export default function getArrowStyle<
       }),
     },
   };
-}
+};
+
+export default getArrowStyle;

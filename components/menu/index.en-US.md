@@ -15,7 +15,7 @@ More layouts with navigation: [Layout](/components/layout).
 
 ## Notes for developers
 
-- Menu is rendered as a `ul` element, so it only supports [`li` and `script-supporting` elements](https://html.spec.whatwg.org/multipage/grouping-content.html#the-ul-element) as children nodes。Your customized node should be wrapped by `Menu.Item`.
+- Menu is rendered as a `ul` element, so it only supports [`li` and `script-supporting` elements](https://html.spec.whatwg.org/multipage/grouping-content.html#the-ul-element) as children nodes. Your customized node should be wrapped by `Menu.Item`.
 - Menu needs to collect its node structure, so its children should be `Menu.*` or encapsulated HOCs.
 
 ## Examples
@@ -25,14 +25,19 @@ More layouts with navigation: [Layout](/components/layout).
 <code src="./demo/horizontal-dark.tsx" debug>Top Navigation (dark)</code>
 <code src="./demo/inline.tsx">Inline menu</code>
 <code src="./demo/inline-collapsed.tsx">Collapsed inline menu</code>
+<code src="./demo/tooltip.tsx">Menu tooltip</code>
 <code src="./demo/sider-current.tsx">Open current submenu only</code>
 <code src="./demo/vertical.tsx">Vertical menu</code>
 <code src="./demo/theme.tsx">Menu Themes</code>
 <code src="./demo/submenu-theme.tsx">Sub-menu theme</code>
 <code src="./demo/switch-mode.tsx">Switch the menu type</code>
+<code src="./demo/style-class.tsx" version="6.0.0">Custom semantic dom styling</code>
 <code src="./demo/style-debug.tsx" debug>Style debug</code>
 <code src="./demo/menu-v4.tsx" debug>Menu v4</code>
 <code src="./demo/component-token.tsx" debug>Component Token</code>
+<code src="./demo/extra-style.tsx" debug>Extra Style debug</code>
+<code src="./demo/custom-popup-render.tsx">Custom Submenu Render</code>
+<code src="./demo/collapsed-icon-debug.tsx" debug>Collapsed menu icon alignment</code>
 
 ## API
 
@@ -40,8 +45,9 @@ Common props ref：[Common props](/docs/react/common-props)
 
 ### Menu
 
-| Param | Description | Type | Default value | Version |
+| Property | Description | Type | Default value | Version |
 | --- | --- | --- | --- | --- |
+| classNames | Customize class for each semantic structure inside the component. Supports object or function. | Record<[SemanticDOM](#semantic-dom), string> \| (info: { props }) => Record<[SemanticDOM](#semantic-dom), string> | - |  |
 | defaultOpenKeys | Array with the keys of default opened sub menus | string\[] | - |  |
 | defaultSelectedKeys | Array with the keys of default selected menu items | string\[] | - |  |
 | expandIcon | custom expand icon of submenu | ReactNode \| `(props: SubMenuProps & { isSubMenu: boolean }) => ReactNode` | - | 4.9.0 |
@@ -56,27 +62,31 @@ Common props ref：[Common props](/docs/react/common-props)
 | selectable | Allows selecting menu items | boolean | true |  |
 | selectedKeys | Array with the keys of currently selected menu items | string\[] | - |  |
 | style | Style of the root node | CSSProperties | - |  |
+| styles | Customize inline style for each semantic structure inside the component. Supports object or function. | Record<[SemanticDOM](#semantic-dom), CSSProperties> \| (info: { props }) => Record<[SemanticDOM](#semantic-dom), CSSProperties> | - |  |
 | subMenuCloseDelay | Delay time to hide submenu when mouse leaves (in seconds) | number | 0.1 |  |
 | subMenuOpenDelay | Delay time to show submenu when mouse enters, (in seconds) | number | 0 |  |
+| tooltip | Config tooltip props for menu items in inline collapsed mode. Set to `false` to disable. | false \| TooltipProps | - | 6.3.0 |
 | theme | Color theme of the menu | `light` \| `dark` | `light` |  |
 | triggerSubMenuAction | Which action can trigger submenu open/close | `hover` \| `click` | `hover` |  |
-| onClick | Called when a menu item is clicked | function({ item, key, keyPath, domEvent }) | - |  |
-| onDeselect | Called when a menu item is deselected (multiple mode only) | function({ item, key, keyPath, selectedKeys, domEvent }) | - |  |
+| onClick | Called when a menu item is clicked | function({ key, keyPath, domEvent }) | - |  |
+| onDeselect | Called when a menu item is deselected (multiple mode only) | function({ key, keyPath, selectedKeys, domEvent }) | - |  |
 | onOpenChange | Called when sub-menus are opened or closed | function(openKeys: string\[]) | - |  |
-| onSelect | Called when a menu item is selected | function({ item, key, keyPath, selectedKeys, domEvent }) | - |  |
+| onSelect | Called when a menu item is selected | function({ key, keyPath, selectedKeys, domEvent }) | - |  |
+| popupRender | Custom popup renderer for submenu | (node: ReactElement, props: { item: SubMenuProps; keys: string[] }) => ReactElement | - |  |
 
-> More options in [rc-menu](https://github.com/react-component/menu#api)
+> More options in [@rc-component/menu](https://github.com/react-component/menu#api)
 
 ### ItemType
 
-> type ItemType = [MenuItemType](#MenuItemType) | [SubMenuType](#SubMenuType) | [MenuItemGroupType](#MenuItemGroupType) | [MenuDividerType](#MenuDividerType);
+> type ItemType = [MenuItemType](#menuitemtype) | [SubMenuType](#submenutype) | [MenuItemGroupType](#menuitemgrouptype) | [MenuDividerType](#menudividertype);
 
 #### MenuItemType
 
-| Param    | Description                          | Type      | Default value | Version |
+| Property | Description                          | Type      | Default value | Version |
 | -------- | ------------------------------------ | --------- | ------------- | ------- |
 | danger   | Display the danger style             | boolean   | false         |         |
 | disabled | Whether menu item is disabled        | boolean   | false         |         |
+| extra    | The extra of the menu item           | ReactNode | -             | 5.21.0  |
 | icon     | The icon of the menu item            | ReactNode | -             |         |
 | key      | Unique ID of the menu item           | string    | -             |         |
 | label    | Menu label                           | ReactNode | -             |         |
@@ -96,6 +106,7 @@ Common props ref：[Common props](/docs/react/common-props)
 | popupOffset | Sub-menu offset, not working when `mode="inline"` | \[number, number] | - |  |
 | theme | Color theme of the SubMenu (inherits from Menu by default) |  | `light` \| `dark` | - |  |
 | onTitleClick | Callback executed when the sub-menu title is clicked | function({ key, domEvent }) | - |  |
+| popupRender | Custom popup renderer for current sub-menu | (node: ReactElement, props: { item: SubMenuProps; keys: string[] }) => ReactElement | - |  |
 
 #### MenuItemGroupType
 
@@ -109,7 +120,7 @@ const groupItem = {
 };
 ```
 
-| Param    | Description            | Type                              | Default value | Version |
+| Property | Description            | Type                              | Default value | Version |
 | -------- | ---------------------- | --------------------------------- | ------------- | ------- |
 | children | Sub-menu items         | [MenuItemType\[\]](#menuitemtype) | -             |         |
 | label    | The title of the group | ReactNode                         | -             |         |
@@ -124,17 +135,17 @@ const dividerItem = {
 };
 ```
 
-| Param  | Description            | Type    | Default value | Version |
-| ------ | ---------------------- | ------- | ------------- | ------- |
-| dashed | Whether line is dashed | boolean | false         |         |
+| Property | Description            | Type    | Default value | Version |
+| -------- | ---------------------- | ------- | ------------- | ------- |
+| dashed   | Whether line is dashed | boolean | false         |         |
 
 ## FAQ
 
-### Why will Menu's children be rendered twice?
+### Why will Menu's children be rendered twice? {#faq-render-twice}
 
 Menu collects structure info with [twice-render](https://github.com/react-component/menu/blob/f4684514096d6b7123339cbe72e7b0f68db0bce2/src/Menu.tsx#L543) to support HOC usage. Merging into one render may cause the logic to become much more complex. Contributions to help improve the collection logic are welcomed.
 
-### Why Menu do not responsive collapse in Flex layout?
+### Why Menu do not responsive collapse in Flex layout? {#faq-flex-layout}
 
 Menu will render fully item in flex layout and then collapse it. You need tell flex not consider Menu width to enable responsive ([online demo](https://codesandbox.io/s/ding-bu-dao-hang-antd-4-21-7-forked-5e3imy?file=/demo.js)):
 
@@ -144,6 +155,10 @@ Menu will render fully item in flex layout and then collapse it. You need tell f
   <Menu style={{ minWidth: 0, flex: "auto" }} />
 </div>
 ```
+
+## Semantic DOM
+
+<code src="./demo/_semantic.tsx" simplify="true"></code>
 
 ## Design Token
 

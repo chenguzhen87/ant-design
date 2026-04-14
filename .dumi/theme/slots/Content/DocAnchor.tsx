@@ -2,62 +2,58 @@ import React from 'react';
 import { Anchor } from 'antd';
 import { createStyles, useTheme } from 'antd-style';
 import type { AnchorLinkItemProps } from 'antd/es/anchor/Anchor';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import { useRouteMeta, useTabMeta } from 'dumi';
 
-const useStyle = createStyles(({ token, css }) => {
+export const useStyle = createStyles(({ cssVar, token, css }) => {
   const { antCls } = token;
   return {
     anchorToc: css`
       scrollbar-width: thin;
-      scrollbar-color: unset;
+      scrollbar-gutter: stable;
       ${antCls}-anchor {
         ${antCls}-anchor-link-title {
-          font-size: ${token.fontSizeSM}px;
+          font-size: ${cssVar.fontSizeSM};
         }
       }
     `,
     tocWrapper: css`
       position: fixed;
-      top: ${token.headerHeight + token.contentMarginTop - 8}px;
+      top: calc(${token.headerHeight}px + ${cssVar.marginXL} - 4px);
       inset-inline-end: 0;
-      width: 160px;
-      padding: ${token.paddingXS}px;
-      border-radius: ${token.borderRadius}px;
+      width: 148px;
+      padding: 0;
+      border-radius: ${cssVar.borderRadius};
       box-sizing: border-box;
-      margin-inline-end: calc(16px - 100vw + 100%);
+      margin-inline-end: calc(8px - 100vw + 100%);
       z-index: 10;
       .toc-debug {
-        color: ${token.purple6};
+        color: ${cssVar.purple6};
         &:hover {
-          color: ${token.purple5};
+          color: ${cssVar.purple5};
         }
       }
       > div {
         box-sizing: border-box;
         width: 100%;
-        max-height: calc(100vh - ${token.headerHeight + token.contentMarginTop + 24}px) !important;
+        max-height: calc(100vh - ${token.headerHeight}px - ${cssVar.marginXL} - 24px) !important;
         margin: auto;
         overflow: auto;
-        padding: ${token.paddingXXS}px;
+        padding: ${cssVar.paddingXXS};
         backdrop-filter: blur(8px);
       }
 
-      @media only screen and (max-width: ${token.screenLG}px) {
+      @media only screen and (max-width: ${cssVar.screenLG}) {
         display: none;
       }
     `,
     articleWrapper: css`
-      padding: 0 170px 32px 64px;
+      padding-inline: 48px 164px;
+      padding-block: 0 32px;
 
-      &.rtl {
-        padding: 0 64px 144px 170px;
-      }
-
-      @media only screen and (max-width: ${token.screenLG}px) {
-        &,
-        &.rtl {
-          padding: 0 ${token.paddingLG * 2}px;
+      @media only screen and (max-width: ${cssVar.screenLG}) {
+        & {
+          padding: 0 calc(${cssVar.paddingLG} * 2);
         }
       }
     `,
@@ -91,7 +87,7 @@ const DocAnchor: React.FC<DocAnchorProps> = ({ showDebug, debugDemos = [] }) => 
         key: child.id,
         href: `#${child.id}`,
         title: (
-          <span className={classNames({ 'toc-debug': debugDemos.includes(child.id) })}>
+          <span className={clsx({ 'toc-debug': debugDemos.includes(child.id) })}>
             {child?.title}
           </span>
         ),

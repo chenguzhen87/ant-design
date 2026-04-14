@@ -1,4 +1,4 @@
-/** converting camel-cased strings to be lowercase and link it with Separato */
+/** converting camel-cased strings to be lowercase and link it with Separator */
 export function toLowercaseSeparator(key: string) {
   return key.replace(/([A-Z])/g, '-$1').toLowerCase();
 }
@@ -15,11 +15,14 @@ export function getPixelRatio() {
 }
 
 /** Whether to re-render the watermark */
-export const reRendering = (mutation: MutationRecord, isWatermarkEle: (ele: Node) => boolean) => {
+export const reRendering = (
+  mutation: MutationRecord,
+  isWatermarkEle: (ele: Node, index?: number) => boolean,
+) => {
   let flag = false;
   // Whether to delete the watermark node
   if (mutation.removedNodes.length) {
-    flag = Array.from<Node>(mutation.removedNodes).some((node) => isWatermarkEle(node));
+    flag = Array.from<Node>(mutation.removedNodes).some(isWatermarkEle);
   }
   // Whether the watermark dom property value has been modified
   if (mutation.type === 'attributes' && isWatermarkEle(mutation.target)) {

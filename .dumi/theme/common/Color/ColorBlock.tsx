@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import { message } from 'antd';
+import { App } from 'antd';
+import copy from 'antd/es/_util/copy';
 
 interface ColorBlockProps {
   color: string;
@@ -9,6 +9,7 @@ interface ColorBlockProps {
 }
 
 const ColorBlock: React.FC<ColorBlockProps> = (props) => {
+  const { message } = App.useApp();
   const { color, index, dark } = props;
   const textStyle = useMemo<React.CSSProperties>(() => {
     const colorMap = { default: ['#fff', 'unset'], dark: ['#314659', '#fff'] };
@@ -19,13 +20,17 @@ const ColorBlock: React.FC<ColorBlockProps> = (props) => {
       fontWeight: index === 6 ? 'bold' : 'normal',
     };
   }, [color, dark, index]);
+
+  const onCopy = async () => {
+    await copy(color);
+    message.success(`Copied: ${color}`);
+  };
+
   return (
-    <CopyToClipboard text={color} onCopy={() => message.success(`Copied: ${color}`)}>
-      <div className="main-color-item" style={textStyle}>
-        color-{index}
-        <span className="main-color-value">{color.toLowerCase()}</span>
-      </div>
-    </CopyToClipboard>
+    <div className="main-color-item" style={{ ...textStyle, cursor: 'pointer' }} onClick={onCopy}>
+      color-{index}
+      <span className="main-color-value">{color.toLowerCase()}</span>
+    </div>
   );
 };
 

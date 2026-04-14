@@ -1,13 +1,12 @@
-import type { CSSInterpolation } from '@ant-design/cssinjs';
+import type { CSSInterpolation, CSSObject } from '@ant-design/cssinjs';
 
 import type { FullToken, GenerateStyle, GetDefaultToken } from '../../theme/internal';
 import { genStyleHooks, mergeToken } from '../../theme/internal';
 import { alignItemsValues, flexWrapValues, justifyContentValues } from '../utils';
 
 /** Component only token. Which will handle additional calculation of alias token */
-export interface ComponentToken {
-  // Component token here
-}
+// biome-ignore lint/suspicious/noEmptyInterface: ComponentToken need to be empty by default
+export interface ComponentToken {}
 
 export interface FlexToken extends FullToken<'Flex'> {
   /**
@@ -33,11 +32,13 @@ export interface FlexToken extends FullToken<'Flex'> {
   flexGapLG: number;
 }
 
-const genFlexStyle: GenerateStyle<FlexToken> = (token) => {
+const genFlexStyle: GenerateStyle<FlexToken, CSSObject> = (token) => {
   const { componentCls } = token;
   return {
     [componentCls]: {
       display: 'flex',
+      margin: 0,
+      padding: 0,
       '&-vertical': {
         flexDirection: 'column',
       },
@@ -51,14 +52,14 @@ const genFlexStyle: GenerateStyle<FlexToken> = (token) => {
   };
 };
 
-const genFlexGapStyle: GenerateStyle<FlexToken> = (token) => {
+const genFlexGapStyle: GenerateStyle<FlexToken, CSSObject> = (token) => {
   const { componentCls } = token;
   return {
     [componentCls]: {
       '&-gap-small': {
         gap: token.flexGapSM,
       },
-      '&-gap-middle': {
+      '&-gap-medium, &-gap-middle': {
         gap: token.flexGap,
       },
       '&-gap-large': {
@@ -68,7 +69,7 @@ const genFlexGapStyle: GenerateStyle<FlexToken> = (token) => {
   };
 };
 
-const genFlexWrapStyle: GenerateStyle<FlexToken> = (token) => {
+const genFlexWrapStyle: GenerateStyle<FlexToken, CSSObject> = (token) => {
   const { componentCls } = token;
   const wrapStyle: CSSInterpolation = {};
   flexWrapValues.forEach((value) => {
@@ -77,7 +78,7 @@ const genFlexWrapStyle: GenerateStyle<FlexToken> = (token) => {
   return wrapStyle;
 };
 
-const genAlignItemsStyle: GenerateStyle<FlexToken> = (token) => {
+const genAlignItemsStyle: GenerateStyle<FlexToken, CSSObject> = (token) => {
   const { componentCls } = token;
   const alignStyle: CSSInterpolation = {};
   alignItemsValues.forEach((value) => {
@@ -86,7 +87,7 @@ const genAlignItemsStyle: GenerateStyle<FlexToken> = (token) => {
   return alignStyle;
 };
 
-const genJustifyContentStyle: GenerateStyle<FlexToken> = (token) => {
+const genJustifyContentStyle: GenerateStyle<FlexToken, CSSObject> = (token) => {
   const { componentCls } = token;
   const justifyStyle: CSSInterpolation = {};
   justifyContentValues.forEach((value) => {

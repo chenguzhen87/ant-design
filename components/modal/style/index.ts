@@ -1,12 +1,19 @@
 import type React from 'react';
+import type { CSSObject } from '@ant-design/cssinjs';
 import { unit } from '@ant-design/cssinjs';
 
-import { genFocusStyle, resetComponent } from '../../style';
+import { getMediaSize } from '../../grid/style';
+import { genFocusOutline, genFocusStyle, resetComponent } from '../../style';
 import { initFadeMotion, initZoomMotion } from '../../style/motion';
-import type { GlobalToken } from '../../theme';
-import type { AliasToken, FullToken, GenerateStyle } from '../../theme/internal';
+import type {
+  AliasToken,
+  FullToken,
+  GenerateStyle,
+  GenStyleFn,
+  GlobalToken,
+  TokenWithCommonCls,
+} from '../../theme/internal';
 import { genStyleHooks, mergeToken } from '../../theme/internal';
-import type { GenStyleFn, TokenWithCommonCls } from '../../theme/util/genComponentStyleHook';
 
 /** Component only token. Which will handle additional calculation of alias token */
 export interface ComponentToken {
@@ -20,7 +27,7 @@ export interface ComponentToken {
    * @desc 标题行高
    * @descEN Line height of title
    */
-  titleLineHeight: number;
+  titleLineHeight: number | string;
   /**
    * @desc 标题字体大小
    * @descEN Font size of title
@@ -68,16 +75,55 @@ export interface ComponentToken {
   confirmBtnsMarginTop: string | number;
 }
 
+/**
+ * @desc Modal 组件的 Token
+ * @descEN Token for Modal component
+ */
 export interface ModalToken extends FullToken<'Modal'> {
-  // Custom token here
+  /**
+   * @desc 模态框头部高度
+   * @descEN Height of modal header
+   */
   modalHeaderHeight: number | string;
+  /**
+   * @desc 模态框底部边框颜色
+   * @descEN Border color of modal footer
+   */
   modalFooterBorderColorSplit: string;
+  /**
+   * @desc 模态框底部边框样式
+   * @descEN Border style of modal footer
+   */
   modalFooterBorderStyle: string;
-  modalFooterBorderWidth: number;
+  /**
+   * @desc 模态框底部边框宽度
+   * @descEN Border width of modal footer
+   */
+  modalFooterBorderWidth: number | string;
+  /**
+   * @desc 模态框关闭图标颜色
+   * @descEN Color of modal close icon
+   */
   modalCloseIconColor: string;
+  /**
+   * @desc 模态框关闭图标悬停颜色
+   * @descEN Hover color of modal close icon
+   */
   modalCloseIconHoverColor: string;
+  /**
+   * @desc 模态框关闭按钮尺寸
+   * @descEN Size of modal close button
+   */
   modalCloseBtnSize: number | string;
+  /**
+   * @desc 模态框确认图标尺寸
+   * @descEN Size of modal confirm icon
+   */
   modalConfirmIconSize: number | string;
+  /**
+   * @desc 模态框标题高度
+   * @descEN Height of modal title
+   */
   modalTitleHeight: number | string;
 }
 
@@ -105,7 +151,7 @@ export const genModalMaskStyle: GenerateStyle<TokenWithCommonCls<AliasToken>> = 
 
         // https://github.com/ant-design/ant-design/issues/37329
         // https://github.com/ant-design/ant-design/issues/40272
-        [`${componentCls}${antCls}-zoom-leave ${componentCls}-content`]: {
+        [`${componentCls}${antCls}-zoom-leave ${componentCls}-container`]: {
           pointerEvents: 'none',
         },
 
@@ -115,6 +161,10 @@ export const genModalMaskStyle: GenerateStyle<TokenWithCommonCls<AliasToken>> = 
           height: '100%',
           backgroundColor: token.colorBgMask,
           pointerEvents: 'none',
+
+          [`&${componentCls}-mask-blur`]: {
+            backdropFilter: 'blur(4px)',
+          },
 
           [`${componentCls}-hidden`]: {
             display: 'none',
@@ -135,7 +185,7 @@ export const genModalMaskStyle: GenerateStyle<TokenWithCommonCls<AliasToken>> = 
 };
 
 const genModalStyle: GenerateStyle<ModalToken> = (token) => {
-  const { componentCls } = token;
+  const { componentCls, motionDurationMid } = token;
 
   return [
     // ======================== Root =========================
@@ -188,7 +238,11 @@ const genModalStyle: GenerateStyle<ModalToken> = (token) => {
         width: 'auto',
         maxWidth: `calc(100vw - ${unit(token.calc(token.margin).mul(2).equal())})`,
         margin: '0 auto',
-        paddingBottom: token.paddingLG,
+
+        '&:focus-visible': {
+          borderRadius: token.borderRadiusLG,
+          ...genFocusOutline(token),
+        },
 
         [`${componentCls}-title`]: {
           margin: 0,
@@ -199,7 +253,7 @@ const genModalStyle: GenerateStyle<ModalToken> = (token) => {
           wordWrap: 'break-word',
         },
 
-        [`${componentCls}-content`]: {
+        [`${componentCls}-container`]: {
           position: 'relative',
           backgroundColor: token.contentBg,
           backgroundClip: 'padding-box',
@@ -231,16 +285,21 @@ const genModalStyle: GenerateStyle<ModalToken> = (token) => {
           border: 0,
           outline: 0,
           cursor: 'pointer',
-          transition: `color ${token.motionDurationMid}, background-color ${token.motionDurationMid}`,
-
+          transition: ['color', 'background-color']
+            .map((prop) => `${prop} ${motionDurationMid}`)
+            .join(', '),
           '&-x': {
             display: 'flex',
             fontSize: token.fontSizeLG,
             fontStyle: 'normal',
-            lineHeight: `${unit(token.modalCloseBtnSize)}`,
+            lineHeight: unit(token.modalCloseBtnSize),
             justifyContent: 'center',
             textTransform: 'none',
             textRendering: 'auto',
+          },
+
+          '&:disabled': {
+            pointerEvents: 'none',
           },
 
           '&:hover': {
@@ -270,6 +329,14 @@ const genModalStyle: GenerateStyle<ModalToken> = (token) => {
           lineHeight: token.lineHeight,
           wordWrap: 'break-word',
           padding: token.bodyPadding,
+          [`${componentCls}-body-skeleton`]: {
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            margin: `${unit(token.margin)} auto`,
+          },
         },
 
         [`${componentCls}-footer`]: {
@@ -299,7 +366,7 @@ const genModalStyle: GenerateStyle<ModalToken> = (token) => {
         display: 'flex',
         flexDirection: 'column',
 
-        [`${componentCls}-content,
+        [`${componentCls}-container,
           ${componentCls}-body,
           ${componentCls}-confirm-body-wrapper`]: {
           display: 'flex',
@@ -315,13 +382,12 @@ const genModalStyle: GenerateStyle<ModalToken> = (token) => {
   ];
 };
 
-const genRTLStyle: GenerateStyle<ModalToken> = (token) => {
+const genRTLStyle: GenerateStyle<ModalToken, CSSObject> = (token) => {
   const { componentCls } = token;
   return {
     [`${componentCls}-root`]: {
       [`${componentCls}-wrap-rtl`]: {
         direction: 'rtl',
-
         [`${componentCls}-confirm-body`]: {
           direction: 'rtl',
         },
@@ -330,8 +396,45 @@ const genRTLStyle: GenerateStyle<ModalToken> = (token) => {
   };
 };
 
+const genResponsiveWidthStyle: GenerateStyle<ModalToken, CSSObject> = (token) => {
+  const { componentCls } = token;
+
+  const oriGridMediaSizesMap: Record<string, number> = getMediaSize(token);
+  const gridMediaSizesMap = { ...oriGridMediaSizesMap };
+  delete gridMediaSizesMap.xs;
+
+  const cssVarPrefix = `--${componentCls.replace('.', '')}-`;
+
+  const responsiveStyles = Object.keys(gridMediaSizesMap).map((key) => ({
+    [`@media (min-width: ${unit(gridMediaSizesMap[key])})`]: {
+      width: `var(${cssVarPrefix}${key}-width)`,
+    },
+  }));
+
+  return {
+    [`${componentCls}-root`]: {
+      [componentCls]: [
+        // Fallback of css variable. e.g. --modal-sm-width: var(--modal-xs-width)
+        ...Object.keys(oriGridMediaSizesMap).map((currentKey, index) => {
+          const previousKey = Object.keys(oriGridMediaSizesMap)[index - 1];
+          return previousKey
+            ? {
+                [`${cssVarPrefix}${currentKey}-width`]: `var(${cssVarPrefix}${previousKey}-width)`,
+              }
+            : null;
+        }),
+        {
+          width: `var(${cssVarPrefix}xs-width)`,
+        },
+
+        ...responsiveStyles,
+      ],
+    },
+  };
+};
+
 // ============================== Export ==============================
-export const prepareToken: (token: Parameters<GenStyleFn<'Modal'>>[0]) => ModalToken = (token) => {
+export const prepareToken = (token: Parameters<GenStyleFn<'Modal'>>[0]) => {
   const headerPaddingVertical = token.padding;
   const headerFontSize = token.fontSizeHeading5;
   const headerLineHeight = token.lineHeightHeading5;
@@ -356,7 +459,7 @@ export const prepareToken: (token: Parameters<GenStyleFn<'Modal'>>[0]) => ModalT
 
 export const prepareComponentToken = (token: GlobalToken) => ({
   footerBg: 'transparent',
-  headerBg: token.colorBgElevated,
+  headerBg: 'transparent',
   titleLineHeight: token.lineHeightHeading5,
   titleFontSize: token.fontSizeHeading5,
   contentBg: token.colorBgElevated,
@@ -385,6 +488,7 @@ export const prepareComponentToken = (token: GlobalToken) => ({
     : 0,
   confirmIconMarginInlineEnd: token.wireframe ? token.margin : token.marginSM,
   confirmBtnsMarginTop: token.wireframe ? token.marginLG : token.marginSM,
+  mask: true,
 });
 
 export default genStyleHooks(
@@ -397,6 +501,7 @@ export default genStyleHooks(
       genRTLStyle(modalToken),
       genModalMaskStyle(modalToken),
       initZoomMotion(modalToken, 'zoom'),
+      genResponsiveWidthStyle(modalToken),
     ];
   },
   prepareComponentToken,

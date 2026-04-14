@@ -21,7 +21,7 @@ describe('List Item Layout', () => {
   ];
 
   it('horizontal itemLayout List which contains string nodes should not be flex container', () => {
-    const { container: wrapper } = render(
+    const { container } = render(
       <List
         dataSource={data}
         renderItem={(item) => (
@@ -31,13 +31,11 @@ describe('List Item Layout', () => {
         )}
       />,
     );
-    expect(
-      wrapper.querySelectorAll('.ant-list-item')[0].classList.contains('ant-list-item-no-flex'),
-    ).toBe(true);
+    expect(container.querySelectorAll('.ant-list-item')[0]).toHaveClass('ant-list-item-no-flex');
   });
 
   it('horizontal itemLayout List should be flex container by default', () => {
-    const { container: wrapper } = render(
+    const { container } = render(
       <List
         dataSource={data}
         renderItem={(item) => (
@@ -50,13 +48,11 @@ describe('List Item Layout', () => {
         )}
       />,
     );
-    expect(
-      wrapper.querySelector('.ant-list-item')?.classList.contains('ant-list-item-no-flex'),
-    ).toBe(false);
+    expect(container.querySelector('.ant-list-item')).not.toHaveClass('ant-list-item-no-flex');
   });
 
   it('vertical itemLayout List should be flex container when there is extra node', () => {
-    const { container: wrapper } = render(
+    const { container } = render(
       <List
         itemLayout="vertical"
         dataSource={data}
@@ -70,13 +66,13 @@ describe('List Item Layout', () => {
         )}
       />,
     );
-    expect(
-      wrapper.querySelectorAll('.ant-list-item')[0].classList.contains('ant-list-item-no-flex'),
-    ).toBe(false);
+    expect(container.querySelectorAll('.ant-list-item')[0]).not.toHaveClass(
+      'ant-list-item-no-flex',
+    );
   });
 
   it('vertical itemLayout List should not be flex container when there is not extra node', () => {
-    const { container: wrapper } = render(
+    const { container } = render(
       <List
         itemLayout="vertical"
         dataSource={data}
@@ -90,9 +86,7 @@ describe('List Item Layout', () => {
         )}
       />,
     );
-    expect(
-      wrapper.querySelectorAll('.ant-list-item')[0].classList.contains('ant-list-item-no-flex'),
-    ).toBe(true);
+    expect(container.querySelectorAll('.ant-list-item')[0]).toHaveClass('ant-list-item-no-flex');
   });
 
   it('horizontal itemLayout List should accept extra node', () => {
@@ -232,7 +226,7 @@ describe('List Item Layout', () => {
   });
 
   it('List.Item.Meta title should have no default margin', () => {
-    const { container } = render(
+    render(
       <List
         dataSource={[{ id: 1, title: `ant design` }]}
         renderItem={(item) => (
@@ -243,7 +237,70 @@ describe('List Item Layout', () => {
       />,
     );
 
-    const title = container.querySelector('.ant-list-item-meta-title');
-    expect(title && getComputedStyle(title).margin).toEqual('0px 0px 4px 0px');
+    const styles = document.head.querySelectorAll('style');
+    const style = Array.from(styles).find((s) => s.innerHTML.includes('.ant-list-item-meta-title'));
+    expect(style?.innerHTML).toContain(
+      '.ant-list-item-meta-title{margin:0 0 var(--ant-margin-xxs) 0;',
+    );
+  });
+
+  it('List.Item support styles and classNames', () => {
+    const dataSource = [{ id: 1, title: `ant design` }];
+    const getItem = (item: any, provider?: boolean) => {
+      const styles = provider ? { extra: { color: 'red' }, actions: { color: 'blue' } } : undefined;
+      return (
+        <List.Item
+          extra="test-extra"
+          actions={['test-actions']}
+          styles={styles}
+          classNames={{ extra: 'test-extra', actions: 'test-actions' }}
+        >
+          {item.title}
+        </List.Item>
+      );
+    };
+
+    // ConfigProvider
+    const { container, rerender } = render(
+      <ConfigProvider
+        list={{
+          item: {
+            styles: { extra: { color: 'pink' }, actions: { color: 'green' } },
+            classNames: { extra: 'test-provider-extra', actions: 'test-provider-actions' },
+          },
+        }}
+      >
+        <List itemLayout="vertical" dataSource={dataSource} renderItem={(item) => getItem(item)} />,
+      </ConfigProvider>,
+    );
+    expect(container.querySelector('.ant-list-item-extra')!).toHaveStyle(
+      'color: rgb(255, 192, 203)',
+    );
+    expect(container.querySelector('.ant-list-item-action')!).toHaveStyle('color: rgb(0, 128, 0)');
+
+    expect(container.querySelector('.ant-list-item-extra')!).toHaveClass(
+      'test-provider-extra test-extra',
+    );
+    expect(container.querySelector('.ant-list-item-action')!).toHaveClass(
+      'test-provider-actions test-actions',
+    );
+
+    // item styles is high priority
+    rerender(
+      <ConfigProvider
+        list={{
+          item: { styles: { extra: { color: 'pink' }, actions: { color: 'green' } } },
+        }}
+      >
+        <List
+          itemLayout="vertical"
+          dataSource={dataSource}
+          renderItem={(item) => getItem(item, true)}
+        />
+        ,
+      </ConfigProvider>,
+    );
+    expect(container.querySelector('.ant-list-item-extra')!).toHaveStyle('color: rgb(255, 0, 0)');
+    expect(container.querySelector('.ant-list-item-action')!).toHaveStyle('color: rgb(0, 0, 255)');
   });
 });

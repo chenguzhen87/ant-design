@@ -2,21 +2,23 @@ import type { CSSInterpolation, DerivativeFunc } from '@ant-design/cssinjs';
 
 import type { AnyObject } from '../../_util/type';
 import type { AliasToken } from './alias';
-import type { ComponentTokenMap } from './components';
 import type { MapToken } from './maps';
 import type { SeedToken } from './seeds';
 
 export type MappingAlgorithm = DerivativeFunc<SeedToken, MapToken>;
 
-export type OverrideToken = {
-  [key in keyof ComponentTokenMap]: Partial<ComponentTokenMap[key]> & Partial<AliasToken>;
-};
-
-/** Final token which contains the components level override */
-export type GlobalToken = AliasToken & ComponentTokenMap;
-
 export type { AliasToken } from './alias';
 export type { ComponentTokenMap } from './components';
+
+export type {
+  FullToken,
+  GenStyleFn,
+  GetDefaultToken,
+  GlobalToken,
+  OverrideComponent,
+  OverrideToken,
+} from './cssinjs-utils';
+
 export type {
   ColorMapToken,
   ColorNeutralMapToken,
@@ -29,8 +31,8 @@ export type {
 } from './maps';
 export { PresetColors } from './presetColors';
 export type {
-  LegacyColorPalettes,
   ColorPalettes,
+  LegacyColorPalettes,
   PresetColorKey,
   PresetColorType,
 } from './presetColors';

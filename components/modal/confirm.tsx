@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { render as reactRender, unmount as reactUnmount } from 'rc-util/lib/React/render';
+import { render, unmount } from '@rc-component/util/lib/React/render';
 
 import warning from '../_util/warning';
 import ConfigProvider, { ConfigContext, globalConfig, warnContext } from '../config-provider';
@@ -15,14 +15,22 @@ function getRootPrefixCls() {
   return defaultRootPrefixCls;
 }
 
-type ConfigUpdate = ModalFuncProps | ((prevConfig: ModalFuncProps) => ModalFuncProps);
+export type ConfigUpdate = ModalFuncProps | ((prevConfig: ModalFuncProps) => ModalFuncProps);
 
 export type ModalFunc = (props: ModalFuncProps) => {
   destroy: () => void;
   update: (configUpdate: ConfigUpdate) => void;
 };
 
-export type ModalStaticFunctions = Record<NonNullable<ModalFuncProps['type']>, ModalFunc>;
+export type ModalStaticFunctions = {
+  info: ModalFunc;
+  success: ModalFunc;
+  error: ModalFunc;
+  warning: ModalFunc;
+  confirm: ModalFunc;
+  /** @deprecated Please use `warning` instead */
+  warn: ModalFunc;
+};
 
 const ConfirmDialogWrapper: React.FC<ConfirmDialogProps> = (props) => {
   const { prefixCls: customizePrefixCls, getContainer, direction } = props;
@@ -68,28 +76,28 @@ export default function confirm(config: ModalFuncProps) {
   }
 
   const container = document.createDocumentFragment();
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   let currentConfig = { ...config, close, open: true } as any;
   let timeoutId: ReturnType<typeof setTimeout>;
 
   function destroy(...args: any[]) {
-    const triggerCancel = args.some((param) => param && param.triggerCancel);
-    if (config.onCancel && triggerCancel) {
-      config.onCancel(() => {}, ...args.slice(1));
+    const triggerCancel = args.some((param) => param?.triggerCancel);
+    if (triggerCancel) {
+      config.onCancel?.(() => {}, ...args.slice(1));
     }
     for (let i = 0; i < destroyFns.length; i++) {
       const fn = destroyFns[i];
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       if (fn === close) {
         destroyFns.splice(i, 1);
         break;
       }
     }
 
-    reactUnmount(container);
+    unmount(container).then(() => {
+      // Do nothing
+    });
   }
 
-  function render(props: any) {
+  const scheduleRender = (props: ConfirmDialogProps) => {
     clearTimeout(timeoutId);
 
     /**
@@ -104,14 +112,14 @@ export default function confirm(config: ModalFuncProps) {
 
       const dom = <ConfirmDialogWrapper {...props} />;
 
-      reactRender(
+      render(
         <ConfigProvider prefixCls={rootPrefixCls} iconPrefixCls={iconPrefixCls} theme={theme}>
-          {global.holderRender ? global.holderRender(dom) : dom}
+          {typeof global.holderRender === 'function' ? global.holderRender(dom) : dom}
         </ConfigProvider>,
         container,
       );
     });
-  }
+  };
 
   function close(...args: any[]) {
     currentConfig = {
@@ -126,27 +134,19 @@ export default function confirm(config: ModalFuncProps) {
       },
     };
 
-    // Legacy support
-    if (currentConfig.visible) {
-      delete currentConfig.visible;
-    }
-
-    render(currentConfig);
+    scheduleRender(currentConfig);
   }
 
   function update(configUpdate: ConfigUpdate) {
     if (typeof configUpdate === 'function') {
       currentConfig = configUpdate(currentConfig);
     } else {
-      currentConfig = {
-        ...currentConfig,
-        ...configUpdate,
-      };
+      currentConfig = { ...currentConfig, ...configUpdate };
     }
-    render(currentConfig);
+    scheduleRender(currentConfig);
   }
 
-  render(currentConfig);
+  scheduleRender(currentConfig);
 
   destroyFns.push(close);
 

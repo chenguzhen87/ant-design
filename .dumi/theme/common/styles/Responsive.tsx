@@ -2,7 +2,7 @@ import React from 'react';
 import { css, Global } from '@emotion/react';
 import { useTheme } from 'antd-style';
 
-export default () => {
+const Responsive: React.FC = () => {
   const token = useTheme();
 
   return (
@@ -11,7 +11,7 @@ export default () => {
         .nav-phone-icon {
           position: absolute;
           bottom: 17px;
-          right: 30px;
+          inset-inline-end: 30px;
           z-index: 1;
           display: none;
           width: 16px;
@@ -66,7 +66,7 @@ export default () => {
             float: none;
             width: auto;
             padding-bottom: 30px;
-            border-right: 0;
+            border-inline-end: 0;
           }
 
           .ant-row-rtl {
@@ -98,8 +98,8 @@ export default () => {
           .drawer {
             .ant-menu-inline .ant-menu-item::after,
             .ant-menu-vertical .ant-menu-item::after {
-              right: auto;
-              left: 0;
+              inset-inline-end: auto;
+              inset-inline-start: 0;
             }
           }
 
@@ -336,3 +336,5 @@ export default () => {
     />
   );
 };
+
+export default Responsive;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import useMergedState from 'rc-util/lib/hooks/useMergedState';
+import { useControlledState } from '@rc-component/util';
 
 import ConfigProvider, { ConfigContext } from '../config-provider';
 import type { AnyObject } from './type';
@@ -19,10 +19,11 @@ export interface BaseProps {
 
 /* istanbul ignore next */
 const genPurePanel = <ComponentProps extends BaseProps = BaseProps>(
-  Component: any,
-  defaultPrefixCls?: string,
-  getDropdownCls?: null | ((prefixCls: string) => string),
+  Component: React.ComponentType<Readonly<ComponentProps>>,
+  alignPropName?: 'align' | 'dropdownAlign' | 'popupAlign',
   postProps?: (props: ComponentProps) => ComponentProps,
+  defaultPrefixCls?: string,
+  getDropdownCls?: (prefixCls: string) => string,
 ) => {
   type WrapProps = ComponentProps & AnyObject;
 
@@ -32,9 +33,7 @@ const genPurePanel = <ComponentProps extends BaseProps = BaseProps>(
     const holderRef = React.useRef<HTMLDivElement>(null);
     const [popupHeight, setPopupHeight] = React.useState(0);
     const [popupWidth, setPopupWidth] = React.useState(0);
-    const [open, setOpen] = useMergedState(false, {
-      value: props.open,
-    });
+    const [open, setOpen] = useControlledState(false, props.open);
 
     const { getPrefixCls } = React.useContext(ConfigContext);
     const prefixCls = getPrefixCls(defaultPrefixCls || 'select', customizePrefixCls);
@@ -55,7 +54,6 @@ const genPurePanel = <ComponentProps extends BaseProps = BaseProps>(
             ? `.${getDropdownCls(prefixCls)}`
             : `.${prefixCls}-dropdown`;
           const popup = holderRef.current?.querySelector(dropdownCls);
-
           if (popup) {
             clearInterval(interval);
             resizeObserver.observe(popup);
@@ -67,7 +65,7 @@ const genPurePanel = <ComponentProps extends BaseProps = BaseProps>(
           resizeObserver.disconnect();
         };
       }
-    }, []);
+    }, [prefixCls]);
 
     let mergedProps: WrapProps = {
       ...props,
@@ -76,12 +74,22 @@ const genPurePanel = <ComponentProps extends BaseProps = BaseProps>(
         margin: 0,
       },
       open,
-      visible: open,
       getPopupContainer: () => holderRef.current!,
     };
 
     if (postProps) {
       mergedProps = postProps(mergedProps);
+    }
+    if (alignPropName) {
+      mergedProps = {
+        ...mergedProps,
+        [alignPropName]: {
+          overflow: {
+            adjustX: false,
+            adjustY: false,
+          },
+        },
+      };
     }
     const mergedStyle: React.CSSProperties = {
       paddingBottom: popupHeight,

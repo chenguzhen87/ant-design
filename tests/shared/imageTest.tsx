@@ -1,13 +1,15 @@
-import path from 'path';
+import path from 'node:path';
 import React from 'react';
 // Reference: https://github.com/ant-design/ant-design/pull/24003#discussion_r427267386
 import { createCache, extractStyle, StyleProvider } from '@ant-design/cssinjs';
+import { warning as rcWarning } from '@rc-component/util';
+import { extractStaticStyle } from 'antd-style';
 import dayjs from 'dayjs';
 import fse from 'fs-extra';
 import { globSync } from 'glob';
 import { JSDOM } from 'jsdom';
 import MockDate from 'mockdate';
-import type { HTTPRequest } from 'puppeteer';
+import type { HTTPRequest, Viewport } from 'puppeteer';
 import ReactDOMServer from 'react-dom/server';
 
 import { App, ConfigProvider, theme } from '../../components';
@@ -28,23 +30,23 @@ const themes = {
 
 interface ImageTestOptions {
   onlyViewport?: boolean;
-  ssr?: boolean;
+  ssr?: boolean | string[];
   openTriggerClassName?: string;
+  mobile?: boolean;
 }
 
 // eslint-disable-next-line jest/no-export
 export default function imageTest(
-  component: React.ReactElement,
+  component: React.ReactElement<any>,
   identifier: string,
+  filename: string,
   options: ImageTestOptions,
 ) {
   let doc: Document;
   let container: HTMLDivElement;
 
   beforeAll(async () => {
-    const dom = new JSDOM('<!DOCTYPE html><body></body></p>', {
-      url: 'http://localhost/',
-    });
+    const dom = new JSDOM('<!DOCTYPE html><body></body></html>', { url: 'http://localhost/' });
     const win = dom.window;
     doc = win.document;
 
@@ -92,8 +94,8 @@ export default function imageTest(
     // Fake matchMedia
     win.matchMedia = (() => ({
       matches: false,
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
     })) as unknown as typeof matchMedia;
 
     // Fill window
@@ -103,15 +105,37 @@ export default function imageTest(
   });
 
   beforeEach(() => {
+    page.removeAllListeners('request'); // 保证没有历史残留
     doc.body.innerHTML = `<div id="root"></div>`;
     container = doc.querySelector<HTMLDivElement>('#root')!;
   });
 
-  function test(name: string, suffix: string, themedComponent: React.ReactElement) {
+  afterEach(() => {
+    page.removeAllListeners('request'); // 保证没有历史残留
+  });
+
+  afterAll(async () => {
+    await page.setRequestInterception(false);
+  });
+
+  const test = (
+    name: string,
+    suffix: string,
+    themedComponent: React.ReactElement<any>,
+    mobile = false,
+  ) => {
     it(name, async () => {
-      await page.setViewport({ width: 800, height: 600 });
+      const sharedViewportConfig: Partial<Viewport> = {
+        isMobile: mobile,
+        hasTouch: mobile,
+      };
+
+      await page.setViewport({ width: 800, height: 600, ...sharedViewportConfig });
 
       const onRequestHandle = (request: HTTPRequest) => {
+        if (request.isInterceptResolutionHandled?.()) {
+          return;
+        }
         if (['image'].includes(request.resourceType())) {
           request.abort();
         } else {
@@ -121,8 +145,11 @@ export default function imageTest(
 
       const { openTriggerClassName } = options;
 
+      const requestListener = (request: any) => onRequestHandle(request as HTTPRequest);
+
       MockDate.set(dayjs('2016-11-22').valueOf());
-      page.on('request', onRequestHandle);
+      page.on('request', requestListener);
+
       await page.goto(`file://${process.cwd()}/tests/index.html`);
       await page.addStyleTag({ path: `${process.cwd()}/components/style/reset.css` });
       await page.addStyleTag({ content: '*{animation: none!important;}' });
@@ -149,18 +176,23 @@ export default function imageTest(
       let html: string;
       let styleStr: string;
 
-      if (options.ssr) {
+      if (
+        options.ssr &&
+        (options.ssr === true || options.ssr.some((demoName) => filename.includes(demoName)))
+      ) {
         html = ReactDOMServer.renderToString(element);
-        styleStr = extractStyle(cache);
+        styleStr = extractStyle(cache) + extractStaticStyle(html).map((item) => item.tag);
       } else {
-        const { unmount } = render(element, {
-          container,
-        });
+        const { unmount } = render(element, { container });
         html = container.innerHTML;
-        styleStr = extractStyle(cache);
-
+        styleStr = extractStyle(cache) + extractStaticStyle(html).map((item) => item.tag);
         // We should extract style before unmount
         unmount();
+      }
+
+      // Remove mobile css for hardcode since CI will always think as mobile
+      if (!mobile) {
+        styleStr = styleStr.replace(/@media\(hover:\s*none\)/g, '@media(hover:not-valid)');
       }
 
       if (openTriggerClassName) {
@@ -194,80 +226,131 @@ export default function imageTest(
         },
         html,
         styleStr,
-        openTriggerClassName,
+        openTriggerClassName || '',
       );
 
       if (!options.onlyViewport) {
         // Get scroll height of the rendered page and set viewport
         const bodyHeight = await page.evaluate(() => document.body.scrollHeight);
-        await page.setViewport({ width: 800, height: bodyHeight });
+        // loooooong image
+        rcWarning(
+          bodyHeight < 4096, // Expected height
+          `[IMAGE TEST] [${identifier}] may cause screenshots to be very long and unacceptable.
+            Please consider using \`onlyViewport: ["filename.tsx"]\`, read more: https://github.com/ant-design/ant-design/pull/52053`,
+        );
+        await page.setViewport({ width: 800, height: bodyHeight, ...sharedViewportConfig });
       }
 
-      const image = await page.screenshot({
-        fullPage: !options.onlyViewport,
-      });
+      await page.waitForFunction(() =>
+        Promise.race([
+          // timeout 100ms
+          new Promise((resolve) => setTimeout(() => resolve(true), 100)),
+          // raf * 2
+          new Promise((resolve) => {
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                resolve(true);
+              });
+            });
+          }),
+        ]),
+      );
 
+      const image = await page.screenshot({ fullPage: !options.onlyViewport });
       await fse.writeFile(path.join(snapshotPath, `${identifier}${suffix}.png`), image);
-
       MockDate.reset();
-      page.off('request', onRequestHandle);
+      page.off('request', requestListener);
     });
-  }
+  };
 
-  Object.entries(themes).forEach(([key, algorithm]) => {
-    test(
-      `component image screenshot should correct ${key}`,
-      `.${key}`,
-      <div style={{ background: key === 'dark' ? '#000' : '', padding: `24px 12px` }} key={key}>
-        <ConfigProvider theme={{ algorithm }}>{component}</ConfigProvider>
-      </div>,
-    );
-    test(
-      `[CSS Var] component image screenshot should correct ${key}`,
-      `.${key}.css-var`,
-      <div style={{ background: key === 'dark' ? '#000' : '', padding: `24px 12px` }} key={key}>
-        <ConfigProvider theme={{ algorithm, cssVar: true }}>{component}</ConfigProvider>
-      </div>,
-    );
-  });
+  if (!options.mobile) {
+    Object.entries(themes).forEach(([key, algorithm]) => {
+      const configTheme = {
+        algorithm,
+        token: {
+          fontFamily: 'Arial',
+        },
+      };
+
+      test(
+        `component image screenshot should correct ${key}`,
+        `.${key}`,
+        <div style={{ background: key === 'dark' ? '#000' : '', padding: `24px 12px` }} key={key}>
+          <ConfigProvider theme={configTheme}>{component}</ConfigProvider>
+        </div>,
+      );
+    });
+
+    // Mobile Snapshot
+  } else {
+    test(identifier, `.mobile`, component, true);
+  }
 }
 
 type Options = {
   skip?: boolean | string[];
+  // 方便调试单个 demo 用
+  only?: string[];
   onlyViewport?: boolean | string[];
   /** Use SSR render instead. Only used when the third part deps component */
-  ssr?: boolean;
+  ssr?: boolean | string[];
   /** Open Trigger to check the popup render */
   openTriggerClassName?: string;
+  mobile?: string[];
 };
 
 // eslint-disable-next-line jest/no-export
 export function imageDemoTest(component: string, options: Options = {}) {
   let describeMethod = options.skip === true ? describe.skip : describe;
-  const files = globSync(`./components/${component}/demo/*.tsx`).filter(
-    (file) => !file.includes('_semantic'),
-  );
+  const files = options.only
+    ? options.only.map((file) => `./components/${component}/demo/${file}`)
+    : globSync(`./components/${component}/demo/*.tsx`).filter(
+        (file) => !file.includes('_semantic'),
+      );
+
+  const mobileDemos: [file: string, node: React.ReactElement<any>][] = [];
+
+  const getTestOption = (file: string) => ({
+    onlyViewport:
+      options.onlyViewport === true ||
+      (Array.isArray(options.onlyViewport) && options.onlyViewport.includes(path.basename(file))),
+    ssr: options.ssr,
+    openTriggerClassName: options.openTriggerClassName,
+  });
 
   files.forEach((file) => {
-    if (Array.isArray(options.skip) && options.skip.some((c) => file.endsWith(c))) {
-      describeMethod = describe.skip;
-    } else {
-      describeMethod = describe;
-    }
+    const shouldSkip = Array.isArray(options.skip) && options.skip.includes(path.basename(file));
+    describeMethod = shouldSkip ? describe.skip : describe;
+
     describeMethod(`Test ${file} image`, () => {
-      // eslint-disable-next-line global-require,import/no-dynamic-require
-      let Demo = require(`../../${file}`).default;
-      if (typeof Demo === 'function') {
-        Demo = <Demo />;
+      // Only require the demo file if it's not skipped to avoid dependency issues
+      if (!shouldSkip) {
+        let Demo = jest.requireActual(`../../${file}`).default;
+        if (typeof Demo === 'function') {
+          Demo = <Demo />;
+        }
+        imageTest(Demo, `${component}-${path.basename(file, '.tsx')}`, file, getTestOption(file));
+
+        // Check if need mobile test
+        if ((options.mobile || []).includes(path.basename(file))) {
+          mobileDemos.push([file, Demo]);
+        }
       }
-      imageTest(Demo, `${component}-${path.basename(file, '.tsx')}`, {
-        onlyViewport:
-          options.onlyViewport === true ||
-          (Array.isArray(options.onlyViewport) &&
-            options.onlyViewport.some((c) => file.endsWith(c))),
-        ssr: options.ssr,
-        openTriggerClassName: options.openTriggerClassName,
-      });
     });
   });
+
+  if (mobileDemos.length) {
+    describeMethod(`Test mobile image`, () => {
+      beforeAll(async () => {
+        await jestPuppeteer.resetPage();
+      });
+
+      mobileDemos.forEach(([file, Demo]) => {
+        imageTest(Demo, `${component}-${path.basename(file, '.tsx')}`, file, {
+          ...getTestOption(file),
+          mobile: true,
+        });
+      });
+    });
+  }
 }

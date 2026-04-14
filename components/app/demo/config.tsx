@@ -2,7 +2,7 @@ import React from 'react';
 import { App, Button, Space } from 'antd';
 
 // Sub page
-const MyPage = () => {
+const Page: React.FC = () => {
   const { message, notification } = App.useApp();
 
   const showMessage = () => {
@@ -11,7 +11,7 @@ const MyPage = () => {
 
   const showNotification = () => {
     notification.info({
-      message: `Notification`,
+      title: 'Notification',
       description: 'Hello, Ant Design!!',
     });
   };
@@ -31,6 +31,6 @@ const MyPage = () => {
 // Entry component
 export default () => (
   <App message={{ maxCount: 1 }} notification={{ placement: 'bottomLeft' }}>
-    <MyPage />
+    <Page />
   </App>
 );

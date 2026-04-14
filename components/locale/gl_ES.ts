@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/gl_ES';
+import Pagination from '@rc-component/pagination/lib/locale/gl_ES';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/gl_ES';
@@ -16,6 +15,7 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'Escolla',
+    close: 'Cerrar',
   },
   Table: {
     filterTitle: 'Filtrar menú',
@@ -24,6 +24,11 @@ const localeValues: Locale = {
     selectAll: 'Seleccionar todo',
     selectInvert: 'Invertir selección',
     sortTitle: 'Ordenar',
+  },
+  Tour: {
+    Next: 'Avanzar',
+    Previous: 'Anterior',
+    Finish: 'Finalizar',
   },
   Modal: {
     okText: 'Aceptar',

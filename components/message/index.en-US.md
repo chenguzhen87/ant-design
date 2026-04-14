@@ -24,6 +24,7 @@ demo:
 <code src="./demo/loading.tsx">Message with loading indicator</code>
 <code src="./demo/thenable.tsx">Promise interface</code>
 <code src="./demo/custom-style.tsx">Customized style</code>
+<code src="./demo/style-class.tsx" version="6.0.0">Custom semantic dom styling</code>
 <code src="./demo/update.tsx">Update Message Content</code>
 <code src="./demo/info.tsx">Static method (deprecated)</code>
 <code src="./demo/render-panel.tsx" debug>_InternalPanelDoNotUseOrYouWillBeFired</code>
@@ -68,11 +69,14 @@ The properties of config are as follows:
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | className | Customized CSS class | string | - |
+| classNames | Customize class for each semantic structure inside the component. Supports object or function. | Record<[SemanticDOM](#semantic-dom), string> \| (info: { props })=> Record<[SemanticDOM](#semantic-dom), string> | - |
 | content | The content of the message | ReactNode | - |
 | duration | Time(seconds) before auto-dismiss, don't dismiss if set to 0 | number | 3 |
 | icon | Customized Icon | ReactNode | - |
+| pauseOnHover | keep the timer running or not on hover | boolean | true |
 | key | The unique identifier of the Message | string \| number | - |
 | style | Customized inline style | [CSSProperties](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/e434515761b36830c3e58a970abf5186f005adac/types/react/index.d.ts#L794) | - |
+| styles | Customize inline style for each semantic structure inside the component. Supports object or function. | Record<[SemanticDOM](#semantic-dom), CSSProperties> \| (info: { props })=> Record<[SemanticDOM](#semantic-dom), CSSProperties> | - |
 | onClick | Specify a function that will be called when the message is clicked | function | - |
 | onClose | Specify a function that will be called when the message is closed | function | - |
 
@@ -83,7 +87,7 @@ Methods for global configuration and destruction are also provided:
 - `message.config(options)`
 - `message.destroy()`
 
-> use `message.destroy(key)` to remove a message。
+> use `message.destroy(key)` to remove a message.
 
 #### message.config
 
@@ -108,7 +112,11 @@ message.config({
 | maxCount | Max message show, drop oldest if exceed limit | number | - |  |
 | prefixCls | The prefix className of message node | string | `ant-message` | 4.5.0 |
 | rtl | Whether to enable RTL mode | boolean | false |  |
-| top | Distance from top | number | 8 |  |
+| top | Distance from top | string \| number | 8 |  |
+
+## Semantic DOM
+
+<code src="./demo/_semantic.tsx" simplify="true"></code>
 
 ## Design Token
 
@@ -116,7 +124,7 @@ message.config({
 
 ## FAQ
 
-### Why I can not access context, redux, ConfigProvider `locale/prefixCls/theme` in message?
+### Why I can not access context, redux, ConfigProvider `locale/prefixCls/theme` in message? {#faq-context-redux}
 
 antd will dynamic create React instance by `ReactDOM.render` when call message methods. Whose context is different with origin code located context.
 
@@ -140,6 +148,6 @@ return (
 
 > [App Package Component](/components/app) can be used to simplify the problem of `useMessage` and other methods that need to manually implant contextHolder.
 
-### How to set static methods prefixCls ？
+### How to set static methods prefixCls ？ {#faq-set-prefix-cls}
 
 You can config with [`ConfigProvider.config`](/components/config-provider#configproviderconfig-4130)

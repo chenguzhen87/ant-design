@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Avatar from '..';
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
-import { fireEvent, render } from '../../../tests/utils';
+import { fireEvent, render, waitFakeTimer } from '../../../tests/utils';
 import ConfigProvider from '../../config-provider';
 import useBreakpoint from '../../grid/hooks/useBreakpoint';
 
@@ -182,7 +182,7 @@ describe('Avatar Render', () => {
     const LOAD_SUCCESS_SRC = 'https://api.dicebear.com/7.x/pixel-art/svg';
     const { container } = render(<Avatar src={LOAD_SUCCESS_SRC}>crossorigin</Avatar>);
     expect(container.querySelector('img')?.crossOrigin).toBeFalsy();
-    expect(container.querySelector('img')?.crossOrigin).toEqual('');
+    expect(container.querySelector('img')?.crossOrigin).toBeFalsy();
   });
 
   it('clickable', () => {
@@ -221,5 +221,84 @@ describe('Avatar Render', () => {
     );
     expect(container.querySelector('.ant-avatar-sm')).toBeTruthy();
     expect(container.querySelector('.ant-avatar-lg')).toBeTruthy();
+  });
+
+  it('Avatar.Group support max series props and prompt to deprecated', async () => {
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.useFakeTimers();
+    const { container } = render(
+      <Avatar.Group maxCount={2} maxStyle={{ color: 'blue' }} maxPopoverPlacement="bottom">
+        <Avatar>A</Avatar>
+        <Avatar>B</Avatar>
+        <Avatar>C</Avatar>
+        <Avatar>D</Avatar>
+      </Avatar.Group>,
+    );
+
+    const avatars = container?.querySelectorAll<HTMLSpanElement>('.ant-avatar-group .ant-avatar');
+    fireEvent.mouseEnter(avatars?.[2]);
+    await waitFakeTimer();
+
+    /* check style */
+    expect(container.querySelector('.ant-popover-open')).toBeTruthy();
+    expect(container.querySelector('.ant-popover-open')).toHaveStyle('color: rgb(0, 0, 255)');
+
+    /* check count */
+    expect(avatars.length).toBe(3);
+
+    /* check popover */
+    const popover = container.querySelector('.ant-avatar-group-popover');
+    expect(popover).toBeTruthy();
+    expect(popover).toHaveClass('ant-popover-placement-bottom');
+
+    expect(errSpy).toHaveBeenNthCalledWith(
+      1,
+      'Warning: [antd: Avatar.Group] `maxCount` is deprecated. Please use `max={{ count: number }}` instead.',
+    );
+    expect(errSpy).toHaveBeenNthCalledWith(
+      2,
+      'Warning: [antd: Avatar.Group] `maxStyle` is deprecated. Please use `max={{ style: CSSProperties }}` instead.',
+    );
+    expect(errSpy).toHaveBeenNthCalledWith(
+      3,
+      'Warning: [antd: Avatar.Group] `maxPopoverPlacement` is deprecated. Please use `max={{ popover: PopoverProps }}` instead.',
+    );
+  });
+  it('Avatar.Group support max object props', () => {
+    const { container } = render(
+      <Avatar.Group
+        max={{
+          count: 2,
+          popover: {
+            placement: 'bottomRight',
+            classNames: { root: 'wanpan-111' },
+            styles: { root: { background: 'red' } },
+            content: 'Avatar.Group',
+            open: true,
+          },
+          style: {
+            color: 'blue',
+          },
+        }}
+      >
+        <Avatar>A</Avatar>
+        <Avatar>B</Avatar>
+        <Avatar>C</Avatar>
+        <Avatar>D</Avatar>
+      </Avatar.Group>,
+    );
+
+    /* check count */
+    expect(container.querySelectorAll('.ant-avatar-group .ant-avatar')).toHaveLength(3);
+
+    /* check popover */
+    const popover = container.querySelector('.ant-avatar-group-popover');
+    expect(popover).toBeTruthy();
+    expect(popover).toHaveStyle('background: red');
+    expect(popover).toHaveClass('wanpan-111 ant-popover-placement-bottomRight');
+    expect(container.querySelector('.ant-popover-container')).toHaveTextContent('Avatar.Group');
+
+    /* check style */
+    expect(container.querySelector('.ant-popover-open')).toHaveStyle('color: rgb(0, 0, 255)');
   });
 });

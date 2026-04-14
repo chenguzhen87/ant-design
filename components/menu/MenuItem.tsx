@@ -1,14 +1,13 @@
 import * as React from 'react';
-import classNames from 'classnames';
-import type { MenuItemProps as RcMenuItemProps } from 'rc-menu';
-import { Item } from 'rc-menu';
-import toArray from 'rc-util/lib/Children/toArray';
-import omit from 'rc-util/lib/omit';
+import type { MenuItemProps as RcMenuItemProps } from '@rc-component/menu';
+import { Item } from '@rc-component/menu';
+import { omit, toArray } from '@rc-component/util';
+import { clsx } from 'clsx';
 
 import { cloneElement } from '../_util/reactNode';
 import type { SiderContextProps } from '../layout/Sider';
 import { SiderContext } from '../layout/Sider';
-import type { TooltipProps } from '../tooltip';
+import type { TooltipProps, TooltipSemanticClassNames } from '../tooltip';
 import Tooltip from '../tooltip';
 import type { MenuContextProps } from './MenuContext';
 import MenuContext from './MenuContext';
@@ -29,29 +28,45 @@ type GenericProps<T = unknown> = T extends infer U extends MenuItemProps
     : U
   : MenuItemProps;
 
-type GenericComponent = Omit<MenuItemComponent, ''> & {
-  <T extends MenuItemProps>(
+type GenericComponent = Omit<MenuItemComponent, ''> &
+  (<T extends MenuItemProps>(
     props: GenericProps<T>,
     ...args: RestArgs<MenuItemComponent>
-  ): ReturnType<MenuItemComponent>;
-};
+  ) => ReturnType<MenuItemComponent>);
 
 const MenuItem: GenericComponent = (props) => {
-  const { className, children, icon, title, danger } = props;
+  const { className, children, icon, title, danger, extra } = props;
   const {
     prefixCls,
     firstLevel,
     direction,
     disableMenuItemTitleTooltip,
+    tooltip,
     inlineCollapsed: isInlineCollapsed,
+    styles,
+    classNames,
   } = React.useContext<MenuContextProps>(MenuContext);
   const renderItemChildren = (inlineCollapsed: boolean) => {
-    const wrapNode = <span className={`${prefixCls}-title-content`}>{children}</span>;
+    const label = (children as React.ReactNode[])?.[0];
+    const wrapNode = (
+      <span
+        className={clsx(
+          `${prefixCls}-title-content`,
+          firstLevel ? classNames?.itemContent : classNames?.subMenu?.itemContent,
+          {
+            [`${prefixCls}-title-content-with-extra`]: !!extra || extra === 0,
+          },
+        )}
+        style={firstLevel ? styles?.itemContent : styles?.subMenu?.itemContent}
+      >
+        {children}
+      </span>
+    );
     // inline-collapsed.md demo 依赖 span 来隐藏文字,有 icon 属性，则内部包裹一个 span
     // ref: https://github.com/ant-design/ant-design/pull/23456
     if (!icon || (React.isValidElement(children) && children.type === 'span')) {
-      if (children && inlineCollapsed && firstLevel && typeof children === 'string') {
-        return <div className={`${prefixCls}-inline-collapsed-noicon`}>{children.charAt(0)}</div>;
+      if (children && inlineCollapsed && firstLevel && typeof label === 'string') {
+        return <div className={`${prefixCls}-inline-collapsed-noicon`}>{label.charAt(0)}</div>;
       }
     }
     return wrapNode;
@@ -67,7 +82,14 @@ const MenuItem: GenericComponent = (props) => {
     tooltipTitle = '';
   }
 
-  const tooltipProps: TooltipProps = { title: tooltipTitle };
+  const tooltipConfig = tooltip === false ? undefined : tooltip;
+  const mergedTooltipTitle =
+    tooltipConfig && tooltipConfig.title !== undefined ? tooltipConfig.title : tooltipTitle;
+
+  const tooltipProps: TooltipProps = {
+    ...(tooltipConfig ?? null),
+    title: mergedTooltipTitle,
+  };
 
   if (!siderCollapsed && !isInlineCollapsed) {
     tooltipProps.title = null;
@@ -81,31 +103,67 @@ const MenuItem: GenericComponent = (props) => {
   let returnNode = (
     <Item
       {...omit(props, ['title', 'icon', 'danger'])}
-      className={classNames(
+      className={clsx(
+        firstLevel ? classNames?.item : classNames?.subMenu?.item,
         {
           [`${prefixCls}-item-danger`]: danger,
           [`${prefixCls}-item-only-child`]: (icon ? childrenLength + 1 : childrenLength) === 1,
         },
         className,
       )}
+      style={{
+        ...(firstLevel ? styles?.item : styles?.subMenu?.item),
+        ...props.style,
+      }}
       title={typeof title === 'string' ? title : undefined}
     >
-      {cloneElement(icon, {
-        className: classNames(
-          React.isValidElement(icon) ? icon.props?.className : '',
+      {cloneElement(icon, (oriProps) => ({
+        className: clsx(
           `${prefixCls}-item-icon`,
+          firstLevel ? classNames?.itemIcon : classNames?.subMenu?.itemIcon,
+          oriProps.className,
         ),
-      })}
+        style: {
+          ...(firstLevel ? styles?.itemIcon : styles?.subMenu?.itemIcon),
+          ...oriProps.style,
+        },
+      }))}
       {renderItemChildren(isInlineCollapsed)}
     </Item>
   );
 
-  if (!disableMenuItemTitleTooltip) {
+  if (!disableMenuItemTitleTooltip && tooltip !== false) {
+    const mergedTooltipPlacement =
+      tooltipConfig && tooltipConfig.placement
+        ? tooltipConfig.placement
+        : direction === 'rtl'
+          ? 'left'
+          : 'right';
+
+    const baseTooltipClassName = `${prefixCls}-inline-collapsed-tooltip`;
+
+    const mergeTooltipRootClassName = (classNames?: TooltipSemanticClassNames) => ({
+      ...classNames,
+      root: clsx(baseTooltipClassName, classNames?.root),
+    });
+
+    const mergedTooltipClassNames =
+      tooltipConfig && typeof tooltipConfig.classNames === 'function'
+        ? (info: { props: TooltipProps }) => {
+            const resolvedClassNames = (
+              tooltipConfig.classNames as (info: {
+                props: TooltipProps;
+              }) => TooltipSemanticClassNames
+            )(info);
+            return mergeTooltipRootClassName(resolvedClassNames);
+          }
+        : mergeTooltipRootClassName(tooltipConfig?.classNames as TooltipSemanticClassNames);
+
     returnNode = (
       <Tooltip
         {...tooltipProps}
-        placement={direction === 'rtl' ? 'left' : 'right'}
-        overlayClassName={`${prefixCls}-inline-collapsed-tooltip`}
+        placement={mergedTooltipPlacement}
+        classNames={mergedTooltipClassNames}
       >
         {returnNode}
       </Tooltip>

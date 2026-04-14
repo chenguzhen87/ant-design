@@ -2,8 +2,8 @@ import React from 'react';
 import { Avatar, Badge, Space } from 'antd';
 
 const App: React.FC = () => (
-  <Space size="middle" wrap>
-    <Space size="middle" wrap>
+  <Space size="medium" wrap>
+    <Space size="medium" wrap>
       <Badge count={5} status="success">
         <Avatar shape="square" size="large" />
       </Badge>
@@ -33,7 +33,7 @@ const App: React.FC = () => (
       </Badge>
     </Space>
 
-    <Space size="middle" wrap>
+    <Space size="medium" wrap>
       <Badge count={0} showZero />
       <Badge count={0} showZero color="blue" />
       <Badge count={0} showZero color="#f0f" />
@@ -43,6 +43,9 @@ const App: React.FC = () => (
       <Badge count={0} showZero color="blue">
         <Avatar shape="square" size="large" />
       </Badge>
+      <Badge count={0} color="#f0f" />
+      <Badge status="success" text={0} showZero />
+      <Badge status="warning" text={0} />
     </Space>
   </Space>
 );

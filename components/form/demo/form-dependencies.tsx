@@ -6,12 +6,12 @@ const App: React.FC = () => {
   return (
     <Form
       form={form}
-      name="dependencies"
+      name="dependenciesDemo"
       autoComplete="off"
       style={{ maxWidth: 600 }}
       layout="vertical"
     >
-      <Alert message=" Try modify `Password2` and then modify `Password`" type="info" showIcon />
+      <Alert title=" Try modify `Password2` and then modify `Password`" type="info" showIcon />
 
       <Form.Item label="Password" name="password" rules={[{ required: true }]}>
         <Input />

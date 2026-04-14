@@ -5,37 +5,24 @@ order: 1
 title: CSS Compatible
 ---
 
-Ant Design supports the last 2 versions of modern browsers. If you need to be compatible with legacy browsers, please perform downgrade processing according to actual needs:
+## Default Style Compatibility
 
-## StyleProvider
+Ant Design supports the [last 2 versions of modern browsers](https://browsersl.ist/#q=defaults). If you need to be compatible with legacy browsers, please perform downgrade processing according to actual needs:
 
-Please ref [`@ant-design/cssinjs`](https://github.com/ant-design/cssinjs#styleprovider).
+| Feature | antd version | Compatibility | Minimum Chrome Version | Compatibility workaround |
+| --- | --- | --- | --- | --- |
+| [:where Selector](https://developer.mozilla.org/en-US/docs/Web/CSS/:where) | `>=5.0.0` | [caniuse](https://caniuse.com/?search=%3Awhere) | Chrome 88 | `<StyleProvider hashPriority="high">` |
+| [CSS Logical Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Logical_Properties) | `>=5.0.0` | [caniuse](https://caniuse.com/css-logical-props) | Chrome 89 | `<StyleProvider transformers={[legacyLogicalPropertiesTransformer]}>` |
 
-## `layer` Downgrade
+If you need to support older browsers, please use `@ant-design/cssinjs` [StyleProvider](https://github.com/ant-design/cssinjs#styleprovider) for degradation handling according to your actual requirements.
 
-Ant Design supports configuring `layer` for unified downgrade since `5.17.0`. After the downgrade, the style of antd will always be lower than the default CSS selector priority, so that users can override the style (please be sure to check the browser compatibility of `@layer`):
+## `:where` in selector
 
-```tsx
-import { StyleProvider } from '@ant-design/cssinjs';
-
-export default () => (
-  <StyleProvider layer>
-    <MyApp />
-  </StyleProvider>
-);
-```
-
-antd styles will be encapsulated in `@layer` to lower the priority:
-
-```diff
-++  @layer antd {
-      :where(.css-bAMboO).ant-btn {
-        color: #fff;
-      }
-++  }
-```
-
-## Compatible adjustment
+- antd version: `>=5.0.0`
+- MDN: [:where](https://developer.mozilla.org/en-US/docs/Web/CSS/:where)
+- Browser Compatibility: [caniuse](https://caniuse.com/?search=%3Awhere)
+- Minimum Chrome Version Supported: 88
+- Default Enabled: Yes
 
 The CSS-in-JS feature of Ant Design uses the ":where" selector by default to lower the CSS selector specificity, reducing the additional cost of adjusting custom styles when upgrading for users. However, the compatibility of the ":where" syntax is relatively poor in older browsers ([compatibility](https://developer.mozilla.org/en-US/docs/Web/CSS/:where#browser_compatibility)). In certain scenarios, if you need to support older browsers, you can use `@ant-design/cssinjs` to disable the default lowering of specificity (please ensure version consistency with antd).
 
@@ -77,6 +64,12 @@ Raise priority through plugin:
 
 ## CSS Logical Properties
 
+- antd version: `>=5.0.0`
+- MDN：[CSS Logical Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Logical_Properties)
+- Browser Compatibility: [caniuse](https://caniuse.com/css-logical-props)
+- Minimum Chrome Version Supported: 89
+- Default Enabled: Yes
+
 To unify LTR and RTL styles, Ant Design uses CSS logical properties. For example, the original `margin-left` is replaced by `margin-inline-start`, so that it is the starting position spacing under both LTR and RTL. If you need to be compatible with older browsers, you can configure `transformers` through the `StyleProvider` of `@ant-design/cssinjs`:
 
 ```tsx
@@ -100,6 +93,89 @@ When toggled, styles will downgrade CSS logical properties:
 ++ bottom: 0;
 ++ left: 0;
 }
+```
+
+## `@layer`
+
+- antd version: `>=5.17.0`
+- MDN：[CSS @layer](https://developer.mozilla.org/en-US/docs/Web/CSS/@layer)
+- Browser Compatibility: [caniuse](https://caniuse.com/css-at-rule-layer)
+- Minimum Chrome Version Supported: 99
+- Default Enabled: No
+
+Ant Design supports configuring `@layer` for unified css priority downgrade since `5.17.0`. After the downgrade, the style of antd will always be lower than the default CSS selector priority, so that users can override the style (please be sure to check the browser compatibility of `@layer`).When enable `layer`, the child element **must** wrap `ConfigProvider` to update the icon-related styles:
+
+```tsx
+import { StyleProvider } from '@ant-design/cssinjs';
+import { ConfigProvider } from 'antd';
+
+export default () => (
+  <StyleProvider layer>
+    <ConfigProvider>
+      <MyApp />
+    </ConfigProvider>
+  </StyleProvider>
+);
+```
+
+antd styles will be encapsulated in `@layer` to lower the priority:
+
+```diff
+++  @layer antd {
+      :where(.css-bAMboO).ant-btn {
+        color: #fff;
+      }
+++  }
+```
+
+⚠️ zeroRuntime Scenario Notes (Added in 6.0.0)
+
+When `zeroRuntime` is enabled, Ant Design’s styles are precompiled into a standalone `antd.css` file. If you also enable the `@layer` specificity–lowering mechanism, you must ensure that `antd.css` is placed inside the same layer (e.g., `layer(antd)`). Otherwise, its specificity will be higher than the styles injected by StyleProvider, causing the lowering mechanism to fail or resulting in unexpected override behavior.
+
+```css
+/* global.css / app.css */
+@layer theme, base, antd, components, utilities;
+
+/* The precompiled antd.css output by zeroRuntime must explicitly specify a layer */
+@import url(antd.css) layer(antd);
+```
+
+If you cannot use the `@import ... layer()` syntax, you may wrap the content during your build process instead:
+
+```css
+@layer antd {
+  /* contents of antd.css */
+}
+```
+
+## autoPrefixer
+
+- antd version: `>=6.0.0`
+- Browser Compatibility: Automatically adds browser prefixes for wider browser support
+- Default Enabled: No
+
+Some styles rely on browser prefixes for compatibility. The `autoPrefixer` transformer can automatically add browser prefixes to styles, ensuring they work properly across different browsers.
+
+```tsx | pure
+import { autoPrefixTransformer, StyleProvider } from '@ant-design/cssinjs';
+
+export default () => (
+  <StyleProvider transformers={[autoPrefixTransformer]}>
+    <MyApp />
+  </StyleProvider>
+);
+```
+
+The final transformed styles:
+
+```diff
+  .sample-box {
+--  user-select: none;
+++  -webkit-user-select: none;
+++  -moz-user-select: none;
+++  -ms-user-select: none;
+++  user-select: none;
+  }
 ```
 
 ## Rem Adaptation
@@ -178,17 +254,25 @@ In some cases, you may need antd to coexist with other style libraries, such as 
 
 ### antd config `@layer`
 
+As mentioned earlier, when using StyleProvider, you must wrap ConfigProvider to update icon-related styles:
+
 ```tsx
 import { StyleProvider } from '@ant-design/cssinjs';
 
 export default () => (
   <StyleProvider layer>
-    <MyApp />
+    <ConfigProvider>
+      <MyApp />
+    </ConfigProvider>
   </StyleProvider>
 );
 ```
 
 ### TailwindCSS Arrange `@layer`
+
+Before starting the following configuration, you need to enable [`@layer`](#layer) feature.
+
+#### TailwindCSS v3
 
 In global.css, adjust `@layer` to control the order of style override. Place `tailwind-base` before `antd`:
 
@@ -202,15 +286,36 @@ In global.css, adjust `@layer` to control the order of style override. Place `ta
 @tailwind utilities;
 ```
 
-### reset.css
+#### TailwindCSS v4
 
-If you use antd's `reset.css` style, you need to specify `@layer` for it to prevent the style from overriding antd:
+In global.css, adjust `@layer` to control the order of style override. Place `antd` in the right position:
 
 ```less
+@layer theme, base, antd, components, utilities;
+
+@import 'tailwindcss';
+```
+
+### reset.css and antd.css
+
+If you are using Ant Design’s `reset.css`, you need to assign it to a specific `@layer` to prevent it from overriding the lowered-specificity antd styles. Similarly, in the `zeroRuntime` scenario, if you import `antd.css` separately, you must also place it inside `layer(antd)` to keep the layer hierarchy consistent:
+
+```css
+/* Both reset.css and antd.css must specify a layer */
 @layer reset, antd;
 
+/* reset styles */
 @import url(reset.css) layer(reset);
+
+/* antd styles */
+@import url(antd.css) layer(antd);
 ```
+
+This ensures that:
+
+- reset.css will not override Ant Design styles that have been lowered via @layer
+- antd.css (in zeroRuntime mode) stays aligned with the layer injected by StyleProvider
+- Layer order still works correctly with third-party styling systems such as Tailwind, Emotion, or other CSS-in-JS libraries
 
 ### With other CSS-in-JS libraries
 

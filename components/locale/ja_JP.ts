@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/ja_JP';
+import Pagination from '@rc-component/pagination/lib/locale/ja_JP';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/ja_JP';
@@ -16,13 +15,14 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: '選んでください',
+    close: '閉じる',
   },
   Table: {
     filterTitle: 'フィルター',
     filterConfirm: 'OK',
     filterReset: 'リセット',
     filterEmptyText: 'フィルターなし',
-    filterCheckall: 'すべてを選択',
+    filterCheckAll: 'すべてを選択',
     filterSearchPlaceholder: 'フィルターで検索',
     emptyText: 'データなし',
     selectAll: 'ページ単位で選択',
@@ -133,9 +133,6 @@ const localeValues: Locale = {
       },
     },
   },
-  Image: {
-    preview: 'プレビュー',
-  },
   QRCode: {
     expired: 'QRコードの有効期限が切れました',
     refresh: 'リフレッシュ',
@@ -143,6 +140,9 @@ const localeValues: Locale = {
   },
   ColorPicker: {
     presetEmpty: '空の',
+    transparent: '透明',
+    singleColor: '単色',
+    gradientColor: 'グラデーション',
   },
 };
 

@@ -15,14 +15,14 @@ const columns: TableColumnsType<DataType> = [
     width: 100,
     dataIndex: 'name',
     key: 'name',
-    fixed: 'left',
+    fixed: 'start',
   },
   {
     title: 'Age',
     width: 100,
     dataIndex: 'age',
     key: 'age',
-    fixed: 'left',
+    fixed: 'start',
   },
   {
     title: 'Column 1',
@@ -70,29 +70,25 @@ const columns: TableColumnsType<DataType> = [
   {
     title: 'Action',
     key: 'operation',
-    fixed: 'right',
+    fixed: 'end',
     width: 100,
     render: () => <a>action</a>,
   },
 ];
 
-const data: DataType[] = [];
-for (let i = 0; i < 100; i++) {
-  data.push({
-    key: i,
-    name: `Edward ${i}`,
-    age: 32,
-    address: `London Park no. ${i}`,
-  });
-}
+const dataSource = Array.from({ length: 100 }).map<DataType>((_, i) => ({
+  key: i,
+  name: `Edward ${i}`,
+  age: 32,
+  address: `London Park no. ${i}`,
+}));
 
 const App: React.FC = () => {
   const [fixedTop, setFixedTop] = useState(false);
-
   return (
-    <Table
+    <Table<DataType>
       columns={columns}
-      dataSource={data}
+      dataSource={dataSource}
       scroll={{ x: 1500 }}
       summary={() => (
         <Table.Summary fixed={fixedTop ? 'top' : 'bottom'}>

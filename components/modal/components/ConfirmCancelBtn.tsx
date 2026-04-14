@@ -11,13 +11,9 @@ export interface ConfirmCancelBtnProps
     'cancelButtonProps' | 'isSilent' | 'rootPrefixCls' | 'close' | 'onConfirm' | 'onCancel'
   > {
   autoFocusButton?: false | 'ok' | 'cancel' | null;
-  cancelTextLocale?:
-    | string
-    | number
-    | true
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | Iterable<React.ReactNode>;
+  cancelTextLocale?: React.ReactNode;
   mergedOkCancel?: boolean;
+  onClose?: () => void;
 }
 
 const ConfirmCancelBtn: FC = () => {
@@ -31,6 +27,7 @@ const ConfirmCancelBtn: FC = () => {
     close,
     onCancel,
     onConfirm,
+    onClose,
   } = useContext(ModalContext);
   return mergedOkCancel ? (
     <ActionButton
@@ -39,6 +36,7 @@ const ConfirmCancelBtn: FC = () => {
       close={(...args: any[]) => {
         close?.(...args);
         onConfirm?.(false);
+        onClose?.();
       }}
       autoFocus={autoFocusButton === 'cancel'}
       buttonProps={cancelButtonProps}

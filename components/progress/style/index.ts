@@ -1,5 +1,5 @@
 import type { CSSObject } from '@ant-design/cssinjs';
-import { Keyframes, unit } from '@ant-design/cssinjs';
+import { Keyframes } from '@ant-design/cssinjs';
 
 import { resetComponent } from '../../style';
 import type { FullToken, GenerateStyle, GetDefaultToken } from '../../theme/internal';
@@ -39,11 +39,26 @@ export interface ComponentToken {
 }
 
 export const LineStrokeColorVar = '--progress-line-stroke-color';
-export const Percent = '--progress-percent';
 
+/**
+ * @desc Progress 组件的 Token
+ * @descEN Token for Progress component
+ */
 interface ProgressToken extends FullToken<'Progress'> {
+  /**
+   * @desc 进度步骤最小宽度
+   * @descEN Minimum width of progress step
+   */
   progressStepMinWidth: number | string;
+  /**
+   * @desc 进度步骤右间距
+   * @descEN Right margin of progress step
+   */
   progressStepMarginInlineEnd: number | string;
+  /**
+   * @desc 进度条动画持续时间
+   * @descEN Duration of progress bar animation
+   */
   progressActiveMotionDuration: string;
 }
 
@@ -65,90 +80,26 @@ const genAntProgressActive = (isRtl?: boolean) => {
   });
 };
 
-const genBaseStyle: GenerateStyle<ProgressToken> = (token) => {
+// ====================================================================
+// ==                              Base                              ==
+// ====================================================================
+const genBaseStyle: GenerateStyle<ProgressToken, CSSObject> = (token) => {
   const { componentCls: progressCls, iconCls: iconPrefixCls } = token;
 
   return {
     [progressCls]: {
       ...resetComponent(token),
 
-      display: 'inline-block',
+      display: 'inline-flex',
 
       '&-rtl': {
         direction: 'rtl',
       },
 
-      '&-line': {
-        position: 'relative',
-        width: '100%',
-        fontSize: token.fontSize,
-      },
-
-      [`${progressCls}-outer`]: {
-        display: 'inline-block',
-        width: '100%',
-      },
-
-      [`&${progressCls}-show-info`]: {
-        [`${progressCls}-outer`]: {
-          marginInlineEnd: `calc(-2em - ${unit(token.marginXS)})`,
-          paddingInlineEnd: `calc(2em + ${unit(token.paddingXS)})`,
-        },
-      },
-
-      [`${progressCls}-inner`]: {
-        position: 'relative',
-        display: 'inline-block',
-        width: '100%',
-        overflow: 'hidden',
-        verticalAlign: 'middle',
-        backgroundColor: token.remainingColor,
-        borderRadius: token.lineBorderRadius,
-      },
-
-      [`${progressCls}-inner:not(${progressCls}-circle-gradient)`]: {
-        [`${progressCls}-circle-path`]: {
-          stroke: token.defaultColor,
-        },
-      },
-
-      [`${progressCls}-success-bg, ${progressCls}-bg`]: {
-        position: 'relative',
-        background: token.defaultColor,
-        borderRadius: token.lineBorderRadius,
-        transition: `all ${token.motionDurationSlow} ${token.motionEaseInOutCirc}`,
-      },
-
-      [`${progressCls}-bg`]: {
-        overflow: 'hidden',
-
-        '&::after': {
-          content: '""',
-          background: {
-            _multi_value_: true,
-            value: ['inherit', `var(${LineStrokeColorVar})`],
-          },
-          height: '100%',
-          width: `calc(1 / var(${Percent}) * 100%)`,
-          display: 'block',
-        },
-      },
-
-      [`${progressCls}-success-bg`]: {
-        position: 'absolute',
-        insetBlockStart: 0,
-        insetInlineStart: 0,
-        backgroundColor: token.colorSuccess,
-      },
-
-      [`${progressCls}-text`]: {
-        display: 'inline-block',
-        width: '2em',
-        marginInlineStart: token.marginXS,
+      [`${progressCls}-indicator`]: {
         color: token.colorText,
         lineHeight: 1,
         whiteSpace: 'nowrap',
-        textAlign: 'start',
         verticalAlign: 'middle',
         wordBreak: 'normal',
         [iconPrefixCls]: {
@@ -156,77 +107,155 @@ const genBaseStyle: GenerateStyle<ProgressToken> = (token) => {
         },
       },
 
-      [`&${progressCls}-status-active`]: {
-        [`${progressCls}-bg::before`]: {
-          position: 'absolute',
-          inset: 0,
-          backgroundColor: token.colorBgContainer,
-          borderRadius: token.lineBorderRadius,
-          opacity: 0,
-          animationName: genAntProgressActive(),
-          animationDuration: token.progressActiveMotionDuration,
-          animationTimingFunction: token.motionEaseOutQuint,
-          animationIterationCount: 'infinite',
-          content: '""',
-        },
-      },
-
-      [`&${progressCls}-rtl${progressCls}-status-active`]: {
-        [`${progressCls}-bg::before`]: {
-          animationName: genAntProgressActive(true),
-        },
-      },
-
       [`&${progressCls}-status-exception`]: {
-        [`${progressCls}-bg`]: {
-          backgroundColor: token.colorError,
-        },
-        [`${progressCls}-text`]: {
+        [`${progressCls}-indicator`]: {
           color: token.colorError,
         },
       },
 
-      [`&${progressCls}-status-exception ${progressCls}-inner:not(${progressCls}-circle-gradient)`]:
-        {
-          [`${progressCls}-circle-path`]: {
-            stroke: token.colorError,
-          },
-        },
-
       [`&${progressCls}-status-success`]: {
-        [`${progressCls}-bg`]: {
-          backgroundColor: token.colorSuccess,
-        },
-        [`${progressCls}-text`]: {
+        [`${progressCls}-indicator`]: {
           color: token.colorSuccess,
-        },
-      },
-
-      [`&${progressCls}-status-success ${progressCls}-inner:not(${progressCls}-circle-gradient)`]: {
-        [`${progressCls}-circle-path`]: {
-          stroke: token.colorSuccess,
         },
       },
     },
   };
 };
 
-const genCircleStyle: GenerateStyle<ProgressToken> = (token) => {
+// ====================================================================
+// ==                              Line                              ==
+// ====================================================================
+const genLineStyle: GenerateStyle<ProgressToken, CSSObject> = (token) => {
+  const { componentCls } = token;
+
+  return {
+    [`${componentCls}-line`]: {
+      position: 'relative',
+      width: '100%',
+      fontSize: token.fontSize,
+
+      [`${componentCls}-body`]: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        width: '100%',
+        gap: token.marginXS,
+      },
+
+      [`${componentCls}-rail`]: {
+        flex: 'auto',
+        background: token.remainingColor,
+        borderRadius: token.lineBorderRadius,
+        position: 'relative',
+        width: '100%',
+        overflow: 'hidden',
+      },
+
+      [`&${componentCls}-status-active`]: {
+        [`${componentCls}-track:after`]: {
+          content: '""',
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: token.colorBgContainer,
+          borderRadius: 'inherit',
+          opacity: 0,
+          animationName: genAntProgressActive(),
+          animationDuration: token.progressActiveMotionDuration,
+          animationTimingFunction: token.motionEaseOutQuint,
+          animationIterationCount: 'infinite',
+        },
+      },
+
+      [`${componentCls}-track`]: {
+        position: 'absolute',
+        insetInlineStart: 0,
+        insetBlock: 0,
+        borderRadius: 'inherit',
+        background: token.defaultColor,
+        transition: `all ${token.motionDurationSlow} ${token.motionEaseInOutCirc}`,
+        minWidth: 'max-content',
+        display: 'flex',
+        alignItems: 'center',
+
+        '&-success': {
+          background: token.colorSuccess,
+        },
+      },
+
+      [`&${componentCls}-status-exception`]: {
+        [`${componentCls}-track`]: {
+          background: token.colorError,
+        },
+      },
+
+      [`&${componentCls}-status-success`]: {
+        [`${componentCls}-track`]: {
+          background: token.colorSuccess,
+        },
+      },
+
+      // >>>>> indicator
+      // >>> Outer
+      [`${componentCls}-indicator-outer`]: {
+        [`&${componentCls}-indicator-start`]: {
+          order: -1,
+        },
+      },
+
+      [`${componentCls}-body-layout-bottom`]: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: token.marginXXS,
+      },
+
+      // >>> Inner
+      [`${componentCls}-indicator${componentCls}-indicator-inner`]: {
+        color: token.colorWhite,
+        paddingInline: token.paddingXXS,
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+
+        [`&${componentCls}-indicator-end`]: {
+          justifyContent: 'end',
+        },
+
+        [`&${componentCls}-indicator-start`]: {
+          justifyContent: 'start',
+        },
+
+        [`&${componentCls}-indicator-bright`]: {
+          color: 'rgba(0, 0, 0, 0.45)',
+        },
+      },
+    },
+  };
+};
+
+// ====================================================================
+// ==                             Circle                             ==
+// ====================================================================
+const genCircleStyle: GenerateStyle<ProgressToken, CSSObject> = (token) => {
   const { componentCls: progressCls, iconCls: iconPrefixCls } = token;
 
   return {
-    [progressCls]: {
-      [`${progressCls}-circle-trail`]: {
+    [`${progressCls}-circle`]: {
+      [`${progressCls}-circle-rail`]: {
         stroke: token.remainingColor,
       },
 
-      [`&${progressCls}-circle ${progressCls}-inner`]: {
+      [`${progressCls}-body:not(${progressCls}-circle-gradient)`]: {
+        [`${progressCls}-circle-path`]: {
+          stroke: token.defaultColor,
+        },
+      },
+
+      [`${progressCls}-body`]: {
         position: 'relative',
         lineHeight: 1,
         backgroundColor: 'transparent',
       },
 
-      [`&${progressCls}-circle ${progressCls}-text`]: {
+      [`${progressCls}-indicator`]: {
         position: 'absolute',
         insetBlockStart: '50%',
         insetInlineStart: 0,
@@ -245,15 +274,19 @@ const genCircleStyle: GenerateStyle<ProgressToken> = (token) => {
         },
       },
 
-      [`${progressCls}-circle&-status-exception`]: {
-        [`${progressCls}-text`]: {
-          color: token.colorError,
+      [`&${progressCls}-status-exception`]: {
+        [`${progressCls}-body:not(${progressCls}-circle-gradient)`]: {
+          [`${progressCls}-circle-path`]: {
+            stroke: token.colorError,
+          },
         },
       },
 
-      [`${progressCls}-circle&-status-success`]: {
-        [`${progressCls}-text`]: {
-          color: token.colorSuccess,
+      [`&${progressCls}-status-success`]: {
+        [`${progressCls}-body:not(${progressCls}-circle-gradient)`]: {
+          [`${progressCls}-circle-path`]: {
+            stroke: token.colorSuccess,
+          },
         },
       },
     },
@@ -266,22 +299,29 @@ const genCircleStyle: GenerateStyle<ProgressToken> = (token) => {
   };
 };
 
-const genStepStyle: GenerateStyle<ProgressToken> = (token: ProgressToken): CSSObject => {
+// ====================================================================
+// ==                              Step                              ==
+// ====================================================================
+const genStepStyle: GenerateStyle<ProgressToken, CSSObject> = (token) => {
   const { componentCls: progressCls } = token;
 
   return {
     [progressCls]: {
       [`${progressCls}-steps`]: {
         display: 'inline-block',
-        '&-outer': {
+        '&-body': {
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
+          gap: token.progressStepMarginInlineEnd,
+
+          [`${progressCls}-indicator`]: {
+            marginInlineStart: token.marginXS,
+          },
         },
         '&-item': {
           flexShrink: 0,
           minWidth: token.progressStepMinWidth,
-          marginInlineEnd: token.progressStepMarginInlineEnd,
           backgroundColor: token.remainingColor,
           transition: `all ${token.motionDurationSlow}`,
 
@@ -294,12 +334,15 @@ const genStepStyle: GenerateStyle<ProgressToken> = (token: ProgressToken): CSSOb
   };
 };
 
-const genSmallLine: GenerateStyle<ProgressToken> = (token: ProgressToken): CSSObject => {
+// ====================================================================
+// ==                           Small Line                           ==
+// ====================================================================
+const genSmallLine: GenerateStyle<ProgressToken, CSSObject> = (token) => {
   const { componentCls: progressCls, iconCls: iconPrefixCls } = token;
 
   return {
     [progressCls]: {
-      [`${progressCls}-small&-line, ${progressCls}-small&-line ${progressCls}-text ${iconPrefixCls}`]:
+      [`${progressCls}-small&-line, ${progressCls}-small&-line ${progressCls}-indicator ${iconPrefixCls}`]:
         {
           fontSize: token.fontSizeSM,
         },
@@ -307,6 +350,9 @@ const genSmallLine: GenerateStyle<ProgressToken> = (token: ProgressToken): CSSOb
   };
 };
 
+// ====================================================================
+// ==                             Export                             ==
+// ====================================================================
 export const prepareComponentToken: GetDefaultToken<'Progress'> = (token) => ({
   circleTextColor: token.colorText,
   defaultColor: token.colorInfo,
@@ -329,6 +375,7 @@ export default genStyleHooks(
 
     return [
       genBaseStyle(progressToken),
+      genLineStyle(progressToken),
       genCircleStyle(progressToken),
       genStepStyle(progressToken),
       genSmallLine(progressToken),

@@ -1,6 +1,6 @@
 import React from 'react';
-import { CloseCircleOutlined } from '@ant-design/icons';
-import { Tag } from 'antd';
+import { CloseCircleOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Flex, Tag } from 'antd';
 
 const preventDefault = (e: React.MouseEvent<HTMLElement>) => {
   e.preventDefault();
@@ -8,10 +8,16 @@ const preventDefault = (e: React.MouseEvent<HTMLElement>) => {
 };
 
 const App: React.FC = () => (
-  <>
+  <Flex gap="small" align="center" wrap>
     <Tag>Tag 1</Tag>
     <Tag>
-      <a href="https://github.com/ant-design/ant-design/issues/1862">Link</a>
+      <a
+        href="https://github.com/ant-design/ant-design/issues/1862"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Link
+      </a>
     </Tag>
     <Tag closeIcon onClose={preventDefault}>
       Prevent Default
@@ -19,7 +25,16 @@ const App: React.FC = () => (
     <Tag closeIcon={<CloseCircleOutlined />} onClose={console.log}>
       Tag 2
     </Tag>
-  </>
+    <Tag
+      closable={{
+        closeIcon: <DeleteOutlined />,
+        'aria-label': 'Close Button',
+      }}
+      onClose={console.log}
+    >
+      Tag 3
+    </Tag>
+  </Flex>
 );
 
 export default App;

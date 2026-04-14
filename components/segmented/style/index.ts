@@ -1,7 +1,7 @@
 import type { CSSObject } from '@ant-design/cssinjs';
 import { unit } from '@ant-design/cssinjs';
 
-import { resetComponent, textEllipsis } from '../../style';
+import { genFocusOutline, genFocusStyle, resetComponent, textEllipsis } from '../../style';
 import type { FullToken, GenerateStyle, GetDefaultToken } from '../../theme/internal';
 import { genStyleHooks, mergeToken } from '../../theme/internal';
 
@@ -63,12 +63,12 @@ function getItemDisabledStyle(cls: string, token: SegmentedToken): CSSObject {
   };
 }
 
-function getItemSelectedStyle(token: SegmentedToken): CSSObject {
+const getItemSelectedStyle: GenerateStyle<SegmentedToken, CSSObject> = (token) => {
   return {
-    backgroundColor: token.itemSelectedBg,
+    background: token.itemSelectedBg,
     boxShadow: token.boxShadowTertiary,
   };
-}
+};
 
 const segmentedTextEllipsisCss: CSSObject = {
   overflow: 'hidden',
@@ -77,8 +77,8 @@ const segmentedTextEllipsisCss: CSSObject = {
 };
 
 // ============================== Styles ==============================
-const genSegmentedStyle: GenerateStyle<SegmentedToken> = (token: SegmentedToken) => {
-  const { componentCls } = token;
+const genSegmentedStyle: GenerateStyle<SegmentedToken, CSSObject> = (token) => {
+  const { componentCls, motionDurationSlow, motionEaseInOut, motionDurationMid } = token;
 
   const labelHeight = token
     .calc(token.controlHeight)
@@ -102,19 +102,33 @@ const genSegmentedStyle: GenerateStyle<SegmentedToken> = (token: SegmentedToken)
       color: token.itemColor,
       background: token.trackBg,
       borderRadius: token.borderRadius,
-      transition: `all ${token.motionDurationMid} ${token.motionEaseInOut}`,
+      transition: `all ${motionDurationMid}`,
+      ...genFocusStyle(token),
 
       [`${componentCls}-group`]: {
         position: 'relative',
         display: 'flex',
         alignItems: 'stretch',
         justifyItems: 'flex-start',
+        flexDirection: 'row',
         width: '100%',
       },
 
       // RTL styles
       [`&${componentCls}-rtl`]: {
         direction: 'rtl',
+      },
+
+      [`&${componentCls}-vertical`]: {
+        [`${componentCls}-group`]: {
+          flexDirection: 'column',
+        },
+
+        [`${componentCls}-thumb`]: {
+          width: '100%',
+          height: 0,
+          padding: `0 ${unit(token.paddingXXS)}`,
+        },
       },
 
       // block styles
@@ -132,7 +146,7 @@ const genSegmentedStyle: GenerateStyle<SegmentedToken> = (token: SegmentedToken)
         position: 'relative',
         textAlign: 'center',
         cursor: 'pointer',
-        transition: `color ${token.motionDurationMid} ${token.motionEaseInOut}`,
+        transition: `color ${motionDurationMid}`,
         borderRadius: token.borderRadiusSM,
         // Fix Safari render bug
         // https://github.com/ant-design/ant-design/issues/45250
@@ -143,6 +157,8 @@ const genSegmentedStyle: GenerateStyle<SegmentedToken> = (token: SegmentedToken)
           color: token.itemSelectedColor,
         },
 
+        '&-focused': genFocusOutline(token),
+
         '&::after': {
           content: '""',
           position: 'absolute',
@@ -152,21 +168,25 @@ const genSegmentedStyle: GenerateStyle<SegmentedToken> = (token: SegmentedToken)
           top: 0,
           insetInlineStart: 0,
           borderRadius: 'inherit',
-          transition: `background-color ${token.motionDurationMid}`,
+          opacity: 0,
           // This is mandatory to make it not clickable or hoverable
           // Ref: https://github.com/ant-design/ant-design/issues/40888
           pointerEvents: 'none',
+          transition: ['opacity', 'background-color']
+            .map((prop) => `${prop} ${motionDurationMid}`)
+            .join(', '),
         },
 
-        [`&:hover:not(${componentCls}-item-selected):not(${componentCls}-item-disabled)`]: {
-          color: token.itemHoverColor,
-          '&::after': {
+        [`&:not(${componentCls}-item-selected):not(${componentCls}-item-disabled)`]: {
+          '&:hover, &:active': {
+            color: token.itemHoverColor,
+          },
+          '&:hover::after': {
+            opacity: 1,
             backgroundColor: token.itemHoverBg,
           },
-        },
-        [`&:active:not(${componentCls}-item-selected):not(${componentCls}-item-disabled)`]: {
-          color: token.itemHoverColor,
-          '&::after': {
+          '&:active::after': {
+            opacity: 1,
             backgroundColor: token.itemActiveBg,
           },
         },
@@ -244,8 +264,17 @@ const genSegmentedStyle: GenerateStyle<SegmentedToken> = (token: SegmentedToken)
 
       // transition effect when `appear-active`
       [`${componentCls}-thumb-motion-appear-active`]: {
-        transition: `transform ${token.motionDurationSlow} ${token.motionEaseInOut}, width ${token.motionDurationSlow} ${token.motionEaseInOut}`,
         willChange: 'transform, width',
+        transition: [`transform`, `width`]
+          .map((prop) => `${prop} ${motionDurationSlow} ${motionEaseInOut}`)
+          .join(', '),
+      },
+
+      [`&${componentCls}-shape-round`]: {
+        borderRadius: 9999,
+        [`${componentCls}-item, ${componentCls}-thumb`]: {
+          borderRadius: 9999,
+        },
       },
     },
   };
@@ -282,7 +311,7 @@ export default genStyleHooks(
       segmentedPaddingHorizontal: calc(token.controlPaddingHorizontal).sub(lineWidth).equal(),
       segmentedPaddingHorizontalSM: calc(token.controlPaddingHorizontalSM).sub(lineWidth).equal(),
     });
-    return [genSegmentedStyle(segmentedToken)];
+    return genSegmentedStyle(segmentedToken);
   },
   prepareComponentToken,
 );

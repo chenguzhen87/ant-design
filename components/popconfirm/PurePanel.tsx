@@ -1,15 +1,16 @@
 import * as React from 'react';
 import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 
 import type { PopconfirmProps } from '.';
 import ActionButton from '../_util/ActionButton';
 import { getRenderPropValue } from '../_util/getRenderPropValue';
-import Button from '../button';
+import Button from '../button/Button';
 import { convertLegacyProps } from '../button/buttonHelpers';
 import { ConfigContext } from '../config-provider';
 import { useLocale } from '../locale';
 import defaultLocale from '../locale/en_US';
+import type { PopoverSemanticClassNames, PopoverSemanticStyles } from '../popover';
 import PopoverPurePanel from '../popover/PurePanel';
 import useStyle from './style';
 
@@ -33,9 +34,11 @@ export interface OverlayProps
     | 'onPopupClick'
   > {
   prefixCls: string;
-  close?: Function;
+  close?: (...args: any[]) => void;
   onConfirm?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>;
   onCancel?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>;
+  classNames?: PopoverSemanticClassNames;
+  styles?: PopoverSemanticStyles;
 }
 
 export const Overlay: React.FC<OverlayProps> = (props) => {
@@ -54,21 +57,35 @@ export const Overlay: React.FC<OverlayProps> = (props) => {
     onConfirm,
     onCancel,
     onPopupClick,
+    classNames,
+    styles,
   } = props;
 
   const { getPrefixCls } = React.useContext(ConfigContext);
 
   const [contextLocale] = useLocale('Popconfirm', defaultLocale.Popconfirm);
-  const theTitle = getRenderPropValue(title);
-  const theDescription = getRenderPropValue(description);
+
+  const titleNode = getRenderPropValue(title);
+  const descriptionNode = getRenderPropValue(description);
 
   return (
     <div className={`${prefixCls}-inner-content`} onClick={onPopupClick}>
       <div className={`${prefixCls}-message`}>
         {icon && <span className={`${prefixCls}-message-icon`}>{icon}</span>}
         <div className={`${prefixCls}-message-text`}>
-          {theTitle && <div className={classNames(`${prefixCls}-title`)}>{theTitle}</div>}
-          {theDescription && <div className={`${prefixCls}-description`}>{theDescription}</div>}
+          {titleNode && (
+            <div className={clsx(`${prefixCls}-title`, classNames?.title)} style={styles?.title}>
+              {titleNode}
+            </div>
+          )}
+          {descriptionNode && (
+            <div
+              className={clsx(`${prefixCls}-description`, classNames?.content)}
+              style={styles?.content}
+            >
+              {descriptionNode}
+            </div>
+          )}
         </div>
       </div>
       <div className={`${prefixCls}-buttons`}>
@@ -109,15 +126,15 @@ const PurePanel: React.FC<PurePanelProps> = (props) => {
 
   const { getPrefixCls } = React.useContext(ConfigContext);
   const prefixCls = getPrefixCls('popconfirm', customizePrefixCls);
-  const [wrapCSSVar] = useStyle(prefixCls);
+  useStyle(prefixCls);
 
-  return wrapCSSVar(
+  return (
     <PopoverPurePanel
       placement={placement}
-      className={classNames(prefixCls, className)}
+      className={clsx(prefixCls, className)}
       style={style}
       content={<Overlay prefixCls={prefixCls} {...restProps} />}
-    />,
+    />
   );
 };
 

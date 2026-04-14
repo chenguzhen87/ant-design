@@ -43,7 +43,7 @@ const genAlertTypeStyle = (
   },
 });
 
-export const genBaseStyle: GenerateStyle<AlertToken> = (token: AlertToken): CSSObject => {
+export const genBaseStyle: GenerateStyle<AlertToken, CSSObject> = (token) => {
   const {
     componentCls,
     motionDurationSlow: duration,
@@ -75,7 +75,7 @@ export const genBaseStyle: GenerateStyle<AlertToken> = (token: AlertToken): CSSO
         direction: 'rtl',
       },
 
-      [`${componentCls}-content`]: {
+      [`${componentCls}-section`]: {
         flex: 1,
         minWidth: 0,
       },
@@ -85,22 +85,22 @@ export const genBaseStyle: GenerateStyle<AlertToken> = (token: AlertToken): CSSO
         lineHeight: 0,
       },
 
-      [`&-description`]: {
+      '&-description': {
         display: 'none',
         fontSize,
         lineHeight,
       },
 
-      '&-message': {
+      '&-title': {
         color: colorTextHeading,
       },
 
       [`&${componentCls}-motion-leave`]: {
         overflow: 'hidden',
         opacity: 1,
-        transition: `max-height ${duration} ${motionEaseInOutCirc}, opacity ${duration} ${motionEaseInOutCirc},
-        padding-top ${duration} ${motionEaseInOutCirc}, padding-bottom ${duration} ${motionEaseInOutCirc},
-        margin-bottom ${duration} ${motionEaseInOutCirc}`,
+        transition: [`max-height`, `opacity`, `padding-top`, `padding-bottom`, `margin-bottom`]
+          .map((prop) => `${prop} ${duration} ${motionEaseInOutCirc}`)
+          .join(', '),
       },
 
       [`&${componentCls}-motion-leave-active`]: {
@@ -121,7 +121,7 @@ export const genBaseStyle: GenerateStyle<AlertToken> = (token: AlertToken): CSSO
         lineHeight: 0,
       },
 
-      [`${componentCls}-message`]: {
+      [`${componentCls}-title`]: {
         display: 'block',
         marginBottom: marginXS,
         color: colorTextHeading,
@@ -142,7 +142,7 @@ export const genBaseStyle: GenerateStyle<AlertToken> = (token: AlertToken): CSSO
   };
 };
 
-export const genTypeStyle: GenerateStyle<AlertToken> = (token: AlertToken): CSSObject => {
+export const genTypeStyle: GenerateStyle<AlertToken, CSSObject> = (token) => {
   const {
     componentCls,
 
@@ -191,7 +191,7 @@ export const genTypeStyle: GenerateStyle<AlertToken> = (token: AlertToken): CSSO
   };
 };
 
-export const genActionStyle: GenerateStyle<AlertToken> = (token: AlertToken): CSSObject => {
+export const genActionStyle: GenerateStyle<AlertToken, CSSObject> = (token) => {
   const {
     componentCls,
     iconCls,
@@ -204,7 +204,7 @@ export const genActionStyle: GenerateStyle<AlertToken> = (token: AlertToken): CS
 
   return {
     [componentCls]: {
-      [`&-action`]: {
+      '&-actions': {
         marginInlineStart: marginXS,
       },
 

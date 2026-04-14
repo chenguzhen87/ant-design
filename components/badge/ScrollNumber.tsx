@@ -1,5 +1,5 @@
 import * as React from 'react';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 
 import { cloneElement } from '../_util/reactNode';
 import { ConfigContext } from '../config-provider';
@@ -10,8 +10,8 @@ export interface ScrollNumberProps {
   className?: string;
   motionClassName?: string;
   count?: string | number | null;
-  children?: React.ReactElement<HTMLElement>;
-  component?: React.ComponentType<any>;
+  children?: React.ReactElement;
+  component?: React.ComponentType<React.HTMLAttributes<HTMLElement>>;
   style?: React.CSSProperties;
   title?: string | number | null;
   show: boolean;
@@ -43,7 +43,7 @@ const ScrollNumber = React.forwardRef<HTMLElement, ScrollNumberProps>((props, re
     ...restProps,
     'data-show': show,
     style,
-    className: classNames(prefixCls, className, motionClassName),
+    className: clsx(prefixCls, className, motionClassName),
     title: title as string,
   };
 
@@ -70,7 +70,7 @@ const ScrollNumber = React.forwardRef<HTMLElement, ScrollNumberProps>((props, re
   // allow specify the border
   // mock border-color by box-shadow for compatible with old usage:
   // <Badge count={4} style={{ backgroundColor: '#fff', color: '#999', borderColor: '#d9d9d9' }} />
-  if (style && style.borderColor) {
+  if (style?.borderColor) {
     newProps.style = {
       ...style,
       boxShadow: `0 0 0 1px ${style.borderColor} inset`,
@@ -78,7 +78,7 @@ const ScrollNumber = React.forwardRef<HTMLElement, ScrollNumberProps>((props, re
   }
   if (children) {
     return cloneElement(children, (oriProps) => ({
-      className: classNames(`${prefixCls}-custom-component`, oriProps?.className, motionClassName),
+      className: clsx(`${prefixCls}-custom-component`, oriProps?.className, motionClassName),
     }));
   }
 

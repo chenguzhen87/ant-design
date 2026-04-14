@@ -7,19 +7,17 @@ const App: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
-  const draggleRef = useRef<HTMLDivElement>(null);
+  const draggleRef = useRef<HTMLDivElement>(null!);
 
   const showModal = () => {
     setOpen(true);
   };
 
-  const handleOk = (e: React.MouseEvent<HTMLElement>) => {
-    console.log(e);
+  const handleOk = () => {
     setOpen(false);
   };
 
-  const handleCancel = (e: React.MouseEvent<HTMLElement>) => {
-    console.log(e);
+  const handleCancel = () => {
     setOpen(false);
   };
 
@@ -43,10 +41,7 @@ const App: React.FC = () => {
       <Modal
         title={
           <div
-            style={{
-              width: '100%',
-              cursor: 'move',
-            }}
+            style={{ width: '100%', cursor: 'move' }}
             onMouseOver={() => {
               if (disabled) {
                 setDisabled(false);

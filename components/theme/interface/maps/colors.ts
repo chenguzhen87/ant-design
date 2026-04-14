@@ -9,6 +9,11 @@ export interface ColorNeutralMapToken {
    */
   colorBgBase: string;
 
+  /**
+   * @internal
+   */
+  colorShadow: string;
+
   // ----------   Text   ---------- //
 
   /**
@@ -58,6 +63,14 @@ export interface ColorNeutralMapToken {
    * @descEN Slightly lighter than the default border color, this color is the same as `colorSplit`. Solid color is used.
    */
   colorBorderSecondary: string;
+
+  /**
+   * @nameZH 禁用态边框颜色
+   * @nameEN Disabled state border color
+   * @desc 控制元素在禁用状态下的边框颜色。
+   * @descEN Control the border color of the element in the disabled state.
+   */
+  colorBorderDisabled: string;
 
   // ----------   Fill   ---------- //
 
@@ -126,6 +139,24 @@ export interface ColorNeutralMapToken {
    * @descEN Control the background color of frosted glass container, usually transparent.
    */
   colorBgBlur: string;
+
+  // ----------   Solid   ---------- //
+
+  /**
+   * @desc 实心的背景颜色，目前只用在默认实心按钮背景色上。
+   * @descEN Solid background color, currently only used for the default solid button background color.
+   */
+  colorBgSolid: string;
+  /**
+   * @desc 实心的背景颜色激活态，目前只用在默认实心按钮的 active 效果。
+   * @descEN Solid background color active state, currently only used in the active effect of the default solid button.
+   */
+  colorBgSolidActive: string;
+  /**
+   * @desc 实心的背景颜色悬浮态，目前只用在默认实心按钮的 hover 效果。
+   * @descEN Solid background color hover state, currently only used in the hover effect of the default solid button.
+   */
+  colorBgSolidHover: string;
 }
 
 /**
@@ -477,6 +508,22 @@ interface ColorErrorMapToken {
   colorErrorBgHover: string; // 2
 
   /**
+   * @nameZH 错误色的浅色填充背景色悬浮态
+   * @nameEN Wrong color fill background color suspension state
+   * @desc 错误色的浅色填充背景色悬浮态，目前只用在危险填充按钮的 hover 效果。
+   * @descEN The wrong color fills the background color of the suspension state, which is currently only used in the hover effect of the dangerous filled button.
+   */
+  colorErrorBgFilledHover: string; // 2.5
+
+  /**
+   * @nameZH 错误色的浅色背景色激活态
+   * @nameEN Error background color active state
+   * @desc 错误色的浅色背景色激活态
+   * @descEN The active state background color of the error state.
+   */
+  colorErrorBgActive: string; // 3
+
+  /**
    * @nameZH 错误色的描边色
    * @nameEN Error border color
    * @desc 错误色的描边色
@@ -584,8 +631,8 @@ export interface ColorMapToken
   /**
    * @nameZH 浮层的背景蒙层颜色
    * @nameEN Background color of the mask
-   * @desc 浮层的背景蒙层颜色，用于遮罩浮层下面的内容，Modal、Drawer 等组件的蒙层使用的是该 token
-   * @descEN The background color of the mask, used to cover the content below the mask, Modal, Drawer and other components use this token
+   * @desc 浮层的背景蒙层颜色，用于遮罩浮层下面的内容，Modal、Drawer、Image 等组件的蒙层使用的是该 token
+   * @descEN The background color of the mask, used to cover the content below the mask, Modal, Drawer, Image and other components use this token
    */
   colorBgMask: string;
 
@@ -594,5 +641,4 @@ export interface ColorMapToken
    * @desc 不随主题变化的纯黑色
    * @default #0000
    */
-  // colorBlack: string;
 }

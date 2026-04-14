@@ -1,10 +1,5 @@
 import defaultLocale from '../locale/en_US';
-
-export interface ModalLocale {
-  okText: string;
-  cancelText: string;
-  justOkText: string;
-}
+import type { ModalLocale } from './interface';
 
 let runtimeLocale: ModalLocale = {
   ...(defaultLocale.Modal as ModalLocale),
@@ -13,9 +8,9 @@ let runtimeLocale: ModalLocale = {
 let localeList: ModalLocale[] = [];
 
 const generateLocale = () =>
-  localeList.reduce(
+  localeList.reduce<ModalLocale>(
     (merged, locale) => ({ ...merged, ...locale }),
-    defaultLocale.Modal as ModalLocale,
+    defaultLocale.Modal!,
   );
 
 export function changeConfirmLocale(newLocale?: ModalLocale) {

@@ -44,18 +44,13 @@ interface DragIndexState {
 const DragIndexContext = createContext<DragIndexState>({ active: -1, over: -1 });
 
 const dragActiveStyle = (dragState: DragIndexState, id: string) => {
-  const { active, over, direction } = dragState;
+  const { active, over } = dragState;
   // drag active style
   let style: React.CSSProperties = {};
   if (active && active === id) {
     style = { backgroundColor: 'gray', opacity: 0.5 };
-  }
-  // dragover dashed style
-  else if (over && id === over && active !== over) {
-    style =
-      direction === 'right'
-        ? { borderRight: '1px dashed gray' }
-        : { borderLeft: '1px dashed gray' };
+  } else if (over && id === over && active !== over) {
+    style = { borderInlineStart: '1px dashed gray' };
   }
   return style;
 };
@@ -172,7 +167,7 @@ const App: React.FC = () => {
     >
       <SortableContext items={columns.map((i) => i.key)} strategy={horizontalListSortingStrategy}>
         <DragIndexContext.Provider value={dragIndex}>
-          <Table
+          <Table<DataType>
             rowKey="key"
             columns={columns}
             dataSource={dataSource}

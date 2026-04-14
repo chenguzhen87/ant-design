@@ -12,7 +12,7 @@ for (let i = 10; i < 36; i++) {
 }
 
 const App: React.FC = () => (
-  <Space direction="vertical">
+  <Space vertical>
     <ConfigProvider
       theme={{
         components: {
@@ -20,11 +20,14 @@ const App: React.FC = () => (
             multipleItemBorderColor: 'rgba(0,0,0,0.06)',
             multipleItemBorderColorDisabled: 'rgba(0,0,0,0.06)',
             optionSelectedColor: '#1677ff',
+            hoverBorderColor: 'red',
+            activeBorderColor: 'green',
+            activeOutlineColor: 'pink',
           },
         },
       }}
     >
-      <Space style={{ width: '100%' }} direction="vertical">
+      <Space style={{ width: '100%' }} vertical>
         <Select
           mode="multiple"
           allowClear
@@ -50,7 +53,7 @@ const App: React.FC = () => (
         },
       }}
     >
-      <Space style={{ width: '100%' }} direction="vertical">
+      <Space style={{ width: '100%' }} vertical>
         <Select
           mode="multiple"
           allowClear
@@ -80,7 +83,7 @@ const App: React.FC = () => (
         },
       }}
     >
-      <Space style={{ width: '100%' }} direction="vertical">
+      <Space style={{ width: '100%' }} vertical>
         <Select style={{ width: '100%' }} defaultValue="a10" options={options} />
         <Select
           mode="multiple"

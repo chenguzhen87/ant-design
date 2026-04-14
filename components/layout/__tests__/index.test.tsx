@@ -110,8 +110,10 @@ describe('Layout', () => {
         <Content>Content</Content>
       </Layout>,
     );
-    expect(container.querySelector<HTMLElement>('.ant-layout-sider')?.style.width).toBe('50%');
-    expect(container.querySelector<HTMLElement>('.ant-layout-sider')?.style.flex).toBe('0 0 50%');
+    expect(container.querySelector<HTMLElement>('.ant-layout-sider')).toHaveStyle({
+      width: '50%',
+      flex: '0 0 50%',
+    });
   });
 
   describe('zeroWidth', () => {
@@ -231,7 +233,7 @@ describe('Layout', () => {
     act(() => {
       jest.runAllTimers();
     });
-    expect(container.querySelectorAll('.ant-tooltip-inner').length).toBeFalsy();
+    expect(container.querySelector('.ant-tooltip-container')).toBeFalsy();
     rerender(
       <Sider collapsible collapsed>
         <Menu mode="inline">
@@ -246,7 +248,7 @@ describe('Layout', () => {
     act(() => {
       jest.runAllTimers();
     });
-    expect(container.querySelectorAll('.ant-tooltip-inner').length).toBeTruthy();
+    expect(container.querySelector('.ant-tooltip-container')).toBeTruthy();
 
     jest.useRealTimers();
   });
@@ -274,15 +276,54 @@ describe('Sider', () => {
     expect(onBreakpoint).toHaveBeenCalledWith(true);
   });
 
-  it('should warning if use `inlineCollapsed` with menu', () => {
-    render(
-      <Sider collapsible>
-        <Menu mode="inline" inlineCollapsed />
-      </Sider>,
-    );
-    expect(errorSpy).toHaveBeenCalledWith(
-      'Warning: [antd: Menu] `inlineCollapsed` not control Menu under Sider. Should set `collapsed` on Sider instead.',
-    );
+  it('should controlled collapse work when using with Layout.Sider', () => {
+    const Demo = () => {
+      const [collapsed, setCollapsed] = useState(false);
+
+      const toggleCollapsed = () => {
+        setCollapsed(!collapsed);
+      };
+
+      return (
+        <Layout style={{ minHeight: '100vh' }}>
+          <Layout.Sider collapsed={collapsed}>
+            <button type="button" onClick={toggleCollapsed}>
+              "trigger"
+            </button>
+            <Menu
+              theme="dark"
+              inlineCollapsed={collapsed}
+              defaultSelectedKeys={['1']}
+              mode="inline"
+            >
+              <Menu.SubMenu key="sub1" icon={<UserOutlined />} title="User">
+                <Menu.Item key="3">Tom</Menu.Item>
+                <Menu.Item key="4">Bill</Menu.Item>
+                <Menu.Item key="5">Alex</Menu.Item>
+              </Menu.SubMenu>
+            </Menu>
+          </Layout.Sider>
+        </Layout>
+      );
+    };
+
+    const { getByRole, queryByRole } = render(<Demo />);
+
+    const menu = queryByRole('menu');
+    expect(menu).toHaveClass('ant-menu-inline');
+
+    const button = getByRole('button');
+    fireEvent.click(button);
+
+    act(() => {
+      jest.runAllTimers();
+    });
+
+    expect(menu).toHaveClass('ant-menu-inline-collapsed');
+
+    fireEvent.click(button);
+
+    expect(menu).not.toHaveClass('ant-menu-inline-collapsed');
   });
 
   it('zeroWidthTriggerStyle should work', () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TinyColor } from '@ctrl/tinycolor';
+import { FastColor } from '@ant-design/fast-color';
 import { css, Global } from '@emotion/react';
 import { useTheme } from 'antd-style';
 
@@ -26,6 +26,7 @@ const GlobalStyle: React.FC = () => {
         .markdown img {
           max-width: calc(100% - 32px);
           max-height: 100%;
+          display: inline;
         }
 
         .markdown > a > img,
@@ -34,10 +35,10 @@ const GlobalStyle: React.FC = () => {
           margin: 0 auto;
         }
 
-        .markdown p > img {
+        .markdown p > img,
+        .markdown li > img {
           margin: 34px auto;
           box-shadow: 0 8px 20px rgba(143, 168, 191, 0.35);
-          max-width: 1024px;
           display: block;
         }
 
@@ -104,46 +105,30 @@ const GlobalStyle: React.FC = () => {
         .markdown p,
         .markdown pre {
           margin: 1em 0;
-
+          text-align: start;
           ${antCls}-row-rtl & {
             direction: rtl;
-            text-align: right;
           }
         }
 
-        .markdown ul > li {
-          margin-inline-start: ${token.marginMD}px;
+        .markdown ul > li,
+        .markdown ol > li {
           padding-inline-start: ${token.paddingXXS}px;
-          list-style-type: circle;
-
-          .rtl & {
-            margin-inline-end: ${token.marginMD}px;
-            margin-inline-start: 0;
-            padding-inline-end: ${token.paddingXXS}px;
-            padding-inline-start: 0;
+          margin-inline-start: ${token.marginMD}px;
+          > p {
+            margin: 0.2em 0;
           }
-
           &:empty {
             display: none;
           }
         }
 
-        .markdown ol > li {
-          margin-inline-start: ${token.marginMD}px;
-          padding-inline-start: ${token.paddingXXS}px;
-          list-style-type: decimal;
-
-          ${antCls}-row-rtl & {
-            margin-inline-end: ${token.marginMD}px;
-            margin-inline-start: 0;
-            padding-inline-end: ${token.paddingXXS}px;
-            padding-inline-start: 0;
-          }
+        .markdown ul > li {
+          list-style-type: circle;
         }
 
-        .markdown ul > li > p,
-        .markdown ol > li > p {
-          margin: 0.2em 0;
+        .markdown ol > li {
+          list-style-type: decimal;
         }
 
         .markdown code {
@@ -168,7 +153,7 @@ const GlobalStyle: React.FC = () => {
           color: ${token.colorText};
           font-size: ${Math.max(token.fontSize - 1, 12)}px;
           direction: ltr;
-          text-align: left;
+          text-align: start;
           background-color: ${token.colorBgLayout};
           border: none;
         }
@@ -183,11 +168,20 @@ const GlobalStyle: React.FC = () => {
           background-color: ${token.siteMarkdownCodeBg};
           border-radius: ${token.borderRadius}px;
           > pre.prism-code {
+            scrollbar-width: thin;
+            scrollbar-gutter: stable;
             padding: ${token.paddingSM}px ${token.paddingMD}px;
             font-size: ${token.fontSize}px;
             line-height: 2;
           }
         }
+
+        [data-prefers-color='dark'] {
+          .markdown .dumi-default-source-code {
+            background-color: ${token.siteMarkdownCodeBgDark};
+          }
+        }
+
         .pic-plus {
           & > * {
             display: inline-block !important;
@@ -197,6 +191,7 @@ const GlobalStyle: React.FC = () => {
             margin: 0 ${token.marginMD}px;
             color: #aaa;
             font-size: 30px;
+            user-select: none;
           }
         }
 
@@ -213,13 +208,13 @@ const GlobalStyle: React.FC = () => {
           padding-inline-start: 0.8em;
           color: ${token.colorTextSecondary};
           font-size: 90%;
-          border-left: 4px solid ${token.colorSplit};
+          border-inline-start: 4px solid ${token.colorSplit};
 
           .rtl & {
             padding-inline-end: 0.8em;
             padding-inline-start: 0;
-            border-right: 4px solid ${token.colorSplit};
-            border-left: none;
+            border-inline-end: 4px solid ${token.colorSplit};
+            border-inline-start: none;
           }
         }
 
@@ -282,6 +277,10 @@ const GlobalStyle: React.FC = () => {
         }
 
         .markdown .dumi-default-table {
+          &-content {
+            scrollbar-width: thin;
+            scrollbar-gutter: stable;
+          }
           table {
             margin: 0;
             overflow-x: auto;
@@ -295,15 +294,15 @@ const GlobalStyle: React.FC = () => {
             th,
             td {
               padding: ${token.paddingSM}px ${token.paddingLG}px;
-              text-align: left;
+              text-align: start;
               border: 1px solid ${token.colorSplit};
 
               &:first-child {
-                border-left: 1px solid ${token.colorSplit};
+                border-inline-start: 1px solid ${token.colorSplit};
               }
 
               &:last-child {
-                border-right: 1px solid ${token.colorSplit};
+                border-inline-end: 1px solid ${token.colorSplit};
               }
 
               img {
@@ -381,10 +380,28 @@ const GlobalStyle: React.FC = () => {
               }
             }
           }
+
+          /*
+              Api 表中某些属性用 del 标记，表示已废弃（但仍期望给开发者一个过渡期)用 css 标记出来。仅此而已。
+              有更多看法？移步讨论区: https://github.com/ant-design/ant-design/discussions/51298
+            */
+          tr:has(td:first-child > del) {
+            color: ${token.colorWarning} !important;
+            background-color: ${token.colorWarningBg} !important;
+            display: var(--antd-site-api-deprecated-display, none);
+
+            del {
+              color: ${token.colorWarning};
+            }
+
+            &:hover del {
+              text-decoration: none;
+            }
+          }
         }
 
         .grid-demo,
-        [id^='components-grid-demo-'] {
+        [id^='grid-demo-'] {
           ${antCls}-row > div,
             .code-box-demo ${antCls}-row > div {
             min-height: 30px;
@@ -400,7 +417,7 @@ const GlobalStyle: React.FC = () => {
             background: ${demoGridColor};
 
             &:nth-child(2n + 1) {
-              background: ${new TinyColor(demoGridColor).setAlpha(0.75).toHex8String()};
+              background: ${new FastColor(demoGridColor).setA(0.75).toHexString()};
             }
           }
 
@@ -416,12 +433,12 @@ const GlobalStyle: React.FC = () => {
           }
 
           ${antCls}-row .demo-col-1 {
-            background: ${new TinyColor(demoGridColor).setAlpha(0.75).toHexString()};
+            background: ${new FastColor(demoGridColor).setA(0.75).toHexString()};
           }
 
           ${antCls}-row .demo-col-2,
             .code-box-demo ${antCls}-row .demo-col-2 {
-            background: ${new TinyColor(demoGridColor).setAlpha(0.75).toHexString()};
+            background: ${new FastColor(demoGridColor).setA(0.75).toHexString()};
           }
 
           ${antCls}-row .demo-col-3,
@@ -432,7 +449,7 @@ const GlobalStyle: React.FC = () => {
 
           ${antCls}-row .demo-col-4,
             .code-box-demo ${antCls}-row .demo-col-4 {
-            background: ${new TinyColor(demoGridColor).setAlpha(0.6).toHexString()};
+            background: ${new FastColor(demoGridColor).setA(0.6).toHexString()};
           }
 
           ${antCls}-row .demo-col-5,
@@ -462,8 +479,8 @@ const GlobalStyle: React.FC = () => {
           }
         }
 
-        [id='components-grid-demo-playground'],
-        [id='components-grid-demo-gutter'] {
+        [id='grid-demo-playground'],
+        [id='grid-demo-gutter'] {
           > .code-box-demo ${antCls}-row > div {
             margin-top: 0;
             margin-bottom: 0;

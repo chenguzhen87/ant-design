@@ -13,19 +13,23 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   preview-start:
     permissions:
       issues: write  # for actions-cool/maintain-one-comment to modify or create issue comments
       pull-requests: write  # for actions-cool/maintain-one-comment to modify or create PR comments
     name: start preview info
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - name: update status comment
-        uses: actions-cool/maintain-one-comment@v3
+        uses: actions-cool/maintain-one-comment@909842216bc8e8658364c572ec52100f4c2cc50a # v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             [<img width="500" alt="Prepare preview" src="https://user-images.githubusercontent.com/5378891/72351368-2c979e00-371b-11ea-9652-eb4e825d745e.gif">](https://preview-${{ github.event.number }}-ant-design.surge.sh)
             <!-- AUTO_PREVIEW_HOOK -->
-          body-include: '<!-- AUTO_PREVIEW_HOOK -->'
+          body-include: <!-- AUTO_PREVIEW_HOOK -->

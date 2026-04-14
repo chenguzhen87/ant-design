@@ -1,10 +1,10 @@
 import * as React from 'react';
-import type { ValidateMessages } from 'rc-field-form/lib/interface';
+import type { ValidateMessages } from '@rc-component/form/lib/interface';
 
 import { devUseWarning } from '../_util/warning';
 import type { PickerLocale as DatePickerLocale } from '../date-picker/generatePicker';
 import type { TransferLocale as TransferLocaleForEmpty } from '../empty';
-import type { ModalLocale } from '../modal/locale';
+import type { ModalLocale } from '../modal/interface';
 import { changeConfirmLocale } from '../modal/locale';
 import type { PaginationLocale } from '../pagination/Pagination';
 import type { PopconfirmLocale } from '../popconfirm/PurePanel';
@@ -18,7 +18,6 @@ import LocaleContext from './context';
 export { default as useLocale } from './useLocale';
 
 export const ANT_MARK = 'internalMark';
-
 export interface Locale {
   locale: string;
   Pagination?: PaginationLocale;
@@ -33,7 +32,11 @@ export interface Locale {
   Select?: Record<string, any>;
   Upload?: UploadLocale;
   Empty?: TransferLocaleForEmpty;
-  global?: Record<string, any>;
+  global?: {
+    placeholder?: string;
+    close?: string;
+    sortable?: string;
+  };
   Icon?: Record<string, any>;
   Text?: {
     edit?: any;
@@ -46,9 +49,6 @@ export interface Locale {
     optional?: string;
     defaultValidateMessages: ValidateMessages;
   };
-  Image?: {
-    preview: string;
-  };
   QRCode?: {
     expired?: string;
     refresh?: string;
@@ -56,6 +56,9 @@ export interface Locale {
   };
   ColorPicker?: {
     presetEmpty: string;
+    transparent: string;
+    singleColor: string;
+    gradientColor: string;
   };
 }
 
@@ -80,7 +83,7 @@ const LocaleProvider: React.FC<LocaleProviderProps> = (props) => {
   }
 
   React.useEffect(() => {
-    const clearLocale = changeConfirmLocale(locale && locale.Modal);
+    const clearLocale = changeConfirmLocale(locale?.Modal);
     return clearLocale;
   }, [locale]);
 

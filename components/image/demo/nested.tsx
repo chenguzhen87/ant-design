@@ -22,6 +22,7 @@ const App: React.FC = () => {
         onCancel={() => {
           setShow1(false);
         }}
+        onOk={() => setShow1(false)}
       >
         <Button
           onClick={() => {
@@ -38,6 +39,7 @@ const App: React.FC = () => {
           onCancel={() => {
             setShow2(false);
           }}
+          onOk={() => setShow2(false)}
         >
           <Button
             onClick={() => {
@@ -54,9 +56,11 @@ const App: React.FC = () => {
             onCancel={() => {
               setShow3(false);
             }}
+            onOk={() => setShow3(false)}
           >
             <Image
               width={200}
+              alt="svg image"
               src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
             />
             <Divider />
@@ -68,6 +72,7 @@ const App: React.FC = () => {
             >
               <Image
                 width={200}
+                alt="svg image"
                 src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
               />
               <Image

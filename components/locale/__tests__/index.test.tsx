@@ -1,4 +1,3 @@
-/* eslint-disable react/no-multi-comp */
 import dayjs from 'dayjs';
 
 import 'dayjs/locale/ar';
@@ -14,6 +13,7 @@ import 'dayjs/locale/el';
 import 'dayjs/locale/en';
 import 'dayjs/locale/en-gb';
 import 'dayjs/locale/es';
+import 'dayjs/locale/es-us';
 import 'dayjs/locale/et';
 import 'dayjs/locale/fa';
 import 'dayjs/locale/fi';
@@ -81,10 +81,10 @@ import {
   Popconfirm,
   Select,
   Table,
-  TableProps,
   TimePicker,
   Transfer,
 } from '../..';
+import type { TableProps } from '../..';
 import mountTest from '../../../tests/shared/mountTest';
 import { render } from '../../../tests/utils';
 import arEG from '../../locale/ar_EG';
@@ -100,6 +100,7 @@ import elGR from '../../locale/el_GR';
 import enGB from '../../locale/en_GB';
 import enUS from '../../locale/en_US';
 import esES from '../../locale/es_ES';
+import esUS from '../../locale/es_US';
 import etEE from '../../locale/et_EE';
 import euES from '../../locale/eu_ES';
 import faIR from '../../locale/fa_IR';
@@ -130,6 +131,7 @@ import lvLV from '../../locale/lv_LV';
 import mkMK from '../../locale/mk_MK';
 import mlIN from '../../locale/ml_IN';
 import mnMN from '../../locale/mn_MN';
+import mrIN from '../../locale/mr_IN';
 import msMY from '../../locale/ms_MY';
 import myMM from '../../locale/my_MM';
 import nbNO from '../../locale/nb_NO';
@@ -174,6 +176,7 @@ const locales = [
   enGB,
   enUS,
   esES,
+  esUS,
   etEE,
   euES,
   faIR,
@@ -201,6 +204,7 @@ const locales = [
   ltLT,
   mkMK,
   mlIN,
+  mrIN,
   msMY,
   mnMN,
   nbNO,
@@ -233,7 +237,6 @@ const locales = [
   uzUZ,
 ];
 
-const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const columns: TableProps['columns'] = [
@@ -248,10 +251,14 @@ const columns: TableProps['columns'] = [
 const App: React.FC = () => (
   <div>
     <Pagination defaultCurrent={1} total={50} showSizeChanger />
-    <Select showSearch style={{ width: 200 }}>
-      <Option value="jack">jack</Option>
-      <Option value="lucy">lucy</Option>
-    </Select>
+    <Select
+      showSearch
+      style={{ width: 200 }}
+      options={[
+        { label: 'jack', value: 'jack' },
+        { label: 'lucy', value: 'lucy' },
+      ]}
+    />
     <DatePicker open />
     <TimePicker open defaultOpenValue={dayjs()} />
     <RangePicker open style={{ width: 200 }} />

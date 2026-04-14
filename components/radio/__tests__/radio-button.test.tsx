@@ -3,15 +3,10 @@ import React from 'react';
 import type { RadioGroupProps } from '..';
 import Radio, { Button } from '..';
 import focusTest from '../../../tests/shared/focusTest';
-import mountTest from '../../../tests/shared/mountTest';
-import rtlTest from '../../../tests/shared/rtlTest';
 import { fireEvent, render } from '../../../tests/utils';
 
 describe('Radio Button', () => {
   focusTest(Button, { refFocus: true });
-  mountTest(Button);
-
-  rtlTest(Button);
 
   it('should render correctly', () => {
     const { container } = render(<Button className="customized">Test</Button>);
@@ -161,28 +156,23 @@ describe('Radio Group', () => {
   });
 
   it('should forward ref', () => {
-    let radioGroupRef: HTMLDivElement;
+    const radioGroupRef = React.createRef<HTMLDivElement>();
     const { container } = render(
       <RadioGroupComponent
         ref={(ref: HTMLDivElement) => {
-          radioGroupRef = ref;
+          radioGroupRef.current = ref;
         }}
       />,
     );
-
-    expect(radioGroupRef!).toBe(container.querySelector('.ant-radio-group'));
+    expect(radioGroupRef.current).toBe(container.querySelector('.ant-radio-group'));
   });
 
   it('should support data-* or aria-* props', () => {
     const { container } = render(
       <RadioGroupComponent data-radio-group-id="radio-group-id" aria-label="radio-group" />,
     );
-    expect((container.firstChild as HTMLDivElement)?.getAttribute('data-radio-group-id')).toBe(
-      'radio-group-id',
-    );
-    expect((container.firstChild as HTMLDivElement)?.getAttribute('aria-label')).toBe(
-      'radio-group',
-    );
+    expect(container.firstChild).toHaveAttribute('data-radio-group-id', 'radio-group-id');
+    expect(container.firstChild).toHaveAttribute('aria-label', 'radio-group');
   });
 
   it('Radio type should not be override', () => {

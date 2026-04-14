@@ -16,30 +16,12 @@ Ant Design React 致力于提供给程序员**愉悦**的开发体验。
 
 这是一个最简单的 Ant Design 组件的在线 codesandbox 演示。
 
-```sandpack
-const sandpackConfig = {
-  autorun: true,
-};
-
-import React from 'react';
-import { Button, Space, DatePicker, version } from 'antd';
-
-const App = () => (
-  <div style={{ padding: '0 24px' }}>
-    <h1>antd version: {version}</h1>
-    <Space>
-      <DatePicker />
-      <Button type="primary">Primary Button</Button>
-    </Space>
-  </div>
-);
-
-export default App;
-```
+<!-- prettier-ignore -->
+<code src="./demo/first-example.tsx">第一个例子</code>
 
 ### 1. 创建一个 codesandbox
 
-访问 https://u.ant.design/codesandbox-repro 创建一个 codesandbox 的在线示例，别忘了保存以创建一个新的实例。
+访问 https://u.ant.design/reproduce 创建一个 codesandbox 的在线示例，别忘了保存以创建一个新的实例。
 
 ### 2. 使用组件
 
@@ -100,7 +82,7 @@ createRoot(document.getElementById('root')).render(<App />);
   <DatePicker onChange={value => this.handleChange(value)} />
   <div style={{ marginTop: 16 }}>
 -   当前日期：{date ? date.format('YYYY-MM-DD') : '未选择'}
-+   <Alert message="当前日期" description={date ? date.format('YYYY年MM月DD日') : '未选择'} />
++   <Alert title="当前日期" description={date ? date.format('YYYY年MM月DD日') : '未选择'} />
   </div>
 ```
 

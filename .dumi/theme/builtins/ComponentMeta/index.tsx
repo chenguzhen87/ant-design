@@ -1,74 +1,90 @@
 import React from 'react';
-import { EditOutlined, GithubOutlined } from '@ant-design/icons';
+import {
+  BugOutlined,
+  CompassOutlined,
+  EditOutlined,
+  FileTextOutlined,
+  GithubOutlined,
+  HistoryOutlined,
+  IssuesCloseOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons';
 import type { GetProp } from 'antd';
-import { Descriptions, theme, Tooltip, Typography } from 'antd';
+import { Descriptions, Flex, theme, Tooltip, Typography } from 'antd';
 import { createStyles, css } from 'antd-style';
+import copy from 'antd/es/_util/copy';
 import kebabCase from 'lodash/kebabCase';
-import CopyToClipboard from 'react-copy-to-clipboard';
 
+import useIssueCount from '../../../hooks/useIssueCount';
 import useLocale from '../../../hooks/useLocale';
+import ComponentChangelog from '../../common/ComponentChangelog';
+import Link from '../../common/Link';
 
 const locales = {
   cn: {
     import: '使用',
     copy: '复制',
     copied: '已复制',
-    source: '源码',
+    source: '反馈',
     docs: '文档',
     edit: '编辑此页',
+    changelog: '更新日志',
+    design: '设计指南',
     version: '版本',
+    issueNew: '提交问题',
+    issueOpen: '待解决',
+    copyError: '复制失败',
   },
   en: {
     import: 'Import',
     copy: 'Copy',
     copied: 'Copied',
-    source: 'Source',
+    source: 'GitHub',
     docs: 'Docs',
     edit: 'Edit this page',
+    changelog: 'Changelog',
+    design: 'Design',
     version: 'Version',
+    issueNew: 'Issue',
+    issueOpen: 'Open issues',
+    copyError: 'Copy failed',
   },
 };
 
-const branchUrl = 'https://github.com/ant-design/ant-design/edit/master/';
+const branchUrl = (repo: string) => `https://github.com/${repo}/edit/master/`;
 
 function isVersionNumber(value?: string) {
   return value && /^\d+\.\d+\.\d+$/.test(value);
 }
 
-const useStyle = createStyles(({ token }) => ({
+const transformComponentName = (componentName: string) => {
+  if (componentName === 'Notification' || componentName === 'Message') {
+    return componentName.toLowerCase();
+  }
+  return componentName;
+};
+
+const useStyle = createStyles(({ cssVar, token }) => ({
   code: css`
     cursor: pointer;
     position: relative;
     display: inline-flex;
     align-items: center;
-    column-gap: ${token.paddingXXS}px;
-    border-radius: ${token.borderRadiusSM}px;
-    padding-inline: ${token.paddingXXS}px;
-    transition: all ${token.motionDurationSlow} !important;
+    column-gap: ${cssVar.paddingXXS};
+    border-radius: ${cssVar.borderRadiusSM};
+    padding-inline: ${cssVar.paddingXXS} !important;
+    transition: all ${cssVar.motionDurationSlow} !important;
     font-family: ${token.codeFamily};
-    color: ${token.colorTextSecondary} !important;
+    color: ${cssVar.colorTextSecondary} !important;
     &:hover {
-      background: ${token.controlItemBgHover};
+      background: ${cssVar.controlItemBgHover};
     }
     a&:hover {
       text-decoration: underline !important;
     }
   `,
-  import: css`
-    color: ${token.magenta8};
-  `,
-  component: css`
-    color: ${token.colorText};
-  `,
-  from: css`
-    color: ${token.magenta8};
-    margin-inline-end: 0.5em;
-  `,
-  antd: css`
-    color: ${token.green8};
-  `,
-  semicolon: css`
-    color: ${token.colorText};
+  icon: css`
+    margin-inline-end: 4px;
   `,
 }));
 
@@ -77,19 +93,34 @@ export interface ComponentMetaProps {
   source: string | true;
   filename?: string;
   version?: string;
+  designUrl?: string;
+  searchTitleKeywords?: string[];
+  repo: string;
 }
 
 const ComponentMeta: React.FC<ComponentMetaProps> = (props) => {
-  const { component, source, filename, version } = props;
+  const { component, source, filename, version, designUrl, searchTitleKeywords, repo } = props;
   const { token } = theme.useToken();
   const [locale, lang] = useLocale(locales);
   const isZhCN = lang === 'cn';
   const { styles } = useStyle();
 
+  // ======================= Issues Count =======================
+  const { issueCount, issueCountLoading, issueNewUrl, issueSearchUrl } = useIssueCount({
+    repo,
+    titleKeywords: searchTitleKeywords,
+  });
+
   // ========================= Copy =========================
   const [copied, setCopied] = React.useState(false);
 
-  const onCopy = () => {
+  const importCode =
+    component === 'Icon'
+      ? `import { AntDesignOutlined } from '@ant-design/icons';`
+      : `import { ${transformComponentName(component)} } from 'antd';`;
+
+  const onCopy = async () => {
+    await copy(importCode);
     setCopied(true);
   };
 
@@ -100,38 +131,22 @@ const ComponentMeta: React.FC<ComponentMetaProps> = (props) => {
   };
 
   // ======================== Source ========================
-  const [filledSource, abbrSource] = React.useMemo(() => {
+  const [filledSource, abbrSource, llmsPath] = React.useMemo(() => {
     if (String(source) === 'true') {
       const kebabComponent = kebabCase(component);
       return [
-        `https://github.com/ant-design/ant-design/blob/master/components/${kebabComponent}`,
+        `https://github.com/${repo}/blob/master/components/${kebabComponent}`,
         `components/${kebabComponent}`,
+        `/components/${kebabComponent}${isZhCN ? '-cn' : ''}.md`,
       ];
     }
 
     if (typeof source !== 'string') {
-      return [null, null];
+      return [null, null, null];
     }
 
-    return [source, source];
-  }, [component, source]);
-
-  // ======================== Render ========================
-  const importList = [
-    <span key="import" className={styles.import}>
-      import
-    </span>,
-    <span key="component" className={styles.component}>{`{ ${component} }`}</span>,
-    <span key="from" className={styles.from}>
-      from
-    </span>,
-    <span key="antd" className={styles.antd}>
-      {`"antd"`}
-    </span>,
-    <span key="semicolon" className={styles.semicolon}>
-      ;
-    </span>,
-  ];
+    return [source, source, null];
+  }, [component, repo, source, isZhCN]);
 
   return (
     <Descriptions
@@ -139,52 +154,89 @@ const ComponentMeta: React.FC<ComponentMetaProps> = (props) => {
       colon={false}
       column={1}
       style={{ marginTop: token.margin }}
-      labelStyle={{ paddingInlineEnd: token.padding, width: 54 }}
+      styles={{ label: { paddingInlineEnd: token.padding, width: 56 } }}
       items={
         [
           {
             label: locale.import,
             children: (
-              <CopyToClipboard text={`import { ${component} } from "antd";`} onCopy={onCopy}>
-                <Tooltip
-                  placement="right"
-                  title={copied ? locale.copied : locale.copy}
-                  onOpenChange={onOpenChange}
+              <Tooltip
+                placement="right"
+                title={copied ? locale.copied : locale.copy}
+                onOpenChange={onOpenChange}
+              >
+                <Typography.Text
+                  className={styles.code}
+                  style={{ cursor: 'pointer' }}
+                  onClick={onCopy}
                 >
-                  <Typography.Text className={styles.code} onClick={onCopy}>
-                    {importList}
-                  </Typography.Text>
-                </Tooltip>
-              </CopyToClipboard>
+                  {importCode}
+                </Typography.Text>
+              </Tooltip>
             ),
           },
           filledSource && {
             label: locale.source,
             children: (
-              <Typography.Link className={styles.code} href={filledSource} target="_blank">
-                <GithubOutlined style={{ marginInlineEnd: 4 }} />
-                <span>{abbrSource}</span>
-              </Typography.Link>
+              <Flex justify="flex-start" align="center" gap="small">
+                <Typography.Link className={styles.code} href={filledSource} target="_blank">
+                  <GithubOutlined className={styles.icon} />
+                  <span>{abbrSource}</span>
+                </Typography.Link>
+                <Typography.Link className={styles.code} href={issueNewUrl} target="_blank">
+                  <BugOutlined className={styles.icon} />
+                  <span>{locale.issueNew}</span>
+                </Typography.Link>
+                <Typography.Link className={styles.code} href={issueSearchUrl} target="_blank">
+                  <IssuesCloseOutlined className={styles.icon} />
+                  <span>
+                    {locale.issueOpen} {issueCountLoading ? <LoadingOutlined /> : issueCount}
+                  </span>
+                </Typography.Link>
+              </Flex>
             ),
           },
           filename && {
             label: locale.docs,
             children: (
-              <Typography.Link
-                className={styles.code}
-                href={`${branchUrl}${filename}`}
-                target="_blank"
-              >
-                <EditOutlined style={{ marginInlineEnd: 4 }} />
-                <span>{locale.edit}</span>
-              </Typography.Link>
+              <Flex justify="flex-start" align="center" gap="small">
+                <Typography.Link
+                  className={styles.code}
+                  href={`${branchUrl(repo)}${filename}`}
+                  target="_blank"
+                >
+                  <EditOutlined className={styles.icon} />
+                  <span>{locale.edit}</span>
+                </Typography.Link>
+                {designUrl && (
+                  <Link className={styles.code} to={designUrl}>
+                    <CompassOutlined className={styles.icon} />
+                    <span>{locale.design}</span>
+                  </Link>
+                )}
+                <Typography.Link
+                  className={styles.code}
+                  href={llmsPath || ''}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FileTextOutlined className={styles.icon} />
+                  <span>LLMs.md</span>
+                </Typography.Link>
+                <ComponentChangelog>
+                  <Typography.Link className={styles.code}>
+                    <HistoryOutlined className={styles.icon} />
+                    <span>{locale.changelog}</span>
+                  </Typography.Link>
+                </ComponentChangelog>
+              </Flex>
             ),
           },
           isVersionNumber(version) && {
             label: locale.version,
             children: (
               <Typography.Text className={styles.code}>
-                {isZhCN ? `自 ${version} 后支持` : `supported since ${version}`}
+                {isZhCN ? `自 ${version} 起支持` : `supported since ${version}`}
               </Typography.Text>
             ),
           },

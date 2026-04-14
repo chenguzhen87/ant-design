@@ -34,14 +34,17 @@ const fileList: UploadFile[] = [
 
 const App: React.FC = () => {
   const uploadButton = (
-    <button style={{ border: 0, background: 'none' }} type="button">
+    <button
+      style={{ color: 'inherit', cursor: 'inherit', border: 0, background: 'none' }}
+      type="button"
+    >
       <PlusOutlined />
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
 
   return (
-    <Space direction="vertical">
+    <Space vertical>
       <Upload disabled>Click Text to Upload</Upload>
       <Upload disabled>
         <Button icon={<UploadOutlined />}>Click to Upload</Button>

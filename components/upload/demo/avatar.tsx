@@ -49,7 +49,7 @@ const App: React.FC = () => {
   );
 
   return (
-    <Flex gap="middle" wrap>
+    <Flex gap="medium" wrap>
       <Upload
         name="avatar"
         listType="picture-card"
@@ -59,7 +59,11 @@ const App: React.FC = () => {
         beforeUpload={beforeUpload}
         onChange={handleChange}
       >
-        {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+        {imageUrl ? (
+          <img draggable={false} src={imageUrl} alt="avatar" style={{ width: '100%' }} />
+        ) : (
+          uploadButton
+        )}
       </Upload>
       <Upload
         name="avatar"
@@ -70,7 +74,11 @@ const App: React.FC = () => {
         beforeUpload={beforeUpload}
         onChange={handleChange}
       >
-        {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+        {imageUrl ? (
+          <img draggable={false} src={imageUrl} alt="avatar" style={{ width: '100%' }} />
+        ) : (
+          uploadButton
+        )}
       </Upload>
     </Flex>
   );

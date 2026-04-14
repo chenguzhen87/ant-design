@@ -19,7 +19,7 @@ export interface ComponentToken {
 
 interface StatisticToken extends FullToken<'Statistic'> {}
 
-const genStatisticStyle: GenerateStyle<StatisticToken> = (token: StatisticToken): CSSObject => {
+const genStatisticStyle: GenerateStyle<StatisticToken, CSSObject> = (token) => {
   const {
     componentCls,
     marginXXS,
@@ -32,12 +32,14 @@ const genStatisticStyle: GenerateStyle<StatisticToken> = (token: StatisticToken)
   } = token;
 
   return {
-    [`${componentCls}`]: {
+    [componentCls]: {
       ...resetComponent(token),
-      [`${componentCls}-title`]: {
-        marginBottom: marginXXS,
-        color: colorTextDescription,
-        fontSize: titleFontSize,
+      [`${componentCls}-header`]: {
+        paddingBottom: marginXXS,
+        [`${componentCls}-title`]: {
+          color: colorTextDescription,
+          fontSize: titleFontSize,
+        },
       },
 
       [`${componentCls}-skeleton`]: {
@@ -79,7 +81,7 @@ export default genStyleHooks(
   'Statistic',
   (token) => {
     const statisticToken = mergeToken<StatisticToken>(token, {});
-    return [genStatisticStyle(statisticToken)];
+    return genStatisticStyle(statisticToken);
   },
   prepareComponentToken,
 );

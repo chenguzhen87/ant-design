@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/ur_PK';
+import Pagination from '@rc-component/pagination/lib/locale/ur_PK';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/ur_PK';
@@ -16,6 +15,7 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'منتخب کریں',
+    close: 'بند کریں',
   },
   Table: {
     filterTitle: 'فلٹر مینو',
@@ -33,6 +33,11 @@ const localeValues: Locale = {
     triggerDesc: 'نزولی کو ترتیب دینے کیلئے کلک کریں',
     triggerAsc: 'چڑھنے کو ترتیب دینے کیلئے کلک کریں',
     cancelSort: 'ترتیب کو منسوخ کرنے کیلئے دبائیں',
+  },
+  Tour: {
+    Next: 'اگلا',
+    Previous: 'پچھلا',
+    Finish: 'ختم کریں',
   },
   Modal: {
     okText: 'ٹھیک ہے',
@@ -123,9 +128,6 @@ const localeValues: Locale = {
         mismatch: '${label} پیٹرن سے ملتا نہیں ہے ${pattern}',
       },
     },
-  },
-  Image: {
-    preview: 'پیش نظارہ',
   },
 };
 

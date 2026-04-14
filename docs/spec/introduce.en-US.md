@@ -30,15 +30,17 @@ We provide comprehensive design guidelines, best practices, resources, and tools
 
 ## Front-end Implementation
 
-[React](http://facebook.github.io/react/) is used to encapsulate a library of components which embody our design language. We welcome the community to implement [our design system](/docs/spec/introduce) in other front-end frameworks of their choice.
+[React](https://react.dev/) is used to encapsulate a library of components which embody our design language. We welcome the community to implement [our design system](/docs/spec/introduce) in other front-end frameworks of their choice.
 
-- [Ant Design of React](/docs/react/introduce)（official implementation）
-- [NG-ZORRO - Ant Design of Angular](http://ng.ant.design)
-- [NG-ZORRO-MOBILE - Ant Design Mobile of Angular](http://ng.mobile.ant.design)
-- [Ant Design of Vue](http://antdv.com)
-- [Ant Design Blazor](https://antblazor.com/)
-- [San UI Toolkit for Ant Design](https://ecomfe.github.io/santd)
-- [antizer (ClojureScript)](https://github.com/priornix/antizer)
+- [Ant Design of React](/docs/react/introduce) (official implementation)
+- [NG-ZORRO - Ant Design of Angular](http://ng.ant.design) (community implementation)
+- [NG-ZORRO-MOBILE - Ant Design Mobile of Angular](http://ng.mobile.ant.design) (community implementation)
+- [Ant Design of Vue](http://antdv.com) (community implementation)
+- [Ant Design Vue Next](https://www.antdv-next.com) (community implementation)
+- [Ant Design Blazor](https://antblazor.com/) (community implementation)
+- [San UI Toolkit for Ant Design](https://ecomfe.github.io/santd) (community implementation)
+- [antizer (ClojureScript)](https://github.com/priornix/antizer) (community implementation)
+- [AtomUI - Ant Design of Avalonia/.NET](https://github.com/atomui/atomui) (community implementation)
 
 ## Who's using Ant Design
 
@@ -56,7 +58,7 @@ We provide comprehensive design guidelines, best practices, resources, and tools
 
 ## Words From Community
 
-- Hacknews: [Show HN: Antd – A set of high-quality React components](https://news.ycombinator.com/item?id=13053137)
+- Hacker News: [Show HN: Antd – A set of high-quality React components](https://news.ycombinator.com/item?id=13053137)
 - Alligator: [Crafting Beautiful UIs in React Using Ant Design](https://alligator.io/react/beautiful-uis-ant-design/)
 - [Introduction to Ant Design](https://blog.logrocket.com/introduction-to-ant-design/)
 - [Build a React App with Ant Design Principles](https://developer.okta.com/blog/2020/09/16/ant-design-react-app)

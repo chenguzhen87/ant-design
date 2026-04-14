@@ -5,8 +5,8 @@ import theme from '..';
 import { render, renderHook } from '../../../tests/utils';
 import ConfigProvider from '../../config-provider';
 import type { ThemeConfig } from '../../config-provider/context';
+import Input from '../../input';
 import Row from '../../row';
-import Slider from '../../slider';
 import genRadius from '../themes/shared/genRadius';
 
 const { useToken } = theme;
@@ -14,9 +14,9 @@ const { useToken } = theme;
 describe('Theme', () => {
   const getHookToken = (config?: ThemeConfig) => {
     let token: any;
-    const Demo = () => {
-      const { token: hookToken } = useToken();
-      token = hookToken;
+    let cssVar: any;
+    const Demo: React.FC = () => {
+      ({ token, cssVar } = useToken());
       return null;
     };
     render(
@@ -27,7 +27,7 @@ describe('Theme', () => {
     delete token._hashId;
     delete token._tokenKey;
     delete token._themeKey;
-    return token;
+    return { token, cssVar };
   };
 
   it('useTheme', () => {
@@ -44,18 +44,22 @@ describe('Theme', () => {
   });
 
   it('ConfigProvider with seed', () => {
-    const Demo = React.forwardRef((_, ref: any) => {
+    const Demo = React.forwardRef<ReturnType<typeof useToken>, any>((_, ref) => {
       const themeObj = useToken();
-      ref.current = themeObj;
+      if (typeof ref === 'function') {
+        ref(themeObj);
+      } else if (ref) {
+        ref.current = themeObj;
+      }
       return null;
     });
-
     const themeRef = React.createRef<ReturnType<typeof useToken>>();
     render(
       <ConfigProvider
         theme={{
           token: {
             colorPrimary: '#ff0000',
+            orange: '#ff8800',
           },
         }}
       >
@@ -67,6 +71,8 @@ describe('Theme', () => {
       expect.objectContaining({
         colorPrimary: '#ff0000',
         colorPrimaryHover: '#ff3029', // It's safe to modify if theme logic changed
+        orange6: '#ff8800',
+        orange9: '#8c3d00', // It's safe to modify if theme logic changed
       }),
     );
   });
@@ -241,13 +247,13 @@ describe('Theme', () => {
       </ConfigProvider>,
     );
 
-    expect(container.querySelector('.duration')?.textContent).toEqual('0s');
+    expect(container.querySelector('.duration')?.textContent).toBe('0s');
   });
 
   describe('getDesignToken', () => {
     it('default', () => {
       const token = theme.getDesignToken();
-      const hookToken = getHookToken();
+      const { token: hookToken } = getHookToken();
       expect(token).toEqual(hookToken);
     });
 
@@ -260,9 +266,9 @@ describe('Theme', () => {
         },
       };
       const token = theme.getDesignToken(config);
-      const hookToken = getHookToken(config);
+      const { token: hookToken } = getHookToken(config);
       expect(token).toEqual(hookToken);
-      expect(token.colorPrimary).toEqual('#189cff');
+      expect(token.colorPrimary).toBe('#189cff');
     });
 
     it('with custom algorithm', () => {
@@ -275,69 +281,106 @@ describe('Theme', () => {
         algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
       };
       const token = theme.getDesignToken(config);
-      const hookToken = getHookToken(config);
+      const { token: hookToken } = getHookToken(config);
       expect(token).toEqual(hookToken);
-      expect(token.colorPrimary).toEqual('#1668dc');
+      expect(token.colorPrimary).toBe('#1668dc');
     });
   });
 
   describe('colorLink', () => {
     it('should follow colorPrimary by default', () => {
-      const token = getHookToken();
-      expect(token.colorLink).toEqual(token.colorInfo);
-      expect(token.colorLinkHover).toEqual(token.colorInfoHover);
-      expect(token.colorLinkActive).toEqual(token.colorInfoActive);
+      const { token } = getHookToken();
+      expect(token.colorLink).toBe(token.colorInfo);
+      expect(token.colorLinkHover).toBe(token.colorInfoHover);
+      expect(token.colorLinkActive).toBe(token.colorInfoActive);
 
-      const token2 = getHookToken({ token: { colorPrimary: '#189cff' } });
-      expect(token2.colorLink).toEqual(token2.colorInfo);
-      expect(token2.colorLinkHover).toEqual(token2.colorInfoHover);
-      expect(token2.colorLinkActive).toEqual(token2.colorInfoActive);
+      const { token: token2 } = getHookToken({ token: { colorPrimary: '#189cff' } });
+      expect(token2.colorLink).toBe(token2.colorInfo);
+      expect(token2.colorLinkHover).toBe(token2.colorInfoHover);
+      expect(token2.colorLinkActive).toBe(token2.colorInfoActive);
       // colorInfo should not follow colorPrimary
-      expect(token2.colorLink).not.toEqual('#189cff');
+      expect(token2.colorLink).not.toBe('#189cff');
 
-      const token3 = getHookToken({ algorithm: [theme.darkAlgorithm] });
-      expect(token3.colorLink).toEqual(token3.colorInfo);
-      expect(token3.colorLinkHover).toEqual(token3.colorInfoHover);
-      expect(token3.colorLinkActive).toEqual(token3.colorInfoActive);
+      const { token: token3 } = getHookToken({ algorithm: [theme.darkAlgorithm] });
+      expect(token3.colorLink).toBe(token3.colorInfo);
+      expect(token3.colorLinkHover).toBe(token3.colorInfoHover);
+      expect(token3.colorLinkActive).toBe(token3.colorInfoActive);
     });
 
     it('should be calculated correctly', () => {
-      const token = getHookToken({ token: { colorLink: '#189cff' } });
-      expect(token.colorLink).toEqual('#189cff');
-      expect(token.colorLinkHover).toEqual('#69c8ff');
-      expect(token.colorLinkActive).toEqual('#0978d9');
+      const { token } = getHookToken({ token: { colorLink: '#189cff' } });
+      expect(token.colorLink).toBe('#189cff');
+      expect(token.colorLinkHover).toBe('#69c8ff');
+      expect(token.colorLinkActive).toBe('#0978d9');
     });
   });
 
+  it('shadow tokens should adapt to dark theme', () => {
+    const { token } = getHookToken();
+    const { token: darkToken } = getHookToken({
+      algorithm: [theme.darkAlgorithm],
+    });
+    const { token: darkCustomTextBaseToken } = getHookToken({
+      algorithm: [theme.darkAlgorithm],
+      token: { colorTextBase: '#ff0000' },
+    });
+
+    expect(token.boxShadow).toMatch(/rgba\(0,\s*0,\s*0,\s*0\.08\)/);
+    expect(token.boxShadowCard).toMatch(/rgba\(0,\s*0,\s*0,\s*0\.16\)/);
+    expect(darkToken.boxShadow).toMatch(/rgba\(255,\s*255,\s*255,\s*0\.016\)/);
+    expect(darkToken.boxShadowCard).toMatch(/rgba\(255,\s*255,\s*255,\s*0\.032\)/);
+    expect(darkCustomTextBaseToken.boxShadowCard).toMatch(/rgba\(255,\s*255,\s*255,\s*0\.032\)/);
+  });
+
   it('component token should support algorithm', () => {
-    const Demo = ({ algorithm }: { algorithm?: boolean | typeof theme.darkAlgorithm }) => (
-      <ConfigProvider
-        theme={{
-          components: {
-            Slider: {
-              colorPrimary: '#00B96B',
-              algorithm,
-            },
-          },
-        }}
-      >
-        <Slider value={5} />
-      </ConfigProvider>
-    );
+    const Demo: React.FC<{ algorithm?: boolean | typeof theme.darkAlgorithm }> = (props) => {
+      const { algorithm } = props;
+      return (
+        <ConfigProvider theme={{ components: { Input: { colorPrimary: '#00B96B', algorithm } } }}>
+          <Input />
+        </ConfigProvider>
+      );
+    };
 
     const { container, rerender } = render(<Demo />);
-    expect(container.querySelector('.ant-slider-track')).toHaveStyle({
-      'background-color': '#91caff',
-    });
+    const inputElement = container.querySelector<HTMLInputElement>('input');
+
+    expect(inputElement).toHaveStyle({ '--ant-input-hover-border-color': '#4096ff' });
 
     rerender(<Demo algorithm />);
-    expect(container.querySelector('.ant-slider-track')).toHaveStyle({
-      'background-color': '#6ce0a4',
-    });
+    expect(inputElement).toHaveStyle({ '--ant-input-hover-border-color': '#20c77c' });
 
     rerender(<Demo algorithm={theme.darkAlgorithm} />);
-    expect(container.querySelector('.ant-slider-track')).toHaveStyle({
-      'background-color': '#0e462e',
+    expect(inputElement).toHaveStyle({ '--ant-input-hover-border-color': '#1fb572' });
+  });
+
+  it('get cssVar from useToken', () => {
+    const { cssVar } = getHookToken();
+    expect(cssVar.colorLink).toBe('var(--ant-color-link)');
+    expect(cssVar.colorLinkHover).toBe('var(--ant-color-link-hover)');
+    expect(cssVar.colorLinkActive).toBe('var(--ant-color-link-active)');
+  });
+
+  it('should respect empty string cssVar prefix', () => {
+    const { cssVar: defaultCssVar } = getHookToken();
+    const { cssVar: emptyPrefixCssVar } = getHookToken({
+      cssVar: {
+        prefix: '',
+        key: '',
+      },
     });
+
+    // Default behavior should still use "ant" prefix
+    expect(defaultCssVar.colorLink).toBe('var(--ant-color-link)');
+
+    // When cssVar.prefix is an empty string, it should not equal default value
+    expect(emptyPrefixCssVar.colorLink).not.toBe(defaultCssVar.colorLink);
+
+    // It should not start with "ant" prefix
+    expect(emptyPrefixCssVar.colorLink.startsWith('var(--ant-')).toBeFalsy();
+
+    // It should still be a valid CSS variable reference and contain "color-link"
+    expect(emptyPrefixCssVar.colorLink.startsWith('var(--')).toBeTruthy();
+    expect(emptyPrefixCssVar.colorLink).toContain('color-link');
   });
 });

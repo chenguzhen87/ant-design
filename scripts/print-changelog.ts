@@ -1,11 +1,9 @@
-/* eslint-disable no-await-in-loop, no-console */
-import { spawn } from 'child_process';
-import path from 'path';
+import { spawn } from 'node:child_process';
+import path from 'node:path';
+import { input, select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import fs from 'fs-extra';
-import inquirer from 'inquirer';
 import fetch from 'isomorphic-fetch';
-import jQuery from 'jquery';
 import jsdom from 'jsdom';
 import openWindow from 'open';
 import simpleGit from 'simple-git';
@@ -15,33 +13,35 @@ const { window } = new JSDOM();
 const { document } = new JSDOM('').window;
 
 global.document = document;
+global.window = window as any;
 
-const $ = jQuery<jsdom.DOMWindow>(window) as unknown as JQueryStatic;
+const $ = require('jquery') as JQueryStatic;
 
 const QUERY_TITLE = '.gh-header-title .js-issue-title';
 const QUERY_DESCRIPTION_LINES = '.comment-body table tbody tr';
 const QUERY_AUTHOR = '.pull-discussion-timeline .TimelineItem:first .author:first';
 // https://github.com/orgs/ant-design/teams/ant-design-collaborators/members
+// no need filter: https://github.com/ant-design/ant-design/pull/49878#issuecomment-2227853899
 const MAINTAINERS = [
-  'zombiej',
-  'afc163',
-  'chenshuai2144',
-  'shaodahong',
-  'xrkffgg',
-  'AshoneA',
-  'yesmeck',
-  'bang88',
-  'yoyo837',
-  'hengkx',
-  'Rustin-Liu',
-  'fireairforce',
-  'kerm1it',
-  'madccc',
-  'MadCcc',
-  'li-jia-nan',
-  'kiner-tang',
-  'Wxh16144',
-].map((author) => author.toLowerCase());
+  // 'zombiej',
+  // 'afc163',
+  // 'chenshuai2144',
+  // 'shaodahong',
+  // 'xrkffgg',
+  // 'AshoneA',
+  // 'yesmeck',
+  // 'bang88',
+  // 'yoyo837',
+  // 'hengkx',
+  // 'Rustin-Liu',
+  // 'fireairforce',
+  // 'kerm1it',
+  // 'madccc',
+  // 'MadCcc',
+  // 'li-jia-nan',
+  // 'kiner-tang',
+  // 'Wxh16144',
+].map((author: string) => author.toLowerCase());
 
 const cwd = process.cwd();
 const git = simpleGit(cwd);
@@ -72,52 +72,122 @@ const getDescription = (entity?: Line): string => {
 
 async function printLog() {
   const tags = await git.tags();
-  const { fromVersion } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'fromVersion',
-      message: '🏷  Please choose tag to compare with current branch:',
-      choices: tags.all
+  const fromVersion = await select({
+    message: '🏷 Please choose tag to compare with current branch:',
+    choices: [
+      ...tags.all
         .filter((item) => !item.includes('experimental'))
         .filter((item) => !item.includes('alpha'))
         .filter((item) => !item.includes('resource'))
         .reverse()
-        .slice(0, 50),
-    },
-  ]);
-  let { toVersion } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'toVersion',
-      message: `🔀 Please choose branch to compare with ${chalk.magenta(fromVersion)}:`,
-      choices: ['master', '4.x-stable', '3.x-stable', 'feature', 'custom input ⌨️'],
-    },
-  ]);
+        .slice(0, 50)
+        .map((item) => ({ name: item, value: item })),
+      { name: 'custom input ⌨️', value: 'custom input ⌨️' },
+    ],
+  });
+
+  let finalFromVersion = fromVersion;
+  if (fromVersion.startsWith('custom input')) {
+    finalFromVersion = await input({
+      message: '🏷 Please input custom tag name:',
+      validate: (value: string) => {
+        if (!value.trim()) {
+          return 'Tag name cannot be empty';
+        }
+        return true;
+      },
+    });
+  }
+
+  let toVersion = await select({
+    message: `🔀 Please choose branch to compare with ${chalk.magenta(finalFromVersion)}:`,
+    choices: ['master', '4.x-stable', '3.x-stable', 'feature', 'custom input ⌨️'].map((i) => ({
+      name: i,
+      value: i,
+    })),
+  });
 
   if (toVersion.startsWith('custom input')) {
-    const result = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'toVersion',
-        message: `🔀 Please input custom git hash id or branch name to compare with ${chalk.magenta(
-          fromVersion,
-        )}:`,
-        default: 'master',
+    toVersion = await input({
+      default: 'master',
+      message: `🔀 Please input custom git hash id or branch name to compare with ${chalk.magenta(
+        finalFromVersion,
+      )}:`,
+    });
+  }
+
+  // Add exclude tag option
+  const excludeOptions = ['none', 'master', 'feature', 'next', 'custom'];
+  const excludeTagChoice = await select({
+    message: `🚫 Do you want to exclude commits from a specific tag/branch?`,
+    choices: excludeOptions.map((option) => ({
+      name:
+        option === 'none'
+          ? 'No exclusion'
+          : option === 'custom'
+            ? 'Custom exclude tag ⌨️'
+            : `Exclude from ${option}`,
+      value: option,
+    })),
+  });
+
+  let excludeTag: string | undefined;
+  if (excludeTagChoice === 'custom') {
+    excludeTag = await input({
+      message: '🚫 Please input tag/branch to exclude commits from:',
+      validate: (value: string) => {
+        if (!value.trim()) {
+          return 'Tag/branch name cannot be empty';
+        }
+        return true;
       },
-    ]);
-    toVersion = result.toVersion;
+    });
+  } else if (excludeTagChoice !== 'none') {
+    excludeTag = excludeTagChoice;
   }
 
-  if (!/\d+\.\d+\.\d+/.test(fromVersion)) {
-    console.log(chalk.red(`🤪 tag (${chalk.magenta(fromVersion)}) is not valid.`));
+  if (!/\d+\.\d+\.\d+/.test(finalFromVersion)) {
+    console.log(chalk.red(`🤪 tag (${chalk.magenta(finalFromVersion)}) is not valid.`));
   }
 
-  const logs = await git.log({ from: fromVersion, to: toVersion });
+  console.log(
+    chalk.blue(
+      `📊 Getting commits from ${chalk.magenta(finalFromVersion)} to ${chalk.magenta(toVersion)}${excludeTag ? ` excluding commits from ${chalk.magenta(excludeTag)}` : ''}...`,
+    ),
+  );
+
+  const logs = await git.log({ from: finalFromVersion, to: toVersion });
+
+  // Get exclude commits if excludeTag is specified
+  let excludeCommitHashes: Set<string> = new Set();
+  if (excludeTag) {
+    try {
+      const excludeLogs = await git.log({ from: finalFromVersion, to: excludeTag });
+      excludeCommitHashes = new Set(excludeLogs.all.map((commit) => commit.hash));
+      console.log(
+        chalk.yellow(`🚫 Excluding ${excludeCommitHashes.size} commits from ${excludeTag}`),
+      );
+    } catch (error) {
+      console.log(chalk.red(`❌ Error getting exclude commits from ${excludeTag}: ${error}`));
+      console.log(chalk.yellow('⚠️  Continuing without exclusion...'));
+    }
+  }
 
   let prList: PR[] = [];
 
-  for (let i = 0; i < logs.all.length; i += 1) {
-    const { message, body, hash, author_name: author } = logs.all[i];
+  // Filter out excluded commits
+  const filteredLogs = logs.all.filter((commit) => !excludeCommitHashes.has(commit.hash));
+
+  if (excludeTag && filteredLogs.length !== logs.all.length) {
+    console.log(
+      chalk.green(
+        `✅ Filtered out ${logs.all.length - filteredLogs.length} commits that exist in ${excludeTag}`,
+      ),
+    );
+  }
+
+  for (let i = 0; i < filteredLogs.length; i += 1) {
+    const { message, body, hash, author_name: author } = filteredLogs[i];
 
     const text = `${message} ${body}`;
 
@@ -128,10 +198,14 @@ async function printLog() {
     const validatePRs: PR[] = [];
 
     console.log(
-      `[${i + 1}/${logs.all.length}]`,
-      hash.slice(0, 6),
-      '-',
-      prs.length ? prs.map((pr) => `#${pr}`).join(',') : '?',
+      chalk.green(
+        `[${i + 1}/${filteredLogs.length}]`,
+        hash.slice(0, 6),
+        '-',
+        prs.length
+          ? prs.map((pr) => `https://github.com/ant-design/ant-design/pull/${pr}`).join(',')
+          : '?',
+      ),
     );
     for (let j = 0; j < prs.length; j += 1) {
       const pr = prs[j];
@@ -178,15 +252,27 @@ async function printLog() {
 
       const lines: Line[] = [];
 
-      prLines.each(function getDesc() {
+      prLines.each(function getDesc(this: HTMLElement) {
         lines.push({
           text: $(this).text().trim(),
           element: $(this),
         });
       });
 
-      const english = getDescription(lines.find((line) => line.text.includes('🇺🇸 English')));
-      const chinese = getDescription(lines.find((line) => line.text.includes('🇨🇳 Chinese')));
+      let english = getDescription(lines.find((line) => line.text.includes('🇺🇸 English')));
+      let chinese = getDescription(lines.find((line) => line.text.includes('🇨🇳 Chinese')));
+
+      if (/^-*$/.test(english)) {
+        english = prTitle;
+      } else {
+        english = english || chinese || prTitle;
+      }
+
+      if (/^-*$/.test(chinese)) {
+        chinese = prTitle;
+      } else {
+        chinese = chinese || english || prTitle;
+      }
 
       if (english) {
         console.log(`  🇺🇸  ${english}`);
@@ -200,8 +286,8 @@ async function printLog() {
         hash,
         title: prTitle,
         author: prAuthor,
-        english: english || chinese || prTitle,
-        chinese: chinese || english || prTitle,
+        english,
+        chinese,
       });
     }
 

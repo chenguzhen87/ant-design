@@ -1,11 +1,12 @@
 import { blue } from '@ant-design/colors';
+import type { CSSObject } from '@ant-design/cssinjs';
 import { unit } from '@ant-design/cssinjs';
 
 import type { UploadToken } from '.';
 import { clearFix, textEllipsis } from '../../style';
 import type { GenerateStyle } from '../../theme/internal';
 
-const genPictureStyle: GenerateStyle<UploadToken> = (token) => {
+const genPictureStyle: GenerateStyle<UploadToken, CSSObject> = (token) => {
   const { componentCls, iconCls, uploadThumbnailSize, uploadProgressOffset, calc } = token;
   const listCls = `${componentCls}-list`;
   const itemCls = `${listCls}-item`;
@@ -54,7 +55,11 @@ const genPictureStyle: GenerateStyle<UploadToken> = (token) => {
           },
 
           [`${itemCls}-progress`]: {
-            bottom: uploadProgressOffset,
+            bottom: calc(token.fontSize)
+              .mul(token.lineHeight)
+              .div(2)
+              .add(uploadProgressOffset)
+              .equal(),
             width: `calc(100% - ${unit(calc(token.paddingSM).mul(2).equal())})`,
             marginTop: 0,
             paddingInlineStart: calc(uploadThumbnailSize).add(token.paddingXS).equal(),
@@ -93,7 +98,7 @@ const genPictureStyle: GenerateStyle<UploadToken> = (token) => {
   };
 };
 
-const genPictureCardStyle: GenerateStyle<UploadToken> = (token) => {
+const genPictureCardStyle: GenerateStyle<UploadToken, CSSObject> = (token) => {
   const { componentCls, iconCls, fontSizeLG, colorTextLightSolid, calc } = token;
 
   const listCls = `${componentCls}-list`;
@@ -137,6 +142,11 @@ const genPictureCardStyle: GenerateStyle<UploadToken> = (token) => {
       [`${listCls}${listCls}-picture-card, ${listCls}${listCls}-picture-circle`]: {
         display: 'flex',
         flexWrap: 'wrap',
+
+        '&:not(:empty)': {
+          minHeight: uploadPictureCardSize,
+        },
+
         '@supports not (gap: 1px)': {
           '& > *': {
             marginBlockEnd: token.marginXS,
@@ -262,4 +272,4 @@ const genPictureCardStyle: GenerateStyle<UploadToken> = (token) => {
   };
 };
 
-export { genPictureStyle, genPictureCardStyle };
+export { genPictureCardStyle, genPictureStyle };

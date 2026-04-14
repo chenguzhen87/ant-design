@@ -8,8 +8,10 @@ import focusTest from '../../../tests/shared/focusTest';
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
 import { act, fireEvent, render } from '../../../tests/utils';
-
-const { Option } = Select;
+import Button from '../../button';
+import Form from '../../form';
+import Input from '../../input';
+import Space from '../../space';
 
 describe('Select', () => {
   focusTest(Select, { refFocus: true });
@@ -17,7 +19,7 @@ describe('Select', () => {
   rtlTest(Select);
 
   function toggleOpen(container: ReturnType<typeof render>['container']): void {
-    fireEvent.mouseDown(container.querySelector('.ant-select-selector')!);
+    fireEvent.mouseDown(container.querySelector('.ant-select')!);
     act(() => {
       jest.runAllTimers();
     });
@@ -65,38 +67,32 @@ describe('Select', () => {
   });
 
   it('should be controlled by open prop', () => {
-    const onDropdownVisibleChange = jest.fn();
+    const onOpenChange = jest.fn();
     const TestComponent: React.FC = () => {
       const [open, setOpen] = React.useState(false);
-      const handleChange: SelectProps['onDropdownVisibleChange'] = (value) => {
-        onDropdownVisibleChange(value);
+      const handleChange: SelectProps['onOpenChange'] = (value) => {
+        onOpenChange(value);
         setOpen(value);
       };
       return (
-        <Select open={open} onDropdownVisibleChange={handleChange}>
-          <Option value="1">1</Option>
-        </Select>
+        <Select open={open} onOpenChange={handleChange} options={[{ label: '1', value: '1' }]} />
       );
     };
     const { container } = render(<TestComponent />);
     expect(container.querySelector('.ant-select-dropdown')).toBeFalsy();
     toggleOpen(container);
     expect(container.querySelectorAll('.ant-select-dropdown').length).toBe(1);
-    expect(onDropdownVisibleChange).toHaveBeenLastCalledWith(true);
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
   });
 
   it('should show search icon when showSearch and open', () => {
     jest.useFakeTimers();
-    const { container } = render(
-      <Select showSearch>
-        <Option value="1">1</Option>
-      </Select>,
-    );
-    expect(container.querySelectorAll('.anticon-down').length).toBe(1);
-    expect(container.querySelectorAll('.anticon-search').length).toBe(0);
+    const { container } = render(<Select options={[{ label: '1', value: '1' }]} showSearch />);
+    expect(container.querySelector('.anticon-down')).toBeTruthy();
+    expect(container.querySelector('.anticon-search')).toBeFalsy();
     toggleOpen(container);
-    expect(container.querySelectorAll('.anticon-down').length).toBe(0);
-    expect(container.querySelectorAll('.anticon-search').length).toBe(1);
+    expect(container.querySelector('.anticon-down')).toBeFalsy();
+    expect(container.querySelector('.anticon-search')).toBeTruthy();
   });
 
   describe('Select Custom Icons', () => {
@@ -104,20 +100,18 @@ describe('Select', () => {
       const { rerender, asFragment } = render(
         <Select
           removeIcon={<CloseOutlined />}
-          clearIcon={<CloseOutlined />}
+          allowClear={{ clearIcon: <CloseOutlined /> }}
           menuItemSelectedIcon={<CloseOutlined />}
-        >
-          <Option value="1">1</Option>
-        </Select>,
+          options={[{ label: '1', value: '1' }]}
+        />,
       );
       rerender(
         <Select
           removeIcon={<CloseOutlined />}
-          clearIcon={<CloseOutlined />}
+          allowClear={{ clearIcon: <CloseOutlined /> }}
           menuItemSelectedIcon={<CloseOutlined />}
-        >
-          <Option value="1">1</Option>
-        </Select>,
+          options={[{ label: '1', value: '1' }]}
+        />,
       );
       act(() => {
         jest.runAllTimers();
@@ -126,26 +120,124 @@ describe('Select', () => {
     });
   });
 
+  describe('clear icon position', () => {
+    it('normal', () => {
+      const { container } = render(
+        <Select allowClear options={[{ value: '1', label: '1' }]} value="1" />,
+      );
+      const ele = container.querySelector<HTMLElement>('.ant-select-clear');
+      if (ele) {
+        expect(getComputedStyle(ele).insetInlineEnd).toBe(
+          'calc(var(--ant-padding-sm) - var(--ant-line-width))',
+        );
+      }
+    });
+
+    it('hasFeedback, has validateStatus', () => {
+      const { container } = render(
+        <Form>
+          <Form.Item hasFeedback validateStatus="error">
+            <Select allowClear options={[{ value: '1', label: '1' }]} value="1" />,
+          </Form.Item>
+        </Form>,
+      );
+      const ele = container.querySelector<HTMLElement>('.ant-select-clear');
+      if (ele) {
+        expect(getComputedStyle(ele).insetInlineEnd).toBe(
+          'calc(calc(var(--ant-padding-sm) - var(--ant-line-width)) + var(--ant-font-size) + var(--ant-padding-xs))',
+        );
+      }
+    });
+
+    it('hasFeedback, no validateStatus', () => {
+      const { container } = render(
+        <Form>
+          <Form.Item hasFeedback validateStatus="">
+            <Select allowClear options={[{ value: '1', label: '1' }]} value="1" />,
+          </Form.Item>
+        </Form>,
+      );
+      const ele = container.querySelector<HTMLElement>('.ant-select-clear');
+      if (ele) {
+        expect(getComputedStyle(ele).insetInlineEnd).toBe(
+          'calc(var(--ant-padding-sm) - var(--ant-line-width))',
+        );
+      }
+    });
+  });
+
   describe('Deprecated', () => {
     it('should ignore mode="combobox"', () => {
       const { asFragment } = render(
-        <Select mode={'combobox' as SelectProps['mode']}>
-          <Option value="1">1</Option>
-        </Select>,
+        <Select mode={'combobox' as SelectProps['mode']} options={[{ label: '1', value: '1' }]} />,
       );
       expect(asFragment().firstChild).toMatchSnapshot();
     });
 
-    it('dropdownClassName', () => {
+    it('legacy popupClassName', () => {
+      resetWarned();
+
+      const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const { container } = render(<Select popupClassName="legacy" open />);
+      expect(errSpy).toHaveBeenCalledWith(
+        'Warning: [antd: Select] `popupClassName` is deprecated. Please use `classNames.popup.root` instead.',
+      );
+      expect(container.querySelector('.legacy')).toBeTruthy();
+
+      errSpy.mockRestore();
+    });
+
+    it('legacy dropdownClassName', () => {
       resetWarned();
 
       const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
       const { container } = render(<Select dropdownClassName="legacy" open />);
       expect(errSpy).toHaveBeenCalledWith(
-        'Warning: [antd: Select] `dropdownClassName` is deprecated. Please use `popupClassName` instead.',
+        'Warning: [antd: Select] `dropdownClassName` is deprecated. Please use `classNames.popup.root` instead.',
       );
       expect(container.querySelector('.legacy')).toBeTruthy();
 
+      errSpy.mockRestore();
+    });
+
+    it('legacy dropdownStyle', () => {
+      resetWarned();
+      const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const { container } = render(<Select dropdownStyle={{ background: 'red' }} open />);
+      expect(errSpy).toHaveBeenCalledWith(
+        'Warning: [antd: Select] `dropdownStyle` is deprecated. Please use `styles.popup.root` instead.',
+      );
+      const dropdown = container.querySelector('.ant-select-dropdown');
+      expect(dropdown?.getAttribute('style')).toMatch(/background:\s*red/);
+      errSpy.mockRestore();
+    });
+
+    it('legacy dropdownRender', () => {
+      resetWarned();
+      const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const { container } = render(
+        <Select
+          open
+          dropdownRender={(menu) => <div className="custom-dropdown">{menu} custom render</div>}
+          options={[{ label: '1', value: '1' }]}
+        />,
+      );
+      expect(errSpy).toHaveBeenCalledWith(
+        'Warning: [antd: Select] `dropdownRender` is deprecated. Please use `popupRender` instead.',
+      );
+      const customDropdown = container.querySelector('.custom-dropdown');
+      expect(customDropdown).toBeTruthy();
+      expect(customDropdown?.textContent).toContain('custom render');
+      errSpy.mockRestore();
+    });
+
+    it('legacy onDropdownVisibleChange', () => {
+      resetWarned();
+      const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      render(<Select onDropdownVisibleChange={() => {}} open />);
+      expect(errSpy).toHaveBeenCalledWith(
+        'Warning: [antd: Select] `onDropdownVisibleChange` is deprecated. Please use `onOpenChange` instead.',
+      );
       errSpy.mockRestore();
     });
 
@@ -196,5 +288,43 @@ describe('Select', () => {
       );
       errSpy.mockRestore();
     });
+  });
+
+  it('Select ContextIsolator', () => {
+    const { container } = render(
+      <Space.Compact>
+        <Select
+          open
+          defaultValue="lucy"
+          style={{ width: 120 }}
+          popupRender={(menu) => {
+            return (
+              <div>
+                {menu}
+                <Button>123</Button>
+                <Input style={{ width: 50 }} />
+              </div>
+            );
+          }}
+          options={[
+            { value: 'jack', label: 'Jack' },
+            { value: 'lucy', label: 'Lucy' },
+          ]}
+        />
+        <Button className="test-button">test</Button>
+      </Space.Compact>,
+    );
+
+    const compactButton = container.querySelector('.test-button');
+    const popupElement = document.querySelector('.ant-select-dropdown');
+    // selector should have compact
+    expect(compactButton).toBeInTheDocument();
+    expect(compactButton!.className.includes('compact')).toBeTruthy();
+    // popupRender element haven't compact
+    expect(popupElement).toBeInTheDocument();
+    const button = popupElement!.querySelector('button');
+    const input = popupElement!.querySelector('input');
+    expect(button!.className.includes('compact')).toBeFalsy();
+    expect(input!.className.includes('compact')).toBeFalsy();
   });
 });

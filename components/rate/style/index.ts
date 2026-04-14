@@ -5,17 +5,27 @@ import { resetComponent } from '../../style';
 import type { FullToken, GenerateStyle, GetDefaultToken } from '../../theme/internal';
 import { genStyleHooks, mergeToken } from '../../theme/internal';
 
-export type ComponentToken = {
+export interface ComponentToken {
   /**
    * @desc 星星颜色
    * @descEN Star color
    */
   starColor: string;
   /**
-   * @desc 星星大小
+   * @desc 星星尺寸
    * @descEN Star size
    */
   starSize: number;
+  /**
+   * @desc 小星星尺寸
+   * @descEN Small star size
+   */
+  starSizeSM: number;
+  /**
+   * @desc 大星星尺寸
+   * @descEN Large star size
+   */
+  starSizeLG: number;
   /**
    * @desc 星星悬浮时的缩放
    * @descEN Scale of star when hover
@@ -26,7 +36,7 @@ export type ComponentToken = {
    * @descEN Star background color
    */
   starBg: string;
-};
+}
 
 interface RateToken extends FullToken<'Rate'> {}
 
@@ -88,13 +98,13 @@ const genRateStarStyle: GenerateStyle<RateToken, CSSObject> = (token) => {
   };
 };
 
-const genRateRtlStyle = (token: RateToken): CSSObject => ({
+const genRateRtlStyle: GenerateStyle<RateToken, CSSObject> = (token) => ({
   [`&-rtl${token.componentCls}`]: {
     direction: 'rtl',
   },
 });
 
-const genRateStyle: GenerateStyle<RateToken> = (token) => {
+const genRateStyle: GenerateStyle<RateToken, CSSObject> = (token) => {
   const { componentCls } = token;
 
   return {
@@ -109,6 +119,14 @@ const genRateStyle: GenerateStyle<RateToken> = (token) => {
       lineHeight: 1,
       listStyle: 'none',
       outline: 'none',
+
+      '&-small': {
+        fontSize: token.starSizeSM,
+      },
+
+      '&-large': {
+        fontSize: token.starSizeLG,
+      },
 
       // disable styles
       [`&-disabled${componentCls} ${componentCls}-star`]: {
@@ -131,7 +149,9 @@ const genRateStyle: GenerateStyle<RateToken> = (token) => {
 // ============================== Export ==============================
 export const prepareComponentToken: GetDefaultToken<'Rate'> = (token) => ({
   starColor: token.yellow6,
-  starSize: token.controlHeightLG * 0.5,
+  starSize: token.controlHeight * 0.625,
+  starSizeSM: token.controlHeightSM * 0.625,
+  starSizeLG: token.controlHeightLG * 0.625,
   starHoverScale: 'scale(1.1)',
   starBg: token.colorFillContent,
 });
@@ -140,7 +160,7 @@ export default genStyleHooks(
   'Rate',
   (token) => {
     const rateToken = mergeToken<RateToken>(token, {});
-    return [genRateStyle(rateToken)];
+    return genRateStyle(rateToken);
   },
   prepareComponentToken,
 );

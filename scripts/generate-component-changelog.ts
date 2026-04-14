@@ -1,6 +1,5 @@
-/* eslint-disable no-loop-func, no-console */
 // Collect from `changelog.md` to get all components changelog
-import path from 'path';
+import path from 'node:path';
 import fs from 'fs-extra';
 import { globSync } from 'glob';
 
@@ -9,7 +8,7 @@ const output = '.dumi/preset';
 // Collect components
 const componentNames = globSync(
   path
-    .join(process.cwd(), 'components/!(version|icon|col|row)/index.zh-CN.md')
+    .join(process.cwd(), 'components/!(version|icon|col|row)/index?(.legacy).zh-CN.md')
     .split(path.sep)
     .join('/'),
 )
@@ -38,6 +37,7 @@ componentNameMap.Grid.push(...fillComponentKey('Row'));
 componentNameMap.Grid.push(...fillComponentKey('Col'));
 componentNameMap.Message.push(...fillComponentKey('message'));
 componentNameMap.Notification.push(...fillComponentKey('notification'));
+componentNameMap.Input.push(...fillComponentKey('TextArea'));
 
 // Collect misc. When ComponentName not match will fallback to misc
 const miscKeys = [
@@ -46,22 +46,29 @@ const miscKeys = [
   'Design Token',
   'MISC:',
   '杂项：',
+  'antd',
   '@ant-design/cssinjs',
   '@ant-design/icons',
+  '@ant-design/cli',
   'rc-motion',
+  '@rc-component/motion',
   ' IE ',
   'reset.css',
   '📖',
   '🛠',
   '📦',
   '🌐',
+  '⌨️',
   ' locale ',
   ' RTL ',
+  '<img',
+  'Icon',
   '🇧🇪',
   '🇨🇦',
   '🇪🇸',
   '🇷🇺',
   '🇺🇦',
+  '🇵🇹',
   '🇲🇲',
   '🇸🇪',
   '🇻🇳',
@@ -75,6 +82,10 @@ const miscKeys = [
   '🇯🇵',
   '🇮🇩',
   '🇵🇱',
+  '🇲🇳',
+  '🇳🇵',
+  '🇪🇬',
+  '🇦🇿',
 ];
 
 (() => {
@@ -87,6 +98,7 @@ const miscKeys = [
 
     // let lastGroup = '';
     let lastVersion = '';
+    let lastReleaseDate = '';
 
     // Split with lines
     const lines = content.split(/[\n\r]+/).filter((line) => line.trim());
@@ -94,7 +106,13 @@ const miscKeys = [
     // Changelog map
     const componentChangelog: Record<
       string,
-      { version: string; changelog: string; refs: string[] }[]
+      {
+        version: string;
+        changelog: string;
+        refs: string[];
+        releaseDate: string;
+        contributors: string[];
+      }[]
     > = {};
     Object.keys(componentNameMap).forEach((name) => {
       componentChangelog[name] = [];
@@ -103,8 +121,8 @@ const miscKeys = [
     for (let i = 0; i < lines.length; i += 1) {
       const line = lines[i];
 
-      // Skip for v5 release
-      if (line === '## 5.0.0') {
+      // Skip for v6 release
+      if (line === '## 6.0.0') {
         break;
       }
 
@@ -112,6 +130,26 @@ const miscKeys = [
       if (line.startsWith('## ')) {
         lastVersion = line.replace('## ', '');
         continue;
+      }
+
+      // Get release date
+      const matchReleaseDate = line.match(/`(\d{4}-\d{2}-\d{2})`/);
+      if (matchReleaseDate) {
+        lastReleaseDate = matchReleaseDate[1];
+      }
+
+      // Get Contributor name
+      const contributors: string[] = [];
+      const usernameMatches = line.match(/\[@([^\]]+)\]/g);
+
+      if (usernameMatches) {
+        usernameMatches.forEach((match) => {
+          const usernameMatch = match.match(/\[@([^\]]+)\]/);
+          if (usernameMatch) {
+            const username = usernameMatch[1];
+            contributors.push(username);
+          }
+        });
       }
 
       // Start when get version
@@ -131,7 +169,7 @@ const miscKeys = [
       }
 
       // Filter not is changelog
-      if (!line.trim().startsWith('-') && !line.includes('github.')) {
+      if (!line.trim().startsWith('-') && !line.includes('github.') && !line.includes('img')) {
         continue;
       }
 
@@ -143,7 +181,7 @@ const miscKeys = [
       changelogLine = changelogLine
         .replace(/\[([^\]]+)]\(([^)]+)\)/g, (...match) => {
           const [, title, ref] = match;
-          if (ref.includes('/pull/')) {
+          if (/\/(pull|issues|commit)\//.test(ref)) {
             refs.push(ref);
           }
 
@@ -170,6 +208,8 @@ const miscKeys = [
             version: lastVersion,
             changelog: changelogLine,
             refs,
+            releaseDate: lastReleaseDate,
+            contributors,
           });
           matched = true;
         }

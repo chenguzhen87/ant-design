@@ -6,7 +6,7 @@ import { ConfigProvider, Form, Radio, Space, Switch, Table } from 'antd';
 type SizeType = ConfigProviderProps['componentSize'];
 type ColumnsType<T extends object> = GetProp<TableProps<T>, 'columns'>;
 type TablePagination = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
-type TablePaginationPosition = NonNullable<TablePagination['position']>[number];
+type TablePaginationPlacement = NonNullable<TablePagination['placement']>[number];
 type ExpandableConfig<T extends object> = GetProp<TableProps<T>, 'expandable'>;
 type TableRowSelection<T extends object> = GetProp<TableProps<T>, 'rowSelection'>;
 
@@ -48,7 +48,7 @@ const columns: ColumnsType<DataType> = [
     key: 'action',
     sorter: true,
     render: () => (
-      <Space size="middle">
+      <Space size="medium">
         <a>Delete</a>
         <a>
           <Space>
@@ -61,18 +61,18 @@ const columns: ColumnsType<DataType> = [
   },
 ];
 
-const data: DataType[] = [];
-for (let i = 1; i <= 10; i++) {
-  data.push({
-    key: i,
-    name: 'John Brown',
-    age: Number(`${i}2`),
-    address: `New York No. ${i} Lake Park`,
-    description: `My name is John Brown, I am ${i}2 years old, living in New York No. ${i} Lake Park.`,
-  });
-}
+const dataSource = Array.from({ length: 10 }).map<DataType>((_, i) => ({
+  key: i,
+  name: 'John Brown',
+  age: Number(`${i}2`),
+  address: `New York No. ${i} Lake Park`,
+  description: `My name is John Brown, I am ${i}2 years old, living in New York No. ${i} Lake Park.`,
+}));
 
-const defaultExpandable = { expandedRowRender: (record: DataType) => <p>{record.description}</p> };
+const defaultExpandable: ExpandableConfig<DataType> = {
+  expandedRowRender: (record: DataType) => <p>{record.description}</p>,
+};
+
 const defaultTitle = () => 'Here is title';
 const defaultFooter = () => 'Here is footer';
 
@@ -88,12 +88,12 @@ const App: React.FC = () => {
   const [showFooter, setShowFooter] = useState(true);
   const [rowSelection, setRowSelection] = useState<TableRowSelection<DataType> | undefined>({});
   const [hasData, setHasData] = useState(true);
-  const [tableLayout, setTableLayout] = useState();
-  const [top, setTop] = useState<TablePaginationPosition>('none');
-  const [bottom, setBottom] = useState<TablePaginationPosition>('bottomRight');
+  const [tableLayout, setTableLayout] = useState<string>('unset');
+  const [top, setTop] = useState<TablePaginationPlacement>('none');
+  const [bottom, setBottom] = useState<TablePaginationPlacement>('bottomEnd');
   const [ellipsis, setEllipsis] = useState(false);
   const [yScroll, setYScroll] = useState(false);
-  const [xScroll, setXScroll] = useState<string>();
+  const [xScroll, setXScroll] = useState<string>('unset');
 
   const handleBorderChange = (enable: boolean) => {
     setBordered(enable);
@@ -151,7 +151,7 @@ const App: React.FC = () => {
   if (yScroll) {
     scroll.y = 240;
   }
-  if (xScroll) {
+  if (xScroll !== 'unset') {
     scroll.x = '100vw';
   }
 
@@ -171,16 +171,12 @@ const App: React.FC = () => {
     footer: showFooter ? defaultFooter : undefined,
     rowSelection,
     scroll,
-    tableLayout,
+    tableLayout: tableLayout === 'unset' ? undefined : (tableLayout as TableProps['tableLayout']),
   };
 
   return (
     <>
-      <Form
-        layout="inline"
-        className="components-table-demo-control-bar"
-        style={{ marginBottom: 16 }}
-      >
+      <Form layout="inline" className="table-demo-control-bar" style={{ marginBottom: 16 }}>
         <Form.Item label="Bordered">
           <Switch checked={bordered} onChange={handleBorderChange} />
         </Form.Item>
@@ -214,46 +210,36 @@ const App: React.FC = () => {
         <Form.Item label="Size">
           <Radio.Group value={size} onChange={handleSizeChange}>
             <Radio.Button value="large">Large</Radio.Button>
-            <Radio.Button value="middle">Middle</Radio.Button>
+            <Radio.Button value="medium">Medium</Radio.Button>
             <Radio.Button value="small">Small</Radio.Button>
           </Radio.Group>
         </Form.Item>
         <Form.Item label="Table Scroll">
           <Radio.Group value={xScroll} onChange={handleXScrollChange}>
-            <Radio.Button value={undefined}>Unset</Radio.Button>
+            <Radio.Button value="unset">Unset</Radio.Button>
             <Radio.Button value="scroll">Scroll</Radio.Button>
             <Radio.Button value="fixed">Fixed Columns</Radio.Button>
           </Radio.Group>
         </Form.Item>
         <Form.Item label="Table Layout">
           <Radio.Group value={tableLayout} onChange={handleTableLayoutChange}>
-            <Radio.Button value={undefined}>Unset</Radio.Button>
+            <Radio.Button value="unset">Unset</Radio.Button>
             <Radio.Button value="fixed">Fixed</Radio.Button>
           </Radio.Group>
         </Form.Item>
         <Form.Item label="Pagination Top">
-          <Radio.Group
-            value={top}
-            onChange={(e) => {
-              setTop(e.target.value);
-            }}
-          >
-            <Radio.Button value="topLeft">TopLeft</Radio.Button>
+          <Radio.Group value={top} onChange={(e) => setTop(e.target.value)}>
+            <Radio.Button value="topStart">TopStart</Radio.Button>
             <Radio.Button value="topCenter">TopCenter</Radio.Button>
-            <Radio.Button value="topRight">TopRight</Radio.Button>
+            <Radio.Button value="topEnd">TopEnd</Radio.Button>
             <Radio.Button value="none">None</Radio.Button>
           </Radio.Group>
         </Form.Item>
         <Form.Item label="Pagination Bottom">
-          <Radio.Group
-            value={bottom}
-            onChange={(e) => {
-              setBottom(e.target.value);
-            }}
-          >
-            <Radio.Button value="bottomLeft">BottomLeft</Radio.Button>
+          <Radio.Group value={bottom} onChange={(e) => setBottom(e.target.value)}>
+            <Radio.Button value="bottomStart">BottomStart</Radio.Button>
             <Radio.Button value="bottomCenter">BottomCenter</Radio.Button>
-            <Radio.Button value="bottomRight">BottomRight</Radio.Button>
+            <Radio.Button value="bottomEnd">BottomEnd</Radio.Button>
             <Radio.Button value="none">None</Radio.Button>
           </Radio.Group>
         </Form.Item>
@@ -294,11 +280,11 @@ const App: React.FC = () => {
           },
         }}
       >
-        <Table
+        <Table<DataType>
           {...tableProps}
-          pagination={{ position: [top, bottom] }}
+          pagination={{ placement: [top, bottom] }}
           columns={tableColumns}
-          dataSource={hasData ? data : []}
+          dataSource={hasData ? dataSource : []}
           scroll={scroll}
         />
       </ConfigProvider>

@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/ka_GE';
+import Pagination from '@rc-component/pagination/lib/locale/ka_GE';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/ka_GE';
@@ -16,6 +15,7 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'გთხოვთ აირჩიოთ',
+    close: 'დახურვა',
   },
   Table: {
     filterTitle: 'ფილტრის მენიუ',
@@ -33,6 +33,11 @@ const localeValues: Locale = {
     triggerDesc: 'დაღმავალი დალაგება',
     triggerAsc: 'აღმავალი დალაგება',
     cancelSort: 'დალაგების გაუქმება',
+  },
+  Tour: {
+    Next: 'მომდევნო',
+    Previous: 'წინა',
+    Finish: 'დასრულება',
   },
   Modal: {
     okText: 'კარგი',
@@ -123,9 +128,6 @@ const localeValues: Locale = {
         mismatch: '${label} არ ერგება შაბლონს ${pattern}',
       },
     },
-  },
-  Image: {
-    preview: 'გადახედვა',
   },
 };
 

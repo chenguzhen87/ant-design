@@ -18,7 +18,7 @@ const handleChange = (value: string | string[]) => {
 };
 
 const App: React.FC = () => {
-  const [size, setSize] = useState<SizeType>('middle');
+  const [size, setSize] = useState<SizeType>('medium');
 
   const handleSizeChange = (e: RadioChangeEvent) => {
     setSize(e.target.value);
@@ -28,12 +28,12 @@ const App: React.FC = () => {
     <>
       <Radio.Group value={size} onChange={handleSizeChange}>
         <Radio.Button value="large">Large</Radio.Button>
-        <Radio.Button value="middle">Default</Radio.Button>
+        <Radio.Button value="medium">Medium</Radio.Button>
         <Radio.Button value="small">Small</Radio.Button>
       </Radio.Group>
       <br />
       <br />
-      <Space direction="vertical" style={{ width: '100%' }}>
+      <Space vertical style={{ width: '100%' }}>
         <Select
           size={size}
           defaultValue="a1"

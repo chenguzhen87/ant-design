@@ -1,14 +1,14 @@
 import * as React from 'react';
-import useState from 'rc-util/lib/hooks/useState';
+import useState from '@rc-component/util/lib/hooks/useState';
 
-import Button from '../button';
-import type { ButtonProps, LegacyButtonType } from '../button/button';
+import Button from '../button/Button';
+import type { ButtonProps, LegacyButtonType } from '../button/Button';
 import { convertLegacyProps } from '../button/buttonHelpers';
 
 export interface ActionButtonProps {
   type?: LegacyButtonType;
   actionFn?: (...args: any[]) => any | PromiseLike<any>;
-  close?: Function;
+  close?: (...args: any[]) => void;
   autoFocus?: boolean;
   prefixCls: string;
   buttonProps?: ButtonProps;
@@ -22,9 +22,9 @@ export interface ActionButtonProps {
   isSilent?: () => boolean;
 }
 
-function isThenable<T extends any>(thing?: PromiseLike<T>): boolean {
-  return !!(thing && thing.then);
-}
+const isThenable = <T,>(thing?: PromiseLike<T>): thing is PromiseLike<T> => {
+  return typeof thing?.then === 'function';
+};
 
 const ActionButton: React.FC<ActionButtonProps> = (props) => {
   const {
@@ -52,7 +52,7 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
     if (autoFocus) {
       timeoutId = setTimeout(() => {
-        buttonRef.current?.focus();
+        buttonRef.current?.focus({ preventScroll: true });
       });
     }
     return () => {
@@ -60,14 +60,14 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
         clearTimeout(timeoutId);
       }
     };
-  }, []);
+  }, [autoFocus]);
 
   const handlePromiseOnOk = (returnValueOfOnOk?: PromiseLike<any>) => {
     if (!isThenable(returnValueOfOnOk)) {
       return;
     }
     setLoading(true);
-    returnValueOfOnOk!.then(
+    returnValueOfOnOk.then(
       (...args: any[]) => {
         setLoading(false, true);
         onInternalClose(...args);
@@ -111,7 +111,7 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
       clickedRef.current = false;
     } else {
       returnValueOfOnOk = actionFn();
-      if (!returnValueOfOnOk) {
+      if (!isThenable(returnValueOfOnOk)) {
         onInternalClose();
         return;
       }

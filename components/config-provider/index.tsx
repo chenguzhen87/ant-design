@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { createTheme } from '@ant-design/cssinjs';
+import { createTheme, StyleContext as CssInJsStyleContext } from '@ant-design/cssinjs';
 import IconContext from '@ant-design/icons/lib/components/Context';
-import useMemo from 'rc-util/lib/hooks/useMemo';
-import { merge } from 'rc-util/lib/utils/set';
+import { merge } from '@rc-component/util';
+import useMemo from '@rc-component/util/lib/hooks/useMemo';
 
 import warning, { devUseWarning, WarningContext } from '../_util/warning';
 import type { WarningContextProps } from '../_util/warning';
@@ -14,41 +14,89 @@ import LocaleContext from '../locale/context';
 import defaultLocale from '../locale/en_US';
 import { defaultTheme, DesignTokenContext } from '../theme/context';
 import defaultSeedToken from '../theme/themes/seed';
+import UniqueProvider from '../tooltip/UniqueProvider';
 import type {
   AlertConfig,
+  AnchorStyleConfig,
   BadgeConfig,
+  BreadcrumbConfig,
   ButtonConfig,
+  CalendarConfig,
   CardConfig,
+  CardMetaConfig,
+  CascaderConfig,
+  CheckboxConfig,
   CollapseConfig,
+  ColorPickerConfig,
   ComponentStyleConfig,
   ConfigConsumerProps,
   CSPConfig,
+  DatePickerConfig,
+  DescriptionsConfig,
   DirectionType,
+  DividerConfig,
   DrawerConfig,
+  DropdownConfig,
+  EmptyConfig,
   FlexConfig,
+  FloatButtonConfig,
   FloatButtonGroupConfig,
   FormConfig,
   ImageConfig,
   InputConfig,
+  InputNumberConfig,
+  InputSearchConfig,
+  ListConfig,
+  MasonryConfig,
+  MentionsConfig,
   MenuConfig,
+  MessageConfig,
   ModalConfig,
   NotificationConfig,
+  OTPConfig,
   PaginationConfig,
+  PopconfirmConfig,
+  PopoverConfig,
   PopupOverflow,
+  ProgressConfig,
+  QRcodeConfig,
+  RadioConfig,
+  RangePickerConfig,
+  ResultConfig,
+  RibbonConfig,
+  SegmentedConfig,
   SelectConfig,
+  SkeletonConfig,
+  SliderConfig,
   SpaceConfig,
+  SpinConfig,
+  SplitterConfig,
+  StatisticConfig,
+  StepsConfig,
+  SwitchStyleConfig,
   TableConfig,
   TabsConfig,
   TagConfig,
   TextAreaConfig,
-  Theme,
   ThemeConfig,
+  TimelineConfig,
+  TimePickerConfig,
+  TooltipConfig,
   TourConfig,
   TransferConfig,
+  TreeConfig,
+  TreeSelectConfig,
+  UploadConfig,
+  Variant,
   WaveConfig,
 } from './context';
-import { ConfigConsumer, ConfigContext, defaultIconPrefixCls } from './context';
-import { registerTheme } from './cssVariables';
+import {
+  ConfigConsumer,
+  ConfigContext,
+  defaultIconPrefixCls,
+  defaultPrefixCls,
+  Variants,
+} from './context';
 import type { RenderEmptyHandler } from './defaultRenderEmpty';
 import { DisabledContextProvider } from './DisabledContext';
 import useConfig from './hooks/useConfig';
@@ -58,6 +106,22 @@ import PropWarning from './PropWarning';
 import type { SizeType } from './SizeContext';
 import SizeContext, { SizeContextProvider } from './SizeContext';
 import useStyle from './style';
+
+/**
+ * This component registers icon styles inside the DesignTokenContext.Provider
+ * so that CSS variables use the correct cssVar key from the theme config.
+ */
+const IconStyle: React.FC<{ iconPrefixCls: string; csp?: CSPConfig }> = ({
+  iconPrefixCls,
+  csp,
+}) => {
+  useStyle(iconPrefixCls, csp);
+  return null;
+};
+
+export type { Variant };
+
+export { Variants };
 
 /**
  * Since too many feedback using static method like `Modal.confirm` not getting theme, we record the
@@ -79,10 +143,11 @@ export const warnContext: (componentName: string) => void =
 
 export {
   ConfigConsumer,
-  ConfigContext,
-  defaultIconPrefixCls,
   type ConfigConsumerProps,
+  ConfigContext,
   type CSPConfig,
+  defaultIconPrefixCls,
+  defaultPrefixCls,
   type DirectionType,
   type RenderEmptyHandler,
   type ThemeConfig,
@@ -115,8 +180,8 @@ const PASSED_PROPS: Exclude<
 ];
 
 export interface ConfigProviderProps {
-  getTargetContainer?: () => HTMLElement | Window;
-  getPopupContainer?: (triggerNode?: HTMLElement) => HTMLElement;
+  getTargetContainer?: () => HTMLElement | Window | ShadowRoot;
+  getPopupContainer?: (triggerNode?: HTMLElement) => HTMLElement | ShadowRoot;
   prefixCls?: string;
   iconPrefixCls?: string;
   children?: React.ReactNode;
@@ -124,8 +189,12 @@ export interface ConfigProviderProps {
   csp?: CSPConfig;
   /** @deprecated Please use `{ button: { autoInsertSpace: boolean }}` instead */
   autoInsertSpaceInButton?: boolean;
+  variant?: Variant;
   form?: FormConfig;
   input?: InputConfig;
+  inputSearch?: InputSearchConfig;
+  otp?: OTPConfig;
+  inputNumber?: InputNumberConfig;
   textArea?: TextAreaConfig;
   select?: SelectConfig;
   pagination?: PaginationConfig;
@@ -143,6 +212,7 @@ export interface ConfigProviderProps {
    */
   direction?: DirectionType;
   space?: SpaceConfig;
+  splitter?: SplitterConfig;
   /**
    * @descCN 设置 `false` 时关闭虚拟滚动。
    * @descEN Close the virtual scrolling when setting `false`.
@@ -156,60 +226,72 @@ export interface ConfigProviderProps {
   theme?: ThemeConfig;
   warning?: WarningContextProps;
   alert?: AlertConfig;
-  anchor?: ComponentStyleConfig;
+  affix?: ComponentStyleConfig;
+  anchor?: AnchorStyleConfig;
+  app?: ComponentStyleConfig;
   button?: ButtonConfig;
-  calendar?: ComponentStyleConfig;
+  calendar?: CalendarConfig;
   carousel?: ComponentStyleConfig;
-  cascader?: ComponentStyleConfig;
+  cascader?: CascaderConfig;
+  treeSelect?: TreeSelectConfig;
   collapse?: CollapseConfig;
-  divider?: ComponentStyleConfig;
+  divider?: DividerConfig;
   drawer?: DrawerConfig;
   typography?: ComponentStyleConfig;
-  skeleton?: ComponentStyleConfig;
-  spin?: ComponentStyleConfig;
-  segmented?: ComponentStyleConfig;
-  statistic?: ComponentStyleConfig;
-  steps?: ComponentStyleConfig;
+  skeleton?: SkeletonConfig;
+  spin?: SpinConfig;
+  segmented?: SegmentedConfig;
+  statistic?: StatisticConfig;
+  steps?: StepsConfig;
   image?: ImageConfig;
   layout?: ComponentStyleConfig;
-  list?: ComponentStyleConfig;
-  mentions?: ComponentStyleConfig;
+  list?: ListConfig;
+  mentions?: MentionsConfig;
   modal?: ModalConfig;
-  progress?: ComponentStyleConfig;
-  result?: ComponentStyleConfig;
-  slider?: ComponentStyleConfig;
-  breadcrumb?: ComponentStyleConfig;
+  progress?: ProgressConfig;
+  result?: ResultConfig;
+  slider?: SliderConfig;
+  masonry?: MasonryConfig;
+  breadcrumb?: BreadcrumbConfig;
   menu?: MenuConfig;
+  floatButton?: FloatButtonConfig;
   floatButtonGroup?: FloatButtonGroupConfig;
-  checkbox?: ComponentStyleConfig;
-  descriptions?: ComponentStyleConfig;
-  empty?: ComponentStyleConfig;
+  checkbox?: CheckboxConfig;
+  descriptions?: DescriptionsConfig;
+  empty?: EmptyConfig;
   badge?: BadgeConfig;
-  radio?: ComponentStyleConfig;
+  radio?: RadioConfig;
   rate?: ComponentStyleConfig;
-  switch?: ComponentStyleConfig;
+  ribbon?: RibbonConfig;
+  switch?: SwitchStyleConfig;
   transfer?: TransferConfig;
   avatar?: ComponentStyleConfig;
-  message?: ComponentStyleConfig;
+  message?: MessageConfig;
   tag?: TagConfig;
   table?: TableConfig;
   card?: CardConfig;
+  cardMeta?: CardMetaConfig;
   tabs?: TabsConfig;
-  timeline?: ComponentStyleConfig;
-  timePicker?: ComponentStyleConfig;
-  upload?: ComponentStyleConfig;
+  timeline?: TimelineConfig;
+  timePicker?: TimePickerConfig;
+  upload?: UploadConfig;
   notification?: NotificationConfig;
-  tree?: ComponentStyleConfig;
-  colorPicker?: ComponentStyleConfig;
-  datePicker?: ComponentStyleConfig;
-  rangePicker?: ComponentStyleConfig;
-  dropdown?: ComponentStyleConfig;
+  tree?: TreeConfig;
+  colorPicker?: ColorPickerConfig;
+  datePicker?: DatePickerConfig;
+  rangePicker?: RangePickerConfig;
+  dropdown?: DropdownConfig;
   flex?: FlexConfig;
   /**
    * Wave is special component which only patch on the effect of component interaction.
    */
   wave?: WaveConfig;
   tour?: TourConfig;
+  tooltip?: TooltipConfig;
+  popover?: PopoverConfig;
+  popconfirm?: PopconfirmConfig;
+  watermark?: ComponentStyleConfig;
+  qrcode?: QRcodeConfig;
 }
 
 interface ProviderChildrenProps extends ConfigProviderProps {
@@ -218,8 +300,6 @@ interface ProviderChildrenProps extends ConfigProviderProps {
 }
 
 type holderRenderType = (children: React.ReactNode) => React.ReactNode;
-
-export const defaultPrefixCls = 'ant';
 
 let globalPrefixCls: string;
 let globalIconPrefixCls: string;
@@ -234,14 +314,10 @@ function getGlobalIconPrefixCls() {
   return globalIconPrefixCls || defaultIconPrefixCls;
 }
 
-function isLegacyTheme(theme: Theme | ThemeConfig): theme is Theme {
-  return Object.keys(theme).some((key) => key.endsWith('Color'));
-}
-
-interface GlobalConfigProps {
+export interface GlobalConfigProps {
   prefixCls?: string;
   iconPrefixCls?: string;
-  theme?: Theme | ThemeConfig;
+  theme?: ThemeConfig;
   holderRender?: holderRenderType;
 }
 
@@ -258,16 +334,7 @@ const setGlobalConfig = (props: GlobalConfigProps) => {
   }
 
   if (theme) {
-    if (isLegacyTheme(theme)) {
-      warning(
-        false,
-        'ConfigProvider',
-        '`config` of css variable theme is not work in v5. Please use new `theme` config instead.',
-      );
-      registerTheme(getGlobalPrefixCls(), theme);
-    } else {
-      globalTheme = theme;
-    }
+    globalTheme = theme;
   }
 };
 
@@ -298,12 +365,15 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
     csp: customCsp,
     autoInsertSpaceInButton,
     alert,
+    affix,
     anchor,
+    app,
     form,
     locale,
     componentSize,
     direction,
     space,
+    splitter,
     virtual,
     dropdownMatchSelectWidth,
     popupMatchSelectWidth,
@@ -336,14 +406,17 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
     result,
     slider,
     breadcrumb,
+    masonry,
     menu,
     pagination,
     input,
     textArea,
+    otp,
     empty,
     badge,
     radio,
     rate,
+    ribbon,
     switch: SWITCH,
     transfer,
     avatar,
@@ -351,6 +424,7 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
     tag,
     table,
     card,
+    cardMeta,
     tabs,
     timeline,
     timePicker,
@@ -365,7 +439,16 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
     dropdown,
     warning: warningConfig,
     tour,
+    tooltip,
+    popover,
+    popconfirm,
+    qrcode,
+    floatButton,
     floatButtonGroup,
+    variant,
+    inputNumber,
+    treeSelect,
+    watermark,
   } = props;
 
   // =================================== Context ===================================
@@ -387,8 +470,6 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
   const iconPrefixCls = customIconPrefixCls || parentContext.iconPrefixCls || defaultIconPrefixCls;
   const csp = customCsp || parentContext.csp;
 
-  useStyle(iconPrefixCls, csp);
-
   const mergedTheme = useTheme(theme, parentContext.theme, { prefixCls: getPrefixCls('') });
 
   if (process.env.NODE_ENV !== 'production') {
@@ -399,10 +480,13 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
     csp,
     autoInsertSpaceInButton,
     alert,
+    affix,
     anchor,
+    app,
     locale: locale || legacyLocale,
     direction,
     space,
+    splitter,
     virtual,
     popupMatchSelectWidth: popupMatchSelectWidth ?? dropdownMatchSelectWidth,
     popupOverflow,
@@ -426,6 +510,7 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
     image,
     input,
     textArea,
+    otp,
     layout,
     list,
     mentions,
@@ -434,12 +519,14 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
     result,
     slider,
     breadcrumb,
+    masonry,
     menu,
     pagination,
     empty,
     badge,
     radio,
     rate,
+    ribbon,
     switch: SWITCH,
     transfer,
     avatar,
@@ -447,6 +534,7 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
     tag,
     table,
     card,
+    cardMeta,
     tabs,
     timeline,
     timePicker,
@@ -461,7 +549,16 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
     dropdown,
     warning: warningConfig,
     tour,
+    tooltip,
+    popover,
+    popconfirm,
+    qrcode,
+    floatButton,
     floatButtonGroup,
+    variant,
+    inputNumber,
+    treeSelect,
+    watermark,
   };
 
   if (process.env.NODE_ENV !== 'production') {
@@ -514,13 +611,16 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
     },
   );
 
+  const { layer } = React.useContext(CssInJsStyleContext);
+
   const memoIconContextValue = React.useMemo(
-    () => ({ prefixCls: iconPrefixCls, csp }),
-    [iconPrefixCls, csp],
+    () => ({ prefixCls: iconPrefixCls, csp, layer: layer ? 'antd' : undefined }),
+    [iconPrefixCls, csp, layer],
   );
 
   let childNode = (
     <>
+      <IconStyle iconPrefixCls={iconPrefixCls} csp={csp} />
       <PropWarning dropdownMatchSelectWidth={dropdownMatchSelectWidth} />
       {children}
     </>
@@ -566,6 +666,11 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
   // =================================== Motion ===================================
   childNode = <MotionWrapper>{childNode}</MotionWrapper>;
 
+  // ================================ Tooltip Unique ===============================
+  if (tooltip?.unique) {
+    childNode = <UniqueProvider>{childNode}</UniqueProvider>;
+  }
+
   // ================================ Dynamic theme ================================
   const memoTheme = React.useMemo(() => {
     const { algorithm, token, components, cssVar, ...rest } = mergedTheme || {};
@@ -608,7 +713,7 @@ const ProviderChildren: React.FC<ProviderChildrenProps> = (props) => {
         override: mergedToken,
         ...parsedComponents,
       },
-      cssVar: cssVar as Exclude<ThemeConfig['cssVar'], boolean>,
+      cssVar,
     };
   }, [mergedTheme]);
 

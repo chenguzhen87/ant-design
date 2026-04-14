@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/cs_CZ';
+import Pagination from '@rc-component/pagination/lib/locale/cs_CZ';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/cs_CZ';
@@ -16,13 +15,14 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'Prosím vyber',
+    close: 'Zavřít',
   },
   Table: {
     filterTitle: 'Filtr',
     filterConfirm: 'Potvrdit',
     filterReset: 'Obnovit',
     filterEmptyText: 'Žádné filtry',
-    filterCheckall: 'Vybrat všechny položky',
+    filterCheckAll: 'Vybrat všechny položky',
     filterSearchPlaceholder: 'Vyhledat ve filtrech',
     emptyText: 'Žádná data',
     selectAll: 'Vybrat všechny řádky na současné stránce',
@@ -35,6 +35,11 @@ const localeValues: Locale = {
     triggerDesc: 'Klikni pro sestupné řazení',
     triggerAsc: 'Klikni pro vzestupné řazení',
     cancelSort: 'Klikni pro zrušení řazení',
+  },
+  Tour: {
+    Next: 'Další',
+    Previous: 'Předchozí',
+    Finish: 'Dokončit',
   },
   Modal: {
     okText: 'OK',
@@ -126,8 +131,16 @@ const localeValues: Locale = {
       },
     },
   },
-  Image: {
-    preview: 'Náhled',
+  QRCode: {
+    expired: 'QR kód vypršel',
+    refresh: 'Obnovit',
+    scanned: 'Naskenováno',
+  },
+  ColorPicker: {
+    presetEmpty: 'Prázdné',
+    transparent: 'Průhledné',
+    singleColor: 'Jednobarevné',
+    gradientColor: 'Přechodové',
   },
 };
 

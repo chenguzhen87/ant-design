@@ -1,4 +1,4 @@
-import Pagination from 'rc-pagination/lib/locale/mk_MK';
+import Pagination from '@rc-component/pagination/lib/locale/mk_MK';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/mk_MK';
@@ -13,6 +13,7 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'Ве молиме означете',
+    close: 'Затвори',
   },
   Table: {
     filterTitle: 'Мени за филтрирање',
@@ -20,6 +21,11 @@ const localeValues: Locale = {
     filterReset: 'Избриши',
     selectAll: 'Одбери страница',
     selectInvert: 'Инвертирај страница',
+  },
+  Tour: {
+    Next: 'Следно',
+    Previous: 'Претходно',
+    Finish: 'Заврши',
   },
   Modal: {
     okText: 'ОК',

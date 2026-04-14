@@ -2,9 +2,12 @@
 title: 贡献者开发维护指南
 date: 2023-03-10
 author: kiner-tang
+zhihu_url: https://zhuanlan.zhihu.com/p/639266384
+yuque_url: https://www.yuque.com/ant-design/ant-design/rixou58ogv8hlev2
+juejin_url: https://juejin.cn/post/7322305961196273673
 ---
 
-大家好，我是[kiner-tang(文辉)](https://github.com/kiner-tang)，我个人的工作内容可以说与 Ant Design 密切相关，可以算是 Ant Design 的重度用户了。也正因如此，让我由一个使用者慢慢地向着贡献者 Contributor 迈进，将自己在工作过程中遇到的一些问题和总结出的新特性回馈于社区，并最终很荣幸地成为了 Ant Design 的 Collaborator 中的一员。在从使用者到贡献者，再从贡献者到合作者的旅途中，也遇到了不少的问题，借此机会梳理总结一下，希望能对新加入 Ant Design 社区的贡献者和合作者们有所帮助。
+大家好，我是 [kiner-tang(文辉)](https://github.com/kiner-tang)，我个人的工作内容可以说与 Ant Design 密切相关，可以算是 Ant Design 的重度用户了。也正因如此，让我由一个使用者慢慢地向着贡献者 Contributor 迈进，将自己在工作过程中遇到的一些问题和总结出的新特性回馈于社区，并最终很荣幸地成为了 Ant Design 的 Collaborator 中的一员。在从使用者到贡献者，再从贡献者到合作者的旅途中，也遇到了不少的问题，借此机会梳理总结一下，希望能对新加入 Ant Design 社区的贡献者和合作者们有所帮助。
 
 ## 普通常见问题
 
@@ -21,14 +24,14 @@ author: kiner-tang
    ```json
    {
      "dependencies": {
-       "rc-cascader": "~3.9.0"
+       "@rc-component/cascader": "~3.9.0"
      }
    }
    ```
 
    关于`package.json`当中版本描述中的`^`和`~`的区别，可参考：[What's the difference between tilde(~) and caret(^) in package.json](https://stackoverflow.com/questions/22343224/whats-the-difference-between-tilde-and-caret-in-package-json)
 
-这样，当我们的依赖，如`rc-cascader`修复了一个 bug 并发布了一个 patch 版本，如：`3.9.1`，那么，用户最新安装的版本就是`3.9.1`，而针对 Ant Design 的维护者，我们只需要执行如下命令：
+这样，当我们的依赖，如`@rc-component/cascader`修复了一个 bug 并发布了一个 patch 版本，如：`3.9.1`，那么，用户最新安装的版本就是`3.9.1`，而针对 Ant Design 的维护者，我们只需要执行如下命令：
 
 ```bash
 git clean -fdx
@@ -51,7 +54,6 @@ npm i
    ```
 
 2. 但如果发现快照对比时，发生改变的地方超过了你本次修改的范围，比如你只是更改了文字，但发现快照中的 className 都变了，这明显是不符合预期的，我们就需要排查原因，以下是常见的原因：
-
    - 本地依赖太旧，有可能拉取了最新代码，但没有更新本地依赖，导致依赖包版本过低而出现输出结果不一致。解决方案很简单，删除 lock 文件、node_modules，然后重装依赖即可。
    - 或者你的代码没有同步基线代码也可能导致快照对比不一致。解决方案也很简单，先将基线代码拉取到本地，然后将你的代码 rebase 到基线代码上即可。
    - 你本地可能除了改动 demo 之外，还改到了核心代码，导致逻辑发生了改变。你需要仔细检查一下本次更改。
@@ -73,7 +75,7 @@ npm i
 需要注意的是，link 可能会导致运行 test 命令时产生异常，因此，我们在本地验证完毕后，需要本地运行以下命令删除 link 过来的包：
 
 ```bash
-npm unlink "rc-field-form" --no-save
+npm unlink "@rc-component/form" --no-save
 npm i
 ```
 

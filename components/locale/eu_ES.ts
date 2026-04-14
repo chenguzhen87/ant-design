@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/eu_ES';
+import Pagination from '@rc-component/pagination/lib/locale/eu_ES';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/eu_ES';
@@ -16,13 +15,14 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'Aukeratu',
+    close: 'Itxi',
   },
   Table: {
     filterTitle: 'Iragazi menua',
     filterConfirm: 'Onartu',
     filterReset: 'Garbitu',
     filterEmptyText: 'Iragazkirik gabe',
-    filterCheckall: 'Hautatu dena',
+    filterCheckAll: 'Hautatu dena',
     filterSearchPlaceholder: 'Bilatu iragazkietan',
     emptyText: 'Daturik gabe',
     selectAll: 'Hautatu dena',
@@ -131,15 +131,15 @@ const localeValues: Locale = {
       },
     },
   },
-  Image: {
-    preview: 'Aurrebista',
-  },
   QRCode: {
     expired: 'QR kodea kadukatuta',
     refresh: 'Freskatu',
   },
   ColorPicker: {
     presetEmpty: 'Hustu',
+    transparent: 'Gardena',
+    singleColor: 'Kolore bakarra',
+    gradientColor: 'Gradiente kolorea',
   },
 };
 

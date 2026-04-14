@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/de_DE';
+import Pagination from '@rc-component/pagination/lib/locale/de_DE';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/de_DE';
@@ -16,6 +15,7 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'Bitte auswählen',
+    close: 'Schließen',
   },
   Table: {
     filterTitle: 'Filter-Menü',
@@ -23,7 +23,7 @@ const localeValues: Locale = {
     filterReset: 'Zurücksetzen',
     filterEmptyText: 'Keine Filter',
     filterSearchPlaceholder: 'Suche in Filtern',
-    filterCheckall: 'Alle auswählen',
+    filterCheckAll: 'Alle auswählen',
     selectAll: 'Selektiere Alle',
     selectInvert: 'Selektion Invertieren',
     selectionAll: 'Wählen Sie alle Daten aus',
@@ -58,6 +58,7 @@ const localeValues: Locale = {
     selectCurrent: 'Alle auf aktueller Seite auswählen',
     removeCurrent: 'Auswahl auf aktueller Seite aufheben',
     selectAll: 'Alle auswählen',
+    deselectAll: 'Alle abwählen',
     removeAll: 'Auswahl aufheben',
     selectInvert: 'Auswahl umkehren',
   },
@@ -125,9 +126,6 @@ const localeValues: Locale = {
         mismatch: '${label} entspricht nicht dem ${pattern} Muster',
       },
     },
-  },
-  Image: {
-    preview: 'Vorschau',
   },
   QRCode: {
     expired: 'QR-Code abgelaufen',

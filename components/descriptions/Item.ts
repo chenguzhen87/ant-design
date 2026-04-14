@@ -1,16 +1,27 @@
 import type * as React from 'react';
 
+import type { Breakpoint } from '../_util/responsiveObserver';
+import type { CellSemanticClassNames, CellSemanticStyles } from './DescriptionsContext';
+
 export interface DescriptionsItemProps {
   prefixCls?: string;
   className?: string;
   style?: React.CSSProperties;
   label?: React.ReactNode;
+  /** @deprecated Please use `styles.label` instead */
   labelStyle?: React.CSSProperties;
+  /** @deprecated Please use `styles.content` instead */
   contentStyle?: React.CSSProperties;
-  children: React.ReactNode;
-  span?: number;
+  classNames?: CellSemanticClassNames;
+  styles?: CellSemanticStyles;
+  span?: number | 'filled' | { [key in Breakpoint]?: number };
+  children?: React.ReactNode;
 }
 
-const DescriptionsItem: React.FC<DescriptionsItemProps> = ({ children }) => children as JSX.Element;
+// JSX Structure Syntactic Sugar. Never reach the render code.
+/* istanbul ignore next */
+const DescriptionsItem: React.FC<React.PropsWithChildren<DescriptionsItemProps>> = (props) => {
+  return props.children as React.JSX.Element;
+};
 
 export default DescriptionsItem;

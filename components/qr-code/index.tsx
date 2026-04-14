@@ -1,17 +1,38 @@
-import React, { useContext } from 'react';
-import ReloadOutlined from '@ant-design/icons/ReloadOutlined';
-import classNames from 'classnames';
-import { QRCodeCanvas, QRCodeSVG } from 'qrcode.react';
+import React from 'react';
+import { QRCodeCanvas, QRCodeSVG } from '@rc-component/qrcode';
+import { omit } from '@rc-component/util';
+import pickAttrs from '@rc-component/util/lib/pickAttrs';
+import { clsx } from 'clsx';
 
+import { useMergeSemantic } from '../_util/hooks';
+import { isNumber } from '../_util/is';
 import { devUseWarning } from '../_util/warning';
-import Button from '../button';
-import type { ConfigConsumerProps } from '../config-provider';
-import { ConfigContext } from '../config-provider';
+import { useComponentConfig } from '../config-provider/context';
 import { useLocale } from '../locale';
-import Spin from '../spin';
 import { useToken } from '../theme/internal';
-import type { QRCodeProps, QRProps } from './interface';
+import type {
+  QRCodeClassNamesType,
+  QRCodeProps,
+  QRCodeSemanticClassNames,
+  QRCodeSemanticName,
+  QRCodeSemanticStyles,
+  QRCodeStylesType,
+  QRProps,
+  QRPropsCanvas,
+  QRPropsSvg,
+} from './interface';
+import QRcodeStatus from './QrcodeStatus';
 import useStyle from './style/index';
+
+export type {
+  QRCodeProps,
+  QRCodeSemanticClassNames,
+  QRCodeSemanticName,
+  QRCodeSemanticStyles,
+  QRProps,
+  QRPropsCanvas,
+  QRPropsSvg,
+};
 
 const QRCode: React.FC<QRCodeProps> = (props) => {
   const [, token] = useToken();
@@ -20,7 +41,7 @@ const QRCode: React.FC<QRCodeProps> = (props) => {
     type = 'canvas',
     icon = '',
     size = 160,
-    iconSize = 40,
+    iconSize,
     color = token.colorText,
     errorLevel = 'M',
     status = 'active',
@@ -31,20 +52,61 @@ const QRCode: React.FC<QRCodeProps> = (props) => {
     rootClassName,
     prefixCls: customizePrefixCls,
     bgColor = 'transparent',
+    marginSize,
+    statusRender,
+    classNames,
+    styles,
+    boostLevel /* 👈 5.28.0+ */,
+    ...rest
   } = props;
-  const { getPrefixCls } = useContext<ConfigConsumerProps>(ConfigContext);
+
+  const {
+    getPrefixCls,
+    className: contextClassName,
+    style: contextStyle,
+    classNames: contextClassNames,
+    styles: contextStyles,
+  } = useComponentConfig('qrcode');
+
+  // =========== Merged Props for Semantic ===========
+  const mergedProps: QRCodeProps = {
+    ...props,
+    bgColor,
+    type,
+    size,
+    status,
+    bordered,
+    errorLevel,
+  };
+
+  const [mergedClassNames, mergedStyles] = useMergeSemantic<
+    QRCodeClassNamesType,
+    QRCodeStylesType,
+    QRCodeProps
+  >([contextClassNames, classNames], [contextStyles, styles], {
+    props: mergedProps,
+  });
+
   const prefixCls = getPrefixCls('qrcode', customizePrefixCls);
 
-  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
+  const [hashId, cssVarCls] = useStyle(prefixCls);
 
   const imageSettings: QRProps['imageSettings'] = {
     src: icon,
     x: undefined,
     y: undefined,
-    height: iconSize,
-    width: iconSize,
+    height: isNumber(iconSize) ? iconSize : (iconSize?.height ?? 40),
+    width: isNumber(iconSize) ? iconSize : (iconSize?.width ?? 40),
     excavate: true,
+    crossOrigin: 'anonymous',
   };
+
+  const a11yProps = pickAttrs(rest, true);
+
+  const restProps = omit<React.HTMLAttributes<HTMLDivElement>, keyof React.AriaAttributes>(
+    rest,
+    Object.keys(a11yProps) as (keyof React.AriaAttributes)[],
+  );
 
   const qrCodeProps = {
     value,
@@ -54,6 +116,9 @@ const QRCode: React.FC<QRCodeProps> = (props) => {
     fgColor: color,
     style: { width: style?.width, height: style?.height },
     imageSettings: icon ? imageSettings : undefined,
+    marginSize,
+    boostLevel,
+    ...a11yProps,
   };
 
   const [locale] = useLocale('QRCode');
@@ -74,37 +139,46 @@ const QRCode: React.FC<QRCodeProps> = (props) => {
     return null;
   }
 
-  const mergedCls = classNames(prefixCls, className, rootClassName, hashId, cssVarCls, {
-    [`${prefixCls}-borderless`]: !bordered,
-  });
+  const rootClassNames = clsx(
+    prefixCls,
+    className,
+    rootClassName,
+    hashId,
+    cssVarCls,
+    contextClassName,
+    mergedClassNames.root,
+    {
+      [`${prefixCls}-borderless`]: !bordered,
+    },
+  );
 
-  const mergedStyle: React.CSSProperties = {
+  const rootStyle: React.CSSProperties = {
     backgroundColor: bgColor,
+    ...mergedStyles.root,
+    ...contextStyle,
     ...style,
     width: style?.width ?? size,
     height: style?.height ?? size,
   };
 
-  return wrapCSSVar(
-    <div className={mergedCls} style={mergedStyle}>
+  return (
+    <div {...restProps} className={rootClassNames} style={rootStyle}>
       {status !== 'active' && (
-        <div className={`${prefixCls}-mask`}>
-          {status === 'loading' && <Spin />}
-          {status === 'expired' && (
-            <>
-              <p className={`${prefixCls}-expired`}>{locale?.expired}</p>
-              {onRefresh && (
-                <Button type="link" icon={<ReloadOutlined />} onClick={onRefresh}>
-                  {locale?.refresh}
-                </Button>
-              )}
-            </>
-          )}
-          {status === 'scanned' && <p className={`${prefixCls}-scanned`}>{locale?.scanned}</p>}
+        <div
+          className={clsx(`${prefixCls}-cover`, mergedClassNames.cover)}
+          style={mergedStyles.cover}
+        >
+          <QRcodeStatus
+            prefixCls={prefixCls}
+            locale={locale}
+            status={status}
+            onRefresh={onRefresh}
+            statusRender={statusRender}
+          />
         </div>
       )}
       {type === 'canvas' ? <QRCodeCanvas {...qrCodeProps} /> : <QRCodeSVG {...qrCodeProps} />}
-    </div>,
+    </div>
   );
 };
 

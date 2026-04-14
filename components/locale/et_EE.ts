@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/et_EE';
+import Pagination from '@rc-component/pagination/lib/locale/et_EE';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/et_EE';
@@ -16,13 +15,14 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'Palun vali',
+    close: 'Sulge',
   },
   Table: {
     filterTitle: 'Filtri menüü',
     filterConfirm: 'OK',
     filterReset: 'Nulli',
     filterEmptyText: 'Filtreid pole',
-    filterCheckall: 'Vali kõik',
+    filterCheckAll: 'Vali kõik',
     filterSearchPlaceholder: 'Otsi filtritest',
     emptyText: 'Andmed puuduvad',
     selectAll: 'Vali kõik',
@@ -35,6 +35,11 @@ const localeValues: Locale = {
     triggerDesc: 'Klõpsa kahanevalt sortimiseks',
     triggerAsc: 'Klõpsa kasvavalt sortimiseks',
     cancelSort: 'Klõpsa sortimise tühistamiseks',
+  },
+  Tour: {
+    Next: 'Järgmine',
+    Previous: 'Eelmine',
+    Finish: 'Lõpetada',
   },
   Modal: {
     okText: 'OK',
@@ -125,9 +130,6 @@ const localeValues: Locale = {
         mismatch: '${label} ei vasta mustrile ${pattern}',
       },
     },
-  },
-  Image: {
-    preview: 'Eelvaade',
   },
 };
 

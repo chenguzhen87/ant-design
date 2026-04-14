@@ -4,15 +4,14 @@ import type { CSSInterpolation } from '@ant-design/cssinjs';
 import type { MenuToken } from '.';
 import { genFocusOutline } from '../../style';
 
-const accessibilityFocus = (token: MenuToken) => ({
-  ...genFocusOutline(token),
-});
+const accessibilityFocus = (token: MenuToken) => genFocusOutline(token);
 
 const getThemeStyle = (token: MenuToken, themeSuffix: string): CSSInterpolation => {
   const {
     componentCls,
     itemColor,
     itemSelectedColor,
+    subMenuItemSelectedColor,
     groupTitleColor,
     itemBg,
     subMenuItemBg,
@@ -61,14 +60,14 @@ const getThemeStyle = (token: MenuToken, themeSuffix: string): CSSInterpolation 
       },
 
       // ======================== Item ========================
-      [`${componentCls}-item-group-title`]: {
-        color: groupTitleColor,
+      [`${componentCls}-item`]: {
+        '&-group-title, &-extra': {
+          color: groupTitleColor,
+        },
       },
 
-      [`${componentCls}-submenu-selected`]: {
-        [`> ${componentCls}-submenu-title`]: {
-          color: itemSelectedColor,
-        },
+      [`${componentCls}-submenu-selected > ${componentCls}-submenu-title`]: {
+        color: subMenuItemSelectedColor,
       },
 
       [`${componentCls}-item, ${componentCls}-submenu-title`]: {
@@ -90,6 +89,13 @@ const getThemeStyle = (token: MenuToken, themeSuffix: string): CSSInterpolation 
             color: itemHoverColor,
           },
         },
+
+      // SubMenu active (when hover on parent menu item)
+      [`${componentCls}-submenu:not(${componentCls}-submenu-selected)`]: {
+        [`> ${componentCls}-submenu-title:hover`]: {
+          color: itemHoverColor,
+        },
+      },
 
       [`&:not(${componentCls}-horizontal)`]: {
         [`${componentCls}-item:not(${componentCls}-item-selected)`]: {
@@ -142,7 +148,7 @@ const getThemeStyle = (token: MenuToken, themeSuffix: string): CSSInterpolation 
           color: dangerItemSelectedColor,
         },
 
-        [`a, a:hover`]: {
+        'a, a:hover': {
           color: 'inherit',
         },
       },
@@ -194,14 +200,14 @@ const getThemeStyle = (token: MenuToken, themeSuffix: string): CSSInterpolation 
             content: '""',
           },
 
-          [`&:hover, &-active, &-open`]: {
+          '&:hover, &-active, &-open': {
             background: horizontalItemHoverBg,
             '&::after': {
               borderBottomWidth: activeBarHeight,
               borderBottomColor: horizontalItemSelectedColor,
             },
           },
-          [`&-selected`]: {
+          '&-selected': {
             color: horizontalItemSelectedColor,
             backgroundColor: horizontalItemSelectedBg,
             '&:hover': {
@@ -240,10 +246,9 @@ const getThemeStyle = (token: MenuToken, themeSuffix: string): CSSInterpolation 
             borderInlineEnd: `${unit(activeBarWidth)} solid ${itemSelectedColor}`,
             transform: 'scaleY(0.0001)',
             opacity: 0,
-            transition: [
-              `transform ${motionDurationMid} ${motionEaseOut}`,
-              `opacity ${motionDurationMid} ${motionEaseOut}`,
-            ].join(','),
+            transition: [`transform`, `opacity`]
+              .map((prop) => `${prop} ${motionDurationMid} ${motionEaseOut}`)
+              .join(','),
             content: '""',
           },
 
@@ -259,10 +264,9 @@ const getThemeStyle = (token: MenuToken, themeSuffix: string): CSSInterpolation 
           '&::after': {
             transform: 'scaleY(1)',
             opacity: 1,
-            transition: [
-              `transform ${motionDurationMid} ${motionEaseInOut}`,
-              `opacity ${motionDurationMid} ${motionEaseInOut}`,
-            ].join(','),
+            transition: [`transform`, `opacity`]
+              .map((prop) => `${prop} ${motionDurationMid} ${motionEaseInOut}`)
+              .join(','),
           },
         },
       },

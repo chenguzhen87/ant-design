@@ -3,13 +3,15 @@ import CheckCircleFilled from '@ant-design/icons/CheckCircleFilled';
 import CloseCircleFilled from '@ant-design/icons/CloseCircleFilled';
 import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
 import InfoCircleFilled from '@ant-design/icons/InfoCircleFilled';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 
-import { CONTAINER_MAX_OFFSET } from '../_util/hooks/useZIndex';
+import { CONTAINER_MAX_OFFSET, normalizeMaskConfig } from '../_util/hooks';
+import { isNonNullable } from '../_util/is';
 import { getTransitionName } from '../_util/motion';
 import { devUseWarning } from '../_util/warning';
 import type { ThemeConfig } from '../config-provider';
 import ConfigProvider from '../config-provider';
+import { useComponentConfig } from '../config-provider/context';
 import { useLocale } from '../locale';
 import useToken from '../theme/useToken';
 import CancelBtn from './components/ConfirmCancelBtn';
@@ -48,11 +50,9 @@ export interface ConfirmDialogProps extends ModalFuncProps {
   isSilent?: () => boolean;
 }
 
-export function ConfirmContent(
-  props: ConfirmDialogProps & {
-    confirmPrefixCls: string;
-  },
-) {
+export const ConfirmContent: React.FC<ConfirmDialogProps & { confirmPrefixCls: string }> = (
+  props,
+) => {
   const {
     prefixCls,
     icon,
@@ -64,7 +64,9 @@ export function ConfirmContent(
     footer,
     // Legacy for static function usage
     locale: staticLocale,
-    ...resetProps
+    autoFocusButton,
+    focusable,
+    ...restProps
   } = props;
 
   if (process.env.NODE_ENV !== 'production') {
@@ -103,7 +105,10 @@ export function ConfirmContent(
   // 默认为 true，保持向下兼容
   const mergedOkCancel = okCancel ?? type === 'confirm';
 
-  const autoFocusButton = props.autoFocusButton === null ? false : props.autoFocusButton || 'ok';
+  const mergedAutoFocusButton = React.useMemo(() => {
+    const base = focusable?.autoFocusButton || autoFocusButton;
+    return base || base === null ? base : 'ok';
+  }, [autoFocusButton, focusable?.autoFocusButton]);
 
   const [locale] = useLocale('Modal');
 
@@ -114,14 +119,19 @@ export function ConfirmContent(
   const cancelTextLocale = cancelText || mergedLocale?.cancelText;
 
   // ================= Context Value =================
-  const btnCtxValue: ModalContextProps = {
-    autoFocusButton,
-    cancelTextLocale,
-    okTextLocale,
-    mergedOkCancel,
-    ...resetProps,
-  };
-  const btnCtxValueMemo = React.useMemo(() => btnCtxValue, [...Object.values(btnCtxValue)]);
+  const { closable } = restProps;
+  const { onClose } = closable && typeof closable === 'object' ? closable : {};
+
+  const memoizedValue = React.useMemo<ModalContextProps>(() => {
+    return {
+      autoFocusButton: mergedAutoFocusButton,
+      cancelTextLocale,
+      okTextLocale,
+      mergedOkCancel,
+      onClose,
+      ...restProps,
+    };
+  }, [mergedAutoFocusButton, cancelTextLocale, okTextLocale, mergedOkCancel, onClose, restProps]);
 
   // ====================== Footer Origin Node ======================
   const footerOriginNode = (
@@ -131,15 +141,17 @@ export function ConfirmContent(
     </>
   );
 
-  const hasTitle = props.title !== undefined && props.title !== null;
+  const hasTitle = isNonNullable(props.title) && props.title !== '';
+  const hasIcon = isNonNullable(mergedIcon);
 
   const bodyCls = `${confirmPrefixCls}-body`;
 
   return (
     <div className={`${confirmPrefixCls}-body-wrapper`}>
       <div
-        className={classNames(bodyCls, {
+        className={clsx(bodyCls, {
           [`${bodyCls}-has-title`]: hasTitle,
+          [`${bodyCls}-no-icon`]: !hasIcon,
         })}
       >
         {mergedIcon}
@@ -148,36 +160,26 @@ export function ConfirmContent(
           <div className={`${confirmPrefixCls}-content`}>{props.content}</div>
         </div>
       </div>
-
       {footer === undefined || typeof footer === 'function' ? (
-        <ModalContextProvider value={btnCtxValueMemo}>
+        <ModalContextProvider value={memoizedValue}>
           <div className={`${confirmPrefixCls}-btns`}>
             {typeof footer === 'function'
-              ? footer(footerOriginNode, {
-                  OkBtn,
-                  CancelBtn,
-                })
+              ? footer(footerOriginNode, { OkBtn, CancelBtn })
               : footerOriginNode}
           </div>
         </ModalContextProvider>
       ) : (
         footer
       )}
-
       <Confirm prefixCls={prefixCls} />
     </div>
   );
-}
+};
 
 const ConfirmDialog: React.FC<ConfirmDialogProps> = (props) => {
   const {
     close,
     zIndex,
-    afterClose,
-    open,
-    keyboard,
-    centered,
-    getContainer,
     maskStyle,
     direction,
     prefixCls,
@@ -185,18 +187,22 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = (props) => {
     rootPrefixCls,
     bodyStyle,
     closable = false,
-    closeIcon,
-    modalRender,
-    focusTriggerAfterClose,
     onConfirm,
     styles,
+    title,
+    mask,
+    maskClosable,
+    okButtonProps,
+    cancelButtonProps,
   } = props;
+
+  const { cancelButtonProps: contextCancelButtonProps, okButtonProps: contextOkButtonProps } =
+    useComponentConfig('modal');
 
   if (process.env.NODE_ENV !== 'production') {
     const warning = devUseWarning('Modal');
 
     [
-      ['visible', 'open'],
       ['bodyStyle', 'styles.body'],
       ['maskStyle', 'styles.mask'],
     ].forEach(([deprecatedName, newName]) => {
@@ -208,16 +214,23 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = (props) => {
 
   const width = props.width || 416;
   const style = props.style || {};
-  const mask = props.mask === undefined ? true : props.mask;
-  // 默认为 false，保持旧版默认行为
-  const maskClosable = props.maskClosable === undefined ? false : props.maskClosable;
 
-  const classString = classNames(
+  const classString = clsx(
     confirmPrefixCls,
     `${confirmPrefixCls}-${props.type}`,
     { [`${confirmPrefixCls}-rtl`]: direction === 'rtl' },
     props.className,
   );
+
+  // ========================== Mask ==========================
+  // 默认为 false，保持旧版默认行为
+  const mergedMask = React.useMemo(() => {
+    const nextMaskConfig = normalizeMaskConfig(mask, maskClosable);
+
+    nextMaskConfig.closable ??= false;
+
+    return nextMaskConfig;
+  }, [mask, maskClosable]);
 
   // ========================= zIndex =========================
   const [, token] = useToken();
@@ -234,37 +247,30 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = (props) => {
   // ========================= Render =========================
   return (
     <Modal
-      prefixCls={prefixCls}
+      {...props}
       className={classString}
-      wrapClassName={classNames(
-        { [`${confirmPrefixCls}-centered`]: !!props.centered },
-        wrapClassName,
-      )}
+      wrapClassName={clsx({ [`${confirmPrefixCls}-centered`]: !!props.centered }, wrapClassName)}
       onCancel={() => {
         close?.({ triggerCancel: true });
         onConfirm?.(false);
       }}
-      open={open}
-      title=""
+      title={title}
       footer={null}
       transitionName={getTransitionName(rootPrefixCls || '', 'zoom', props.transitionName)}
       maskTransitionName={getTransitionName(rootPrefixCls || '', 'fade', props.maskTransitionName)}
-      mask={mask}
-      maskClosable={maskClosable}
+      mask={mergedMask}
       style={style}
       styles={{ body: bodyStyle, mask: maskStyle, ...styles }}
       width={width}
       zIndex={mergedZIndex}
-      afterClose={afterClose}
-      keyboard={keyboard}
-      centered={centered}
-      getContainer={getContainer}
       closable={closable}
-      closeIcon={closeIcon}
-      modalRender={modalRender}
-      focusTriggerAfterClose={focusTriggerAfterClose}
     >
-      <ConfirmContent {...props} confirmPrefixCls={confirmPrefixCls} />
+      <ConfirmContent
+        {...props}
+        confirmPrefixCls={confirmPrefixCls}
+        okButtonProps={{ ...contextOkButtonProps, ...okButtonProps }}
+        cancelButtonProps={{ ...contextCancelButtonProps, ...cancelButtonProps }}
+      />
     </Modal>
   );
 };

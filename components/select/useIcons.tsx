@@ -17,9 +17,9 @@ export default function useIcons({
   menuItemSelectedIcon,
   removeIcon,
   loading,
+  loadingIcon,
   multiple,
   hasFeedback,
-  prefixCls,
   showSuffixIcon,
   feedbackIcon,
   showArrow,
@@ -30,6 +30,7 @@ export default function useIcons({
   menuItemSelectedIcon?: RenderNode;
   removeIcon?: RenderNode;
   loading?: boolean;
+  loadingIcon?: React.ReactNode;
   multiple?: boolean;
   hasFeedback?: boolean;
   feedbackIcon?: ReactNode;
@@ -65,14 +66,13 @@ export default function useIcons({
   if (suffixIcon !== undefined) {
     mergedSuffixIcon = getSuffixIconNode(suffixIcon);
   } else if (loading) {
-    mergedSuffixIcon = getSuffixIconNode(<LoadingOutlined spin />);
+    mergedSuffixIcon = getSuffixIconNode(loadingIcon ?? <LoadingOutlined spin />);
   } else {
-    const iconCls = `${prefixCls}-suffix`;
     mergedSuffixIcon = ({ open, showSearch }: { open: boolean; showSearch: boolean }) => {
       if (open && showSearch) {
-        return getSuffixIconNode(<SearchOutlined className={iconCls} />);
+        return getSuffixIconNode(<SearchOutlined />);
       }
-      return getSuffixIconNode(<DownOutlined className={iconCls} />);
+      return getSuffixIconNode(<DownOutlined />);
     };
   }
 
@@ -94,7 +94,8 @@ export default function useIcons({
   }
 
   return {
-    clearIcon: mergedClearIcon,
+    // TODO: remove as when all the deps bumped
+    clearIcon: mergedClearIcon as React.ReactNode,
     suffixIcon: mergedSuffixIcon,
     itemIcon: mergedItemIcon,
     removeIcon: mergedRemoveIcon,

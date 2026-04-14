@@ -1,20 +1,23 @@
 import * as React from 'react';
-import classNames from 'classnames';
-import type { BasePickerPanelProps as RcBasePickerPanelProps } from 'rc-picker';
-import { PickerPanel as RCPickerPanel } from 'rc-picker';
-import type { GenerateConfig } from 'rc-picker/lib/generate';
-import type { CellRenderInfo } from 'rc-picker/lib/interface';
-import useMergedState from 'rc-util/lib/hooks/useMergedState';
+import type { BasePickerPanelProps as RcBasePickerPanelProps } from '@rc-component/picker';
+import { PickerPanel as RCPickerPanel } from '@rc-component/picker';
+import type { GenerateConfig } from '@rc-component/picker/generate';
+import type { CellRenderInfo } from '@rc-component/picker/interface';
+import { merge, useControlledState } from '@rc-component/util';
+import { clsx } from 'clsx';
 
+import { useMergeSemantic } from '../_util/hooks';
+import type { SemanticClassNamesType, SemanticStylesType } from '../_util/hooks';
 import type { AnyObject } from '../_util/type';
 import { devUseWarning } from '../_util/warning';
-import { ConfigContext } from '../config-provider';
+import { useComponentConfig } from '../config-provider/context';
 import { useLocale } from '../locale';
 import CalendarHeader from './Header';
 import enUS from './locale/en_US';
 import useStyle from './style';
 
 export type CalendarMode = 'year' | 'month';
+
 export type HeaderRender<DateType> = (config: {
   value: DateType;
   type: CalendarMode;
@@ -26,11 +29,41 @@ export interface SelectInfo {
   source: 'year' | 'month' | 'date' | 'customize';
 }
 
+export type CalendarSemanticName = keyof CalendarSemanticClassNames & keyof CalendarSemanticStyles;
+
+export type CalendarSemanticClassNames = {
+  root?: string;
+  header?: string;
+  body?: string;
+  content?: string;
+  item?: string;
+};
+
+export type CalendarSemanticStyles = {
+  root?: React.CSSProperties;
+  header?: React.CSSProperties;
+  body?: React.CSSProperties;
+  content?: React.CSSProperties;
+  item?: React.CSSProperties;
+};
+
+export type CalendarClassNamesType<DateType> = SemanticClassNamesType<
+  CalendarProps<DateType>,
+  CalendarSemanticClassNames
+>;
+
+export type CalendarStylesType<DateType> = SemanticStylesType<
+  CalendarProps<DateType>,
+  CalendarSemanticStyles
+>;
+
 export interface CalendarProps<DateType> {
   prefixCls?: string;
   className?: string;
   rootClassName?: string;
   style?: React.CSSProperties;
+  classNames?: CalendarClassNamesType<DateType>;
+  styles?: CalendarStylesType<DateType>;
   locale?: typeof enUS;
   validRange?: [DateType, DateType];
   disabledDate?: (date: DateType) => boolean;
@@ -49,29 +82,29 @@ export interface CalendarProps<DateType> {
   defaultValue?: DateType;
   mode?: CalendarMode;
   fullscreen?: boolean;
+  showWeek?: boolean;
   onChange?: (date: DateType) => void;
   onPanelChange?: (date: DateType, mode: CalendarMode) => void;
   onSelect?: (date: DateType, selectInfo: SelectInfo) => void;
 }
 
-function generateCalendar<DateType extends AnyObject>(generateConfig: GenerateConfig<DateType>) {
-  function isSameYear(date1: DateType, date2: DateType) {
-    return date1 && date2 && generateConfig.getYear(date1) === generateConfig.getYear(date2);
-  }
+const isSameYear = <T extends AnyObject>(date1: T, date2: T, config: GenerateConfig<T>) => {
+  const { getYear } = config;
+  return date1 && date2 && getYear(date1) === getYear(date2);
+};
 
-  function isSameMonth(date1: DateType, date2: DateType) {
-    return (
-      isSameYear(date1, date2) && generateConfig.getMonth(date1) === generateConfig.getMonth(date2)
-    );
-  }
+const isSameMonth = <T extends AnyObject>(date1: T, date2: T, config: GenerateConfig<T>) => {
+  const { getMonth } = config;
+  return isSameYear(date1, date2, config) && getMonth(date1) === getMonth(date2);
+};
 
-  function isSameDate(date1: DateType, date2: DateType) {
-    return (
-      isSameMonth(date1, date2) && generateConfig.getDate(date1) === generateConfig.getDate(date2)
-    );
-  }
+const isSameDate = <T extends AnyObject>(date1: T, date2: T, config: GenerateConfig<T>) => {
+  const { getDate } = config;
+  return isSameMonth(date1, date2, config) && getDate(date1) === getDate(date2);
+};
 
-  const Calendar = (props: CalendarProps<DateType>) => {
+const generateCalendar = <DateType extends AnyObject>(generateConfig: GenerateConfig<DateType>) => {
+  const Calendar: React.FC<Readonly<CalendarProps<DateType>>> = (props) => {
     const {
       prefixCls: customizePrefixCls,
       className,
@@ -90,40 +123,86 @@ function generateCalendar<DateType extends AnyObject>(generateConfig: GenerateCo
       mode,
       validRange,
       fullscreen = true,
+      showWeek,
       onChange,
       onPanelChange,
       onSelect,
+      styles,
+      classNames,
     } = props;
-    const { getPrefixCls, direction, calendar } = React.useContext(ConfigContext);
+    const {
+      getPrefixCls,
+      direction,
+      className: contextClassName,
+      style: contextStyle,
+      classNames: contextClassNames,
+      styles: contextStyles,
+    } = useComponentConfig('calendar');
+
+    // =========== Merged Props for Semantic ===========
+    const mergedProps: CalendarProps<DateType> = {
+      ...props,
+      mode,
+      fullscreen,
+      showWeek,
+    };
+
+    const [mergedClassNames, mergedStyles] = useMergeSemantic<
+      CalendarClassNamesType<DateType>,
+      CalendarStylesType<DateType>,
+      CalendarProps<DateType>
+    >([contextClassNames, classNames], [contextStyles, styles], {
+      props: mergedProps,
+    });
+
+    const [rootCls, headerCls, panelClassNames, rootStyle, headerStyle, panelStyles] =
+      React.useMemo(() => {
+        const {
+          root: nextRootClassName,
+          header: nextHeaderClassName,
+          ...nextPanelClassNames
+        } = mergedClassNames;
+        const { root: nextRootStyle, header: nextHeaderStyle, ...nextPanelStyles } = mergedStyles;
+        return [
+          nextRootClassName,
+          nextHeaderClassName,
+          nextPanelClassNames,
+          nextRootStyle,
+          nextHeaderStyle,
+          nextPanelStyles,
+        ] as const;
+      }, [mergedClassNames, mergedStyles]);
+
     const prefixCls = getPrefixCls('picker', customizePrefixCls);
     const calendarPrefixCls = `${prefixCls}-calendar`;
 
-    const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls, calendarPrefixCls);
+    const [hashId, cssVarCls] = useStyle(prefixCls, calendarPrefixCls);
 
     const today = generateConfig.getNow();
 
     // ====================== Warning =======================
     if (process.env.NODE_ENV !== 'production') {
       const warning = devUseWarning('Calendar');
-
-      warning.deprecated(!dateFullCellRender, 'dateFullCellRender', 'fullCellRender');
-      warning.deprecated(!dateCellRender, 'dateCellRender', 'cellRender');
-      warning.deprecated(!monthFullCellRender, 'monthFullCellRender', 'fullCellRender');
-      warning.deprecated(!monthCellRender, 'monthCellRender', 'cellRender');
+      [
+        ['dateFullCellRender', 'fullCellRender'],
+        ['dateCellRender', 'cellRender'],
+        ['monthFullCellRender', 'fullCellRender'],
+        ['monthCellRender', 'cellRender'],
+      ].forEach(([deprecatedName, newName]) => {
+        warning.deprecated(!(deprecatedName in props), deprecatedName, newName);
+      });
     }
 
     // ====================== State =======================
 
     // Value
-    const [mergedValue, setMergedValue] = useMergedState(() => value || generateConfig.getNow(), {
-      defaultValue,
+    const [mergedValue, setMergedValue] = useControlledState(
+      () => defaultValue || generateConfig.getNow(),
       value,
-    });
+    );
 
     // Mode
-    const [mergedMode, setMergedMode] = useMergedState('month', {
-      value: mode,
-    });
+    const [mergedMode, setMergedMode] = useControlledState<CalendarMode>('month', mode);
     const panelMode = React.useMemo<'month' | 'date'>(
       () => (mergedMode === 'year' ? 'month' : 'date'),
       [mergedMode],
@@ -149,11 +228,11 @@ function generateCalendar<DateType extends AnyObject>(generateConfig: GenerateCo
     const triggerChange = (date: DateType) => {
       setMergedValue(date);
 
-      if (!isSameDate(date, mergedValue)) {
+      if (!isSameDate(date, mergedValue, generateConfig)) {
         // Trigger when month panel switch month
         if (
-          (panelMode === 'date' && !isSameMonth(date, mergedValue)) ||
-          (panelMode === 'month' && !isSameYear(date, mergedValue))
+          (panelMode === 'date' && !isSameMonth(date, mergedValue, generateConfig)) ||
+          (panelMode === 'month' && !isSameYear(date, mergedValue, generateConfig))
         ) {
           triggerPanelChange(date, mergedMode);
         }
@@ -173,20 +252,6 @@ function generateCalendar<DateType extends AnyObject>(generateConfig: GenerateCo
       onSelect?.(date, { source });
     };
 
-    // ====================== Locale ======================
-    const getDefaultLocale = () => {
-      const { locale } = props;
-      const result = {
-        ...enUS,
-        ...locale,
-      };
-      result.lang = {
-        ...result.lang,
-        ...(locale || {}).lang,
-      };
-      return result;
-    };
-
     // ====================== Render ======================
     const dateRender = React.useCallback(
       (date: DateType, info: CellRenderInfo<DateType>): React.ReactNode => {
@@ -199,20 +264,28 @@ function generateCalendar<DateType extends AnyObject>(generateConfig: GenerateCo
 
         return (
           <div
-            className={classNames(`${prefixCls}-cell-inner`, `${calendarPrefixCls}-date`, {
-              [`${calendarPrefixCls}-date-today`]: isSameDate(today, date),
+            className={clsx(`${prefixCls}-cell-inner`, `${calendarPrefixCls}-date`, {
+              [`${calendarPrefixCls}-date-today`]: isSameDate(today, date, generateConfig),
             })}
           >
             <div className={`${calendarPrefixCls}-date-value`}>
               {String(generateConfig.getDate(date)).padStart(2, '0')}
             </div>
             <div className={`${calendarPrefixCls}-date-content`}>
-              {cellRender ? cellRender(date, info) : dateCellRender && dateCellRender(date)}
+              {typeof cellRender === 'function' ? cellRender(date, info) : dateCellRender?.(date)}
             </div>
           </div>
         );
       },
-      [dateFullCellRender, dateCellRender, cellRender, fullCellRender],
+      [
+        today,
+        prefixCls,
+        calendarPrefixCls,
+        fullCellRender,
+        dateFullCellRender,
+        cellRender,
+        dateCellRender,
+      ],
     );
 
     const monthRender = React.useCallback(
@@ -229,23 +302,33 @@ function generateCalendar<DateType extends AnyObject>(generateConfig: GenerateCo
 
         return (
           <div
-            className={classNames(`${prefixCls}-cell-inner`, `${calendarPrefixCls}-date`, {
-              [`${calendarPrefixCls}-date-today`]: isSameMonth(today, date),
+            className={clsx(`${prefixCls}-cell-inner`, `${calendarPrefixCls}-date`, {
+              [`${calendarPrefixCls}-date-today`]: isSameMonth(today, date, generateConfig),
             })}
           >
             <div className={`${calendarPrefixCls}-date-value`}>
               {months[generateConfig.getMonth(date)]}
             </div>
             <div className={`${calendarPrefixCls}-date-content`}>
-              {cellRender ? cellRender(date, info) : monthCellRender && monthCellRender(date)}
+              {typeof cellRender === 'function' ? cellRender(date, info) : monthCellRender?.(date)}
             </div>
           </div>
         );
       },
-      [monthFullCellRender, monthCellRender, cellRender, fullCellRender],
+      [
+        today,
+        prefixCls,
+        calendarPrefixCls,
+        fullCellRender,
+        monthFullCellRender,
+        cellRender,
+        monthCellRender,
+      ],
     );
 
-    const [contextLocale] = useLocale('Calendar', getDefaultLocale);
+    const [contextLocale] = useLocale('Calendar', enUS);
+
+    const locale = merge(contextLocale, props.locale || {});
 
     const mergedCellRender: RcBasePickerPanelProps['cellRender'] = (current, info) => {
       if (info.type === 'date') {
@@ -255,27 +338,28 @@ function generateCalendar<DateType extends AnyObject>(generateConfig: GenerateCo
       if (info.type === 'month') {
         return monthRender(current, {
           ...info,
-          locale: contextLocale?.lang,
+          locale: locale?.lang,
         });
       }
     };
 
-    return wrapCSSVar(
+    return (
       <div
-        className={classNames(
+        className={clsx(
           calendarPrefixCls,
           {
             [`${calendarPrefixCls}-full`]: fullscreen,
             [`${calendarPrefixCls}-mini`]: !fullscreen,
             [`${calendarPrefixCls}-rtl`]: direction === 'rtl',
           },
-          calendar?.className,
+          contextClassName,
           className,
           rootClassName,
+          rootCls,
           hashId,
           cssVarCls,
         )}
-        style={{ ...calendar?.style, ...style }}
+        style={{ ...rootStyle, ...contextStyle, ...style }}
       >
         {headerRender ? (
           headerRender({
@@ -288,21 +372,25 @@ function generateCalendar<DateType extends AnyObject>(generateConfig: GenerateCo
           })
         ) : (
           <CalendarHeader
+            className={headerCls}
+            style={headerStyle}
             prefixCls={calendarPrefixCls}
             value={mergedValue}
             generateConfig={generateConfig}
             mode={mergedMode}
             fullscreen={fullscreen}
-            locale={contextLocale?.lang}
+            locale={locale?.lang}
             validRange={validRange}
             onChange={onInternalSelect}
             onModeChange={triggerModeChange}
           />
         )}
         <RCPickerPanel
+          classNames={panelClassNames}
+          styles={panelStyles}
           value={mergedValue}
           prefixCls={prefixCls}
-          locale={contextLocale?.lang}
+          locale={locale?.lang}
           generateConfig={generateConfig}
           cellRender={mergedCellRender}
           onSelect={(nextDate) => {
@@ -312,8 +400,9 @@ function generateCalendar<DateType extends AnyObject>(generateConfig: GenerateCo
           picker={panelMode}
           disabledDate={mergedDisabledDate}
           hideHeader
+          showWeek={showWeek}
         />
-      </div>,
+      </div>
     );
   };
 
@@ -322,6 +411,6 @@ function generateCalendar<DateType extends AnyObject>(generateConfig: GenerateCo
   }
 
   return Calendar;
-}
+};
 
 export default generateCalendar;

@@ -1,3 +1,5 @@
+import type { CSSObject } from '@ant-design/cssinjs';
+
 import { resetComponent } from '../../style';
 import { initZoomMotion } from '../../style/motion';
 import type { ArrowOffsetToken } from '../../style/placementArrow';
@@ -11,6 +13,7 @@ import type {
   PresetColorType,
 } from '../../theme/internal';
 import { genStyleHooks, mergeToken, PresetColors } from '../../theme/internal';
+import { genCssVar } from '../../theme/util/genStyleUtils';
 
 export interface ComponentToken extends ArrowToken, ArrowOffsetToken {
   /**
@@ -18,18 +21,18 @@ export interface ComponentToken extends ArrowToken, ArrowOffsetToken {
    * @desc 气泡卡片宽度
    * @descEN Width of Popover
    */
-  width?: number;
+  width?: number | string;
   /**
    * @deprecated Please use `titleMinWidth` instead
    * @desc 气泡卡片最小宽度
    * @descEN Min width of Popover
    */
-  minWidth?: number;
+  minWidth?: number | string;
   /**
    * @desc 气泡卡片标题最小宽度
    * @descEN Min width of Popover title
    */
-  titleMinWidth: number;
+  titleMinWidth: number | string;
   /**
    * @desc 气泡卡片 z-index
    * @descEN z-index of Popover
@@ -47,10 +50,24 @@ export interface ComponentToken extends ArrowToken, ArrowOffsetToken {
   innerContentPadding: number | string;
 }
 
+/**
+ * @desc Popover 组件的 Token
+ * @descEN Token for Popover component
+ */
 export type PopoverToken = FullToken<'Popover'> & {
+  /**
+   * @desc 气泡卡片背景色
+   * @descEN Background color of Popover
+   */
   popoverBg: string;
+  /**
+   * @desc 气泡卡片文字颜色
+   * @descEN Text color of Popover
+   */
   popoverColor: string;
 };
+
+const FALL_BACK_ORIGIN = '50%';
 
 const genBaseStyle: GenerateStyle<PopoverToken> = (token) => {
   const {
@@ -69,7 +86,10 @@ const genBaseStyle: GenerateStyle<PopoverToken> = (token) => {
     titleBorderBottom,
     innerContentPadding,
     titlePadding,
+    antCls,
   } = token;
+
+  const [varName, varRef] = genCssVar(antCls, 'tooltip');
 
   return [
     {
@@ -88,8 +108,15 @@ const genBaseStyle: GenerateStyle<PopoverToken> = (token) => {
         textAlign: 'start',
         cursor: 'auto',
         userSelect: 'text',
-        transformOrigin: `var(--arrow-x, 50%) var(--arrow-y, 50%)`,
-        '--antd-arrow-background-color': colorBgElevated,
+
+        // When use `autoArrow`, origin will follow the arrow position
+        [varName('valid-offset-x')]: varRef('arrow-offset-x', 'var(--arrow-x)'),
+        transformOrigin: [
+          varRef('valid-offset-x', FALL_BACK_ORIGIN),
+          `var(--arrow-y, ${FALL_BACK_ORIGIN})`,
+        ].join(' '),
+
+        [varName('arrow-background-color')]: colorBgElevated,
         width: 'max-content',
         maxWidth: '100vw',
 
@@ -105,7 +132,7 @@ const genBaseStyle: GenerateStyle<PopoverToken> = (token) => {
           position: 'relative',
         },
 
-        [`${componentCls}-inner`]: {
+        [`${componentCls}-container`]: {
           backgroundColor: popoverBg,
           backgroundClip: 'padding-box',
           borderRadius: borderRadiusLG,
@@ -122,7 +149,7 @@ const genBaseStyle: GenerateStyle<PopoverToken> = (token) => {
           padding: titlePadding,
         },
 
-        [`${componentCls}-inner-content`]: {
+        [`${componentCls}-content`]: {
           color: popoverColor,
           padding: innerContentPadding,
         },
@@ -130,7 +157,7 @@ const genBaseStyle: GenerateStyle<PopoverToken> = (token) => {
     },
 
     // Arrow Style
-    getArrowStyle(token, 'var(--antd-arrow-background-color)'),
+    getArrowStyle<PopoverToken>(token, varRef('arrow-background-color')),
 
     // Pure Render
     {
@@ -139,24 +166,20 @@ const genBaseStyle: GenerateStyle<PopoverToken> = (token) => {
         maxWidth: 'none',
         margin: token.sizePopupArrow,
         display: 'inline-block',
-
-        [`${componentCls}-content`]: {
-          display: 'inline-block',
-        },
       },
     },
   ];
 };
 
-const genColorStyle: GenerateStyle<PopoverToken> = (token) => {
-  const { componentCls } = token;
-
+const genColorStyle: GenerateStyle<PopoverToken, CSSObject> = (token) => {
+  const { componentCls, antCls } = token;
+  const [varName] = genCssVar(antCls, 'tooltip');
   return {
     [componentCls]: PresetColors.map((colorKey: keyof PresetColorType) => {
       const lightColor = token[`${colorKey}6`];
       return {
         [`&${componentCls}-${colorKey}`]: {
-          '--antd-arrow-background-color': lightColor,
+          [varName('arrow-background-color')]: lightColor,
           [`${componentCls}-inner`]: {
             backgroundColor: lightColor,
           },

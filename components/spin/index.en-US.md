@@ -18,11 +18,12 @@ When part of the page is waiting for asynchronous data or during a rendering pro
 <!-- prettier-ignore -->
 <code src="./demo/basic.tsx">Basic Usage</code>
 <code src="./demo/size.tsx">Size</code>
-<code src="./demo/inside.tsx">Inside a container</code>
 <code src="./demo/nested.tsx">Embedded mode</code>
 <code src="./demo/tip.tsx">Customized description</code>
 <code src="./demo/delayAndDebounce.tsx">Delay</code>
 <code src="./demo/custom-indicator.tsx">Custom spinning indicator</code>
+<code src="./demo/percent.tsx" version="5.18.0">Progress</code>
+<code src="./demo/style-class.tsx" version="6.0.0">Custom semantic dom styling</code>
 <code src="./demo/fullscreen.tsx">Fullscreen</code>
 
 ## API
@@ -31,19 +32,27 @@ Common props ref：[Common props](/docs/react/common-props)
 
 | Property | Description | Type | Default | Version |
 | --- | --- | --- | --- | --- |
-| delay | Specifies a delay in milliseconds for loading state (prevent flush) | number (milliseconds) | - |
-| indicator | React node of the spinning indicator | ReactNode | - |
-| size | The size of Spin, options: `small`, `default` and `large` | string | `default` |
-| spinning | Whether Spin is visible | boolean | true |
-| tip | Customize description content when Spin has children | ReactNode | - |
-| wrapperClassName | The className of wrapper when Spin has children | string | - |
+| classNames | Customize class for each semantic structure inside the component. Supports object or function. | Record<[SemanticDOM](#semantic-dom), string> \| (info: { props }) => Record<[SemanticDOM](#semantic-dom), string> | - |  |
+| delay | Specifies a delay in milliseconds for loading state (prevent flush) | number (milliseconds) | - |  |
+| description | Customize description content | ReactNode | - | 6.3.0 |
 | fullscreen | Display a backdrop with the `Spin` component | boolean | false | 5.11.0 |
+| indicator | React node of the spinning indicator | ReactNode | - |  |
+| percent | The progress percentage, when set to `auto`, it will be an indeterminate progress | number \| 'auto' | - | 5.18.0 |
+| size | The size of Spin, options: `small`, `medium` and `large` | string | `medium` |  |
+| spinning | Whether Spin is visible | boolean | true |  |
+| styles | Customize inline style for each semantic structure inside the component. Supports object or function. | Record<[SemanticDOM](#semantic-dom), CSSProperties> \| (info: { props }) => Record<[SemanticDOM](#semantic-dom), CSSProperties> | - |  |
+| ~~tip~~ | Customize description content when Spin has children. Deprecated, use `description` instead | ReactNode | - |  |
+| ~~wrapperClassName~~ | The className of wrapper when Spin has children. Deprecated, use `classNames.root` instead | string | - |  |
 
 ### Static Method
 
 - `Spin.setDefaultIndicator(indicator: ReactNode)`
 
   You can define default spin element globally.
+
+## Semantic DOM
+
+<code src="./demo/_semantic.tsx" simplify="true"></code>
 
 ## Design Token
 

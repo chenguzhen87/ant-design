@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/en_US';
+import Pagination from '@rc-component/pagination/lib/locale/en_US';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/en_US';
@@ -16,13 +15,15 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'Please select',
+    close: 'Close',
+    sortable: 'sortable',
   },
   Table: {
     filterTitle: 'Filter menu',
     filterConfirm: 'OK',
     filterReset: 'Reset',
     filterEmptyText: 'No filters',
-    filterCheckall: 'Select all items',
+    filterCheckAll: 'Select all items',
     filterSearchPlaceholder: 'Search in filters',
     emptyText: 'No data',
     selectAll: 'Select current page',
@@ -133,9 +134,6 @@ const localeValues: Locale = {
       },
     },
   },
-  Image: {
-    preview: 'Preview',
-  },
   QRCode: {
     expired: 'QR code expired',
     refresh: 'Refresh',
@@ -143,6 +141,9 @@ const localeValues: Locale = {
   },
   ColorPicker: {
     presetEmpty: 'Empty',
+    transparent: 'Transparent',
+    singleColor: 'Single',
+    gradientColor: 'Gradient',
   },
 };
 

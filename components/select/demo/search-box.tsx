@@ -1,33 +1,33 @@
 import React, { useState } from 'react';
 import { Select } from 'antd';
 import type { SelectProps } from 'antd';
-import jsonp from 'fetch-jsonp';
-import qs from 'qs';
 
 let timeout: ReturnType<typeof setTimeout> | null;
 let currentValue: string;
 
-const fetch = (value: string, callback: Function) => {
+const toURLSearchParams = <T extends Record<string, any>>(record: T) => {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(record)) {
+    params.append(key, value);
+  }
+  return params;
+};
+
+const fetchData = (value: string, callback: (data: { value: string; text: string }[]) => void) => {
   if (timeout) {
     clearTimeout(timeout);
     timeout = null;
   }
   currentValue = value;
 
+  const params = toURLSearchParams({ code: 'utf-8', q: value });
+
   const fake = () => {
-    const str = qs.stringify({
-      code: 'utf-8',
-      q: value,
-    });
-    jsonp(`https://suggest.taobao.com/sug?${str}`)
-      .then((response: any) => response.json())
-      .then((d: any) => {
+    fetch(`https://suggest.taobao.com/sug?${params.toString()}`)
+      .then((response) => response.json())
+      .then(({ result }) => {
         if (currentValue === value) {
-          const { result } = d;
-          const data = result.map((item: any) => ({
-            value: item[0],
-            text: item[0],
-          }));
+          const data = result.map((item: any) => ({ value: item[0], text: item[0] }));
           callback(data);
         }
       });
@@ -44,7 +44,7 @@ const SearchInput: React.FC<{ placeholder: string; style: React.CSSProperties }>
   const [value, setValue] = useState<string>();
 
   const handleSearch = (newValue: string) => {
-    fetch(newValue, setData);
+    fetchData(newValue, setData);
   };
 
   const handleChange = (newValue: string) => {
@@ -53,14 +53,12 @@ const SearchInput: React.FC<{ placeholder: string; style: React.CSSProperties }>
 
   return (
     <Select
-      showSearch
+      showSearch={{ filterOption: false, onSearch: handleSearch }}
       value={value}
       placeholder={props.placeholder}
       style={props.style}
       defaultActiveFirstOption={false}
       suffixIcon={null}
-      filterOption={false}
-      onSearch={handleSearch}
       onChange={handleChange}
       notFoundContent={null}
       options={(data || []).map((d) => ({

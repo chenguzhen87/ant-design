@@ -1,10 +1,12 @@
 import type * as React from 'react';
 import type {
+  AcceptConfig,
   RcFile as OriRcFile,
   UploadRequestOption as RcCustomRequestOptions,
   UploadProps as RcUploadProps,
-} from 'rc-upload/lib/interface';
+} from '@rc-component/upload/lib/interface';
 
+import type { SemanticClassNamesType, SemanticStylesType } from '../_util/hooks';
 import type { ProgressAriaProps, ProgressProps } from '../progress';
 
 export interface RcFile extends OriRcFile {
@@ -50,9 +52,10 @@ export interface UploadChangeParam<T = UploadFile> {
 }
 
 export interface ShowUploadListInterface<T = any> {
-  showRemoveIcon?: boolean;
-  showPreviewIcon?: boolean;
-  showDownloadIcon?: boolean;
+  extra?: React.ReactNode | ((file: UploadFile<T>) => React.ReactNode);
+  showRemoveIcon?: boolean | ((file: UploadFile<T>) => boolean);
+  showPreviewIcon?: boolean | ((file: UploadFile<T>) => boolean);
+  showDownloadIcon?: boolean | ((file: UploadFile<T>) => boolean);
   removeIcon?: React.ReactNode | ((file: UploadFile<T>) => React.ReactNode);
   downloadIcon?: React.ReactNode | ((file: UploadFile<T>) => React.ReactNode);
   previewIcon?: React.ReactNode | ((file: UploadFile<T>) => React.ReactNode);
@@ -82,12 +85,34 @@ export type ItemRender<T = any> = (
 ) => React.ReactNode;
 
 type PreviewFileHandler = (file: File | Blob) => PromiseLike<string>;
-type TransformFileHandler = (
-  file: RcFile,
-) => string | Blob | File | PromiseLike<string | Blob | File>;
+
 type BeforeUploadValueType = void | boolean | string | Blob | File;
 
-export interface UploadProps<T = any> extends Pick<RcUploadProps, 'capture' | 'hasControlInside'> {
+export type UploadSemanticName = keyof UploadSemanticClassNames & keyof UploadSemanticStyles;
+
+export type UploadSemanticClassNames = {
+  root?: string;
+  list?: string;
+  item?: string;
+  trigger?: string;
+};
+
+export type UploadSemanticStyles = {
+  root?: React.CSSProperties;
+  list?: React.CSSProperties;
+  item?: React.CSSProperties;
+  trigger?: React.CSSProperties;
+};
+
+export type UploadClassNamesType<T = any> = SemanticClassNamesType<
+  UploadProps<T>,
+  UploadSemanticClassNames
+>;
+
+export type UploadStylesType<T = any> = SemanticStylesType<UploadProps<T>, UploadSemanticStyles>;
+
+export interface UploadProps<T = any>
+  extends Pick<RcUploadProps, 'capture' | 'hasControlInside' | 'pastable'> {
   type?: UploadType;
   name?: string;
   defaultFileList?: Array<UploadFile<T>>;
@@ -99,17 +124,19 @@ export interface UploadProps<T = any> extends Pick<RcUploadProps, 'capture' | 'h
     | ((file: UploadFile<T>) => Record<string, unknown> | Promise<Record<string, unknown>>);
   method?: 'POST' | 'PUT' | 'PATCH' | 'post' | 'put' | 'patch';
   headers?: HttpRequestHeader;
-  showUploadList?: boolean | ShowUploadListInterface;
+  showUploadList?: boolean | ShowUploadListInterface<T>;
   multiple?: boolean;
-  accept?: string;
+  accept?: string | AcceptConfig;
   beforeUpload?: (
     file: RcFile,
-    FileList: RcFile[],
+    fileList: RcFile[],
   ) => BeforeUploadValueType | Promise<BeforeUploadValueType>;
   onChange?: (info: UploadChangeParam<UploadFile<T>>) => void;
   onDrop?: (event: React.DragEvent<HTMLDivElement>) => void;
   listType?: UploadListType;
   className?: string;
+  classNames?: UploadClassNamesType<T>;
+  styles?: UploadStylesType<T>;
   rootClassName?: string;
   onPreview?: (file: UploadFile<T>) => void;
   onDownload?: (file: UploadFile<T>) => void;
@@ -118,14 +145,20 @@ export interface UploadProps<T = any> extends Pick<RcUploadProps, 'capture' | 'h
   style?: React.CSSProperties;
   disabled?: boolean;
   prefixCls?: string;
-  customRequest?: (options: RcCustomRequestOptions<T>) => void;
+  customRequest?: (
+    options: RcCustomRequestOptions<T>,
+    info: {
+      /**
+       * @since 5.28.0
+       */
+      defaultRequest: (option: RcCustomRequestOptions<T>) => void;
+    },
+  ) => void;
   withCredentials?: boolean;
   openFileDialogOnClick?: boolean;
   locale?: UploadLocale;
   id?: string;
   previewFile?: PreviewFileHandler;
-  /** @deprecated Please use `beforeUpload` directly */
-  transformFile?: TransformFileHandler;
   iconRender?: (file: UploadFile<T>, listType?: UploadListType) => React.ReactNode;
   isImageUrl?: (file: UploadFile<T>) => boolean;
   progress?: UploadListProgressProps;
@@ -141,6 +174,8 @@ export interface UploadState<T = any> {
 }
 
 export interface UploadListProps<T = any> {
+  classNames?: UploadSemanticClassNames;
+  styles?: UploadSemanticStyles;
   listType?: UploadListType;
   onPreview?: (file: UploadFile<T>) => void;
   onDownload?: (file: UploadFile<T>) => void;
@@ -149,12 +184,13 @@ export interface UploadListProps<T = any> {
   progress?: UploadListProgressProps;
   prefixCls?: string;
   className?: string;
-  showRemoveIcon?: boolean;
-  showDownloadIcon?: boolean;
-  showPreviewIcon?: boolean;
+  showRemoveIcon?: boolean | ((file: UploadFile<T>) => boolean);
+  showDownloadIcon?: boolean | ((file: UploadFile<T>) => boolean);
+  showPreviewIcon?: boolean | ((file: UploadFile<T>) => boolean);
   removeIcon?: React.ReactNode | ((file: UploadFile<T>) => React.ReactNode);
   downloadIcon?: React.ReactNode | ((file: UploadFile<T>) => React.ReactNode);
   previewIcon?: React.ReactNode | ((file: UploadFile<T>) => React.ReactNode);
+  extra?: React.ReactNode | ((file: UploadFile<T>) => React.ReactNode);
   locale: UploadLocale;
   previewFile?: PreviewFileHandler;
   iconRender?: (file: UploadFile<T>, listType?: UploadListType) => React.ReactNode;

@@ -1,16 +1,18 @@
 import React, { useEffect, useRef } from 'react';
-import type { JSONEditorPropsOptional } from 'vanilla-jsoneditor';
-import { JSONEditor, Mode } from 'vanilla-jsoneditor';
+import type { JsonEditor, JSONEditorPropsOptional } from 'vanilla-jsoneditor';
+import { createJSONEditor, Mode } from 'vanilla-jsoneditor';
 
 const Editor: React.FC<JSONEditorPropsOptional> = (props) => {
-  const editorRef = useRef<JSONEditor>(null);
-  const container = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<JsonEditor>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    editorRef.current = new JSONEditor({
-      target: container.current,
-      props: { mode: Mode.text },
-    });
+    if (containerRef.current) {
+      editorRef.current = createJSONEditor({
+        target: containerRef.current,
+        props: { mode: Mode.text },
+      });
+    }
     return () => {
       editorRef.current?.destroy();
     };
@@ -18,9 +20,9 @@ const Editor: React.FC<JSONEditorPropsOptional> = (props) => {
 
   useEffect(() => {
     editorRef.current?.updateProps(props);
-  }, [props.content]);
+  }, [props]);
 
-  return <div ref={container} className="vanilla-jsoneditor-react" />;
+  return <div ref={containerRef} className="vanilla-jsoneditor-react" />;
 };
 
 export default Editor;

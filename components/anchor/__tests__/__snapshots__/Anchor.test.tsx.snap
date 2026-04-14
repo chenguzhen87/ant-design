@@ -1,12 +1,14 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Anchor Render render items and ignore jsx children 1`] = `
-<div>
+<div
+  class=""
+>
   <div
     class=""
   >
     <div
-      class="ant-anchor-wrapper"
+      class="css-var-root ant-anchor-css-var ant-anchor-wrapper"
       style="max-height: 100vh;"
     >
       <div
@@ -20,7 +22,7 @@ exports[`Anchor Render render items and ignore jsx children 1`] = `
         >
           <a
             class="ant-anchor-link-title"
-            href="#components-anchor-demo-basic"
+            href="#anchor-demo-basic"
             title="Item Basic Demo"
           >
             Item Basic Demo
@@ -33,12 +35,14 @@ exports[`Anchor Render render items and ignore jsx children 1`] = `
 `;
 
 exports[`Anchor Render renders items correctly 1`] = `
-<div>
+<div
+  class=""
+>
   <div
     class=""
   >
     <div
-      class="ant-anchor-wrapper"
+      class="css-var-root ant-anchor-css-var ant-anchor-wrapper"
       style="max-height: 100vh;"
     >
       <div
@@ -52,7 +56,7 @@ exports[`Anchor Render renders items correctly 1`] = `
         >
           <a
             class="ant-anchor-link-title"
-            href="#components-anchor-demo-basic"
+            href="#anchor-demo-basic"
             title="Item Basic Demo"
           >
             Item Basic Demo
@@ -63,7 +67,7 @@ exports[`Anchor Render renders items correctly 1`] = `
         >
           <a
             class="ant-anchor-link-title"
-            href="#components-anchor-demo-static"
+            href="#anchor-demo-static"
             title="Static demo"
           >
             Static demo
@@ -109,12 +113,14 @@ exports[`Anchor Render renders items correctly 1`] = `
 `;
 
 exports[`Anchor Render renders items correctly#horizontal 1`] = `
-<div>
+<div
+  class=""
+>
   <div
     class=""
   >
     <div
-      class="ant-anchor-wrapper"
+      class="css-var-root ant-anchor-css-var ant-anchor-wrapper"
       style="max-height: 100vh;"
     >
       <div
@@ -128,7 +134,7 @@ exports[`Anchor Render renders items correctly#horizontal 1`] = `
         >
           <a
             class="ant-anchor-link-title"
-            href="#components-anchor-demo-basic"
+            href="#anchor-demo-basic"
             title="Item Basic Demo"
           >
             Item Basic Demo
@@ -139,7 +145,7 @@ exports[`Anchor Render renders items correctly#horizontal 1`] = `
         >
           <a
             class="ant-anchor-link-title"
-            href="#components-anchor-demo-static"
+            href="#anchor-demo-static"
             title="Static demo"
           >
             Static demo
@@ -156,6 +162,29 @@ exports[`Anchor Render renders items correctly#horizontal 1`] = `
             API
           </a>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Anchor Render rtl render component should be rendered correctly in RTL direction 1`] = `
+<div
+  class=""
+>
+  <div
+    class=""
+  >
+    <div
+      class="css-var-root ant-anchor-css-var ant-anchor-wrapper ant-anchor-rtl"
+      style="max-height: 100vh;"
+    >
+      <div
+        class="ant-anchor"
+      >
+        <span
+          class="ant-anchor-ink"
+        />
       </div>
     </div>
   </div>

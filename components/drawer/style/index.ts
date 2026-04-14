@@ -1,3 +1,4 @@
+import type { CSSObject } from '@ant-design/cssinjs';
 import { unit } from '@ant-design/cssinjs';
 
 import { genFocusStyle } from '../../style';
@@ -21,12 +22,17 @@ export interface ComponentToken {
    * @descEN Horizontal padding of footer
    */
   footerPaddingInline: number;
+  /**
+   * @desc 拖拽手柄大小
+   * @descEN Size of resize handle
+   */
+  draggerSize: number;
 }
 
 export interface DrawerToken extends FullToken<'Drawer'> {}
 
 // =============================== Base ===============================
-const genDrawerStyle: GenerateStyle<DrawerToken> = (token) => {
+const genDrawerStyle: GenerateStyle<DrawerToken, CSSObject> = (token) => {
   const {
     borderRadiusSM,
     componentCls,
@@ -52,10 +58,12 @@ const genDrawerStyle: GenerateStyle<DrawerToken> = (token) => {
     fontWeightStrong,
     footerPaddingBlock,
     footerPaddingInline,
+    draggerSize,
     calc,
   } = token;
 
   const wrapperCls = `${componentCls}-content-wrapper`;
+  const draggerCls = `${componentCls}-resizable-dragger`;
 
   return {
     [componentCls]: {
@@ -63,12 +71,14 @@ const genDrawerStyle: GenerateStyle<DrawerToken> = (token) => {
       inset: 0,
       zIndex: zIndexPopup,
       pointerEvents: 'none',
+      color: colorText,
 
       '&-pure': {
         position: 'relative',
         background: colorBgElevated,
         display: 'flex',
         flexDirection: 'column',
+        pointerEvents: 'auto',
 
         [`&${componentCls}-left`]: {
           boxShadow: token.boxShadowDrawerLeft,
@@ -95,6 +105,10 @@ const genDrawerStyle: GenerateStyle<DrawerToken> = (token) => {
         zIndex: zIndexPopup,
         background: colorBgMask,
         pointerEvents: 'auto',
+
+        [`&${componentCls}-mask-blur`]: {
+          backdropFilter: 'blur(4px)',
+        },
       },
 
       // ==================== Content =====================
@@ -139,7 +153,7 @@ const genDrawerStyle: GenerateStyle<DrawerToken> = (token) => {
         boxShadow: token.boxShadowDrawerDown,
       },
 
-      [`${componentCls}-content`]: {
+      [`${componentCls}-section`]: {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
@@ -147,13 +161,6 @@ const genDrawerStyle: GenerateStyle<DrawerToken> = (token) => {
         overflow: 'auto',
         background: colorBgElevated,
         pointerEvents: 'auto',
-        [`${componentCls}-content-spin`]: {
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
       },
 
       // Header
@@ -186,7 +193,6 @@ const genDrawerStyle: GenerateStyle<DrawerToken> = (token) => {
         borderRadius: borderRadiusSM,
         justifyContent: 'center',
         alignItems: 'center',
-        marginInlineEnd: marginXS,
         color: colorIcon,
         fontWeight: fontWeightStrong,
         fontSize: fontSizeLG,
@@ -200,6 +206,13 @@ const genDrawerStyle: GenerateStyle<DrawerToken> = (token) => {
         cursor: 'pointer',
         transition: `all ${motionDurationMid}`,
         textRendering: 'auto',
+
+        [`&${componentCls}-close-end`]: {
+          marginInlineStart: marginXS,
+        },
+        [`&:not(${componentCls}-close-end)`]: {
+          marginInlineEnd: marginXS,
+        },
 
         '&:hover': {
           color: colorIconHover,
@@ -217,7 +230,6 @@ const genDrawerStyle: GenerateStyle<DrawerToken> = (token) => {
       [`${componentCls}-title`]: {
         flex: 1,
         margin: 0,
-        color: colorText,
         fontWeight: token.fontWeightStrong,
         fontSize: fontSizeLG,
         lineHeight: lineHeightLG,
@@ -230,6 +242,12 @@ const genDrawerStyle: GenerateStyle<DrawerToken> = (token) => {
         minHeight: 0,
         padding: paddingLG,
         overflow: 'auto',
+        [`${componentCls}-body-skeleton`]: {
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+        },
       },
 
       // Footer
@@ -237,6 +255,76 @@ const genDrawerStyle: GenerateStyle<DrawerToken> = (token) => {
         flexShrink: 0,
         padding: `${unit(footerPaddingBlock)} ${unit(footerPaddingInline)}`,
         borderTop: `${unit(lineWidth)} ${lineType} ${colorSplit}`,
+      },
+
+      // ==================== Resizable ===================
+      [draggerCls]: {
+        position: 'absolute',
+        zIndex: 1,
+        backgroundColor: 'transparent',
+        userSelect: 'none',
+        pointerEvents: 'auto',
+
+        '&:hover': {
+          backgroundColor: token.colorPrimary,
+          opacity: 0.2,
+        },
+
+        '&-dragging': {
+          backgroundColor: token.colorPrimary,
+          opacity: 0.3,
+        },
+      },
+
+      [`${draggerCls}-left`]: {
+        top: 0,
+        bottom: 0,
+        right: {
+          _skip_check_: true,
+          value: 0,
+        },
+        width: draggerSize,
+        cursor: 'col-resize',
+      },
+
+      [`${draggerCls}-right`]: {
+        top: 0,
+        bottom: 0,
+        left: {
+          _skip_check_: true,
+          value: 0,
+        },
+        width: draggerSize,
+        cursor: 'col-resize',
+      },
+
+      [`${draggerCls}-top`]: {
+        insetInline: 0,
+        bottom: 0,
+        height: draggerSize,
+        cursor: 'row-resize',
+      },
+
+      [`${draggerCls}-bottom`]: {
+        insetInline: 0,
+        top: 0,
+        height: draggerSize,
+        cursor: 'row-resize',
+      },
+
+      // Wrapper dragging state - disable transitions for smooth dragging
+      [`${wrapperCls}-dragging`]: {
+        userSelect: 'none',
+        transition: 'none',
+        willChange: 'width, height',
+
+        [`${componentCls}-content`]: {
+          pointerEvents: 'none',
+        },
+
+        [`${componentCls}-section`]: {
+          pointerEvents: 'none',
+        },
       },
 
       // ====================== RTL =======================
@@ -251,6 +339,7 @@ export const prepareComponentToken: GetDefaultToken<'Drawer'> = (token) => ({
   zIndexPopup: token.zIndexPopupBase,
   footerPaddingBlock: token.paddingXS,
   footerPaddingInline: token.padding,
+  draggerSize: 4,
 });
 
 // ============================== Export ==============================

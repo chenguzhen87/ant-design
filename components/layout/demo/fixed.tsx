@@ -3,7 +3,7 @@ import { Breadcrumb, Layout, Menu, theme } from 'antd';
 
 const { Header, Content, Footer } = Layout;
 
-const items = new Array(3).fill(null).map((_, index) => ({
+const items = Array.from({ length: 3 }).map((_, index) => ({
   key: String(index + 1),
   label: `nav ${index + 1}`,
 }));
@@ -12,6 +12,8 @@ const App: React.FC = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  const currentYear = new Date().getFullYear();
 
   return (
     <Layout>
@@ -35,11 +37,10 @@ const App: React.FC = () => {
         />
       </Header>
       <Content style={{ padding: '0 48px' }}>
-        <Breadcrumb style={{ margin: '16px 0' }}>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
-          <Breadcrumb.Item>List</Breadcrumb.Item>
-          <Breadcrumb.Item>App</Breadcrumb.Item>
-        </Breadcrumb>
+        <Breadcrumb
+          style={{ margin: '16px 0' }}
+          items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
+        />
         <div
           style={{
             padding: 24,
@@ -51,9 +52,7 @@ const App: React.FC = () => {
           Content
         </div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>
-        Ant Design ©{new Date().getFullYear()} Created by Ant UED
-      </Footer>
+      <Footer style={{ textAlign: 'center' }}>Ant Design ©{currentYear} Created by Ant UED</Footer>
     </Layout>
   );
 };

@@ -1,18 +1,39 @@
 import React, { useMemo } from 'react';
 import type { MenuProps } from 'antd';
-import { Tag, version } from 'antd';
-import { createStyles } from 'antd-style';
-import classnames from 'classnames';
+import { Flex, Tag, version } from 'antd';
+import { createStaticStyles } from 'antd-style';
+import { clsx } from 'clsx';
 import { useFullSidebarData, useSidebarData } from 'dumi';
 
 import Link from '../theme/common/Link';
+import useLocale from './useLocale';
 import useLocation from './useLocation';
 
-function isVersionNumber(value?: string) {
-  return value && /^\d+\.\d+\.\d+$/.test(value);
-}
+const locales = {
+  cn: {
+    deprecated: '废弃',
+    updated: '更新',
+    new: '新增',
+  },
+  en: {
+    deprecated: 'DEPRECATED',
+    updated: 'UPDATED',
+    new: 'NEW',
+  },
+};
 
-const useStyle = createStyles(({ css, token }) => ({
+const getTagColor = (val?: string) => {
+  switch (val?.toUpperCase()) {
+    case 'UPDATED':
+      return 'processing';
+    case 'DEPRECATED':
+      return 'red';
+    default:
+      return 'success';
+  }
+};
+
+const styles = createStaticStyles(({ css, cssVar }) => ({
   link: css`
     display: flex;
     align-items: center;
@@ -22,10 +43,10 @@ const useStyle = createStyles(({ css, token }) => ({
     margin-inline-end: 0;
   `,
   subtitle: css`
-    margin-inline-start: ${token.marginXS}px;
     font-weight: normal;
-    font-size: ${token.fontSizeSM}px;
+    font-size: ${cssVar.fontSizeSM};
     opacity: 0.8;
+    margin-inline-start: ${cssVar.marginSM};
   `,
 }));
 
@@ -41,22 +62,24 @@ interface MenuItemLabelProps {
 }
 
 const MenuItemLabelWithTag: React.FC<MenuItemLabelProps> = (props) => {
-  const { styles } = useStyle();
   const { before, after, link, title, subtitle, search, tag, className } = props;
+
+  const [locale] = useLocale(locales);
+
+  const getLocale = (name: string) => {
+    return (locale as any)[name.toLowerCase()] ?? name;
+  };
+
   if (!before && !after) {
     return (
-      <Link to={`${link}${search}`} className={classnames(className, { [styles.link]: tag })}>
-        <span>
-          {title}
+      <Link to={`${link}${search}`} className={clsx(className, { [styles.link]: tag })}>
+        <Flex justify="flex-start" align="center">
+          <span>{title}</span>
           {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
-        </span>
+        </Flex>
         {tag && (
-          <Tag
-            bordered={false}
-            className={classnames(styles.tag)}
-            color={isVersionNumber(tag) || tag === 'New' ? 'success' : 'processing'}
-          >
-            {tag.replace('VERSION', version)}
+          <Tag variant="filled" className={clsx(styles.tag)} color={getTagColor(tag)}>
+            {getLocale(tag.replace(/VERSION/i, version))}
           </Tag>
         )}
       </Link>
@@ -209,7 +232,7 @@ const useMenu = (options: UseMenuOptions = {}): readonly [MenuProps['items'], st
         return result;
       }, []) ?? []
     );
-  }, [sidebarData, fullData, pathname, search, options]);
+  }, [sidebarData, pathname, fullData, search, before, after]);
 
   return [menuItems, pathname] as const;
 };

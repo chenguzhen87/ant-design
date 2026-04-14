@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/tr_TR';
+import Pagination from '@rc-component/pagination/lib/locale/tr_TR';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/tr_TR';
@@ -16,12 +15,14 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'Lütfen seçiniz',
+    close: 'Kapat',
   },
   Table: {
     filterTitle: 'Filtre menüsü',
     filterConfirm: 'Tamam',
     filterReset: 'Sıfırla',
     filterEmptyText: 'Filtre yok',
+    filterCheckAll: 'Tümünü seç',
     selectAll: 'Tüm sayfayı seç',
     selectInvert: 'Tersini seç',
     selectionAll: 'Tümünü seç',
@@ -31,6 +32,11 @@ const localeValues: Locale = {
     triggerDesc: 'Azalan düzende sırala',
     triggerAsc: 'Artan düzende sırala',
     cancelSort: 'Sıralamayı kaldır',
+  },
+  Tour: {
+    Next: 'Sonraki',
+    Previous: 'Önceki',
+    Finish: 'Bitir',
   },
   Modal: {
     okText: 'Tamam',
@@ -50,6 +56,7 @@ const localeValues: Locale = {
     selectCurrent: 'Tüm sayfayı seç',
     removeCurrent: 'Sayfayı kaldır',
     selectAll: 'Tümünü seç',
+    deselectAll: 'Tümünün seçimini kaldır',
     removeAll: 'Tümünü kaldır',
     selectInvert: 'Tersini seç',
   },
@@ -71,6 +78,7 @@ const localeValues: Locale = {
     copy: 'Kopyala',
     copied: 'Kopyalandı',
     expand: 'Genişlet',
+    collapse: 'Daralt',
   },
   Form: {
     optional: '(opsiyonel)',
@@ -121,9 +129,6 @@ const localeValues: Locale = {
         mismatch: '${label} şu kalıpla eşleşmeli: ${pattern}',
       },
     },
-  },
-  Image: {
-    preview: 'Önizleme',
   },
 };
 

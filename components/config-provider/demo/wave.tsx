@@ -1,6 +1,6 @@
 import React from 'react';
 import { HappyProvider } from '@ant-design/happy-work-theme';
-import { Button, ConfigProvider, Space } from 'antd';
+import { Button, ConfigProvider, Flex } from 'antd';
 import type { ConfigProviderProps, GetProp } from 'antd';
 
 type WaveConfig = GetProp<ConfigProviderProps, 'wave'>;
@@ -8,7 +8,7 @@ type WaveConfig = GetProp<ConfigProviderProps, 'wave'>;
 // Prepare effect holder
 const createHolder = (node: HTMLElement) => {
   const { borderWidth } = getComputedStyle(node);
-  const borderWidthNum = parseInt(borderWidth, 10);
+  const borderWidthNum = Number.parseInt(borderWidth, 10);
 
   const div = document.createElement('div');
   div.style.position = 'absolute';
@@ -23,25 +23,18 @@ const createHolder = (node: HTMLElement) => {
   return div;
 };
 
-const createDot = (
-  holder: HTMLElement,
-  color: string,
-  left: number,
-  top: number,
-  size: number = 0,
-) => {
+const createDot = (holder: HTMLElement, color: string, left: number, top: number, size = 0) => {
   const dot = document.createElement('div');
   dot.style.position = 'absolute';
-  dot.style.left = `${left}px`;
+  dot.style.insetInlineStart = `${left}px`;
   dot.style.top = `${top}px`;
   dot.style.width = `${size}px`;
   dot.style.height = `${size}px`;
   dot.style.borderRadius = '50%';
   dot.style.background = color;
-  dot.style.transform = 'translate(-50%, -50%)';
-  dot.style.transition = `all 1s ease-out`;
+  dot.style.transform = 'translate3d(-50%, -50%, 0)';
+  dot.style.transition = 'all 1s ease-out';
   holder.appendChild(dot);
-
   return dot;
 };
 
@@ -83,7 +76,7 @@ const showShakeEffect: WaveConfig['showEffect'] = (node, { component }) => {
 
   let steps = 0;
 
-  function loop() {
+  const loop = () => {
     cancelAnimationFrame((node as any).effectTimeout);
 
     (node as any).effectTimeout = requestAnimationFrame(() => {
@@ -91,7 +84,7 @@ const showShakeEffect: WaveConfig['showEffect'] = (node, { component }) => {
       const current = seq[currentStep];
       const next = seq[currentStep + 1];
 
-      if (!next) {
+      if (next === undefined || next === null) {
         node.style.transform = '';
         node.style.transition = '';
         return;
@@ -106,20 +99,20 @@ const showShakeEffect: WaveConfig['showEffect'] = (node, { component }) => {
       steps += 1;
       loop();
     });
-  }
+  };
 
   loop();
 };
 
 // Component
-const Wrapper = ({ name, ...wave }: WaveConfig & { name: string }) => (
+const Wrapper: React.FC<WaveConfig & { name: string }> = ({ name, ...wave }) => (
   <ConfigProvider wave={wave}>
     <Button type="primary">{name}</Button>
   </ConfigProvider>
 );
 
-const App = () => (
-  <Space style={{ padding: 24 }} size="large">
+const Demo: React.FC = () => (
+  <Flex gap="large" wrap>
     <Wrapper name="Disabled" disabled />
     <Wrapper name="Default" />
     <Wrapper name="Inset" showEffect={showInsetEffect} />
@@ -127,7 +120,7 @@ const App = () => (
     <HappyProvider>
       <Button type="primary">Happy Work</Button>
     </HappyProvider>
-  </Space>
+  </Flex>
 );
 
-export default App;
+export default Demo;

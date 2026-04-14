@@ -1,58 +1,55 @@
 import type { MouseEvent, MouseEventHandler } from 'react';
-import React, { forwardRef, useLayoutEffect, useTransition } from 'react';
-import { useLocation, useNavigate } from 'dumi';
-import nprogress from 'nprogress';
+import React, { useMemo } from 'react';
+import { Link as DumiLink, useAppData, useLocation, useNavigate } from 'dumi';
 
 export interface LinkProps {
   to: string | { pathname?: string; search?: string; hash?: string };
   style?: React.CSSProperties;
   className?: string;
   onClick?: MouseEventHandler;
+  component?: React.ComponentType<any>;
+  ref?: React.Ref<HTMLAnchorElement>;
 }
 
-nprogress.configure({ showSpinner: false });
-
-const Link = forwardRef<HTMLAnchorElement, React.PropsWithChildren<LinkProps>>((props, ref) => {
-  const { to, children, ...rest } = props;
-  const [isPending, startTransition] = useTransition();
-  const navigate = useNavigate();
+const Link: React.FC<React.PropsWithChildren<LinkProps>> = (props) => {
+  const { component, children, to, ref, ...rest } = props;
   const { pathname } = useLocation();
-
-  const href = React.useMemo<string>(() => {
+  const { preloadRoute } = useAppData();
+  const navigate = useNavigate();
+  const href = useMemo<string>(() => {
     if (typeof to === 'object') {
       return `${to.pathname || pathname}${to.search || ''}${to.hash || ''}`;
     }
     return to;
-  }, [to]);
-
-  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
-    props.onClick?.(e);
+  }, [pathname, to]);
+  const onClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    rest.onClick?.(e);
     if (!href?.startsWith('http')) {
       // Should support open in new tab
       if (!e.metaKey && !e.ctrlKey && !e.shiftKey) {
         e.preventDefault();
-        startTransition(() => {
-          if (href) {
-            navigate(href);
-          }
-        });
+        navigate(href);
       }
     }
   };
-
-  useLayoutEffect(() => {
-    if (isPending) {
-      nprogress.start();
-    } else {
-      nprogress.done();
-    }
-  }, [isPending]);
-
+  if (component) {
+    return React.createElement(
+      component,
+      {
+        ...rest,
+        ref,
+        href,
+        onClick,
+        onMouseEnter: () => preloadRoute?.(href),
+      },
+      children,
+    );
+  }
   return (
-    <a ref={ref} onClick={handleClick} {...rest} href={href}>
+    <DumiLink ref={ref} {...rest} to={href} prefetch>
       {children}
-    </a>
+    </DumiLink>
   );
-});
+};
 
 export default Link;

@@ -10,7 +10,7 @@ Ant Design React is dedicated to providing a **good development experience** for
 
 The official guide also assumes that you have intermediate knowledge about HTML, CSS, and JavaScript, and React. If you are just starting to learn front-end or React, it may not be the best idea to use the UI framework as your first step.
 
-Finally, if you are working in a local development environment, please refer to [Use with create-react-app](/docs/react/use-with-create-react-app).
+Finally, if you are working in a local development environment, please refer to [Scaffolding Guide](https://u.ant.design/guide) to create a new project.
 
 ---
 
@@ -18,32 +18,14 @@ Finally, if you are working in a local development environment, please refer to 
 
 Here is a simple online codesandbox demo of an Ant Design component to show the usage of Ant Design React.
 
-```sandpack
-const sandpackConfig = {
-  autorun: true,
-};
-
-import React from 'react';
-import { Button, Space, DatePicker, version } from 'antd';
-
-const App = () => (
-  <div style={{ padding: '0 24px' }}>
-    <h1>antd version: {version}</h1>
-    <Space>
-      <DatePicker />
-      <Button type="primary">Primary Button</Button>
-    </Space>
-  </div>
-);
-
-export default App;
-```
+<!-- prettier-ignore -->
+<code src="./demo/first-example.tsx">First Example</code>
 
 Follow the steps below to play around with Ant Design yourself:
 
 ### 1. Create a codesandbox
 
-Visit https://u.ant.design/codesandbox-repro to create a codesandbox -- don't forget to press the save button as well to create a new instance.
+Visit https://u.ant.design/reproduce to create a codesandbox -- don't forget to press the save button as well to create a new instance.
 
 ### 2. Use and modify an antd component
 
@@ -96,7 +78,7 @@ Now add the following jsx inside the `render` function.
   <DatePicker onChange={value => this.handleChange(value)} />
   <div style={{ marginTop: 20 }}>
 -   Selected Date: {date ? date.format('YYYY-MM-DD') : 'None'}
-+   <Alert message="Selected Date" description={date ? date.format('YYYY-MM-DD') : 'None'} />
++   <Alert title="Selected Date" description={date ? date.format('YYYY-MM-DD') : 'None'} />
   </div>
 ```
 

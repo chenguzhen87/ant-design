@@ -1,4 +1,4 @@
-import raf from 'rc-util/lib/raf';
+import raf from '@rc-component/util/lib/raf';
 
 import { easeInOutCubic } from './easings';
 import getScroll, { isWindow } from './getScroll';
@@ -15,8 +15,10 @@ interface ScrollToOptions {
 export default function scrollTo(y: number, options: ScrollToOptions = {}) {
   const { getContainer = () => window, callback, duration = 450 } = options;
   const container = getContainer();
-  const scrollTop = getScroll(container, true);
+  const scrollTop = getScroll(container);
   const startTime = Date.now();
+
+  let rafId: number;
 
   const frameFunc = () => {
     const timestamp = Date.now();
@@ -30,10 +32,14 @@ export default function scrollTo(y: number, options: ScrollToOptions = {}) {
       (container as HTMLElement).scrollTop = nextScrollTop;
     }
     if (time < duration) {
-      raf(frameFunc);
+      rafId = raf(frameFunc);
     } else if (typeof callback === 'function') {
       callback();
     }
   };
-  raf(frameFunc);
+  rafId = raf(frameFunc);
+
+  return () => {
+    raf.cancel(rafId);
+  };
 }

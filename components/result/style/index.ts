@@ -29,8 +29,8 @@ export interface ComponentToken {
 }
 
 interface ResultToken extends FullToken<'Result'> {
-  imageWidth: number;
-  imageHeight: number;
+  imageWidth: number | string;
+  imageHeight: number | string;
   resultInfoIconColor: string;
   resultSuccessIconColor: string;
   resultWarningIconColor: string;
@@ -38,7 +38,7 @@ interface ResultToken extends FullToken<'Result'> {
 }
 
 // ============================== Styles ==============================
-const genBaseStyle: GenerateStyle<ResultToken> = (token): CSSObject => {
+const genBaseStyle: GenerateStyle<ResultToken, CSSObject> = (token) => {
   const {
     componentCls,
     lineHeightHeading3,
@@ -93,7 +93,7 @@ const genBaseStyle: GenerateStyle<ResultToken> = (token): CSSObject => {
       textAlign: 'center',
     },
 
-    [`${componentCls} ${componentCls}-content`]: {
+    [`${componentCls} ${componentCls}-body`]: {
       marginTop: paddingLG,
       padding: `${unit(paddingLG)} ${unit(token.calc(padding).mul(2.5).equal())}`,
       backgroundColor: token.colorFillAlter,
@@ -114,9 +114,8 @@ const genBaseStyle: GenerateStyle<ResultToken> = (token): CSSObject => {
   };
 };
 
-const genStatusIconStyle: GenerateStyle<ResultToken> = (token) => {
+const genStatusIconStyle: GenerateStyle<ResultToken, CSSObject> = (token) => {
   const { componentCls, iconCls } = token;
-
   return {
     [`${componentCls}-success ${componentCls}-icon > ${iconCls}`]: {
       color: token.resultSuccessIconColor,
@@ -137,8 +136,6 @@ const genResultStyle: GenerateStyle<ResultToken> = (token) => [
   genBaseStyle(token),
   genStatusIconStyle(token),
 ];
-
-const getStyle: GenerateStyle<ResultToken> = (token) => genResultStyle(token);
 
 // ============================== Export ==============================
 export const prepareComponentToken: GetDefaultToken<'Result'> = (token) => ({
@@ -164,8 +161,7 @@ export default genStyleHooks(
       imageWidth: 250,
       imageHeight: 295,
     });
-
-    return [getStyle(resultToken)];
+    return genResultStyle(resultToken);
   },
   prepareComponentToken,
 );

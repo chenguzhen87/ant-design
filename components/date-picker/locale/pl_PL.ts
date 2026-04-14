@@ -1,4 +1,4 @@
-import CalendarLocale from 'rc-picker/lib/locale/pl_PL';
+import CalendarLocale from '@rc-component/picker/locale/pl_PL';
 
 import TimePickerLocale from '../../time-picker/locale/pl_PL';
 import type { PickerLocale } from '../generatePicker';
@@ -8,6 +8,24 @@ const locale: PickerLocale = {
   lang: {
     placeholder: 'Wybierz datę',
     rangePlaceholder: ['Data początkowa', 'Data końcowa'],
+    yearFormat: 'YYYY',
+    monthFormat: 'MMMM',
+    monthBeforeYear: true,
+    shortWeekDays: ['Niedz', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob'],
+    shortMonths: [
+      'Sty',
+      'Lut',
+      'Mar',
+      'Kwi',
+      'Maj',
+      'Cze',
+      'Lip',
+      'Sie',
+      'Wrz',
+      'Paź',
+      'Lis',
+      'Gru',
+    ],
     ...CalendarLocale,
   },
   timePickerLocale: {

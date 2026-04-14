@@ -13,7 +13,7 @@ You might want to use another date library (**Ant design currently supports [mom
 
 The first way is to use `generatePicker` (or `generateCalendar`) to help create Picker components.
 
-First, we initialize an antd demo with `create-react-app`. You can refer to [Usage with create-react-app](/docs/react/use-with-create-react-app), or you can start directly here [init antd](https://github.com/xiaohuoni/antd4-generate-picker/commit/47fec964e36d48bd15760f8f5abcb9655c259aa6)
+First, we initialize an antd demo. You can refer to [Scaffolding Guide](https://u.ant.design/guide), or you can start directly here [init antd](https://github.com/xiaohuoni/antd4-generate-picker/commit/47fec964e36d48bd15760f8f5abcb9655c259aa6)
 
 ### DatePicker.tsx
 
@@ -22,9 +22,9 @@ Create `src/components/DatePicker.tsx`.
 For example:
 
 ```tsx
+import momentGenerateConfig from '@rc-component/picker/generate/moment';
 import { DatePicker } from 'antd';
 import type { Moment } from 'moment';
-import momentGenerateConfig from 'rc-picker/lib/generate/moment';
 
 const MyDatePicker = DatePicker.generatePicker<Moment>(momentGenerateConfig);
 
@@ -62,9 +62,9 @@ Create `src/components/Calendar.tsx`.
 For example:
 
 ```tsx
+import momentGenerateConfig from '@rc-component/picker/generate/moment';
 import { Calendar } from 'antd';
 import type { Moment } from 'moment';
-import momentGenerateConfig from 'rc-picker/es/generate/moment';
 
 const MyCalendar = Calendar.generateCalendar<Moment>(momentGenerateConfig);
 
@@ -122,8 +122,8 @@ Create `src/components/DatePicker.tsx`.
 Code as follows:
 
 ```tsx
+import dateFnsGenerateConfig from '@rc-component/picker/generate/dateFns';
 import { DatePicker } from 'antd';
-import dateFnsGenerateConfig from 'rc-picker/lib/generate/dateFns';
 
 const MyDatePicker = DatePicker.generatePicker<Date>(dateFnsGenerateConfig);
 
@@ -139,9 +139,9 @@ Since `antd 5.4.0`, [luxon](https://moment.github.io/luxon/) can be used instead
 Create a `src/components/DatePicker.tsx` file, and implement the luxon based picker as follows:
 
 ```tsx
+import luxonGenerateConfig from '@rc-component/picker/generate/luxon';
 import { DatePicker } from 'antd';
 import type { DateTime } from 'luxon';
-import luxonGenerateConfig from 'rc-picker/lib/generate/luxon';
 
 const MyDatePicker = DatePicker.generatePicker<DateTime>(luxonGenerateConfig);
 
@@ -162,9 +162,9 @@ This introduces some formatting differences with the other date libraries. As of
 It is possible to customize these default luxon behaviors by adjusting the luxon config:
 
 ```tsx
+import luxonGenerateConfig from '@rc-component/picker/generate/luxon';
 import { DatePicker } from 'antd';
 import type { DateTime } from 'luxon';
-import luxonGenerateConfig from 'rc-picker/lib/generate/luxon';
 
 const customLuxonConfig = {
   ...luxonGenerateConfig,

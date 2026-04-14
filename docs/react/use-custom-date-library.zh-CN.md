@@ -11,7 +11,7 @@ Ant Design 默认使用 [Day.js](https://day.js.org) 来处理时间日期问题
 
 第一种方法是使用 `generatePicker`（或 `generateCalendar`）辅助创建 Picker 组件。
 
-我们先初始化一个 `create-react-app` 的 antd demo，你可以参考 [在 create-react-app 中使用](/docs/react/use-with-create-react-app-cn) 进行构建，也可以直接从这里开始[init antd](https://github.com/xiaohuoni/antd4-generate-picker/commit/47fec964e36d48bd15760f8f5abcb9655c259aa6)
+我们先初始化一个 antd demo，你可以参考 [脚手架指南](https://u.ant.design/guide) 进行构建，也可以直接从这里开始[init antd](https://github.com/xiaohuoni/antd4-generate-picker/commit/47fec964e36d48bd15760f8f5abcb9655c259aa6)
 
 ### DatePicker.tsx
 
@@ -20,9 +20,9 @@ Ant Design 默认使用 [Day.js](https://day.js.org) 来处理时间日期问题
 编写如下代码:
 
 ```tsx
+import momentGenerateConfig from '@rc-component/picker/generate/moment';
 import { DatePicker } from 'antd';
 import type { Moment } from 'moment';
-import momentGenerateConfig from 'rc-picker/lib/generate/moment';
 
 const MyDatePicker = DatePicker.generatePicker<Moment>(momentGenerateConfig);
 
@@ -60,9 +60,9 @@ export default TimePicker;
 编写如下代码:
 
 ```tsx
+import momentGenerateConfig from '@rc-component/picker/generate/moment';
 import { Calendar } from 'antd';
 import type { Moment } from 'moment';
-import momentGenerateConfig from 'rc-picker/es/generate/moment';
 
 const MyCalendar = Calendar.generateCalendar<Moment>(momentGenerateConfig);
 
@@ -120,8 +120,8 @@ module.exports = {
 编写如下代码:
 
 ```tsx
+import dateFnsGenerateConfig from '@rc-component/picker/generate/dateFns';
 import { DatePicker } from 'antd';
-import dateFnsGenerateConfig from 'rc-picker/es/generate/dateFns';
 
 const MyDatePicker = DatePicker.generatePicker<Date>(dateFnsGenerateConfig);
 
@@ -137,9 +137,9 @@ export default MyDatePicker;
 创建一个 `DatePicker.tsx` 文件，并定义一个基于 luxon 的 DatePicker 组件：
 
 ```tsx
+import luxonGenerateConfig from '@rc-component/picker/generate/luxon';
 import { DatePicker } from 'antd';
 import type { DateTime } from 'luxon';
-import luxonGenerateConfig from 'rc-picker/lib/generate/luxon';
 
 const MyDatePicker = DatePicker.generatePicker<DateTime>(luxonGenerateConfig);
 
@@ -160,9 +160,9 @@ luxon 用户应该悉知，它本身没有 local 的实现。相反，它依赖�
 可以通过调整 luxon 配置来自定义这些默认的 luxon 行为：
 
 ```tsx
+import luxonGenerateConfig from '@rc-component/picker/generate/luxon';
 import { DatePicker } from 'antd';
 import type { DateTime } from 'luxon';
-import luxonGenerateConfig from 'rc-picker/lib/generate/luxon';
 
 const customLuxonConfig = {
   ...luxonGenerateConfig,

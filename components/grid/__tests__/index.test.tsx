@@ -3,8 +3,22 @@ import React, { useState } from 'react';
 import { Col, Row } from '..';
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
-import { act, fireEvent, render } from '../../../tests/utils';
+import { fireEvent, render } from '../../../tests/utils';
 import useBreakpoint from '../hooks/useBreakpoint';
+
+const createImplFn = (value: string | number) => {
+  return (query: string) => {
+    return {
+      matches: query === value,
+      addEventListener: (type: string, cb: (e: { matches: boolean }) => void) => {
+        if (type === 'change') {
+          cb({ matches: query === value });
+        }
+      },
+      removeEventListener: jest.fn(),
+    };
+  };
+};
 
 // Mock for `responsiveObserve` to test `unsubscribe` call
 jest.mock('../../_util/responsiveObserver', () => {
@@ -56,9 +70,15 @@ describe('Grid', () => {
   });
 
   it('when typeof gutter is object', () => {
-    const { container } = render(<Row gutter={{ xs: 8, sm: 16, md: 24 }} />);
-    expect(container.querySelector('div')!.style.marginLeft).toEqual('-4px');
-    expect(container.querySelector('div')!.style.marginRight).toEqual('-4px');
+    const { container, unmount } = render(<Row gutter={{ xs: 8, sm: 16, md: 24 }}>test</Row>);
+    expect(container.querySelector('div')).toHaveStyle({ marginInline: '-4px' });
+    unmount();
+  });
+
+  it('should work correct when gutter is object', () => {
+    const { container, unmount } = render(<Row gutter={{ xs: 20 }}>test</Row>);
+    expect(container.querySelector('div')).toHaveStyle({ marginInline: '-10px' });
+    unmount();
   });
 
   it('when typeof gutter is object array', () => {
@@ -70,22 +90,11 @@ describe('Grid', () => {
         ]}
       />,
     );
-    expect(container.querySelector('div')!.style.marginLeft).toEqual('-4px');
-    expect(container.querySelector('div')!.style.marginRight).toEqual('-4px');
+    expect(container.querySelector('div')).toHaveStyle({ marginInline: '-4px' });
   });
 
-  it('when typeof gutter is object array in large screen', () => {
-    jest.spyOn(window, 'matchMedia').mockImplementation(
-      (query) =>
-        ({
-          addListener: (cb: (e: { matches: boolean }) => void) => {
-            cb({ matches: query === '(min-width: 1200px)' });
-          },
-          removeListener: jest.fn(),
-          matches: query === '(min-width: 1200px)',
-        }) as any,
-    );
-
+  it(`when typeof gutter is object array in large screen`, () => {
+    jest.spyOn(window, 'matchMedia').mockImplementation(createImplFn('(min-width: 1200px)') as any);
     const { container, asFragment } = render(
       <Row
         gutter={[
@@ -96,14 +105,15 @@ describe('Grid', () => {
     );
     expect(asFragment().firstChild).toMatchSnapshot();
 
-    expect(container.querySelector('div')?.style.marginLeft).toBe('-20px');
-    expect(container.querySelector('div')?.style.marginRight).toBe('-20px');
-    expect(container.querySelector('div')?.style.marginTop).toBe('');
-    expect(container.querySelector('div')?.style.marginBottom).toBe('');
+    expect(container.querySelector('div')).toHaveStyle({
+      marginInline: '-20px',
+      marginTop: '',
+      marginBottom: '',
+    });
   });
 
   it('renders wrapped Col correctly', () => {
-    const MyCol = () => <Col span={12} />;
+    const MyCol: React.FC = () => <Col span={12} />;
     const { asFragment } = render(
       <Row gutter={20}>
         <div>
@@ -112,7 +122,6 @@ describe('Grid', () => {
         <MyCol />
       </Row>,
     );
-
     expect(asFragment().firstChild).toMatchSnapshot();
   });
 
@@ -124,43 +133,34 @@ describe('Grid', () => {
     expect((global as any).unsubscribeCnt).toEqual(called + 1);
   });
 
-  it('should work correct when gutter is object', () => {
-    const { container } = render(<Row gutter={{ xs: 20 }} />);
-    expect(container.querySelector('div')!.style.marginLeft).toEqual('-10px');
-    expect(container.querySelector('div')!.style.marginRight).toEqual('-10px');
+  it('should work correct when gutter is string', () => {
+    const { container } = render(<Row gutter={['2rem', '4rem']} />);
+    expect(container.querySelector('div')).toHaveStyle({
+      marginInline: 'calc(2rem / -2)',
+      rowGap: '4rem',
+    });
   });
 
   it('should work current when gutter is array', () => {
     const { container } = render(<Row gutter={[16, 20]} />);
-    expect(container.querySelector('div')?.style.marginLeft).toBe('-8px');
-    expect(container.querySelector('div')?.style.marginRight).toBe('-8px');
-    expect(container.querySelector('div')?.style.marginTop).toBe('');
-    expect(container.querySelector('div')?.style.marginBottom).toBe('');
+    expect(container.querySelector('div')).toHaveStyle({
+      marginInline: '-8px',
+      marginTop: '',
+      marginBottom: '',
+    });
   });
 
   // By jsdom mock, actual jsdom not implemented matchMedia
   // https://jestjs.io/docs/en/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
-  it('should work with useBreakpoint', () => {
-    const matchMediaSpy = jest.spyOn(window, 'matchMedia');
-    matchMediaSpy.mockImplementation(
-      (query) =>
-        ({
-          addListener: (cb: (e: { matches: boolean }) => void) => {
-            cb({ matches: query === '(max-width: 575px)' });
-          },
-          removeListener: jest.fn(),
-          matches: query === '(max-width: 575px)',
-        }) as any,
-    );
-
-    let screensVar;
-    function Demo() {
+  it(`should work with useBreakpoint`, () => {
+    jest.spyOn(window, 'matchMedia').mockImplementation(createImplFn('(max-width: 575px)') as any);
+    let screensVar: any = null;
+    const Demo: React.FC = () => {
       const screens = useBreakpoint();
       screensVar = screens;
-      return <div />;
-    }
+      return null;
+    };
     render(<Demo />);
-
     expect(screensVar).toEqual({
       xs: true,
       sm: false,
@@ -168,21 +168,12 @@ describe('Grid', () => {
       lg: false,
       xl: false,
       xxl: false,
+      xxxl: false,
     });
   });
 
-  it('should align by responsive align prop', () => {
-    const matchMediaSpy = jest.spyOn(window, 'matchMedia');
-    matchMediaSpy.mockImplementation(
-      (query) =>
-        ({
-          addListener: (cb: (e: { matches: boolean }) => void) => {
-            cb({ matches: query === '(max-width: 575px)' });
-          },
-          removeListener: jest.fn(),
-          matches: query === '(max-width: 575px)',
-        }) as any,
-    );
+  it(`should align by responsive align prop`, () => {
+    jest.spyOn(window, 'matchMedia').mockImplementation(createImplFn('(max-width: 575px)') as any);
     const { container } = render(<Row align="middle" />);
     expect(container.innerHTML).toContain('ant-row-middle');
     const { container: container2 } = render(<Row align={{ xs: 'middle' }} />);
@@ -191,18 +182,8 @@ describe('Grid', () => {
     expect(container3.innerHTML).not.toContain('ant-row-middle');
   });
 
-  it('should justify by responsive justify prop', () => {
-    const matchMediaSpy = jest.spyOn(window, 'matchMedia');
-    matchMediaSpy.mockImplementation(
-      (query) =>
-        ({
-          addListener: (cb: (e: { matches: boolean }) => void) => {
-            cb({ matches: query === '(max-width: 575px)' });
-          },
-          removeListener: jest.fn(),
-          matches: query === '(max-width: 575px)',
-        }) as any,
-    );
+  it(`should justify by responsive justify prop`, () => {
+    jest.spyOn(window, 'matchMedia').mockImplementation(createImplFn('(max-width: 575px)') as any);
     const { container } = render(<Row justify="center" />);
     expect(container.innerHTML).toContain('ant-row-center');
     const { container: container2 } = render(<Row justify={{ xs: 'center' }} />);
@@ -213,23 +194,21 @@ describe('Grid', () => {
 
   // https://github.com/ant-design/ant-design/issues/39690
   it('Justify and align properties should reactive for Row', () => {
-    const ReactiveTest = () => {
-      const [justify, setjustify] = useState<any>('start');
+    const ReactiveTest: React.FC = () => {
+      const [justify, setJustify] = useState<any>('start');
       return (
         <>
           <Row justify={justify} align="bottom">
             <div>button1</div>
             <div>button</div>
           </Row>
-          <span onClick={() => setjustify('end')} />
+          <span onClick={() => setJustify('end')} />
         </>
       );
     };
     const { container } = render(<ReactiveTest />);
     expect(container.innerHTML).toContain('ant-row-start');
-    act(() => {
-      fireEvent.click(container.querySelector('span')!);
-    });
+    fireEvent.click(container.querySelector('span')!);
     expect(container.innerHTML).toContain('ant-row-end');
   });
 
@@ -240,9 +219,8 @@ describe('Grid', () => {
         <Col span={4}>col-2</Col>
       </Row>,
     );
-
     const row = container.querySelector('.ant-row-space-evenly');
     expect(row).toBeTruthy();
-    expect(row && getComputedStyle(row).justifyContent).toEqual('space-evenly');
+    expect(row).toHaveStyle({ justifyContent: 'space-evenly' });
   });
 });

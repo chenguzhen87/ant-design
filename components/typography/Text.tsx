@@ -1,5 +1,5 @@
 import * as React from 'react';
-import omit from 'rc-util/lib/omit';
+import { omit } from '@rc-component/util';
 
 import { devUseWarning } from '../_util/warning';
 import type { BlockProps, EllipsisConfig } from './Base';
@@ -11,15 +11,12 @@ export interface TextProps
   ellipsis?: boolean | Omit<EllipsisConfig, 'expandable' | 'rows' | 'onExpand'>;
 }
 
-const Text: React.ForwardRefRenderFunction<HTMLSpanElement, TextProps> = (
-  { ellipsis, ...restProps },
-  ref,
-) => {
+const Text = React.forwardRef<HTMLSpanElement, TextProps>((props, ref) => {
+  const { ellipsis, children, ...restProps } = props;
   const mergedEllipsis = React.useMemo(() => {
     if (ellipsis && typeof ellipsis === 'object') {
       return omit(ellipsis as EllipsisConfig, ['expandable', 'rows']);
     }
-
     return ellipsis;
   }, [ellipsis]);
 
@@ -35,7 +32,11 @@ const Text: React.ForwardRefRenderFunction<HTMLSpanElement, TextProps> = (
     );
   }
 
-  return <Base ref={ref} {...restProps} ellipsis={mergedEllipsis} component="span" />;
-};
+  return (
+    <Base ref={ref} {...restProps} ellipsis={mergedEllipsis} component="span">
+      {children}
+    </Base>
+  );
+});
 
-export default React.forwardRef(Text);
+export default Text;

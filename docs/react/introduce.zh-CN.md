@@ -3,12 +3,16 @@ order: 0
 title: Ant Design of React
 ---
 
-`antd` 是基于 Ant Design 设计体系的 React UI 组件库，主要用于研发企业级中后台产品。
+<audio id="antd-audio">
+  <source src="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/file/A*ChCdRJ0w8SUAAAAAAAAAAAAADgCCAQ" type="audio/mpeg">
+</audio>
+
+`antd`（<Audio id="antd-audio">如何发音？</Audio>）是基于 Ant Design 设计体系的 React UI 组件库，适合企业级中后台产品与前台桌面网站。
 
 <div class="pic-plus">
-  <img width="150" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"/>
+  <img width="150" draggable="false" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"/>
   <span>+</span>
-  <img width="160" src="https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg"/>
+  <img width="160" draggable="false" src="https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg"/>
 </div>
 
 ---
@@ -28,13 +32,11 @@ title: Ant Design of React
 - 支持服务端渲染。
 - [Electron](https://www.electronjs.org/)
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Opera | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/electron/electron_48x48.png" alt="Electron" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Electron |
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)</br>Opera | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/electron/electron_48x48.png" alt="Electron" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)</br>Electron |
 | --- | --- | --- | --- | --- | --- |
 | Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
 
-对于 IE 系列浏览器，需要提供相应的 Polyfill 支持，建议使用 [@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env) 来解决浏览器兼容问题。如果你在使用 [umi](http://umijs.org/)，可以直接使用 [targets](https://umijs.org/zh/config/#targets) 配置。
-
-> `antd@2.0` 之后不再支持 IE8。 `antd@4.0` 之后不再支持 React 15 和 IE9/10。 `antd@5.0` 之后不再支持 IE。
+> `antd 2.0` 之后不再支持 IE8。 `antd 4.0` 之后不再支持 React 15 和 IE9/10。 `antd 5.0` 之后不再支持 IE。`antd 6.0` 之后不再支持 React 16/17。
 
 ## 版本
 
@@ -88,23 +90,26 @@ export default App;
 - [首页](/index-cn)
 - [所有组件](/components/overview-cn)
 - [国内镜像](https://github.com/ant-design/ant-design/issues/25661)
-- [Ant Design Pro](https://pro.ant.design/)
-- [Ant Design Pro Components](https://procomponents.ant.design/)
-- [Ant Design Charts](https://charts.ant.design)
 - [更新日志](/changelog)
 - [React 底层基础组件](https://react-component.github.io/)
+- [Ant Design Icons](https://github.com/ant-design/ant-design-icons)
+- [Ant Design Colors](https://github.com/ant-design/ant-design-colors)
+- [🆕 Ant Design X](https://x.ant.design/index-cn)
+- [Ant Design Pro](https://pro.ant.design/)
+- [Pro Components](https://procomponents.ant.design)
 - [Ant Design Mobile](https://mobile.ant.design)
 - [Ant Design Mini](https://mini.ant.design)
-- [Ant Design 图标](https://github.com/ant-design/ant-design-icons)
-- [Ant Design 色彩](https://github.com/ant-design/ant-design-colors)
-- [首页模板集](https://landing.ant.design)
+- [Ant Design Charts](https://charts.ant.design)
+- [Ant Design Web3](https://web3.ant.design)
+- [🤖 Ant Design CLI](https://github.com/ant-design/ant-design-cli)
 - [动效](https://motion.ant.design)
+- [首页模板集](https://landing.ant.design)
 - [脚手架市场](https://scaffold.ant.design)
 - [设计规范速查手册](https://github.com/ant-design/ant-design/wiki/Ant-Design-%E8%AE%BE%E8%AE%A1%E5%9F%BA%E7%A1%80%E7%AE%80%E7%89%88)
 - [开发者说明](https://github.com/ant-design/ant-design/wiki/Development)
 - [版本发布规则](https://github.com/ant-design/ant-design/wiki/%E8%BD%AE%E5%80%BC%E8%A7%84%E5%88%99%E5%92%8C%E7%89%88%E6%9C%AC%E5%8F%91%E5%B8%83%E6%B5%81%E7%A8%8B)
 - [常见问题](/docs/react/faq)
-- [CodeSandbox 模板](https://u.ant.design/codesandbox-repro) for bug reports
+- [CodeSandbox 模板](https://u.ant.design/reproduce) for bug reports
 - [Awesome Ant Design](https://github.com/websemantics/awesome-ant-design)
 - [定制主题](/docs/react/customize-theme)
 - [成为社区协作成员](https://github.com/ant-design/ant-design/wiki/Collaborators#how-to-apply-for-being-a-collaborator)
@@ -119,9 +124,9 @@ Ant Design 广泛用于国内外的企业级网站搭建，可以查看 [wappaly
 
 ## 如何贡献
 
-在任何形式的参与前，请先阅读 [贡献者文档](https://github.com/ant-design/ant-design/blob/master/.github/CONTRIBUTING.md)。如果你希望参与贡献，欢迎提交 [Pull Request](https://github.com/ant-design/ant-design/pulls)，或给我们 [报告 Bug](http://new-issue.ant.design/)。
+在任何形式的参与前，请先阅读 [贡献者文档](https://github.com/ant-design/ant-design/blob/master/.github/CONTRIBUTING.md)。如果你希望参与贡献，欢迎提交 [Pull Request](https://github.com/ant-design/ant-design/pulls)，或给我们 [报告 Bug](https://new-issue.ant.design/)。
 
-> 强烈推荐阅读 [《提问的智慧》](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way)、[《如何向开源社区提问题》](https://github.com/seajs/seajs/issues/545) 和 [《如何有效地报告 Bug》](http://www.chiark.greenend.org.uk/%7Esgtatham/bugs-cn.html)、[《如何向开源项目提交无法解答的问题》](https://zhuanlan.zhihu.com/p/25795393)，更好的问题更容易获得帮助。
+> 强烈推荐阅读 [《提问的智慧》](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way)、[《如何向开源社区提问题》](https://github.com/seajs/seajs/issues/545) 和 [《如何有效地报告 Bug》](https://www.chiark.greenend.org.uk/%7Esgtatham/bugs-cn.html)、[《如何向开源项目提交无法解答的问题》](https://zhuanlan.zhihu.com/p/25795393)，更好的问题更容易获得帮助。
 
 ## 社区互助
 
@@ -132,5 +137,5 @@ Ant Design 广泛用于国内外的企业级网站搭建，可以查看 [wappaly
 通过 Stack Overflow 或者 Segment Fault 提问时，建议加上 `antd` 标签。
 
 1. [GitHub Discussions](https://github.com/ant-design/ant-design/discussions)
-2. [<img alt="Stack Overflow" src="https://cdn.sstatic.net/Sites/stackoverflow/company/img/logos/so/so-logo.svg?v=2bb144720a66" width="140" />](http://stackoverflow.com/questions/tagged/antd) (English)
+2. [<img alt="Stack Overflow" src="https://cdn.sstatic.net/Sites/stackoverflow/company/img/logos/so/so-logo.svg?v=2bb144720a66" width="140" />](https://stackoverflow.com/questions/tagged/antd) (English)
 3. [<img alt="Segment Fault" src="https://gw.alipayobjects.com/zos/rmsportal/hfYFfCvHTQTUKntlJbMF.svg" width="100" />](https://segmentfault.com/t/antd)（中文）

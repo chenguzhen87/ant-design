@@ -1,5 +1,5 @@
 import * as React from 'react';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 
 import { devUseWarning } from '../_util/warning';
 import { ConfigContext } from '../config-provider';
@@ -32,7 +32,16 @@ const AnchorLink: React.FC<AnchorLinkProps> = (props) => {
 
   const context = React.useContext<AntAnchor | undefined>(AnchorContext);
 
-  const { registerLink, unregisterLink, scrollTo, onClick, activeLink, direction } = context || {};
+  const {
+    registerLink,
+    unregisterLink,
+    scrollTo,
+    onClick,
+    activeLink,
+    direction,
+    classNames: mergedClassNames,
+    styles: mergedStyles,
+  } = context || {};
 
   React.useEffect(() => {
     registerLink?.(href);
@@ -42,12 +51,28 @@ const AnchorLink: React.FC<AnchorLinkProps> = (props) => {
   }, [href]);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (replace) {
-      e.preventDefault();
-      window.location.replace(href);
-    }
     onClick?.(e, { title, href });
     scrollTo?.(href);
+
+    // Support clicking on an anchor does not record history.
+    if (e.defaultPrevented) {
+      return;
+    }
+
+    const isExternalLink = href.startsWith('http://') || href.startsWith('https://');
+    // Support external link
+    if (isExternalLink) {
+      if (replace) {
+        e.preventDefault();
+        window.location.replace(href);
+      }
+      return;
+    }
+
+    // Handling internal anchor link
+    e.preventDefault();
+    const historyMethod = replace ? 'replaceState' : 'pushState';
+    window.history[historyMethod](null, '', href);
   };
 
   // =================== Warning =====================
@@ -67,18 +92,19 @@ const AnchorLink: React.FC<AnchorLinkProps> = (props) => {
 
   const active = activeLink === href;
 
-  const wrapperClassName = classNames(`${prefixCls}-link`, className, {
+  const wrapperClassName = clsx(`${prefixCls}-link`, className, mergedClassNames?.item, {
     [`${prefixCls}-link-active`]: active,
   });
 
-  const titleClassName = classNames(`${prefixCls}-link-title`, {
+  const titleClassName = clsx(`${prefixCls}-link-title`, mergedClassNames?.itemTitle, {
     [`${prefixCls}-link-title-active`]: active,
   });
 
   return (
-    <div className={wrapperClassName}>
+    <div className={wrapperClassName} style={mergedStyles?.item}>
       <a
         className={titleClassName}
+        style={mergedStyles?.itemTitle}
         href={href}
         title={typeof title === 'string' ? title : ''}
         target={target}

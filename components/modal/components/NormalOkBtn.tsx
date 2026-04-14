@@ -1,19 +1,14 @@
 import type { FC } from 'react';
 import React, { useContext } from 'react';
 
-import Button from '../../button';
+import Button from '../../button/Button';
 import { convertLegacyProps } from '../../button/buttonHelpers';
 import { ModalContext } from '../context';
 import type { ModalProps } from '../interface';
 
 export interface NormalOkBtnProps
   extends Pick<ModalProps, 'confirmLoading' | 'okType' | 'okButtonProps' | 'onOk'> {
-  okTextLocale?:
-    | string
-    | number
-    | true
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | Iterable<React.ReactNode>;
+  okTextLocale?: React.ReactNode;
 }
 
 const NormalOkBtn: FC = () => {

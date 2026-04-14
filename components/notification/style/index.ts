@@ -1,11 +1,10 @@
 import type { CSSObject } from '@ant-design/cssinjs';
 import { Keyframes, unit } from '@ant-design/cssinjs';
 
-import { CONTAINER_MAX_OFFSET } from '../../_util/hooks/useZIndex';
+import { CONTAINER_MAX_OFFSET } from '../../_util/hooks';
 import { genFocusStyle, resetComponent } from '../../style';
-import type { AliasToken, FullToken, GenerateStyle } from '../../theme/internal';
+import type { AliasToken, FullToken, GenerateStyle, GenStyleFn } from '../../theme/internal';
 import { genStyleHooks, mergeToken } from '../../theme/internal';
-import type { GenStyleFn } from '../../theme/util/genComponentStyleHook';
 import genNotificationPlacementStyle from './placement';
 import genStackStyle from './stack';
 
@@ -20,23 +19,97 @@ export interface ComponentToken {
    * @desc 提醒框宽度
    * @descEN Width of Notification
    */
-  width: number;
+  width: number | string;
+  /**
+   * @desc 提醒框进度条背景色
+   * @descEN Background color of Notification progress bar
+   */
+  progressBg: string;
+  /**
+   * @desc 成功提醒框容器背景色
+   * @descEN Background color of success notification container
+   */
+  colorSuccessBg?: string;
+  /**
+   * @desc 错误提醒框容器背景色
+   * @descEN Background color of error notification container
+   */
+  colorErrorBg?: string;
+  /**
+   * @desc 信息提醒框容器背景色
+   * @descEN Background color of info notification container
+   */
+  colorInfoBg?: string;
+  /**
+   * @desc 警告提醒框容器背景色
+   * @descEN Background color of warning notification container
+   */
+  colorWarningBg?: string;
 }
 
+/**
+ * @desc Notification 组件的 Token
+ * @descEN Token for Notification component
+ */
 export interface NotificationToken extends FullToken<'Notification'> {
-  animationMaxHeight: number;
+  /**
+   * @desc 动画最大高度
+   * @descEN Maximum height of animation
+   */
+  animationMaxHeight: number | string;
+  /**
+   * @desc 提醒框背景色
+   * @descEN Background color of Notification
+   */
   notificationBg: string;
+  /**
+   * @desc 提醒框内边距
+   * @descEN Padding of Notification
+   */
   notificationPadding: string;
+  /**
+   * @desc 提醒框垂直内边距
+   * @descEN Vertical padding of Notification
+   */
   notificationPaddingVertical: number;
+  /**
+   * @desc 提醒框水平内边距
+   * @descEN Horizontal padding of Notification
+   */
   notificationPaddingHorizontal: number;
+  /**
+   * @desc 提醒框图标尺寸
+   * @descEN Icon size of Notification
+   */
   notificationIconSize: number | string;
+  /**
+   * @desc 提醒框关闭按钮尺寸
+   * @descEN Close button size of Notification
+   */
   notificationCloseButtonSize: number | string;
+  /**
+   * @desc 提醒框底部外边距
+   * @descEN Bottom margin of Notification
+   */
   notificationMarginBottom: number;
+  /**
+   * @desc 提醒框边缘外边距
+   * @descEN Edge margin of Notification
+   */
   notificationMarginEdge: number;
+  /**
+   * @desc 提醒框堆叠层数
+   * @descEN Stack layer of Notification
+   */
   notificationStackLayer: number;
+  /**
+   * @desc 提醒框进度条高度
+   * @descEN Height of Notification progress bar
+   */
+  notificationProgressHeight: number;
 }
 
-export const genNoticeStyle = (token: NotificationToken): CSSObject => {
+export const genNoticeStyle: GenerateStyle<NotificationToken, CSSObject> = (token) => {
   const {
     iconCls,
     componentCls, // .ant-notification
@@ -52,11 +125,18 @@ export const genNoticeStyle = (token: NotificationToken): CSSObject => {
     notificationBg,
     notificationPadding,
     notificationMarginEdge,
+    progressBg,
+    notificationProgressHeight,
     fontSize,
     lineHeight,
     width,
     notificationIconSize,
     colorText,
+    colorSuccessBg,
+    colorErrorBg,
+    colorInfoBg,
+    colorWarningBg,
+    motionDurationMid,
   } = token;
 
   const noticeCls = `${componentCls}-notice`;
@@ -73,12 +153,18 @@ export const genNoticeStyle = (token: NotificationToken): CSSObject => {
       padding: notificationPadding,
       width,
       maxWidth: `calc(100vw - ${unit(token.calc(notificationMarginEdge).mul(2).equal())})`,
-      overflow: 'hidden',
       lineHeight,
       wordWrap: 'break-word',
+      borderRadius: borderRadiusLG,
+      overflow: 'hidden',
+      // Type-specific background colors
+      '&-success': colorSuccessBg ? { background: colorSuccessBg } : {},
+      '&-error': colorErrorBg ? { background: colorErrorBg } : {},
+      '&-info': colorInfoBg ? { background: colorInfoBg } : {},
+      '&-warning': colorWarningBg ? { background: colorWarningBg } : {},
     },
 
-    [`${noticeCls}-message`]: {
+    [`${noticeCls}-title`]: {
       marginBottom: token.marginXS,
       color: colorTextHeading,
       fontSize: fontSizeLG,
@@ -88,13 +174,19 @@ export const genNoticeStyle = (token: NotificationToken): CSSObject => {
     [`${noticeCls}-description`]: {
       fontSize,
       color: colorText,
+      marginTop: token.marginXS,
+      
+      '&:first-child': {
+        marginTop: 0,
+        marginInlineEnd: token.marginSM,
+      },
     },
 
-    [`${noticeCls}-closable ${noticeCls}-message`]: {
+    [`${noticeCls}-closable ${noticeCls}-title`]: {
       paddingInlineEnd: token.paddingLG,
     },
 
-    [`${noticeCls}-with-icon ${noticeCls}-message`]: {
+    [`${noticeCls}-with-icon ${noticeCls}-title`]: {
       marginBottom: token.marginXS,
       marginInlineStart: token.calc(token.marginSM).add(notificationIconSize).equal(),
       fontSize: fontSizeLG,
@@ -137,10 +229,15 @@ export const genNoticeStyle = (token: NotificationToken): CSSObject => {
       width: token.notificationCloseButtonSize,
       height: token.notificationCloseButtonSize,
       borderRadius: token.borderRadiusSM,
-      transition: `background-color ${token.motionDurationMid}, color ${token.motionDurationMid}`,
+
+      transition: ['color', 'background-color']
+        .map((prop) => `${prop} ${motionDurationMid}`)
+        .join(', '),
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      background: 'none',
+      border: 'none',
 
       '&:hover': {
         color: token.colorIconHover,
@@ -154,7 +251,39 @@ export const genNoticeStyle = (token: NotificationToken): CSSObject => {
       ...genFocusStyle(token),
     },
 
-    [`${noticeCls}-btn`]: {
+    [`${noticeCls}-progress`]: {
+      position: 'absolute',
+      display: 'block',
+      appearance: 'none',
+      inlineSize: `calc(100% - ${unit(borderRadiusLG)} * 2)`,
+      left: {
+        _skip_check_: true,
+        value: borderRadiusLG,
+      },
+      right: {
+        _skip_check_: true,
+        value: borderRadiusLG,
+      },
+      bottom: 0,
+      blockSize: notificationProgressHeight,
+      border: 0,
+
+      '&, &::-webkit-progress-bar': {
+        borderRadius: borderRadiusLG,
+        backgroundColor: `rgba(0, 0, 0, 0.04)`,
+      },
+
+      '&::-moz-progress-bar': {
+        background: progressBg,
+      },
+
+      '&::-webkit-progress-value': {
+        borderRadius: borderRadiusLG,
+        background: progressBg,
+      },
+    },
+
+    [`${noticeCls}-actions`]: {
       float: 'right',
       marginTop: token.marginSM,
     },
@@ -239,7 +368,7 @@ const genNotificationStyle: GenerateStyle<NotificationToken> = (token) => {
         '&-rtl': {
           direction: 'rtl',
 
-          [`${noticeCls}-btn`]: {
+          [`${noticeCls}-actions`]: {
             float: 'left',
           },
         },
@@ -249,9 +378,7 @@ const genNotificationStyle: GenerateStyle<NotificationToken> = (token) => {
     // ============================ Notice ============================
     {
       [componentCls]: {
-        [`${noticeCls}-wrapper`]: {
-          ...genNoticeStyle(token),
-        },
+        [`${noticeCls}-wrapper`]: genNoticeStyle(token),
       },
     },
   ];
@@ -261,6 +388,14 @@ const genNotificationStyle: GenerateStyle<NotificationToken> = (token) => {
 export const prepareComponentToken = (token: AliasToken) => ({
   zIndexPopup: token.zIndexPopupBase + CONTAINER_MAX_OFFSET + 50,
   width: 384,
+  progressBg: `linear-gradient(90deg, ${token.colorPrimaryBorderHover}, ${token.colorPrimary})`,
+  // Fix notification background color issue
+  // https://github.com/ant-design/ant-design/issues/55649
+  // https://github.com/ant-design/ant-design/issues/56055
+  colorSuccessBg: undefined,
+  colorErrorBg: undefined,
+  colorInfoBg: undefined,
+  colorWarningBg: undefined,
 });
 
 export const prepareNotificationToken: (
@@ -279,6 +414,7 @@ export const prepareNotificationToken: (
     notificationMarginEdge: token.marginLG,
     animationMaxHeight: 150,
     notificationStackLayer: 3,
+    notificationProgressHeight: 2,
   });
 
   return notificationToken;

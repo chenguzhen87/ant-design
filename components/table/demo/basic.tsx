@@ -1,5 +1,5 @@
 import React from 'react';
-import { Space, Table, Tag } from 'antd';
+import { Flex, Space, Table, Tag } from 'antd';
 import type { TableProps } from 'antd';
 
 interface DataType {
@@ -32,10 +32,10 @@ const columns: TableProps<DataType>['columns'] = [
     key: 'tags',
     dataIndex: 'tags',
     render: (_, { tags }) => (
-      <>
+      <Flex gap="small" align="center" wrap>
         {tags.map((tag) => {
           let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
+          if (tag === 'kawaii') {
             color = 'volcano';
           }
           return (
@@ -44,14 +44,14 @@ const columns: TableProps<DataType>['columns'] = [
             </Tag>
           );
         })}
-      </>
+      </Flex>
     ),
   },
   {
     title: 'Action',
     key: 'action',
     render: (_, record) => (
-      <Space size="middle">
+      <Space size="medium">
         <a>Invite {record.name}</a>
         <a>Delete</a>
       </Space>
@@ -72,7 +72,7 @@ const data: DataType[] = [
     name: 'Jim Green',
     age: 42,
     address: 'London No. 1 Lake Park',
-    tags: ['loser'],
+    tags: ['kawaii'],
   },
   {
     key: '3',
@@ -83,6 +83,6 @@ const data: DataType[] = [
   },
 ];
 
-const App: React.FC = () => <Table columns={columns} dataSource={data} />;
+const App: React.FC = () => <Table<DataType> columns={columns} dataSource={data} />;
 
 export default App;

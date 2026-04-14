@@ -1,13 +1,6 @@
-/* eslint-disable import/prefer-default-export */
 import type { CSSObject, Keyframes } from '@ant-design/cssinjs';
 
 const initMotionCommon = (duration: string): CSSObject => ({
-  animationDuration: duration,
-  animationFillMode: 'both',
-});
-
-// FIXME: origin less code seems same as initMotionCommon. Maybe we can safe remove
-const initMotionCommonLeave = (duration: string): CSSObject => ({
   animationDuration: duration,
   animationFillMode: 'both',
 });
@@ -31,7 +24,7 @@ export const initMotion = (
     },
 
     [`${sameLevelPrefix}${motionCls}-leave`]: {
-      ...initMotionCommonLeave(duration),
+      ...initMotionCommon(duration),
       animationPlayState: 'paused',
     },
 

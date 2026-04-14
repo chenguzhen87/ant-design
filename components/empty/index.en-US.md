@@ -16,9 +16,10 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*obM7S5lIxeMAAA
 
 <!-- prettier-ignore -->
 <code src="./demo/basic.tsx">Basic</code>
-<code src="./demo/simple.tsx">Chose image</code>
+<code src="./demo/simple.tsx">Choose image</code>
 <code src="./demo/customize.tsx">Customize</code>
 <code src="./demo/config-provider.tsx">ConfigProvider</code>
+<code src="./demo/style-class.tsx" version="6.0.0">Custom semantic dom styling</code>
 <code src="./demo/description.tsx">No description</code>
 
 ## API
@@ -33,9 +34,11 @@ Common props ref：[Common props](/docs/react/common-props)
 
 | Property | Description | Type | Default | Version |
 | --- | --- | --- | --- | --- |
+| classNames | Customize class for each semantic structure inside the component. Supports object or function. | Record<[SemanticDOM](#semantic-dom), string> \| (info: { props })=> Record<[SemanticDOM](#semantic-dom), string> | - |  |
 | description | Customize description | ReactNode | - |  |
 | image | Customize image. Will treat as image url when string provided | ReactNode | `Empty.PRESENTED_IMAGE_DEFAULT` |  |
 | imageStyle | The style of image | CSSProperties | - |  |
+| styles | Customize inline style for each semantic structure inside the component. Supports object or function. | Record<[SemanticDOM](#semantic-dom), CSSProperties> \| (info: { props })=> Record<[SemanticDOM](#semantic-dom), CSSProperties> | - |  |
 
 ## Built-in images
 
@@ -63,6 +66,10 @@ Common props ref：[Common props](/docs/react/common-props)
     background-image: url("https://user-images.githubusercontent.com/507615/54591670-ac0a0180-4a65-11e9-846c-e55ffce0fe7b.png");
   }
 </style>
+
+## Semantic DOM
+
+<code src="./demo/_semantic.tsx" simplify="true"></code>
 
 ## Design Token
 

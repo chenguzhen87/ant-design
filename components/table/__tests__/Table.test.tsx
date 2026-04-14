@@ -1,11 +1,12 @@
-import React, { useRef } from 'react';
-import { ConfigProvider } from 'antd';
+import React, { useRef, useState } from 'react';
 
 import type { TableProps, TableRef } from '..';
 import Table from '..';
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
 import { fireEvent, render, waitFakeTimer } from '../../../tests/utils';
+import ConfigProvider from '../../config-provider';
+import Popover from '../../popover';
 
 const { Column, ColumnGroup } = Table;
 
@@ -42,7 +43,6 @@ describe('Table', () => {
           <Column title="Last Name" dataIndex="lastName" key="lastName" />
         </ColumnGroup>
         <Column title="Age" dataIndex="age" key="age" />
-        {/* eslint-disable-next-line react/jsx-curly-brace-presence */}
         {'invalid child'}
       </Table>,
     );
@@ -73,20 +73,14 @@ describe('Table', () => {
 
   it('loading with Spin', async () => {
     jest.useFakeTimers();
-    const loading = {
-      spinning: false,
-      delay: 500,
-    };
-    const { container, rerender } = render(<Table loading={loading} />);
-    expect(container.querySelectorAll('.ant-spin')).toHaveLength(0);
+    const { container, rerender } = render(<Table loading={{ spinning: false, delay: 500 }} />);
+    expect(container.querySelector('.ant-spin-section')).toBeFalsy();
     expect(container.querySelector('.ant-table-placeholder')?.textContent).not.toEqual('');
-
-    loading.spinning = true;
-    rerender(<Table loading={loading} />);
-    expect(container.querySelectorAll('.ant-spin')).toHaveLength(0);
+    rerender(<Table loading={{ spinning: true, delay: 500 }} />);
+    expect(container.querySelector('.ant-spin-section')).toBeFalsy();
     await waitFakeTimer();
     rerender(<Table loading />);
-    expect(container.querySelectorAll('.ant-spin')).toHaveLength(1);
+    expect(container.querySelector('.ant-spin-section')).toBeTruthy();
     jest.clearAllTimers();
     jest.useRealTimers();
   });
@@ -253,6 +247,7 @@ describe('Table', () => {
       'Warning: [antd: Table] `index` parameter of `rowKey` function is deprecated. There is no guarantee that it will work as expected.',
     );
   });
+
   it('not warn about rowKey', () => {
     warnSpy.mockReset();
     const columns: TableProps<any>['columns'] = [
@@ -264,6 +259,45 @@ describe('Table', () => {
     ];
     render(<Table columns={columns} rowKey={(record) => record.key as string} />);
     expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  it('use global rowKey config', () => {
+    const { container } = render(
+      <ConfigProvider table={{ rowKey: 'id' }}>
+        <Table
+          dataSource={[
+            {
+              id: 666,
+              key: 'foobar',
+              name: 'Foobar',
+            },
+          ]}
+        />
+      </ConfigProvider>,
+    );
+    expect(container.querySelector<HTMLTableRowElement>('.ant-table-row')?.dataset.rowKey).toBe(
+      '666',
+    );
+  });
+
+  it('prefer rowKey prop over global rowKey config', () => {
+    const { container } = render(
+      <ConfigProvider table={{ rowKey: 'id' }}>
+        <Table
+          rowKey="name"
+          dataSource={[
+            {
+              id: 666,
+              key: 'foobar',
+              name: 'Foobar',
+            },
+          ]}
+        />
+      </ConfigProvider>,
+    );
+    expect(container.querySelector<HTMLTableRowElement>('.ant-table-row')?.dataset.rowKey).toBe(
+      'Foobar',
+    );
   });
 
   it('should support ref', () => {
@@ -399,6 +433,55 @@ describe('Table', () => {
     expect(container.querySelector('.ant-dropdown')).toBeTruthy();
   });
 
+  it('should not render duplicated controlled Popover in column title when scroll is enabled', async () => {
+    jest.useFakeTimers();
+
+    try {
+      const Demo = () => {
+        const [open, setOpen] = useState(false);
+
+        return (
+          <Table
+            pagination={false}
+            scroll={{ y: 200 }}
+            columns={[
+              {
+                key: 'name',
+                dataIndex: 'name',
+                title: (
+                  <Popover
+                    open={open}
+                    onOpenChange={setOpen}
+                    trigger="click"
+                    content={<button type="button">Popover Content</button>}
+                  >
+                    <button type="button">Name</button>
+                  </Popover>
+                ),
+              },
+            ]}
+            dataSource={[{ key: '1', name: 'Bamboo' }]}
+          />
+        );
+      };
+
+      const { container } = render(<Demo />);
+
+      fireEvent.click(container.querySelector('thead button')!);
+      await waitFakeTimer();
+
+      expect(document.body.querySelectorAll('.ant-popover')).toHaveLength(1);
+
+      fireEvent.click(document.body.querySelector('.ant-popover button')!);
+      await waitFakeTimer();
+
+      expect(document.body.querySelectorAll('.ant-popover')).toHaveLength(1);
+    } finally {
+      jest.runOnlyPendingTimers();
+      jest.useRealTimers();
+    }
+  });
+
   it('support reference', () => {
     const tblRef = React.createRef<TableRef>();
     const { container } = render(<Table ref={tblRef} />);
@@ -407,7 +490,7 @@ describe('Table', () => {
 
     expect(tblRef.current).toHaveClass('ant-table-wrapper');
     expect(tblRef.current?.nativeElement).toBe(wrapDom);
-    expect(tblRef.current?.scrollTo instanceof Function).toBeTruthy();
+    expect(typeof tblRef.current?.scrollTo === 'function').toBeTruthy();
   });
 
   it('support hidden columns', () => {
@@ -496,5 +579,19 @@ describe('Table', () => {
 
     fireEvent.mouseEnter(cell);
     expect(container.querySelectorAll('.ant-table-cell-row-hover')).toHaveLength(0);
+  });
+
+  it('rowSelection should support align', () => {
+    const wrapper = render(
+      <Table
+        columns={[{ title: 'Name', dataIndex: 'name' }]}
+        dataSource={[{ key: 1, name: 'Jack' }]}
+        rowSelection={{ align: 'right' }}
+      />,
+    );
+
+    expect(wrapper.container.querySelector('.ant-table-selection-column')).toHaveStyle({
+      textAlign: 'right',
+    });
   });
 });

@@ -69,15 +69,15 @@ antd 在 minor 和 patch 版本迭代中会避免引入破坏性变更，遵从�
 
 ## 当我动态改变 `defaultValue` 的时候它并没有生效。
 
-`Input`/`Select` 等的 `defaultXxxx`（例如 `defaultValue`）只有在第一次渲染的时候有效，这是 React 的规范，请阅读 [React 的文档](https://zh-hans.reactjs.org/docs/forms.html#controlled-components)。
+`Input`/`Select` 等的 `defaultXxxx`（例如 `defaultValue`）只有在第一次渲染的时候有效，这是 React 的规范，请阅读 [React 的文档](https://zh-hans.react.dev/reference/react-dom/components/input#controlling-an-input-with-a-state-variable)。
 
 ## 为什么修改组件传入的对象或数组属性组件不会更新？
 
-antd 内部会对 props 进行浅比较实现性能优化。当状态变更，你总是应该传递一个新的对象。具体请参考 [React 的文档](https://zh-hans.reactjs.org/docs/thinking-in-react.html)
+antd 内部会对 props 进行浅比较实现性能优化。当状态变更，你总是应该传递一个新的对象。具体请参考 [React 的文档](https://zh-hans.react.dev/learn/thinking-in-react)
 
 ## 当我设置了 `Input`/`Select` 等的 `value` 时它就无法修改了。
 
-尝试使用 `onChange` 来改变 `value`，请参考 [React 的文档](https://zh-hans.reactjs.org/docs/forms.html#controlled-components)。
+尝试使用 `onChange` 来改变 `value`，请参考 [React 的文档](https://zh-hans.react.dev/reference/react-dom/components/input#controlling-an-input-with-a-state-variable)。
 
 ## 多个组件放一排时没有垂直对齐怎么办？
 
@@ -105,21 +105,16 @@ antd 内部会对 props 进行浅比较实现性能优化。当状态变更，�
 
 ## `antd` 是否有国内镜像？
 
-有的，你可以访问 https://ant-design.antgroup.com/index-cn 或 https://ant-design.gitee.io/index-cn 。
+有的，你可以访问 https://ant-design.antgroup.com/index-cn 。
 
-| 产品/版本 | 地址 |
-| --- | --- |
-| Ant Design 5.x | https://ant-design.antgroup.com <br /> https://ant-design.gitee.io |
-| Ant Design 4.x | https://4x-ant-design.antgroup.com |
-| Ant Design 3.x | https://ant-design-3x.gitee.io |
-| Ant Design 2.x | https://ant-design-2x.gitee.io |
-| Ant Design 1.x | https://ant-design-1x.gitee.io |
-| Ant Design Pro | https://ant-design-pro.gitee.io/ |
-| Ant Design Mobile | https://ant-design-mobile.antgroup.com/zh <br /> https://antd-mobile.gitee.io/ |
-| Ant Design Mini | https://ant-design-mini.antgroup.com <br /> https://antd-mobile.gitee.io/ |
-| Ant Design Charts | https://ant-design-charts.antgroup.com<br /> https://antd-mobile.gitee.io/ |
-| AntV | https://antv.antgroup.com |
-| Ant Motion | https://ant-motion.gitee.io |
+| 产品/版本         | 地址                                      |
+| ----------------- | ----------------------------------------- |
+| Ant Design 5.x    | https://ant-design.antgroup.com           |
+| Ant Design 4.x    | https://4x-ant-design.antgroup.com        |
+| Ant Design Mobile | https://ant-design-mobile.antgroup.com/zh |
+| Ant Design Mini   | https://ant-design-mini.antgroup.com      |
+| Ant Design Charts | https://ant-design-charts.antgroup.com    |
+| AntV              | https://antv.antgroup.com                 |
 
 ## `antd` 可以像 `React` 那样使用单文件引入吗？
 
@@ -156,7 +151,7 @@ type InputRef = GetRef<typeof Input>;
 
 ## 我的组件默认语言是英文的？如何切回中文的。
 
-请尝试使用 [ConfigProvider](/components/config-provider-cn#components-config-provider-demo-locale) 组件来包裹你的应用。
+请尝试使用 [ConfigProvider](/components/config-provider-cn#config-provider-demo-locale) 组件来包裹你的应用。
 
 如果日期组件的国际化仍未生效，请配置 `dayjs.locale('zh-cn')` 并**检查你本地的 `dayjs` 版本和 `antd` 依赖的 `dayjs` 版本是否一致**。
 
@@ -195,23 +190,21 @@ npm ls dayjs
 
 同样的，`disabledDate` 对于任何 `<DatePicker />` 也只会针对**日面板**生效，[并不会对 `<DatePicker mode="year/month" />` 上的年/月面板生效](https://github.com/ant-design/ant-design/issues/9008#issuecomment-358554118)。
 
-### 解决办法
+:::success{title=解决办法} 你可以参照 [这篇文章](https://juejin.im/post/5cf65c366fb9a07eca6968f9) 或者 [这篇文章](https://www.cnblogs.com/zyl-Tara/p/10197177.html) 里的做法，利用 `mode` 和 `onPanelChange` 等方法去封装一个 `YearPicker` 等组件。
 
-你可以参照 [这篇文章](https://juejin.im/post/5cf65c366fb9a07eca6968f9) 或者 [这篇文章](https://www.cnblogs.com/zyl-Tara/p/10197177.html) 里的做法，利用 `mode` 和 `onPanelChange` 等方法去封装一个 `YearPicker` 等组件。
-
-另外我们已经在 [antd@4.0](https://github.com/ant-design/ant-design/issues/16911) 中直接[添加了更多相关日期组件](https://github.com/ant-design/ant-design/issues/4524#issuecomment-480576884)来支持这些需求，现在不再需要使用 `mode="year|month"`，而是直接可以用 `YearPicker` `MonthPicker`，并且 `disabledDate` 也可以正确作用于这些 Picker。
+另外我们已经在 [antd@4.0](https://github.com/ant-design/ant-design/issues/16911) 中直接[添加了更多相关日期组件](https://github.com/ant-design/ant-design/issues/4524#issuecomment-480576884)来支持这些需求，现在不再需要使用 `mode="year|month"`，而是直接可以用 `YearPicker` `MonthPicker`，并且 `disabledDate` 也可以正确作用于这些 Picker。:::
 
 ## ConfigProvider 设置 `prefixCls` 后，message/notification/Modal.confirm 生成的节点样式丢失了？
 
 message/notification/Modal.confirm 等静态方法不同于 `<Button />` 的渲染方式，是单独渲染在 `ReactDOM.render` 生成的 DOM 树节点上，无法共享 ConfigProvider 提供的 context 信息。你有两种解决方式：
 
-1. 使用官方提供的 [message.useMessage](/components/message-cn/#components-message-demo-hooks)、[notification.useNotification](/components/notification-cn#%E4%B8%BA%E4%BB%80%E4%B9%88-notification-%E4%B8%8D%E8%83%BD%E8%8E%B7%E5%8F%96-context%E3%80%81redux-%E7%9A%84%E5%86%85%E5%AE%B9%E5%92%8C-ConfigProvider-%E7%9A%84-locale/prefixCls-%E9%85%8D%E7%BD%AE%EF%BC%9F) 和 [Modal.useModal](/components/modal-cn/#%E4%B8%BA%E4%BB%80%E4%B9%88-Modal-%E6%96%B9%E6%B3%95%E4%B8%8D%E8%83%BD%E8%8E%B7%E5%8F%96-context%E3%80%81redux%E3%80%81%E7%9A%84%E5%86%85%E5%AE%B9%E5%92%8C-ConfigProvider-locale/prefixCls-%E9%85%8D%E7%BD%AE%EF%BC%9F) 来调用这些方法。
+1. 使用官方提供的 [message.useMessage](/components/message-cn/#message-demo-hooks)、[notification.useNotification](/components/notification-cn#%E4%B8%BA%E4%BB%80%E4%B9%88-notification-%E4%B8%8D%E8%83%BD%E8%8E%B7%E5%8F%96-context%E3%80%81redux-%E7%9A%84%E5%86%85%E5%AE%B9%E5%92%8C-ConfigProvider-%E7%9A%84-locale/prefixCls-%E9%85%8D%E7%BD%AE%EF%BC%9F) 和 [Modal.useModal](/components/modal-cn/#%E4%B8%BA%E4%BB%80%E4%B9%88-Modal-%E6%96%B9%E6%B3%95%E4%B8%8D%E8%83%BD%E8%8E%B7%E5%8F%96-context%E3%80%81redux%E3%80%81%E7%9A%84%E5%86%85%E5%AE%B9%E5%92%8C-ConfigProvider-locale/prefixCls-%E9%85%8D%E7%BD%AE%EF%BC%9F) 来调用这些方法。
 
 2. 使用 [App.useApp](/components/app-cn#%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95) 直接调用 message、notification、modal 实例方法。
 
 ## 为什么我不应该通过 ref 访问组件内部的 props 和 state？
 
-你通过 ref 获得引用时只应该使用文档提供的方法。直接读取组件内部的 `props` 和 `state` 不是一个好的设计，这会使你的代码与组件版本强耦合。任何重构都可能会使你的代码无法工作，其中重构包括且不仅限于改造成 [Hooks](https://reactjs.org/docs/hooks-intro.html) 版本、移除 / 更名内部 `props` 与 `state`、调整内部 React 节点结构等等。
+你通过 ref 获得引用时只应该使用文档提供的方法。直接读取组件内部的 `props` 和 `state` 不是一个好的设计，这会使你的代码与组件版本强耦合。任何重构都可能会使你的代码无法工作，其中重构包括且不仅限于改造成 [Hooks](https://zh-hans.react.dev/reference/react/hooks) 版本、移除 / 更名内部 `props` 与 `state`、调整内部 React 节点结构等等。
 
 <div id="why-open"></div>
 
@@ -253,9 +246,11 @@ import { ConfigProvider } from 'antd';
 
 ## 如何正确的拼写 Ant Design？
 
-- ✅ **Ant Design**：用空格分隔的首字母大写单词，指代设计语言。
-- ✅ **antd**：全小写，指代 React UI 组件库。
-- ✅ **ant.design**：特指 ant.design 网站网址。
+| 拼写 | 用法 | 发音 |
+| --- | --- | --- |
+| ✅ **Ant Design** | 用空格分隔的首字母大写单词，指代设计语言 | - |
+| ✅ **antd** | 全小写，指代 React UI 组件库 | <audio controls src="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/file/A*ChCdRJ0w8SUAAAAAAAAAAAAADgCCAQ"></audio> |
+| ✅ **ant.design** | 指 ant.design 网站 | - |
 
 下面是一些典型的错误例子：
 
@@ -302,6 +297,10 @@ export default () => {
 ```
 
 如果 `strictNullChecks` 的值被设置为 `true` 就会出现上述问题，如果你确定项目中可以不需要这个检测配置（查看[strictNullChecks](https://www.typescriptlang.org/zh/tsconfig#strictNullChecks)判断是否需要该配置），可以尝试改为 `false` 关闭控制严格检查功能。但如果你确实需要开启这个功能，那么，你可以在设计类型时，使用其他类型替代 `null` 以避免出现这种情况。
+
+## 为什么 antd 不处理浏览器缩放遇到的精度问题？
+
+不同浏览器对缩放的渲染行为不同，修复一个浏览器的精度问题往往会导致其他浏览器出现问题。此外，缩放相关的精度问题通常出现在极端缩放级别下，这在常规使用中并不常见。渲染不一致的问题源于浏览器在缩放操作期间计算和渲染元素的方式，包括亚像素渲染、舍入差异和布局重新计算。解决这些问题需要大量的浏览器特定代码，这会对性能和可维护性产生负面影响，并且这些代码也可能因浏览器版本更新而失效。
 
 ## 使用 Next.js 的 App Router 时 antd 组件报错
 

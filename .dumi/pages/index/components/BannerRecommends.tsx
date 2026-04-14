@@ -1,14 +1,15 @@
-import React, { useContext } from 'react';
-import { Badge, Carousel, Skeleton, Typography } from 'antd';
-import { createStyles, useTheme } from 'antd-style';
-import classNames from 'classnames';
+import React from 'react';
+import raf from '@rc-component/util/lib/raf';
+import { Alert, Badge, Carousel, Flex, Skeleton, Typography } from 'antd';
+import { createStyles } from 'antd-style';
+import { clsx } from 'clsx';
 
 import useLocale from '../../../hooks/useLocale';
 import SiteContext from '../../../theme/slots/SiteContext';
 import type { Extra, Icon } from './util';
-import { getCarouselStyle, useSiteData } from './util';
+import { getCarouselStyle, useAntdSiteConfig } from './util';
 
-const useStyle = createStyles(({ token, css, cx }) => {
+const useStyle = createStyles(({ cssVar, css, cx }) => {
   const { carousel } = getCarouselStyle();
 
   const itemBase = css`
@@ -17,13 +18,47 @@ const useStyle = createStyles(({ token, css, cx }) => {
     flex-direction: column;
     align-items: stretch;
     text-decoration: none;
-    background: ${token.colorBgContainer};
-    border: ${token.lineWidth}px solid ${token.colorBorderSecondary};
-    border-radius: ${token.borderRadiusLG}px;
-    transition: all ${token.motionDurationSlow};
-    padding-block: ${token.paddingMD}px;
-    padding-inline: ${token.paddingLG}px;
+    background: ${cssVar.colorBgContainer};
+    background: color-mix(in srgb, ${cssVar.colorBgContainer} 30%, transparent);
+    backdrop-filter: blur(8px);
+    border: ${cssVar.lineWidth} solid ${cssVar.colorBorderSecondary};
+    border-radius: ${cssVar.borderRadiusLG};
+    transition: all ${cssVar.motionDurationSlow};
+    padding-block: ${cssVar.paddingMD};
+    padding-inline: ${cssVar.paddingLG};
     box-sizing: border-box;
+    position: relative;
+
+    &:before {
+      content: '';
+      inset: calc(${cssVar.lineWidth} * -1);
+      position: absolute;
+
+      background: radial-gradient(
+        circle 150px at var(--mouse-x, 0) var(--mouse-y, 0),
+        ${cssVar.colorPrimaryBorderHover},
+        ${cssVar.colorBorderSecondary}
+      );
+      opacity: 0;
+      transition: all 0.3s ease;
+      mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+      mask-composite: subtract;
+      -webkit-mask-composite: xor;
+      padding: 1px;
+      border-radius: inherit;
+    }
+
+    &:hover {
+      backdrop-filter: blur(0px);
+      background: color-mix(in srgb, ${cssVar.colorBgContainer} 90%, transparent);
+
+      &:before {
+        opacity: 1;
+      }
+    }
   `;
 
   return {
@@ -33,13 +68,8 @@ const useStyle = createStyles(({ token, css, cx }) => {
         height: 100%;
       }
     `,
-    cardItem: css`
-      &:hover {
-        box-shadow: ${token.boxShadowCard};
-      }
-    `,
     sliderItem: css`
-      margin: 0 ${token.margin}px;
+      margin: 0 ${cssVar.margin};
       text-align: start;
     `,
     container: css`
@@ -48,49 +78,108 @@ const useStyle = createStyles(({ token, css, cx }) => {
       max-width: 100%;
       margin-inline: auto;
       box-sizing: border-box;
-      column-gap: ${token.paddingMD * 2}px;
+      column-gap: calc(${cssVar.paddingMD} * 2);
       align-items: stretch;
       text-align: start;
       min-height: 178px;
       > * {
-        width: calc((100% - ${token.marginXXL * 2}px) / 3);
+        width: calc((100% - calc(${cssVar.marginXXL} * 2)) / 3);
       }
     `,
     carousel,
+    bannerBg: css`
+      height: ${cssVar.fontSize};
+    `,
   };
 });
 
+// ======================================================================
+// ==                               Item                               ==
+// ======================================================================
 interface RecommendItemProps {
   extra: Extra;
   index: number;
-  icons: Icon[];
+  icons?: Icon[];
   className?: string;
 }
-const RecommendItem: React.FC<RecommendItemProps> = ({ extra, index, icons, className }) => {
-  const token = useTheme();
+
+const RecommendItem: React.FC<RecommendItemProps> = (props) => {
+  const { extra, index, icons, className } = props;
+  const cardRef = React.useRef<HTMLAnchorElement>(null);
+
   const { styles } = useStyle();
 
+  // ====================== MousePos ======================
+  const [mousePosition, setMousePosition] = React.useState<[number, number]>([0, 0]);
+  const [transMousePosition, setTransMousePosition] = React.useState<[number, number]>([0, 0]);
+
+  const onMouseMove: React.MouseEventHandler<HTMLAnchorElement> = (e) => {
+    if (!cardRef.current) {
+      return;
+    }
+
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    setMousePosition([x, y]);
+  };
+
+  // Transition mouse position
+  React.useEffect(() => {
+    const [targetX, targetY] = mousePosition;
+    const [currentX, currentY] = transMousePosition;
+
+    if (Math.abs(targetX - currentX) < 0.5 && Math.abs(targetY - currentY) < 0.5) {
+      return;
+    }
+
+    const rafId = raf(() => {
+      setTransMousePosition((ori) => {
+        const [curX, curY] = ori;
+        const deltaX = (targetX - curX) * 0.1;
+        const deltaY = (targetY - curY) * 0.1;
+
+        return [curX + deltaX, curY + deltaY];
+      });
+    });
+
+    return () => raf.cancel(rafId);
+  }, [mousePosition, transMousePosition]);
+
+  // ======================= Render =======================
   if (!extra) {
     return <Skeleton key={index} />;
   }
-  const icon = icons.find((i) => i.name === extra.source);
+
+  const icon = icons?.find((i) => i.name === extra.source);
 
   const card = (
     <a
+      ref={cardRef}
       key={extra?.title}
       href={extra.href}
       target="_blank"
-      className={classNames(styles.itemBase, className)}
+      className={clsx(styles.itemBase, className)}
+      style={
+        {
+          '--mouse-x': `${transMousePosition[0]}px`,
+          '--mouse-y': `${transMousePosition[1]}px`,
+        } as React.CSSProperties
+      }
       rel="noreferrer"
+      onMouseMove={onMouseMove}
     >
       <Typography.Title level={5}>{extra?.title}</Typography.Title>
       <Typography.Paragraph type="secondary" style={{ flex: 'auto' }}>
         {extra.description}
       </Typography.Paragraph>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Flex justify="space-between" align="center">
         <Typography.Text>{extra.date}</Typography.Text>
-        {icon && <img src={icon.href} style={{ height: token.fontSize }} alt="banner" />}
-      </div>
+        {icon?.href && (
+          <img src={icon.href} draggable={false} className={styles.bannerBg} alt="banner" />
+        )}
+      </Flex>
     </a>
   );
 
@@ -105,16 +194,20 @@ const RecommendItem: React.FC<RecommendItemProps> = ({ extra, index, icons, clas
   return card;
 };
 
+// ======================================================================
+// ==                             Fallback                             ==
+// ======================================================================
 export const BannerRecommendsFallback: React.FC = () => {
-  const { isMobile } = useContext(SiteContext);
+  const { isMobile } = React.use(SiteContext);
+
   const { styles } = useStyle();
 
-  const list = Array(3).fill(1);
+  const list = Array.from({ length: 3 });
 
   return isMobile ? (
     <Carousel className={styles.carousel}>
       {list.map((_, index) => (
-        <div key={index} className={styles.itemBase}>
+        <div key={`mobile-${index}`} className={styles.itemBase}>
           <Skeleton active style={{ padding: '0 24px' }} />
         </div>
       ))}
@@ -122,7 +215,7 @@ export const BannerRecommendsFallback: React.FC = () => {
   ) : (
     <div className={styles.container}>
       {list.map((_, index) => (
-        <div key={index} className={styles.itemBase}>
+        <div key={`desktop-${index}`} className={styles.itemBase}>
           <Skeleton active />
         </div>
       ))}
@@ -130,28 +223,44 @@ export const BannerRecommendsFallback: React.FC = () => {
   );
 };
 
+// ======================================================================
+// ==                            Recommends                            ==
+// ======================================================================
 const BannerRecommends: React.FC = () => {
   const { styles } = useStyle();
   const [, lang] = useLocale();
-  const { isMobile } = React.useContext(SiteContext);
-  const data = useSiteData();
-  const extras = data?.extras?.[lang];
-  const icons = data?.icons || [];
-  const first3 = !extras || extras.length === 0 ? Array(3).fill(null) : extras.slice(0, 3);
+  const { isMobile } = React.use(SiteContext);
+  const { data, error, isLoading } = useAntdSiteConfig();
 
-  if (!data) {
+  if (isLoading) {
     return <BannerRecommendsFallback />;
   }
+
+  if (error) {
+    return (
+      <Alert
+        showIcon
+        type="error"
+        title={error.message}
+        description={process.env.NODE_ENV !== 'production' ? error.stack : undefined}
+      />
+    );
+  }
+
+  const extras = data?.extras?.[lang];
+
+  const mergedExtras =
+    !extras || !extras.length ? Array.from<Extra>({ length: 3 }) : extras.slice(0, 3);
 
   if (isMobile) {
     return (
       <Carousel className={styles.carousel}>
-        {first3.map((extra, index) => (
-          <div key={index}>
+        {mergedExtras.map((extra, index) => (
+          <div key={`mobile-${index}`}>
             <RecommendItem
               extra={extra}
               index={index}
-              icons={icons}
+              icons={data?.icons}
               className={styles.sliderItem}
             />
           </div>
@@ -162,14 +271,8 @@ const BannerRecommends: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      {first3.map((extra, index) => (
-        <RecommendItem
-          extra={extra}
-          index={index}
-          icons={icons}
-          className={styles.cardItem}
-          key={index}
-        />
+      {mergedExtras.map((extra, index) => (
+        <RecommendItem key={`desktop-${index}`} extra={extra} index={index} icons={data?.icons} />
       ))}
     </div>
   );

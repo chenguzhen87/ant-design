@@ -1,45 +1,47 @@
 import * as React from 'react';
 
+import { isNonNullable } from '../_util/is';
 import Alert from './Alert';
 
-interface ErrorBoundaryProps {
+export interface ErrorBoundaryProps {
+  title?: React.ReactNode;
+  /**
+   * @deprecated please use `title` instead.
+   */
   message?: React.ReactNode;
   description?: React.ReactNode;
   children?: React.ReactNode;
   id?: string;
 }
 
-interface ErrorBoundaryStates {
+export interface ErrorBoundaryStates {
   error?: Error | null;
-  info?: {
-    componentStack?: string;
-  };
+  info?: React.ErrorInfo;
 }
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryStates> {
-  state = {
+class ErrorBoundary extends React.PureComponent<ErrorBoundaryProps, ErrorBoundaryStates> {
+  state: ErrorBoundaryStates = {
     error: undefined,
-    info: {
-      componentStack: '',
-    },
+    info: {},
   };
 
-  componentDidCatch(error: Error | null, info: object) {
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
     this.setState({ error, info });
   }
 
   render() {
-    const { message, description, id, children } = this.props;
+    const { message, title, description, id, children } = this.props;
     const { error, info } = this.state;
-    const componentStack = info && info.componentStack ? info.componentStack : null;
-    const errorMessage = typeof message === 'undefined' ? (error || '').toString() : message;
-    const errorDescription = typeof description === 'undefined' ? componentStack : description;
+    const mergedTitle = title ?? message;
+    const componentStack = info?.componentStack || null;
+    const errorMessage = isNonNullable(mergedTitle) ? mergedTitle : error?.toString();
+    const errorDescription = isNonNullable(description) ? description : componentStack;
     if (error) {
       return (
         <Alert
           id={id}
           type="error"
-          message={errorMessage}
+          title={errorMessage}
           description={
             <pre style={{ fontSize: '0.9em', overflowX: 'auto' }}>{errorDescription}</pre>
           }

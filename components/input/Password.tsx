@@ -2,12 +2,13 @@ import * as React from 'react';
 import { useRef, useState } from 'react';
 import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
 import EyeOutlined from '@ant-design/icons/EyeOutlined';
-import classNames from 'classnames';
-import omit from 'rc-util/lib/omit';
-import { composeRef } from 'rc-util/lib/ref';
+import { omit } from '@rc-component/util';
+import { composeRef } from '@rc-component/util/lib/ref';
+import { clsx } from 'clsx';
 
 import type { ConfigConsumerProps } from '../config-provider';
 import { ConfigContext } from '../config-provider';
+import DisabledContext from '../config-provider/DisabledContext';
 import useRemovePasswordTimeout from './hooks/useRemovePasswordTimeout';
 import type { InputProps, InputRef } from './Input';
 import Input from './Input';
@@ -24,6 +25,10 @@ export interface PasswordProps extends InputProps {
   readonly inputPrefixCls?: string;
   readonly action?: 'click' | 'hover';
   visibilityToggle?: boolean | VisibilityToggle;
+  /**
+   * @since 5.27.0
+   */
+  suffix?: React.ReactNode;
   iconRender?: (visible: boolean) => React.ReactNode;
 }
 
@@ -36,11 +41,16 @@ type IconPropsType = React.HTMLAttributes<HTMLSpanElement> & React.Attributes;
 
 const Password = React.forwardRef<InputRef, PasswordProps>((props, ref) => {
   const {
-    disabled,
+    disabled: customDisabled,
     action = 'click',
     visibilityToggle = true,
     iconRender = defaultIconRender,
+    suffix,
   } = props;
+
+  // ===================== Disabled =====================
+  const disabled = React.useContext(DisabledContext);
+  const mergedDisabled = customDisabled ?? disabled;
 
   const visibilityControlled =
     typeof visibilityToggle === 'object' && visibilityToggle.visible !== undefined;
@@ -59,19 +69,19 @@ const Password = React.forwardRef<InputRef, PasswordProps>((props, ref) => {
   const removePasswordTimeout = useRemovePasswordTimeout(inputRef);
 
   const onVisibleChange = () => {
-    if (disabled) {
+    if (mergedDisabled) {
       return;
     }
     if (visible) {
       removePasswordTimeout();
     }
-    setVisible((prevState) => {
-      const newState = !prevState;
-      if (typeof visibilityToggle === 'object') {
-        visibilityToggle.onVisibleChange?.(newState);
-      }
-      return newState;
-    });
+
+    const nextVisible = !visible;
+    setVisible(nextVisible);
+
+    if (typeof visibilityToggle === 'object') {
+      visibilityToggle.onVisibleChange?.(nextVisible);
+    }
   };
 
   const getIcon = (prefixCls: string) => {
@@ -112,16 +122,19 @@ const Password = React.forwardRef<InputRef, PasswordProps>((props, ref) => {
 
   const suffixIcon = visibilityToggle && getIcon(prefixCls);
 
-  const inputClassName = classNames(prefixCls, className, {
-    [`${prefixCls}-${size}`]: !!size,
-  });
+  const inputClassName = clsx(prefixCls, className, { [`${prefixCls}-${size}`]: !!size });
 
   const omittedProps: InputProps = {
     ...omit(restProps, ['suffix', 'iconRender', 'visibilityToggle']),
     type: visible ? 'text' : 'password',
     className: inputClassName,
     prefixCls: inputPrefixCls,
-    suffix: suffixIcon,
+    suffix: (
+      <>
+        {suffixIcon}
+        {suffix}
+      </>
+    ),
   };
 
   if (size) {

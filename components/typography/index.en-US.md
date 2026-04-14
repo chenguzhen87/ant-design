@@ -9,7 +9,7 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*LT2jR41Uj2EAAA
 
 ## When To Use
 
-- When need to display a title or paragraph contents in Articles/Blogs/Notes.
+- When you need to display a title or paragraph contents in Articles/Blogs/Notes.
 - When you need copyable/editable/ellipsis texts.
 
 ## Examples
@@ -27,6 +27,7 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*LT2jR41Uj2EAAA
 <code src="./demo/ellipsis-debug.tsx" debug>Ellipsis Debug</code>
 <code src="./demo/suffix.tsx">suffix</code>
 <code src="./demo/componentToken-debug.tsx" debug>Component Token</code>
+<code src="./demo/link-danger-debug.tsx" debug>Link danger Debug</code>
 
 ## API
 
@@ -37,11 +38,11 @@ Common props ref：[Common props](/docs/react/common-props)
 | Property | Description | Type | Default | Version |
 | --- | --- | --- | --- | --- |
 | code | Code style | boolean | false |  |
-| copyable | Whether to be copyable, customize it via setting an object | boolean \| [copyable](#copyable) | false | [copyable](#copyable) |
+| copyable | Whether to be copyable, customize it via setting an object | boolean \| [copyable](#copyable) | false |  |
 | delete | Deleted line style | boolean | false |  |
 | disabled | Disabled content | boolean | false |  |
-| editable | If editable. Can control edit state when is object | boolean \| [editable](#editable) | false | [editable](#editable) |
-| ellipsis | Display ellipsis when text overflows, can't configure expandable、rows and onExpand by using object. Diff with Typography.Paragraph, Text do not have 100% width style which means it will fix width on the first ellipsis. If you want to have responsive ellipsis, please set width manually | boolean \| [Omit<ellipsis, 'expandable' \| 'rows' \| 'onExpand'>](#ellipsis) | false | [ellipsis](#ellipsis) |
+| editable | If editable. Can control edit state when is object | boolean \| [editable](#editable) | false |  |
+| ellipsis | Display ellipsis when text overflows, can't configure expandable, rows and onExpand by using object. Diff with Typography.Paragraph, Text do not have 100% width style which means it will fix width on the first ellipsis. If you want to have responsive ellipsis, please set width manually | boolean \| [Omit<ellipsis, 'expandable' \| 'rows' \| 'onExpand'>](#ellipsis) | false |  |
 | keyboard | Keyboard style | boolean | false | 4.3.0 |
 | mark | Marked style | boolean | false |  |
 | onClick | Set the handler to handle click event | (event) => void | - |  |
@@ -55,11 +56,11 @@ Common props ref：[Common props](/docs/react/common-props)
 | Property | Description | Type | Default | Version |
 | --- | --- | --- | --- | --- |
 | code | Code style | boolean | false |  |
-| copyable | Whether to be copyable, customize it via setting an object | boolean \| [copyable](#copyable) | false | [copyable](#copyable) |
+| copyable | Whether to be copyable, customize it via setting an object | boolean \| [copyable](#copyable) | false |  |
 | delete | Deleted line style | boolean | false |  |
 | disabled | Disabled content | boolean | false |  |
-| editable | If editable. Can control edit state when is object | boolean \| [editable](#editable) | false | [editable](#editable) |
-| ellipsis | Display ellipsis when text overflows, can configure rows and expandable by using object | boolean \| [ellipsis](#ellipsis) | false | [ellipsis](#ellipsis) |
+| editable | If editable. Can control edit state when is object | boolean \| [editable](#editable) | false |  |
+| ellipsis | Display ellipsis when text overflows, can configure rows and expandable by using object | boolean \| [ellipsis](#ellipsis) | false |  |
 | level | Set content importance. Match with `h1`, `h2`, `h3`, `h4`, `h5` | number: 1, 2, 3, 4, 5 | 1 | 5: 4.6.0 |
 | mark | Marked style | boolean | false |  |
 | onClick | Set the handler to handle click event | (event) => void | - |  |
@@ -72,11 +73,11 @@ Common props ref：[Common props](/docs/react/common-props)
 | Property | Description | Type | Default | Version |
 | --- | --- | --- | --- | --- |
 | code | Code style | boolean | false |  |
-| copyable | Whether to be copyable, customize it via setting an object | boolean \| [copyable](#copyable) | false | [copyable](#copyable) |
+| copyable | Whether to be copyable, customize it via setting an object | boolean \| [copyable](#copyable) | false |  |
 | delete | Deleted line style | boolean | false |  |
 | disabled | Disabled content | boolean | false |  |
-| editable | If editable. Can control edit state when is object | boolean \| [editable](#editable) | false | [editable](#editable) |
-| ellipsis | Display ellipsis when text overflows, can configure rows and expandable by using object | boolean \| [ellipsis](#ellipsis) | false | [ellipsis](#ellipsis) |
+| editable | If editable. Can control edit state when is object | boolean \| [editable](#editable) | false |  |
+| ellipsis | Display ellipsis when text overflows, can configure rows and expandable by using object | boolean \| [ellipsis](#ellipsis) | false |  |
 | mark | Marked style | boolean | false |  |
 | onClick | Set the handler to handle click event | (event) => void | - |  |
 | strong | Bold style | boolean | false |  |
@@ -108,7 +109,7 @@ Common props ref：[Common props](/docs/react/common-props)
 
     {
       icon: ReactNode,
-      tooltip: boolean | ReactNode,
+      tooltip: ReactNode,
       editing: boolean,
       maxLength: number,
       autoSize: boolean | { minRows: number, maxRows: number },
@@ -148,7 +149,7 @@ interface EllipsisConfig {
   suffix: string;
   /** render function added in `5.16.0` */
   symbol: ReactNode | ((expanded: boolean) => ReactNode);
-  tooltip: boolean | ReactNode | TooltipProps;
+  tooltip: ReactNode | TooltipProps;
   /** added in `5.16.0` */
   defaultExpanded: boolean;
   /** added in `5.16.0` */
@@ -174,15 +175,3 @@ interface EllipsisConfig {
 ## Design Token
 
 <ComponentTokenTable component="Typography"></ComponentTokenTable>
-
-## FAQ
-
-### How to use Typography.Link in react-router?
-
-`react-router` support [customize](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/Link.md#component-reactcomponent) render component:
-
-```tsx
-<Link to="/" component={Typography.Link} />
-```
-
-**Note：** This is not equivalent to the execution logic of react-router's Link [reference](https://github.com/ant-design/ant-design/pull/26737/files#r488769888)

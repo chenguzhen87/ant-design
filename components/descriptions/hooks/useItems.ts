@@ -1,13 +1,17 @@
 import * as React from 'react';
-import toArray from 'rc-util/lib/Children/toArray';
+import { toArray } from '@rc-component/util';
 
 import type { DescriptionsItemType, InternalDescriptionsItemType } from '..';
+import { isNumber } from '../../_util/is';
 import { matchScreen } from '../../_util/responsiveObserver';
 import type { ScreenMap } from '../../_util/responsiveObserver';
 
 // Convert children into items
 const transChildren2Items = (childNodes?: React.ReactNode) =>
-  toArray(childNodes).map((node) => ({ ...node?.props, key: node.key }));
+  toArray(childNodes).map((node) => ({
+    ...(node as React.ReactElement<any>)?.props,
+    key: node.key,
+  }));
 
 export default function useItems(
   screens: ScreenMap,
@@ -23,10 +27,12 @@ export default function useItems(
 
   const responsiveItems = React.useMemo<InternalDescriptionsItemType[]>(
     () =>
-      mergedItems.map(({ span, ...restItem }) => ({
-        ...restItem,
-        span: typeof span === 'number' ? span : matchScreen(screens, span),
-      })),
+      mergedItems.map(({ span, ...restItem }) => {
+        if (span === 'filled') {
+          return { ...restItem, filled: true };
+        }
+        return { ...restItem, span: isNumber(span) ? span : matchScreen(screens, span) };
+      }),
     [mergedItems, screens],
   );
 

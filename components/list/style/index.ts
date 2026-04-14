@@ -11,7 +11,7 @@ export interface ComponentToken {
    * @desc 内容宽度
    * @descEN Width of content
    */
-  contentWidth: number;
+  contentWidth: number | string;
   /**
    * @desc 大号列表项内间距
    * @descEN Padding of large item
@@ -64,12 +64,24 @@ export interface ComponentToken {
   descriptionFontSize: number;
 }
 
+/**
+ * @desc List 组件的 Token
+ * @descEN Token for List component
+ */
 interface ListToken extends FullToken<'List'> {
+  /**
+   * @desc 列表项类名
+   * @descEN Class name of list item
+   */
   listBorderedCls: string;
-  minHeight: number;
+  /**
+   * @desc 最小高度
+   * @descEN Minimum height
+   */
+  minHeight: number | string;
 }
 
-const genBorderedStyle = (token: ListToken): CSSObject => {
+const genBorderedStyle: GenerateStyle<ListToken, CSSObject> = (token) => {
   const {
     listBorderedCls,
     componentCls,
@@ -80,10 +92,21 @@ const genBorderedStyle = (token: ListToken): CSSObject => {
     marginLG,
     borderRadiusLG,
   } = token;
+
+  const innerCornerBorderRadius = unit(token.calc(borderRadiusLG).sub(token.lineWidth).equal());
+
   return {
-    [`${listBorderedCls}`]: {
+    [listBorderedCls]: {
       border: `${unit(token.lineWidth)} ${token.lineType} ${token.colorBorder}`,
       borderRadius: borderRadiusLG,
+      [`${componentCls}-header`]: {
+        borderRadius: `${innerCornerBorderRadius} ${innerCornerBorderRadius} 0 0`,
+      },
+
+      [`${componentCls}-footer`]: {
+        borderRadius: `0 0 ${innerCornerBorderRadius} ${innerCornerBorderRadius}`,
+      },
+
       [`${componentCls}-header,${componentCls}-footer,${componentCls}-item`]: {
         paddingInline: paddingLG,
       },
@@ -105,11 +128,11 @@ const genBorderedStyle = (token: ListToken): CSSObject => {
     },
   };
 };
-const genResponsiveStyle = (token: ListToken): CSSObject => {
+const genResponsiveStyle: GenerateStyle<ListToken, CSSObject> = (token) => {
   const { componentCls, screenSM, screenMD, marginLG, marginSM, margin } = token;
   return {
     [`@media screen and (max-width:${screenMD}px)`]: {
-      [`${componentCls}`]: {
+      [componentCls]: {
         [`${componentCls}-item`]: {
           [`${componentCls}-item-action`]: {
             marginInlineStart: marginLG,
@@ -127,7 +150,7 @@ const genResponsiveStyle = (token: ListToken): CSSObject => {
     },
 
     [`@media screen and (max-width: ${screenSM}px)`]: {
-      [`${componentCls}`]: {
+      [componentCls]: {
         [`${componentCls}-item`]: {
           flexWrap: 'wrap',
 
@@ -155,7 +178,7 @@ const genResponsiveStyle = (token: ListToken): CSSObject => {
 };
 
 // =============================== Base ===============================
-const genBaseStyle: GenerateStyle<ListToken> = (token) => {
+const genBaseStyle: GenerateStyle<ListToken, CSSObject> = (token) => {
   const {
     componentCls,
     antCls,
@@ -183,17 +206,12 @@ const genBaseStyle: GenerateStyle<ListToken> = (token) => {
     descriptionFontSize,
   } = token;
 
-  const alignCls: any = {};
-  ['start', 'center', 'end'].forEach((item) => {
-    alignCls[`&-align-${item}`] = {
-      textAlign: item,
-    };
-  });
-
   return {
-    [`${componentCls}`]: {
+    [componentCls]: {
       ...resetComponent(token),
       position: 'relative',
+      // fix https://github.com/ant-design/ant-design/issues/46177
+      ['--rc-virtual-list-scrollbar-bg' as const]: token.colorSplit,
       '*': {
         outline: 'none',
       },
@@ -209,8 +227,6 @@ const genBaseStyle: GenerateStyle<ListToken> = (token) => {
 
       [`${componentCls}-pagination`]: {
         marginBlockStart: marginLG,
-
-        ...alignCls,
 
         // https://github.com/ant-design/ant-design/issues/20037
         [`${antCls}-pagination-options`]: {
@@ -262,7 +278,7 @@ const genBaseStyle: GenerateStyle<ListToken> = (token) => {
               color: colorText,
               transition: `all ${motionDurationSlow}`,
 
-              [`&:hover`]: {
+              '&:hover': {
                 color: colorPrimary,
               },
             },
@@ -282,7 +298,7 @@ const genBaseStyle: GenerateStyle<ListToken> = (token) => {
           fontSize: 0,
           listStyle: 'none',
 
-          [`& > li`]: {
+          '& > li': {
             position: 'relative',
             display: 'inline-block',
             padding: `0 ${unit(paddingXS)}`,
@@ -291,7 +307,7 @@ const genBaseStyle: GenerateStyle<ListToken> = (token) => {
             lineHeight: token.lineHeight,
             textAlign: 'center',
 
-            [`&:first-child`]: {
+            '&:first-child': {
               paddingInlineStart: 0,
             },
           },
@@ -365,7 +381,7 @@ const genBaseStyle: GenerateStyle<ListToken> = (token) => {
         '> li': {
           padding: `0 ${unit(padding)}`,
 
-          [`&:first-child`]: {
+          '&:first-child': {
             paddingInlineStart: 0,
           },
         },
@@ -375,7 +391,7 @@ const genBaseStyle: GenerateStyle<ListToken> = (token) => {
     [`${componentCls}-split ${componentCls}-item`]: {
       borderBlockEnd: `${unit(token.lineWidth)} ${token.lineType} ${token.colorSplit}`,
 
-      [`&:last-child`]: {
+      '&:last-child': {
         borderBlockEnd: 'none',
       },
     },
@@ -438,4 +454,7 @@ export default genStyleHooks(
     return [genBaseStyle(listToken), genBorderedStyle(listToken), genResponsiveStyle(listToken)];
   },
   prepareComponentToken,
+  {
+    extraCssVarPrefixCls: ({ prefixCls }) => [`${prefixCls}-container`],
+  },
 );

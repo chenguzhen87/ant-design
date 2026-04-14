@@ -11,9 +11,13 @@ const App: React.FC = () => (
           containerSizeLG: 30,
           containerSizeSM: 16,
 
-          textFontSize: 18,
-          textFontSizeLG: 28,
-          textFontSizeSM: 12,
+          textFontSize: 14,
+          textFontSizeLG: 14,
+          textFontSizeSM: 14,
+
+          iconFontSize: 18,
+          iconFontSizeLG: 28,
+          iconFontSizeSM: 12,
 
           borderRadius: 10,
           groupOverlapping: -10,
@@ -28,7 +32,12 @@ const App: React.FC = () => (
       </Avatar>
     </Space>
     <Space>
-      <Avatar.Group maxCount={2} maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>
+      <Avatar.Group
+        max={{
+          count: 2,
+          style: { color: '#f56a00', backgroundColor: '#fde3cf' },
+        }}
+      >
         <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=2" />
         <Avatar style={{ backgroundColor: '#f56a00' }}>K</Avatar>
         <Tooltip title="Ant User" placement="top">

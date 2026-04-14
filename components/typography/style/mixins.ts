@@ -8,14 +8,12 @@
 }
 */
 import { gold } from '@ant-design/colors';
-import { unit } from '@ant-design/cssinjs';
 import type { CSSObject } from '@ant-design/cssinjs';
 
 import type { TypographyToken } from '.';
 import { operationUnit } from '../../style';
 import type { GenerateStyle } from '../../theme/internal';
 
-// eslint-disable-next-line import/prefer-default-export
 const getTitleStyle = (
   fontSize: number,
   lineHeight: number,
@@ -33,11 +31,10 @@ const getTitleStyle = (
   };
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const getTitleStyles: GenerateStyle<TypographyToken, CSSObject> = (token) => {
   const headings = [1, 2, 3, 4, 5] as const;
 
-  const styles = {} as CSSObject;
+  const styles: CSSObject = {};
   headings.forEach((headingLevel) => {
     styles[
       `
@@ -58,15 +55,12 @@ export const getTitleStyles: GenerateStyle<TypographyToken, CSSObject> = (token)
 
 export const getLinkStyles: GenerateStyle<TypographyToken, CSSObject> = (token) => {
   const { componentCls } = token;
+  const linkCls = `${componentCls}-link`;
 
   return {
-    'a&, a': {
+    [`&${linkCls}`]: {
       ...operationUnit(token),
-      textDecoration: token.linkDecoration,
-
-      '&:active, &:hover': {
-        textDecoration: token.linkHoverDecoration,
-      },
+      userSelect: 'text',
 
       [`&[disabled], &${componentCls}-disabled`]: {
         color: token.colorTextDisabled,
@@ -84,7 +78,7 @@ export const getLinkStyles: GenerateStyle<TypographyToken, CSSObject> = (token) 
   };
 };
 
-export const getResetStyles: GenerateStyle<TypographyToken, CSSObject> = (token): CSSObject => ({
+export const getResetStyles: GenerateStyle<TypographyToken, CSSObject> = (token) => ({
   code: {
     margin: '0 0.2em',
     paddingInline: '0.4em',
@@ -124,7 +118,7 @@ export const getResetStyles: GenerateStyle<TypographyToken, CSSObject> = (token)
   },
 
   strong: {
-    fontWeight: 600,
+    fontWeight: token.fontWeightStrong,
   },
 
   // list
@@ -197,15 +191,15 @@ export const getEditableStyles: GenerateStyle<TypographyToken, CSSObject> = (tok
 
       'div&': {
         insetInlineStart: token.calc(token.paddingSM).mul(-1).equal(),
-        marginTop: token.calc(inputShift).mul(-1).equal(),
-        marginBottom: `calc(1em - ${unit(inputShift)})`,
+        insetBlockStart: token.calc(inputShift).div(-2).add(1).equal(),
+        marginBottom: token.calc(inputShift).div(2).sub(2).equal(),
       },
 
       [`${componentCls}-edit-content-confirm`]: {
         position: 'absolute',
         insetInlineEnd: token.calc(token.marginXS).add(2).equal(),
         insetBlockEnd: token.marginXS,
-        color: token.colorTextDescription,
+        color: token.colorIcon,
         // default style
         fontWeight: 'normal',
         fontSize: token.fontSize,
@@ -225,10 +219,7 @@ export const getEditableStyles: GenerateStyle<TypographyToken, CSSObject> = (tok
 
 export const getCopyableStyles: GenerateStyle<TypographyToken, CSSObject> = (token) => ({
   [`${token.componentCls}-copy-success`]: {
-    [`
-    &,
-    &:hover,
-    &:focus`]: {
+    '&, &:hover, &:focus': {
       color: token.colorSuccess,
     },
   },
@@ -238,19 +229,13 @@ export const getCopyableStyles: GenerateStyle<TypographyToken, CSSObject> = (tok
 });
 
 export const getEllipsisStyles = (): CSSObject => ({
-  [`
-  a&-ellipsis,
-  span&-ellipsis
-  `]: {
+  'a&-ellipsis, span&-ellipsis': {
     display: 'inline-block',
     maxWidth: '100%',
   },
 
-  '&-single-line': {
-    whiteSpace: 'nowrap',
-  },
-
   '&-ellipsis-single-line': {
+    whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
 

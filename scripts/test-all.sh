@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Full skip argms
-# npm run test-all -- --skip-changelog --skip-commit --skip-lint --skip-build --skip-dekko --skip-dist --skip-es --skip-lib --skip-test --skip-node
+# npm run test-all -- --skip-changelog --skip-lint --skip-build --skip-dekko --skip-dist --skip-es --skip-lib --skip-test --skip-node
 
 # Check exist argument
 has_arg() {
@@ -27,14 +27,6 @@ else
   echo "[TEST ALL] test changelog...skip"
 fi
 
-if ! has_arg '--skip-commit' "$@"; then
-  echo "[TEST ALL] check-commit"
-  echo "[TEST ALL] check-commit" > ~test-all.txt
-  npm run check-commit
-else
-  echo "[TEST ALL] check-commit...skip"
-fi
-
 if ! has_arg '--skip-lint' "$@"; then
   echo "[TEST ALL] lint"
   echo "[TEST ALL] lint" > ~test-all.txt
@@ -58,11 +50,11 @@ fi
 if ! has_arg '--skip-dekko' "$@"; then
   echo "[TEST ALL] dekko dist"
   echo "[TEST ALL] dekko dist" > ~test-all.txt
-  node ./tests/dekko/dist.test.js
+  tsx ./tests/dekko/dist.test.ts
 
-  echo "[TEST ALL] dekko lib"
-  echo "[TEST ALL] dekko lib" > ~test-all.txt
-  node ./tests/dekko/lib.test.js
+  echo "[TEST ALL] dekko lib and es"
+  echo "[TEST ALL] dekko lib and es" > ~test-all.txt
+  tsx ./tests/dekko/lib-es.test.ts
 else
   echo "[TEST ALL] dekko test...skip"
 fi

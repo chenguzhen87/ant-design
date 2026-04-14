@@ -27,7 +27,7 @@ const generateData = (_level: number, _preKey?: React.Key, _tns?: TreeDataNode[]
   const level = _level - 1;
   children.forEach((key, index) => {
     tns[index].children = [];
-    return generateData(level, key, tns[index].children);
+    generateData(level, key, tns[index].children);
   });
 };
 generateData(z);
@@ -74,7 +74,7 @@ const App: React.FC = () => {
     const { value } = e.target;
     const newExpandedKeys = dataList
       .map((item) => {
-        if (item.title.indexOf(value) > -1) {
+        if (item.title.includes(value)) {
           return getParentKey(item.key, defaultData);
         }
         return null;
@@ -94,13 +94,13 @@ const App: React.FC = () => {
         const afterStr = strTitle.slice(index + searchValue.length);
         const title =
           index > -1 ? (
-            <span>
+            <span key={item.key}>
               {beforeStr}
               <span className="site-tree-search-value">{searchValue}</span>
               {afterStr}
             </span>
           ) : (
-            <span>{strTitle}</span>
+            <span key={item.key}>{strTitle}</span>
           );
         if (item.children) {
           return { title, key: item.key, children: loop(item.children) };

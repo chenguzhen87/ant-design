@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import type { HastRoot, UnifiedTransformer } from 'dumi';
 import { unistUtilVisit } from 'dumi';
 
@@ -58,7 +58,9 @@ function rehypeAntd(): UnifiedTransformer<HastRoot> {
         node.tagName === 'Table' &&
         /^components/.test(filename)
       ) {
-        if (!node.properties) return;
+        if (!node.properties) {
+          return;
+        }
         node.properties.className ??= [];
         (node.properties.className as string[]).push('component-api-table');
       } else if (node.type === 'element' && (node.tagName === 'Link' || node.tagName === 'a')) {
@@ -72,9 +74,9 @@ function rehypeAntd(): UnifiedTransformer<HastRoot> {
 
         if (typeof lang === 'string' && lang.startsWith('sandpack')) {
           const code = (node.children[0] as any).value as string;
-          const configRegx = /^const sandpackConfig = ([\S\s]*?});/;
+          const configRegx = /^const sandpackConfig = ([\s\S]*?});/;
           const [configString] = code.match(configRegx) || [];
-          // eslint-disable-next-line no-eval
+          /* biome-ignore lint/security/noGlobalEval: used in documentation */ /* eslint-disable-next-line no-eval */
           const config = configString && eval(`(${configString.replace(configRegx, '$1')})`);
           Object.keys(config || {}).forEach((key) => {
             if (typeof config[key] === 'object') {

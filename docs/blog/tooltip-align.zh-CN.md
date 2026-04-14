@@ -2,6 +2,9 @@
 title: 新的 Tooltip 对齐方式
 date: 2023-02-15
 author: zombieJ
+zhihu_url: https://zhuanlan.zhihu.com/p/633332552
+yuque_url: https://www.yuque.com/ant-design/ant-design/lqtquocyv0k3xbg0
+juejin_url: https://juejin.cn/post/7322352551088390171
 ---
 
 在 `5.3.0` 版本中，我们将会更新 Tooltip 组件的底层依赖 `@rc-component/trigger` 使其更好的实现自适应对齐逻辑。在此之前，我们先聊聊此前版本遇到的一些问题。
@@ -75,7 +78,7 @@ const scaledOffsetY = baseOffsetY / scaleY;
 
 ### 箭头优化
 
-在过去版本中，箭头由 `rc-tooltip` 添加而非 `rc-trigger` 管理。这使得 `rc-tooltip` 封装时已经丢失了对齐信息，以至于无法在 Popup 偏移时正确的调整箭头位置。为此，我们将箭头逻辑也整合到 `rc-trigger` 中，使得箭头的位置可以随着 Popup 的偏移而偏移。合并之后，箭头位置计算变得十分简单。我们只要取目标元素和 Popup 边界值最小值，再取中间值即可：
+在过去版本中，箭头由 `@rc-component/tooltip` 添加而非 `@rc-component/trigger` 管理。这使得 `@rc-component/tooltip` 封装时已经丢失了对齐信息，以至于无法在 Popup 偏移时正确的调整箭头位置。为此，我们将箭头逻辑也整合到 `@rc-component/trigger` 中，使得箭头的位置可以随着 Popup 的偏移而偏移。合并之后，箭头位置计算变得十分简单。我们只要取目标元素和 Popup 边界值最小值，再取中间值即可：
 
 #### 居中定位
 

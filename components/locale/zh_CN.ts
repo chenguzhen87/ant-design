@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/zh_CN';
+import Pagination from '@rc-component/pagination/lib/locale/zh_CN';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/zh_CN';
@@ -17,13 +16,15 @@ const localeValues: Locale = {
   // locales for all components
   global: {
     placeholder: '请选择',
+    close: '关闭',
+    sortable: '可排序',
   },
   Table: {
     filterTitle: '筛选',
     filterConfirm: '确定',
     filterReset: '重置',
     filterEmptyText: '无筛选项',
-    filterCheckall: '全选',
+    filterCheckAll: '全选',
     filterSearchPlaceholder: '在筛选项中搜索',
     emptyText: '暂无数据',
     selectAll: '全选当页',
@@ -134,9 +135,6 @@ const localeValues: Locale = {
       },
     },
   },
-  Image: {
-    preview: '预览',
-  },
   QRCode: {
     expired: '二维码过期',
     refresh: '点击刷新',
@@ -144,6 +142,9 @@ const localeValues: Locale = {
   },
   ColorPicker: {
     presetEmpty: '暂无',
+    transparent: '无色',
+    singleColor: '单色',
+    gradientColor: '渐变色',
   },
 };
 

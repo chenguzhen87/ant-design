@@ -21,7 +21,7 @@ const gray: { [key: number]: string } = {
 const ColorStyle: React.FC = () => {
   const token = useTheme();
 
-  const makePalette = (color: string, index: number = 1): string => {
+  const makePalette = (color: string, index = 1): string => {
     if (index <= 10) {
       return `
 .palette-${color}-${index} {
@@ -33,7 +33,7 @@ ${makePalette(color, index + 1)}
     return '';
   };
 
-  const makeGrayPalette = (index: number = 1): string => {
+  const makeGrayPalette = (index = 1): string => {
     if (index <= 13) {
       return `
 .palette-gray-${index} {
@@ -130,19 +130,19 @@ ${makeGrayPalette(index + 1)}
         .main-color {
           ${makePalette('blue')}
           ${makePalette('purple')}
-  ${makePalette('cyan')}
-  ${makePalette('green')}
-  ${makePalette('magenta')}
-  ${makePalette('red')}
-  ${makePalette('volcano')}
-  ${makePalette('orange')}
-  ${makePalette('gold')}
-  ${makePalette('yellow')}
-  ${makePalette('lime')}
-  ${makePalette('geekblue')}
-  ${makeGrayPalette()}
+          ${makePalette('cyan')}
+          ${makePalette('green')}
+          ${makePalette('magenta')}
+          ${makePalette('red')}
+          ${makePalette('volcano')}
+          ${makePalette('orange')}
+          ${makePalette('gold')}
+          ${makePalette('yellow')}
+          ${makePalette('lime')}
+          ${makePalette('geekblue')}
+          ${makeGrayPalette()}
 
-  text-align: left;
+  text-align: start;
 
           &-item {
             position: relative;
@@ -170,14 +170,14 @@ ${makeGrayPalette(index + 1)}
           }
 
           &-item &-text {
-            float: left;
+            float: inline-start;
             transition: all ${token.motionDurationSlow};
           }
 
           &-item &-value {
             position: relative;
-            left: 3px;
-            float: right;
+            inset-inline-start: ${token.marginXXS}px;
+            float: inline-end;
             transform: scale(0.85);
             transform-origin: 100% 50%;
             opacity: 0;
@@ -203,7 +203,7 @@ ${makeGrayPalette(index + 1)}
 
         .main-color:hover {
           .main-color-value {
-            left: 0;
+            inset-inline-start: 0;
             opacity: 0.7;
           }
         }
@@ -223,7 +223,7 @@ ${makeGrayPalette(index + 1)}
 
             .color-palette-pick {
               color: rgba(255, 255, 255, 0.65);
-              text-align: left;
+              text-align: start;
 
               &-hex {
                 color: rgba(255, 255, 255, 0.65);
@@ -231,7 +231,6 @@ ${makeGrayPalette(index + 1)}
 
               .ant-row-rtl & {
                 direction: rtl;
-                text-align: right;
               }
             }
           }
@@ -264,7 +263,7 @@ ${makeGrayPalette(index + 1)}
             &-value {
               position: absolute;
               bottom: 0;
-              left: 0;
+              inset-inline-start: 0;
               width: 100%;
               text-align: center;
               transform-origin: unset;

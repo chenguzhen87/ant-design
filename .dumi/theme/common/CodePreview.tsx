@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react';
-import React, { useContext, useEffect, useMemo } from 'react';
-import { Button, Tabs, Typography } from 'antd';
+import React, { useEffect, useMemo } from 'react';
+import { Tabs, Typography } from 'antd';
 import { createStyles } from 'antd-style';
 import toReactElement from 'jsonml-to-react-element';
 import JsonML from 'jsonml.js/lib/utils';
@@ -9,21 +9,21 @@ import Prism from 'prismjs';
 import DemoContext from '../slots/DemoContext';
 import LiveCode from './LiveCode';
 
-const useStyle = createStyles(({ token, css }) => {
-  const { colorIcon, antCls } = token;
+const useStyle = createStyles(({ cssVar, token, css }) => {
+  const { antCls } = token;
 
   return {
     code: css`
       position: relative;
-      margin-top: -${token.margin}px;
+      margin-top: calc(-1 * ${cssVar.margin});
     `,
 
     copyButton: css`
-      color: ${colorIcon};
+      color: ${cssVar.colorIcon};
       position: absolute;
       z-index: 2;
       top: 16px;
-      inset-inline-end: ${token.padding}px;
+      inset-inline-end: ${cssVar.padding};
       width: 32px;
       text-align: center;
       padding: 0;
@@ -40,16 +40,16 @@ const useStyle = createStyles(({ token, css }) => {
           display: block;
           position: absolute;
           top: -5px;
-          left: -9px;
+          inset-inline-start: -9px;
           bottom: -5px;
-          right: -9px;
+          inset-inline-end: -9px;
         }
       }
       ${antCls}-typography-copy:not(${antCls}-typography-copy-success) {
-        color: ${colorIcon};
+        color: ${cssVar.colorIcon};
 
         &:hover {
-          color: ${colorIcon};
+          color: ${cssVar.colorIcon};
         }
       }
     `,
@@ -79,6 +79,7 @@ function toReactComponent(jsonML: any[]) {
         const attr = JsonML.getAttributes(node);
         return (
           <pre key={index} className={`language-${attr.lang}`}>
+            {/* biome-ignore lint/security/noDangerouslySetInnerHtml: it's for markdown */}
             <code dangerouslySetInnerHTML={{ __html: attr.highlighted }} />
           </pre>
         );
@@ -107,13 +108,17 @@ const CodePreview: React.FC<CodePreviewProps> = ({
     initialCodes.style = '';
   }
   const [highlightedCodes, setHighlightedCodes] = React.useState(initialCodes);
-  const { codeType, setCodeType } = useContext(DemoContext);
-  const sourceCodes = {
-    // omit trailing line break
-    tsx: sourceCode?.trim(),
-    jsx: jsxCode?.trim(),
-    style: styleCode?.trim(),
-  } as Record<'tsx' | 'jsx' | 'style', string>;
+  const { codeType, setCodeType } = React.use(DemoContext);
+
+  const sourceCodes = useMemo<Record<'tsx' | 'jsx' | 'style', string>>(() => {
+    return {
+      // omit trailing line break
+      tsx: sourceCode?.trim(),
+      jsx: jsxCode?.trim(),
+      style: styleCode?.trim(),
+    };
+  }, [sourceCode, jsxCode, styleCode]);
+
   useEffect(() => {
     const codes = {
       tsx: Prism.highlight(sourceCode, Prism.languages.javascript, 'jsx'),
@@ -152,13 +157,23 @@ const CodePreview: React.FC<CodePreviewProps> = ({
             ) : (
               toReactComponent(['pre', { lang, highlighted: highlightedCodes[lang] }])
             )}
-            <Button type="text" className={styles.copyButton}>
+            {/* button 嵌套 button 会导致水合失败，这里需要用 div 标签，不能用 button */}
+            <div className={styles.copyButton}>
               <Typography.Text className={styles.copyIcon} copyable={{ text: sourceCodes[lang] }} />
-            </Button>
+            </div>
           </div>
         ),
       })),
-    [JSON.stringify(highlightedCodes), styles.code, styles.copyButton, styles.copyIcon],
+    [
+      entryName,
+      error,
+      highlightedCodes,
+      langList,
+      sourceCodes,
+      styles.code,
+      styles.copyButton,
+      styles.copyIcon,
+    ],
   );
 
   if (!langList.length) {

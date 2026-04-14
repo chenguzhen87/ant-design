@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Form, Input, Radio } from 'antd';
+import type { FormProps } from 'antd';
 
 type LayoutType = Parameters<typeof Form>[0]['layout'];
 
@@ -7,19 +8,12 @@ const App: React.FC = () => {
   const [form] = Form.useForm();
   const [formLayout, setFormLayout] = useState<LayoutType>('horizontal');
 
-  const onFormLayoutChange = ({ layout }: { layout: LayoutType }) => {
+  const onFormLayoutChange: FormProps<any>['onValuesChange'] = ({ layout }) => {
     setFormLayout(layout);
   };
 
-  const formItemLayout =
-    formLayout === 'horizontal' ? { labelCol: { span: 4 }, wrapperCol: { span: 14 } } : null;
-
-  const buttonItemLayout =
-    formLayout === 'horizontal' ? { wrapperCol: { span: 14, offset: 4 } } : null;
-
   return (
     <Form
-      {...formItemLayout}
       layout={formLayout}
       form={form}
       initialValues={{ layout: formLayout }}
@@ -39,7 +33,7 @@ const App: React.FC = () => {
       <Form.Item label="Field B">
         <Input placeholder="input placeholder" />
       </Form.Item>
-      <Form.Item {...buttonItemLayout}>
+      <Form.Item>
         <Button type="primary">Submit</Button>
       </Form.Item>
     </Form>

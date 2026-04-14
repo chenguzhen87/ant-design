@@ -22,8 +22,11 @@ Comparing with `Tooltip`, besides information `Popover` card can also provide ac
 <code src="./demo/triggerType.tsx">Three ways to trigger</code>
 <code src="./demo/placement.tsx">Placement</code>
 <code src="./demo/arrow.tsx">Arrow</code>
+<code src="./demo/arrow-point-at-center.tsx" debug>Arrow.pointAtCenter</code>
+<code src="./demo/shift.tsx" iframe="300">Auto Shift</code>
 <code src="./demo/control.tsx">Controlling the close of the dialog</code>
 <code src="./demo/hover-with-click.tsx">Hover with click popover</code>
+<code src="./demo/style-class.tsx" version="6.0.0">Custom semantic dom styling</code>
 <code src="./demo/render-panel.tsx" debug>_InternalPanelDoNotUseOrYouWillBeFired</code>
 <code src="./demo/wireframe.tsx" debug>Wireframe</code>
 <code src="./demo/component-token.tsx" debug>Component Token</code>
@@ -32,16 +35,24 @@ Comparing with `Tooltip`, besides information `Popover` card can also provide ac
 
 Common props ref：[Common props](/docs/react/common-props)
 
-| Param   | Description         | Type                         | Default value | Version |
-| ------- | ------------------- | ---------------------------- | ------------- | ------- |
-| content | Content of the card | ReactNode \| () => ReactNode | -             |         |
-| title   | Title of the card   | ReactNode \| () => ReactNode | -             |         |
+| Property | Description | Type | Default value | Version |
+| --- | --- | --- | --- | --- |
+| classNames | Customize class for each semantic structure inside the component. Supports object or function. | Record<[SemanticDOM](#semantic-dom), string> \| (info: { props })=> Record<[SemanticDOM](#semantic-dom), string> | - |  |
+| content | Content of the card | ReactNode \| () => ReactNode | - |  |
+| title | Title of the card | ReactNode \| () => ReactNode | - |  |
+| styles | Customize inline style for each semantic structure inside the component. Supports object or function. | Record<[SemanticDOM](#semantic-dom), CSSProperties> \| (info: { props })=> Record<[SemanticDOM](#semantic-dom), CSSProperties> | - |  |
 
-Consult [Tooltip's documentation](/components/tooltip/#api) to find more APIs.
+<!-- Common API -->
+
+<embed src="../tooltip/shared/sharedProps.en-US.md"></embed>
 
 ## Note
 
 Please ensure that the child node of `Popover` accepts `onMouseEnter`, `onMouseLeave`, `onFocus`, `onClick` events.
+
+## Semantic DOM
+
+<code src="./demo/_semantic.tsx" simplify="true"></code>
 
 ## Design Token
 
@@ -49,12 +60,6 @@ Please ensure that the child node of `Popover` accepts `onMouseEnter`, `onMouseL
 
 ## FAQ
 
-### Why does the warning findDOMNode is deprecated some times appear in strict mode?
-
-This is due to the implementation of `rc-trigger`. `rc-trigger` forces children to accept ref, otherwise it will fall back to findDOMNode, so children need to be native html tags. If not, you need to use `React.forwardRef` transparently passes `ref` to native html tags.
-
-### Why sometime not work on HOC?
-
-Please ensure that the child node of `Tooltip` accepts `onMouseEnter`, `onMouseLeave`, `onPointerEnter`, `onPointerLeave`, `onFocus`, `onClick` events.
+<embed src="../tooltip/shared/sharedFAQ.en-US.md"></embed>
 
 For more questions, please refer to [Tooltip FAQ](/components/tooltip#faq).

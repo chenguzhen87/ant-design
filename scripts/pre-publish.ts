@@ -1,18 +1,26 @@
-/* eslint-disable camelcase, no-async-promise-executor */
+/**
+ * Pre-publish script for Ant Design
+ *
+ * Environment Variables:
+ * - SKIP_CI_CHECK: Set to any truthy value to skip remote CI status check
+ *   Usage: SKIP_CI_CHECK=1 npm run prepublishOnly
+ */
+
 import fs from 'node:fs';
 import runScript from '@npmcli/run-script';
 import { Octokit } from '@octokit/rest';
 import AdmZip from 'adm-zip';
 import axios from 'axios';
 import chalk from 'chalk';
+import dotnev from 'dotenv';
 import Spinnies from 'spinnies';
 
 import checkRepo from './check-repo';
 
+dotnev.config({ override: true });
+
 const { Notification: Notifier } = require('node-notifier');
 const simpleGit = require('simple-git');
-
-const blockStatus = ['failure', 'cancelled', 'timed_out'] as const;
 
 const spinner = { interval: 80, frames: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'] };
 const spinnies = new Spinnies({ spinner });
@@ -63,27 +71,6 @@ const showMessage = (
 process.on('SIGINT', () => {
   process.exit(1);
 });
-
-const emojify = (status: string = '') => {
-  if (!status) {
-    return '';
-  }
-  const emoji = {
-    /* status */
-    completed: '✅',
-    queued: '🕒',
-    in_progress: '⌛',
-    /* conclusion */
-    success: '✅',
-    failure: '❌',
-    neutral: '⚪',
-    cancelled: '❌',
-    skipped: '⏭️',
-    timed_out: '⌛',
-    action_required: '🔴',
-  }[status];
-  return `${emoji || ''} ${(status || '').padEnd(15)}`;
-};
 
 const toMB = (bytes: number) => (bytes / 1024 / 1024).toFixed(2);
 
@@ -138,42 +125,50 @@ const runPrePublish = async () => {
 
   const owner = 'ant-design';
   const repo = 'ant-design';
-  showMessage(`开始检查远程分支 ${currentBranch} 的 CI 状态`, true);
 
-  const failureUrlList: string[] = [];
-  const {
-    data: { check_runs },
-  } = await octokit.checks.listForRef({
-    owner,
-    repo,
-    ref: sha,
-  });
-  showMessage(`远程分支 CI 状态(${check_runs.length})：`, 'succeed');
-  check_runs.forEach((run) => {
-    showMessage(`  ${run.name.padEnd(36)} ${emojify(run.status)} ${emojify(run.conclusion || '')}`);
-    if (blockStatus.some((status) => run.conclusion === status)) {
-      failureUrlList.push(run.html_url!);
-    }
-  });
-  const conclusions = check_runs.map((run) => run.conclusion);
-  if (blockStatus.some((status) => conclusions.includes(status))) {
-    showMessage(chalk.bgRedBright('远程分支 CI 执行异常，无法继续发布，请尝试修复或重试'), 'fail');
-    showMessage(`  点此查看状态：https://github.com/${owner}/${repo}/commit/${sha}`);
+  // Check if CI check should be skipped
+  if (process.env.SKIP_CI_CHECK) {
+    showMessage(`检测到 SKIP_CI_CHECK 环境变量，跳过远程分支 CI 状态检查`, 'succeed');
+  } else {
+    showMessage(`开始检查远程分支 ${currentBranch} 的 CI 状态`, true);
 
-    failureUrlList.forEach((url) => {
-      showMessage(`  - ${url}`);
+    const failureUrlList: string[] = [];
+
+    const { data } = await octokit.rest.repos.getCombinedStatusForRef({
+      owner,
+      repo,
+      ref: sha,
     });
 
-    process.exit(1);
-  }
+    showMessage(`远程分支 CI 状态：${data.state}`, 'succeed');
+    if (data.state === 'failure') {
+      showMessage(
+        chalk.bgRedBright('远程分支 CI 执行异常，无法继续发布，请尝试修复或重试'),
+        'fail',
+      );
+      showMessage(`  点此查看状态：https://github.com/${owner}/${repo}/commit/${sha}`);
 
-  const statuses = check_runs.map((run) => run.status);
-  if (check_runs.length < 1 || statuses.includes('queued') || statuses.includes('in_progress')) {
-    showMessage(chalk.bgRedBright('远程分支 CI 还在执行中，请稍候再试'), 'fail');
-    showMessage(`  点此查看状态：https://github.com/${owner}/${repo}/commit/${sha}`);
-    process.exit(1);
+      failureUrlList.forEach((url) => {
+        showMessage(`  - ${url}`);
+      });
+
+      process.exit(1);
+    }
+
+    if (data.state === 'pending') {
+      showMessage(chalk.bgRedBright('远程分支 CI 还在执行中，请稍候再试'), 'fail');
+      showMessage(`  点此查看状态：https://github.com/${owner}/${repo}/commit/${sha}`);
+      process.exit(1);
+    }
+
+    if (data.state !== 'success') {
+      showMessage(chalk.bgRedBright('远程分支 CI 状态异常'), 'fail');
+      showMessage(`  点此查看状态：https://github.com/${owner}/${repo}/commit/${sha}`);
+      process.exit(1);
+    }
+
+    showMessage(`远程分支 CI 已通过`, 'succeed');
   }
-  showMessage(`远程分支 CI 已通过`, 'succeed');
   // clean up
   await runScript({ event: 'clean', path: '.', stdio: 'inherit' });
   showMessage(`成功清理构建产物目录`, 'succeed');
@@ -233,7 +228,7 @@ const runPrePublish = async () => {
 
   // 从 OSS 下载产物
   const downloadOSSPromise = Promise.resolve().then(async () => {
-    const url = `https://antd-visual-diff.oss-cn-shanghai.aliyuncs.com/${sha}/oss-artifacts.zip`;
+    const url = `https://antd-visual-diff.oss-accelerate.aliyuncs.com/${sha}/oss-artifacts.zip`;
 
     showMessage(`准备从远程 OSS 下载构建产物`, true, '[OSS]');
 
@@ -256,7 +251,7 @@ const runPrePublish = async () => {
     firstArtifactFile = await Promise.any([downloadArtifactPromise, downloadOSSPromise]);
   } catch (error) {
     showMessage(
-      chalk.bgRedBright(`下载失败，请确认你当前 ${sha.slice(0, 6)} 位于 master 分支中`),
+      chalk.bgRedBright(`下载失败 ${error}，请确认你当前 ${sha.slice(0, 6)} 位于 master 分支中`),
       'fail',
     );
     process.exit(1);
@@ -273,11 +268,16 @@ const runPrePublish = async () => {
   await runScript({ event: 'test:package-diff', path: '.', stdio: 'inherit' });
   showMessage(`文件检查通过，准备发布！`, 'succeed');
 
-  new Notifier().notify({
-    title: '✅ 准备发布到 npm',
-    message: '产物已经准备好了，快回来输入 npm 校验码了！',
-    sound: 'Crystal',
-  });
+  try {
+    await new Notifier().notify({
+      title: '✅ 准备发布到 npm',
+      message: '产物已经准备好了，快回来输入 npm 校验码了！',
+      sound: 'Crystal',
+    });
+  } catch (e) {
+    console.log('通知发送失败', e);
+  }
+
   process.exit(0);
 };
 

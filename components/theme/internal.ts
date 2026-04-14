@@ -1,8 +1,14 @@
 import { useStyleRegister } from '@ant-design/cssinjs';
+import { genCalc as calc, mergeToken, statistic, statisticToken } from '@ant-design/cssinjs-utils';
 
 import type {
   AliasToken,
+  FullToken,
   GenerateStyle,
+  GenStyleFn,
+  GetDefaultToken,
+  GlobalToken,
+  OverrideComponent,
   PresetColorKey,
   PresetColorType,
   SeedToken,
@@ -11,27 +17,27 @@ import type {
 import { PresetColors } from './interface';
 import { getLineHeight } from './themes/shared/genFontSizes';
 import useToken from './useToken';
-import calc from './util/calc';
-import type { FullToken, GetDefaultToken } from './util/genComponentStyleHook';
-import genComponentStyleHook, {
-  genStyleHooks,
-  genSubStyleComponent,
-} from './util/genComponentStyleHook';
+import { genComponentStyleHook, genStyleHooks, genSubStyleComponent } from './util/genStyleUtils';
 import genPresetColor from './util/genPresetColor';
-import statisticToken, { merge as mergeToken } from './util/statistic';
 import useResetIconStyle from './util/useResetIconStyle';
 
-export { DesignTokenContext, defaultConfig } from './context';
+export { defaultConfig, DesignTokenContext } from './context';
+export type { CSSUtil, TokenWithCommonCls } from '@ant-design/cssinjs-utils';
+
 export {
-  PresetColors,
+  calc,
+  // generators
   genComponentStyleHook,
-  genSubStyleComponent,
   genPresetColor,
   genStyleHooks,
-  mergeToken,
-  statisticToken,
-  calc,
+  genSubStyleComponent,
   getLineHeight,
+  // utils
+  mergeToken,
+  // constant
+  PresetColors,
+  statistic,
+  statisticToken,
   // hooks
   useResetIconStyle,
   useStyleRegister,
@@ -39,13 +45,14 @@ export {
 };
 export type {
   AliasToken,
-  // FIXME: Remove this type
-  AliasToken as DerivativeToken,
   FullToken,
   GenerateStyle,
+  GenStyleFn,
+  GetDefaultToken,
+  GlobalToken,
+  OverrideComponent,
   PresetColorKey,
   PresetColorType,
   SeedToken,
   UseComponentStyleResult,
-  GetDefaultToken,
 };

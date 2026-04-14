@@ -15,6 +15,7 @@ const getVerticalInlineStyle: GenerateStyle<MenuToken, CSSObject> = (token) => {
     marginXS,
     itemMarginBlock,
     itemWidth,
+    itemPaddingInline,
   } = token;
 
   const paddingWithArrow = token.calc(menuArrowSize).add(padding).add(marginXS).equal();
@@ -28,7 +29,7 @@ const getVerticalInlineStyle: GenerateStyle<MenuToken, CSSObject> = (token) => {
     [`${componentCls}-item, ${componentCls}-submenu-title`]: {
       height: itemHeight,
       lineHeight: unit(itemHeight),
-      paddingInline: padding,
+      paddingInline: itemPaddingInline,
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       marginInline: itemMarginInline,
@@ -57,11 +58,11 @@ const getVerticalStyle: GenerateStyle<MenuToken> = (token) => {
     colorTextLightSolid,
     dropdownWidth,
     controlHeightLG,
-    motionDurationMid,
     motionEaseOut,
     paddingXL,
     itemMarginInline,
     fontSizeLG,
+    motionDurationFast,
     motionDurationSlow,
     paddingXS,
     boxShadowSecondary,
@@ -79,7 +80,7 @@ const getVerticalStyle: GenerateStyle<MenuToken> = (token) => {
   return [
     {
       [componentCls]: {
-        [`&-inline, &-vertical`]: {
+        '&-inline, &-vertical': {
           [`&${componentCls}-root`]: {
             boxShadow: 'none',
           },
@@ -126,9 +127,8 @@ const getVerticalStyle: GenerateStyle<MenuToken> = (token) => {
             alignItems: 'center',
             transition: [
               `border-color ${motionDurationSlow}`,
-              `background ${motionDurationSlow}`,
-              `padding ${motionDurationMid} ${motionEaseOut}`,
-              `padding-inline calc(50% - ${unit(token.calc(fontSizeLG).div(2).equal())} - ${unit(itemMarginInline)})`,
+              `background-color ${motionDurationSlow}`,
+              `padding ${motionDurationFast} ${motionEaseOut}`,
             ].join(','),
 
             [`> ${componentCls}-title-content`]: {
@@ -181,8 +181,11 @@ const getVerticalStyle: GenerateStyle<MenuToken> = (token) => {
           > ${componentCls}-item-group > ${componentCls}-item-group-list > ${componentCls}-item,
           > ${componentCls}-item-group > ${componentCls}-item-group-list > ${componentCls}-submenu > ${componentCls}-submenu-title,
           > ${componentCls}-submenu > ${componentCls}-submenu-title`]: {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           insetInlineStart: 0,
-          paddingInline: `calc(50% - ${unit(token.calc(fontSizeLG).div(2).equal())} - ${unit(
+          paddingInline: `calc(50% - ${unit(token.calc(collapsedIconSize).div(2).equal())} - ${unit(
             itemMarginInline,
           )})`,
           textOverflow: 'clip',
@@ -194,6 +197,12 @@ const getVerticalStyle: GenerateStyle<MenuToken> = (token) => {
             opacity: 0,
           },
 
+          [`> ${componentCls}-title-content`]: {
+            width: 0,
+            opacity: 0,
+            overflow: 'hidden',
+          },
+
           [`${componentCls}-item-icon, ${iconCls}`]: {
             margin: 0,
             fontSize: collapsedIconSize,
@@ -201,7 +210,10 @@ const getVerticalStyle: GenerateStyle<MenuToken> = (token) => {
 
             '+ span': {
               display: 'inline-block',
+              width: 0,
               opacity: 0,
+              overflow: 'hidden',
+              marginInlineStart: 0,
             },
           },
         },

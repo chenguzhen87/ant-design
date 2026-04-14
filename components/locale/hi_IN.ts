@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/hi_IN';
+import Pagination from '@rc-component/pagination/lib/locale/hi_IN';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/hi_IN';
@@ -16,6 +15,7 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'कृपया चुनें',
+    close: 'बंद',
   },
   Table: {
     filterTitle: 'सूची बंद करें',
@@ -33,6 +33,11 @@ const localeValues: Locale = {
     triggerDesc: 'अवरोही क्रमित करने के लिए क्लिक करें',
     triggerAsc: 'आरोही क्रमित करने के लिए क्लिक करें',
     cancelSort: 'छँटाई रद्द करने के लिए क्लिक करें',
+  },
+  Tour: {
+    Next: 'अगाड़ा',
+    Previous: 'पिछला',
+    Finish: 'समाप्त करें',
   },
   Modal: {
     okText: 'अच्छी तरह से',
@@ -123,9 +128,6 @@ const localeValues: Locale = {
         mismatch: '${label} ${pattern} पैटर्न से मेल नहीं खाता',
       },
     },
-  },
-  Image: {
-    preview: 'पूर्वावलोकन',
   },
 };
 

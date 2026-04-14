@@ -1,9 +1,9 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`MonthPicker and WeekPicker render MonthPicker 1`] = `
 <div>
   <div
-    class="ant-picker ant-picker-outlined"
+    class="ant-picker ant-picker-outlined css-var-root ant-picker-css-var"
   >
     <div
       class="ant-picker-input"
@@ -66,8 +66,8 @@ exports[`MonthPicker and WeekPicker render MonthPicker 1`] = `
     </div>
   </div>
   <div
-    class="ant-picker-dropdown ant-slide-up-appear ant-slide-up-appear-prepare ant-slide-up ant-picker-dropdown-placement-bottomLeft"
-    style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+    class="ant-picker-dropdown ant-slide-up-appear ant-slide-up-appear-prepare ant-slide-up css-var-root ant-picker-css-var ant-picker-dropdown-placement-bottomLeft"
+    style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; right: auto; bottom: auto; box-sizing: border-box;"
   >
     <div
       class="ant-picker-panel-container ant-picker-month-panel-container"
@@ -89,6 +89,7 @@ exports[`MonthPicker and WeekPicker render MonthPicker 1`] = `
                 class="ant-picker-header"
               >
                 <button
+                  aria-label="Last year (Control + left)"
                   class="ant-picker-header-super-prev-btn"
                   tabindex="-1"
                   type="button"
@@ -101,6 +102,7 @@ exports[`MonthPicker and WeekPicker render MonthPicker 1`] = `
                   class="ant-picker-header-view"
                 >
                   <button
+                    aria-label="Choose a year"
                     class="ant-picker-year-btn"
                     tabindex="-1"
                     type="button"
@@ -109,6 +111,7 @@ exports[`MonthPicker and WeekPicker render MonthPicker 1`] = `
                   </button>
                 </div>
                 <button
+                  aria-label="Next year (Control + right)"
                   class="ant-picker-header-super-next-btn"
                   tabindex="-1"
                   type="button"
@@ -268,7 +271,7 @@ exports[`MonthPicker and WeekPicker render MonthPicker 1`] = `
 exports[`MonthPicker and WeekPicker render WeekPicker 1`] = `
 <div>
   <div
-    class="ant-picker ant-picker-outlined"
+    class="ant-picker ant-picker-outlined css-var-root ant-picker-css-var"
   >
     <div
       class="ant-picker-input"
@@ -331,8 +334,8 @@ exports[`MonthPicker and WeekPicker render WeekPicker 1`] = `
     </div>
   </div>
   <div
-    class="ant-picker-dropdown ant-slide-up-appear ant-slide-up-appear-prepare ant-slide-up ant-picker-dropdown-placement-bottomLeft"
-    style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+    class="ant-picker-dropdown ant-slide-up-appear ant-slide-up-appear-prepare ant-slide-up css-var-root ant-picker-css-var ant-picker-dropdown-placement-bottomLeft"
+    style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; right: auto; bottom: auto; box-sizing: border-box;"
   >
     <div
       class="ant-picker-panel-container ant-picker-week-panel-container"
@@ -354,6 +357,7 @@ exports[`MonthPicker and WeekPicker render WeekPicker 1`] = `
                 class="ant-picker-header"
               >
                 <button
+                  aria-label="Last year (Control + left)"
                   class="ant-picker-header-super-prev-btn"
                   tabindex="-1"
                   type="button"
@@ -363,6 +367,7 @@ exports[`MonthPicker and WeekPicker render WeekPicker 1`] = `
                   />
                 </button>
                 <button
+                  aria-label="Previous month (PageUp)"
                   class="ant-picker-header-prev-btn"
                   tabindex="-1"
                   type="button"
@@ -375,6 +380,7 @@ exports[`MonthPicker and WeekPicker render WeekPicker 1`] = `
                   class="ant-picker-header-view"
                 >
                   <button
+                    aria-label="Choose a month"
                     class="ant-picker-month-btn"
                     tabindex="-1"
                     type="button"
@@ -382,6 +388,7 @@ exports[`MonthPicker and WeekPicker render WeekPicker 1`] = `
                     Jan
                   </button>
                   <button
+                    aria-label="Choose a year"
                     class="ant-picker-year-btn"
                     tabindex="-1"
                     type="button"
@@ -390,6 +397,7 @@ exports[`MonthPicker and WeekPicker render WeekPicker 1`] = `
                   </button>
                 </div>
                 <button
+                  aria-label="Next month (PageDown)"
                   class="ant-picker-header-next-btn"
                   tabindex="-1"
                   type="button"
@@ -399,6 +407,7 @@ exports[`MonthPicker and WeekPicker render WeekPicker 1`] = `
                   />
                 </button>
                 <button
+                  aria-label="Next year (Control + right)"
                   class="ant-picker-header-super-next-btn"
                   tabindex="-1"
                   type="button"
@@ -416,9 +425,13 @@ exports[`MonthPicker and WeekPicker render WeekPicker 1`] = `
                 >
                   <thead>
                     <tr>
-                      <th
-                        aria-label="empty cell"
-                      />
+                      <th>
+                        <span
+                          style="width: 0px; height: 0px; position: absolute; overflow: hidden; opacity: 0;"
+                        >
+                          Week
+                        </span>
+                      </th>
                       <th>
                         Su
                       </th>
@@ -955,7 +968,7 @@ exports[`MonthPicker and WeekPicker render WeekPicker 1`] = `
 
 exports[`Picker format by locale date 1`] = `
 <div
-  class="ant-picker ant-picker-outlined"
+  class="ant-picker ant-picker-outlined css-var-root ant-picker-css-var"
 >
   <div
     class="ant-picker-input"
@@ -1021,7 +1034,7 @@ exports[`Picker format by locale date 1`] = `
 
 exports[`Picker format by locale dateTime 1`] = `
 <div
-  class="ant-picker ant-picker-outlined"
+  class="ant-picker ant-picker-outlined css-var-root ant-picker-css-var"
 >
   <div
     class="ant-picker-input"
@@ -1087,7 +1100,7 @@ exports[`Picker format by locale dateTime 1`] = `
 
 exports[`Picker format by locale month 1`] = `
 <div
-  class="ant-picker ant-picker-outlined"
+  class="ant-picker ant-picker-outlined css-var-root ant-picker-css-var"
 >
   <div
     class="ant-picker-input"
@@ -1153,7 +1166,7 @@ exports[`Picker format by locale month 1`] = `
 
 exports[`Picker format by locale week 1`] = `
 <div
-  class="ant-picker ant-picker-outlined"
+  class="ant-picker ant-picker-outlined css-var-root ant-picker-css-var"
 >
   <div
     class="ant-picker-input"

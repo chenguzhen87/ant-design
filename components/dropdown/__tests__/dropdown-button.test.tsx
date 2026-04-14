@@ -1,10 +1,13 @@
 import React from 'react';
+import { warning } from '@rc-component/util';
 
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
 import { render, waitFakeTimer } from '../../../tests/utils';
 import type { DropdownProps } from '../dropdown';
 import DropdownButton from '../dropdown-button';
+
+const { resetWarned } = warning;
 
 let dropdownProps: DropdownProps;
 
@@ -106,22 +109,17 @@ describe('DropdownButton', () => {
   });
 
   it('should support overlayClassName and overlayStyle', () => {
-    const items = [
-      {
-        label: 'foo',
-        key: '1',
-      },
-    ];
+    const items = [{ label: 'foo', key: '1' }];
     const { container } = render(
       <DropdownButton
-        overlayClassName="className"
-        overlayStyle={{ color: 'red' }}
+        overlayClassName="test-className"
+        overlayStyle={{ padding: 20 }}
         menu={{ items }}
         open
       />,
     );
-    expect(container.querySelector('.ant-dropdown')?.classList).toContain('className');
-    expect((container.querySelector('.ant-dropdown') as HTMLElement).style.color).toContain('red');
+    expect(container.querySelector<HTMLElement>('.ant-dropdown')).toHaveClass('test-className');
+    expect(container.querySelector<HTMLElement>('.ant-dropdown')).toHaveStyle({ padding: '20px' });
   });
 
   it('should support loading', () => {
@@ -133,22 +131,15 @@ describe('DropdownButton', () => {
     ];
     const { container } = render(<DropdownButton menu={{ items }} loading />);
 
-    expect(container.querySelector('.ant-dropdown-button .ant-btn-loading')?.classList).toContain(
-      'ant-btn',
-    );
+    expect(container.querySelector('.ant-dropdown-button .ant-btn-loading')).toHaveClass('ant-btn');
   });
-  it('should console Error when `overlay` in props', () => {
+
+  it('deprecated warning', async () => {
     const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    render(<DropdownButton overlay={<div>test</div>} />);
+    render(<DropdownButton menu={{ items: [] }}>Submit</DropdownButton>);
     expect(errSpy).toHaveBeenCalledWith(
-      'Warning: [antd: Dropdown] `overlay` is deprecated. Please use `menu` instead.',
+      'Warning: [antd: Dropdown.Button] `Dropdown.Button` is deprecated. Please use `Space.Compact + Dropdown + Button` instead.',
     );
-    errSpy.mockRestore();
-  });
-  it('should not console Error when `overlay` not in props', () => {
-    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    render(<DropdownButton />);
-    expect(errSpy).not.toHaveBeenCalled();
     errSpy.mockRestore();
   });
 
@@ -169,5 +160,19 @@ describe('DropdownButton', () => {
     const { container } = render(<DropdownButton open autoFocus menu={{ items }} />);
     await waitFakeTimer();
     expect(container.querySelector('.ant-dropdown-menu-item-active')).toBeTruthy();
+  });
+
+  it('legacy destroyPopupOnHide with Dropdown.Button', () => {
+    resetWarned();
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    render(
+      <DropdownButton destroyPopupOnHide menu={{ items: [] }}>
+        test
+      </DropdownButton>,
+    );
+    expect(errorSpy).toHaveBeenCalledWith(
+      'Warning: [antd: Dropdown] `destroyPopupOnHide` is deprecated. Please use `destroyOnHidden` instead.',
+    );
+    errorSpy.mockRestore();
   });
 });

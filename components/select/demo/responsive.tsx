@@ -34,14 +34,17 @@ const App: React.FC = () => {
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Space vertical style={{ width: '100%' }}>
       <Select {...sharedProps} {...selectProps} />
       <Select {...sharedProps} disabled />
       <Select
         {...sharedProps}
         {...selectProps}
         maxTagPlaceholder={(omittedValues) => (
-          <Tooltip title={omittedValues.map(({ label }) => label).join(', ')}>
+          <Tooltip
+            styles={{ root: { pointerEvents: 'none' } }}
+            title={omittedValues.map(({ label }) => label).join(', ')}
+          >
             <span>Hover Me</span>
           </Tooltip>
         )}

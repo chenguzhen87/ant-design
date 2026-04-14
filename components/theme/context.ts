@@ -1,12 +1,10 @@
 import React from 'react';
 import type { Theme } from '@ant-design/cssinjs';
-import { createTheme } from '@ant-design/cssinjs';
 
 import type { AliasToken, MapToken, OverrideToken, SeedToken } from './interface';
-import defaultDerivative from './themes/default';
 import defaultSeedToken from './themes/seed';
 
-export const defaultTheme = createTheme(defaultDerivative);
+export { default as defaultTheme } from './themes/default/theme';
 
 // ================================ Context =================================
 // To ensure snapshot stable. We disable hashed in test env.
@@ -29,10 +27,25 @@ export interface DesignTokenProviderProps {
   /** Just merge `token` & `override` at top to save perf */
   override: { override: Partial<AliasToken> } & ComponentsToken;
   hashed?: string | boolean;
-  cssVar?: {
-    prefix?: string;
-    key?: string;
-  };
+  cssVar?: { prefix?: string; key?: string };
+  /**
+   * @descCN 开启零运行时模式，不会在运行时产生样式，需要手动引入 CSS 文件。
+   * @descEN Enable zero-runtime mode, which will not generate style at runtime, need to import additional CSS file.
+   * @default true
+   * @since 6.0.0
+   * @example
+   * ```tsx
+   * import { ConfigProvider } from 'antd';
+   * import 'antd/dist/antd.css';
+   *
+   * const Demo = () => (
+   *   <ConfigProvider theme={{ zeroRuntime: true }}>
+   *     <App />
+   *   </ConfigProvider>
+   *);
+   * ```
+   */
+  zeroRuntime?: boolean;
 }
 
 export const DesignTokenContext = React.createContext<DesignTokenProviderProps>(defaultConfig);

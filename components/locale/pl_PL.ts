@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/pl_PL';
+import Pagination from '@rc-component/pagination/lib/locale/pl_PL';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/pl_PL';
@@ -16,13 +15,14 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'Wybierz',
+    close: 'Zamknij',
   },
   Table: {
     filterTitle: 'Menu filtra',
     filterConfirm: 'OK',
     filterReset: 'Usuń filtry',
     filterEmptyText: 'Brak filtrów',
-    filterCheckall: 'Wybierz wszystkie elementy',
+    filterCheckAll: 'Wybierz wszystkie elementy',
     filterSearchPlaceholder: 'Szukaj w filtrach',
     emptyText: 'Brak danych',
     selectAll: 'Zaznacz bieżącą stronę',
@@ -130,9 +130,6 @@ const localeValues: Locale = {
         mismatch: '${label} nie posiada wartości zgodnej ze wzorem ${pattern}',
       },
     },
-  },
-  Image: {
-    preview: 'Podgląd',
   },
 };
 

@@ -1,4 +1,4 @@
-import Pagination from 'rc-pagination/lib/locale/bg_BG';
+import Pagination from '@rc-component/pagination/lib/locale/bg_BG';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/bg_BG';
@@ -13,12 +13,20 @@ const localeValues: Locale = {
   DatePicker,
   TimePicker,
   Calendar,
+  global: {
+    close: 'Затвори',
+  },
   Table: {
     filterTitle: 'Филтриране',
     filterConfirm: 'Добре',
     filterReset: 'Нулриане',
     selectAll: 'Избор на текуща страница',
     selectInvert: 'Обръщане',
+  },
+  Tour: {
+    Next: 'Следващ',
+    Previous: 'Предишен',
+    Finish: 'Завърши',
   },
   Modal: {
     okText: 'Добре',

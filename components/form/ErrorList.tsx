@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useMemo } from 'react';
-import classNames from 'classnames';
-import type { CSSMotionProps } from 'rc-motion';
-import CSSMotion, { CSSMotionList } from 'rc-motion';
+import type { CSSMotionProps } from '@rc-component/motion';
+import CSSMotion, { CSSMotionList } from '@rc-component/motion';
+import { clsx } from 'clsx';
 
+import { isNonNullable } from '../_util/is';
 import initCollapseMotion from '../_util/motion';
 import useCSSVarCls from '../config-provider/hooks/useCSSVarCls';
 import { FormItemPrefixContext } from './context';
@@ -23,7 +23,7 @@ function toErrorEntity(
   error: React.ReactNode,
   prefix: string,
   errorStatus?: ValidateStatus,
-  index: number = 0,
+  index = 0,
 ): ErrorEntity {
   return {
     key: typeof error === 'string' ? error : `${prefix}-${index}`,
@@ -56,9 +56,12 @@ const ErrorList: React.FC<ErrorListProps> = ({
   const baseClassName = `${prefixCls}-item-explain`;
 
   const rootCls = useCSSVarCls(prefixCls);
-  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls, rootCls);
+  const [hashId, cssVarCls] = useStyle(prefixCls, rootCls);
 
-  const collapseMotion: CSSMotionProps = useMemo(() => initCollapseMotion(prefixCls), [prefixCls]);
+  const collapseMotion = React.useMemo<CSSMotionProps>(
+    () => initCollapseMotion(prefixCls),
+    [prefixCls],
+  );
 
   // We have to debounce here again since somewhere use ErrorList directly still need no shaking
   // ref: https://github.com/ant-design/ant-design/issues/36336
@@ -66,10 +69,9 @@ const ErrorList: React.FC<ErrorListProps> = ({
   const debounceWarnings = useDebounce(warnings);
 
   const fullKeyList = React.useMemo<ErrorEntity[]>(() => {
-    if (help !== undefined && help !== null) {
+    if (isNonNullable(help)) {
       return [toErrorEntity(help, 'help', helpStatus)];
     }
-
     return [
       ...debounceErrors.map((error, index) => toErrorEntity(error, 'error', 'error', index)),
       ...debounceWarnings.map((warning, index) =>
@@ -78,17 +80,28 @@ const ErrorList: React.FC<ErrorListProps> = ({
     ];
   }, [help, helpStatus, debounceErrors, debounceWarnings]);
 
+  const filledKeyFullKeyList = React.useMemo<ErrorEntity[]>(() => {
+    const keysCount: Record<string, number> = {};
+    fullKeyList.forEach(({ key }) => {
+      keysCount[key] = (keysCount[key] || 0) + 1;
+    });
+    return fullKeyList.map((entity, index) => ({
+      ...entity,
+      key: keysCount[entity.key] > 1 ? `${entity.key}-fallback-${index}` : entity.key,
+    }));
+  }, [fullKeyList]);
+
   const helpProps: { id?: string } = {};
 
   if (fieldId) {
     helpProps.id = `${fieldId}_help`;
   }
 
-  return wrapCSSVar(
+  return (
     <CSSMotion
       motionDeadline={collapseMotion.motionDeadline}
       motionName={`${prefixCls}-show-help`}
-      visible={!!fullKeyList.length}
+      visible={!!filledKeyFullKeyList.length}
       onVisibleChanged={onVisibleChanged}
     >
       {(holderProps) => {
@@ -97,7 +110,7 @@ const ErrorList: React.FC<ErrorListProps> = ({
         return (
           <div
             {...helpProps}
-            className={classNames(
+            className={clsx(
               baseClassName,
               holderClassName,
               cssVarCls,
@@ -106,10 +119,9 @@ const ErrorList: React.FC<ErrorListProps> = ({
               hashId,
             )}
             style={holderStyle}
-            role="alert"
           >
             <CSSMotionList
-              keys={fullKeyList}
+              keys={filledKeyFullKeyList}
               {...initCollapseMotion(prefixCls)}
               motionName={`${prefixCls}-show-help-item`}
               component={false}
@@ -126,7 +138,7 @@ const ErrorList: React.FC<ErrorListProps> = ({
                 return (
                   <div
                     key={key}
-                    className={classNames(itemClassName, {
+                    className={clsx(itemClassName, {
                       [`${baseClassName}-${errorStatus}`]: errorStatus,
                     })}
                     style={itemStyle}
@@ -139,7 +151,7 @@ const ErrorList: React.FC<ErrorListProps> = ({
           </div>
         );
       }}
-    </CSSMotion>,
+    </CSSMotion>
   );
 };
 

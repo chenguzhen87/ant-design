@@ -1,31 +1,32 @@
 import type { ReactNode } from 'react';
 import React from 'react';
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
-import classNames from 'classnames';
+import pickAttrs from '@rc-component/util/lib/pickAttrs';
+import { clsx } from 'clsx';
 
-import type { ButtonProps } from '../button';
-import Button from '../button';
+import { isNonNullable } from '../_util/is';
+import type { ButtonProps } from '../button/Button';
+import Button from '../button/Button';
 import { useLocale } from '../locale';
 import defaultLocale from '../locale/en_US';
-import type { TourStepProps } from './interface';
-
-function isValidNode(node: ReactNode): boolean {
-  return node !== undefined && node !== null;
-}
+import type { TourProps, TourStepProps } from './interface';
 
 interface TourPanelProps {
   stepProps: Omit<TourStepProps, 'closable'> & {
     closable?: Exclude<TourStepProps['closable'], boolean>;
   };
   current: number;
-  type: TourStepProps['type'];
-  indicatorsRender?: TourStepProps['indicatorsRender'];
+  type: TourProps['type'];
+  indicatorsRender?: TourProps['indicatorsRender'];
+  classNames?: TourProps['classNames'];
+  styles?: TourProps['styles'];
+  actionsRender?: TourProps['actionsRender'];
 }
 
 // Due to the independent design of Panel, it will be too coupled to put in rc-tour,
 // so a set of Panel logic is implemented separately in antd.
 const TourPanel: React.FC<TourPanelProps> = (props) => {
-  const { stepProps, current, type, indicatorsRender } = props;
+  const { stepProps, current, type, indicatorsRender, actionsRender } = props;
   const {
     prefixCls,
     total = 1,
@@ -40,23 +41,28 @@ const TourPanel: React.FC<TourPanelProps> = (props) => {
     prevButtonProps,
     type: stepType,
     closable,
+    classNames = {},
+    styles = {},
   } = stepProps;
 
   const mergedType = stepType ?? type;
 
-  const mergedCloseIcon = React.useMemo(() => {
-    let defaultCloseIcon: React.ReactNode = <CloseOutlined className={`${prefixCls}-close-icon`} />;
+  const ariaProps = pickAttrs(closable ?? {}, true);
 
-    if (closable && closable.closeIcon) {
-      defaultCloseIcon = closable.closeIcon;
-    }
+  const [contextLocaleGlobal] = useLocale('global', defaultLocale.global);
+  const [contextLocaleTour] = useLocale('Tour', defaultLocale.Tour);
 
-    return (
-      <button type="button" onClick={onClose} className={`${prefixCls}-close`}>
-        {defaultCloseIcon}
-      </button>
-    );
-  }, [closable]);
+  const mergedCloseIcon = (
+    <button
+      type="button"
+      onClick={onClose}
+      className={`${prefixCls}-close`}
+      aria-label={contextLocaleGlobal?.close}
+      {...ariaProps}
+    >
+      {closable?.closeIcon || <CloseOutlined className={`${prefixCls}-close-icon`} />}
+    </button>
+  );
 
   const isLastStep = current === total - 1;
 
@@ -74,17 +80,28 @@ const TourPanel: React.FC<TourPanelProps> = (props) => {
     nextButtonProps?.onClick?.();
   };
 
-  const headerNode = isValidNode(title) ? (
-    <div className={`${prefixCls}-header`}>
-      <div className={`${prefixCls}-title`}>{title}</div>
+  const headerNode = isNonNullable(title) ? (
+    <div className={clsx(`${prefixCls}-header`, classNames.header)} style={styles.header}>
+      <div className={clsx(`${prefixCls}-title`, classNames.title)} style={styles.title}>
+        {title}
+      </div>
     </div>
   ) : null;
 
-  const descriptionNode = isValidNode(description) ? (
-    <div className={`${prefixCls}-description`}>{description}</div>
+  const descriptionNode = isNonNullable(description) ? (
+    <div
+      className={clsx(`${prefixCls}-description`, classNames.description)}
+      style={styles.description}
+    >
+      {description}
+    </div>
   ) : null;
 
-  const coverNode = isValidNode(cover) ? <div className={`${prefixCls}-cover`}>{cover}</div> : null;
+  const coverNode = isNonNullable(cover) ? (
+    <div className={clsx(`${prefixCls}-cover`, classNames.cover)} style={styles.cover}>
+      {cover}
+    </div>
+  ) : null;
 
   let mergedIndicatorNode: ReactNode;
 
@@ -95,10 +112,12 @@ const TourPanel: React.FC<TourPanelProps> = (props) => {
       (stepItem, index) => (
         <span
           key={stepItem}
-          className={classNames(
+          className={clsx(
             index === current && `${prefixCls}-indicator-active`,
             `${prefixCls}-indicator`,
+            classNames.indicator,
           )}
+          style={styles.indicator}
         />
       ),
     );
@@ -111,39 +130,52 @@ const TourPanel: React.FC<TourPanelProps> = (props) => {
     ghost: mergedType === 'primary',
   };
 
-  const [contextLocale] = useLocale('Tour', defaultLocale.Tour);
+  const defaultActionsNode = (
+    <>
+      {current !== 0 ? (
+        <Button
+          size="small"
+          {...secondaryBtnProps}
+          {...prevButtonProps}
+          onClick={prevBtnClick}
+          className={clsx(`${prefixCls}-prev-btn`, prevButtonProps?.className)}
+        >
+          {prevButtonProps?.children ?? contextLocaleTour?.Previous}
+        </Button>
+      ) : null}
+      <Button
+        size="small"
+        type={mainBtnType}
+        {...nextButtonProps}
+        onClick={nextBtnClick}
+        className={clsx(`${prefixCls}-next-btn`, nextButtonProps?.className)}
+      >
+        {nextButtonProps?.children ??
+          (isLastStep ? contextLocaleTour?.Finish : contextLocaleTour?.Next)}
+      </Button>
+    </>
+  );
 
   return (
-    <div className={`${prefixCls}-content`}>
-      <div className={`${prefixCls}-inner`}>
+    <div className={`${prefixCls}-panel`}>
+      <div className={clsx(`${prefixCls}-section`, classNames.section)} style={styles.section}>
         {closable && mergedCloseIcon}
         {coverNode}
         {headerNode}
         {descriptionNode}
-        <div className={`${prefixCls}-footer`}>
-          {total > 1 && <div className={`${prefixCls}-indicators`}>{mergedIndicatorNode}</div>}
-          <div className={`${prefixCls}-buttons`}>
-            {current !== 0 ? (
-              <Button
-                {...secondaryBtnProps}
-                {...prevButtonProps}
-                onClick={prevBtnClick}
-                size="small"
-                className={classNames(`${prefixCls}-prev-btn`, prevButtonProps?.className)}
-              >
-                {prevButtonProps?.children ?? contextLocale?.Previous}
-              </Button>
-            ) : null}
-            <Button
-              type={mainBtnType}
-              {...nextButtonProps}
-              onClick={nextBtnClick}
-              size="small"
-              className={classNames(`${prefixCls}-next-btn`, nextButtonProps?.className)}
+        <div className={clsx(`${prefixCls}-footer`, classNames.footer)} style={styles.footer}>
+          {total > 1 && (
+            <div
+              className={clsx(`${prefixCls}-indicators`, classNames.indicators)}
+              style={styles.indicators}
             >
-              {nextButtonProps?.children ??
-                (isLastStep ? contextLocale?.Finish : contextLocale?.Next)}
-            </Button>
+              {mergedIndicatorNode}
+            </div>
+          )}
+          <div className={clsx(`${prefixCls}-actions`, classNames.actions)} style={styles.actions}>
+            {actionsRender
+              ? actionsRender(defaultActionsNode, { current, total })
+              : defaultActionsNode}
           </div>
         </div>
       </div>

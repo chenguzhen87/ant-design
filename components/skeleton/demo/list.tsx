@@ -20,7 +20,7 @@ const listData = Array.from({ length: 3 }).map((_, i) => ({
 
 const IconText: React.FC<IconTextProps> = ({ icon, text }) => (
   <>
-    {React.createElement(icon, { style: { marginRight: 8 } })}
+    {React.createElement(icon, { style: { marginInlineEnd: 8 } })}
     {text}
   </>
 );
@@ -54,6 +54,7 @@ const App: React.FC = () => {
             extra={
               !loading && (
                 <img
+                  draggable={false}
                   width={272}
                   alt="logo"
                   src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"

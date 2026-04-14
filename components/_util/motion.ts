@@ -1,17 +1,23 @@
-import type { CSSMotionProps, MotionEndEventHandler, MotionEventHandler } from 'rc-motion';
-import type { MotionEvent } from 'rc-motion/lib/interface';
+import type {
+  CSSMotionProps,
+  MotionEndEventHandler,
+  MotionEventHandler,
+} from '@rc-component/motion';
+import type { MotionEvent } from '@rc-component/motion/lib/interface';
+
+import { defaultPrefixCls } from '../config-provider';
 
 // ================== Collapse Motion ==================
 const getCollapsedHeight: MotionEventHandler = () => ({ height: 0, opacity: 0 });
-const getRealHeight: MotionEventHandler = (node) => {
-  const { scrollHeight } = node;
-  return { height: scrollHeight, opacity: 1 };
-};
-const getCurrentHeight: MotionEventHandler = (node) => ({ height: node ? node.offsetHeight : 0 });
+const getRealHeight: MotionEventHandler = (node) => ({
+  height: node?.scrollHeight ?? 0,
+  opacity: node ? 1 : 0,
+});
+const getCurrentHeight: MotionEventHandler = (node) => ({ height: node?.offsetHeight ?? 0 });
 const skipOpacityTransition: MotionEndEventHandler = (_, event: MotionEvent) =>
   event?.deadline === true || (event as TransitionEvent).propertyName === 'height';
 
-const initCollapseMotion = (rootCls: string = 'ant'): CSSMotionProps => ({
+const initCollapseMotion = (rootCls = defaultPrefixCls): CSSMotionProps => ({
   motionName: `${rootCls}-motion-collapse`,
   onAppearStart: getCollapsedHeight,
   onEnterStart: getCollapsedHeight,
@@ -25,9 +31,9 @@ const initCollapseMotion = (rootCls: string = 'ant'): CSSMotionProps => ({
   motionDeadline: 500,
 });
 
-const SelectPlacements = ['bottomLeft', 'bottomRight', 'topLeft', 'topRight'] as const;
+const _SelectPlacements = ['bottomLeft', 'bottomRight', 'topLeft', 'topRight'] as const;
 
-export type SelectCommonPlacement = (typeof SelectPlacements)[number];
+export type SelectCommonPlacement = (typeof _SelectPlacements)[number];
 
 const getTransitionName = (rootPrefixCls: string, motion: string, transitionName?: string) => {
   if (transitionName !== undefined) {

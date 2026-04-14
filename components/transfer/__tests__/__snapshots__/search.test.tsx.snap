@@ -1,8 +1,8 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Transfer.Search should show cross icon when input value exists 1`] = `
 <span
-  class="ant-input-affix-wrapper ant-input-outlined"
+  class="ant-input-affix-wrapper ant-input-outlined css-var-root ant-input-css-var"
 >
   <span
     class="ant-input-prefix"
@@ -36,10 +36,10 @@ exports[`Transfer.Search should show cross icon when input value exists 1`] = `
   <span
     class="ant-input-suffix"
   >
-    <span
+    <button
       class="ant-input-clear-icon ant-input-clear-icon-hidden"
-      role="button"
       tabindex="-1"
+      type="button"
     >
       <span
         aria-label="close-circle"
@@ -61,14 +61,14 @@ exports[`Transfer.Search should show cross icon when input value exists 1`] = `
           />
         </svg>
       </span>
-    </span>
+    </button>
   </span>
 </span>
 `;
 
 exports[`Transfer.Search should show cross icon when input value exists 2`] = `
 <span
-  class="ant-input-affix-wrapper ant-input-outlined"
+  class="ant-input-affix-wrapper ant-input-outlined css-var-root ant-input-css-var"
 >
   <span
     class="ant-input-prefix"
@@ -102,10 +102,10 @@ exports[`Transfer.Search should show cross icon when input value exists 2`] = `
   <span
     class="ant-input-suffix"
   >
-    <span
+    <button
       class="ant-input-clear-icon"
-      role="button"
       tabindex="-1"
+      type="button"
     >
       <span
         aria-label="close-circle"
@@ -127,7 +127,7 @@ exports[`Transfer.Search should show cross icon when input value exists 2`] = `
           />
         </svg>
       </span>
-    </span>
+    </button>
   </span>
 </span>
 `;

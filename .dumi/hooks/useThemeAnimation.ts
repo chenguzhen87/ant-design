@@ -1,12 +1,15 @@
 import { useEffect, useRef } from 'react';
-import { removeCSS, updateCSS } from 'rc-util/lib/Dom/dynamicCSS';
+import { removeCSS, updateCSS } from '@rc-component/util/lib/Dom/dynamicCSS';
+import { theme } from 'antd';
 
-import theme from '../../components/theme';
-
+const duration = 0.5;
 const viewTransitionStyle = `
+@keyframes keepAlive {100% { z-index: -1 }}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation: none;
+  animation: keepAlive ${duration}s linear;
+  animation-fill-mode: forwards;
   mix-blend-mode: normal;
 }
 
@@ -50,7 +53,7 @@ const useThemeAnimation = () => {
           clipPath: isDark ? [...clipPath].reverse() : clipPath,
         },
         {
-          duration: 500,
+          duration: duration * 1000,
           easing: 'ease-in',
           pseudoElement: isDark ? '::view-transition-old(root)' : '::view-transition-new(root)',
         },
@@ -64,7 +67,6 @@ const useThemeAnimation = () => {
     event: React.MouseEvent<HTMLElement, MouseEvent>,
     isDark: boolean,
   ) => {
-    // @ts-ignore
     if (!(event && typeof document.startViewTransition === 'function')) {
       return;
     }
@@ -85,20 +87,13 @@ const useThemeAnimation = () => {
       'color-scheme',
     );
     document
-      // @ts-ignore
       .startViewTransition(async () => {
-        // wait for theme change end
-        while (colorBgElevated === animateRef.current.colorBgElevated) {
-          // eslint-disable-next-line no-await-in-loop
-          await new Promise((resolve) => {
-            setTimeout(resolve, 1000 / 60);
-          });
-        }
         const root = document.documentElement;
         root.classList.remove(isDark ? 'dark' : 'light');
         root.classList.add(isDark ? 'light' : 'dark');
       })
       .ready.then(() => {
+        // eslint-disable-next-line no-console
         console.log(`Theme transition finished in ${Date.now() - time}ms`);
         const clipPath = [
           `circle(0px at ${x}px ${y}px)`,
@@ -111,7 +106,6 @@ const useThemeAnimation = () => {
 
   // inject transition style
   useEffect(() => {
-    // @ts-ignore
     if (typeof document.startViewTransition === 'function') {
       updateCSS(viewTransitionStyle, 'view-transition-style');
     }

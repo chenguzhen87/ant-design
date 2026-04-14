@@ -37,12 +37,12 @@ const Demo: React.FC = () => {
         title="Basic Modal"
         open={isModalOpen}
         footer={null}
-        destroyOnClose
+        destroyOnHidden
         onCancel={() => setIsModalOpen(false)}
-        maskClosable={false}
+        mask={{ closable: false }}
         closable={false}
         styles={{
-          content: {
+          container: {
             marginBlockStart: 100,
           },
         }}
@@ -52,13 +52,13 @@ const Demo: React.FC = () => {
           title="Nested Modal"
           open={isModalOpen}
           footer={null}
-          destroyOnClose
+          destroyOnHidden
           mask={false}
           onCancel={() => setIsModalOpen(false)}
           maskClosable={false}
           closable={false}
           styles={{
-            content: {
+            container: {
               marginBlockStart: 250,
             },
             body: {
@@ -73,13 +73,13 @@ const Demo: React.FC = () => {
             title="Nested Modal"
             open={isModalOpen}
             footer={null}
-            destroyOnClose
+            destroyOnHidden
             mask={false}
             maskClosable={false}
             onCancel={() => setIsModalOpen(false)}
             closable={false}
             styles={{
-              content: {
+              container: {
                 marginBlockStart: 400,
               },
               body: {
@@ -104,7 +104,7 @@ const Demo: React.FC = () => {
                 onClick={() => {
                   message.success('Hello World');
                   notification.success({
-                    message: 'Hello World',
+                    title: 'Hello World',
                   });
                 }}
               >
@@ -115,7 +115,7 @@ const Demo: React.FC = () => {
                 onClick={() => {
                   messageInstance.success('Hello World');
                   notificationInstance.success({
-                    message: 'Hello World',
+                    title: 'Hello World',
                   });
                 }}
               >

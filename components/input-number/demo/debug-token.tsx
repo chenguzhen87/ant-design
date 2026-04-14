@@ -11,9 +11,8 @@ export default () => (
       },
     }}
   >
-    <Space>
+    <Space wrap>
       <InputNumber />
-
       <ConfigProvider
         theme={{
           components: {
@@ -36,8 +35,28 @@ export default () => (
           },
         }}
       >
-        <InputNumber size="large" />
-        <InputNumber size="large" prefix="$" />
+        <Space wrap>
+          <InputNumber size="large" />
+          <InputNumber size="large" prefix="$" />
+        </Space>
+      </ConfigProvider>
+
+      <ConfigProvider
+        theme={{
+          components: {
+            InputNumber: {
+              inputFontSize: 30,
+              inputFontSizeSM: 20,
+              inputFontSizeLG: 40,
+            },
+          },
+        }}
+      >
+        <Space wrap>
+          <InputNumber defaultValue={11111} size="small" />
+          <InputNumber defaultValue={11111} />
+          <InputNumber defaultValue={11111} size="large" />
+        </Space>
       </ConfigProvider>
     </Space>
   </ConfigProvider>

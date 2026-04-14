@@ -1,8 +1,9 @@
 import type { CSSObject } from '@ant-design/cssinjs';
 import { unit } from '@ant-design/cssinjs';
-import { TinyColor } from '@ctrl/tinycolor';
+import { FastColor } from '@ant-design/fast-color';
 
 import { genFocusStyle, resetComponent } from '../../style';
+import { genNoMotionStyle } from '../../style/motion';
 import type { FullToken, GenerateStyle, GetDefaultToken } from '../../theme/internal';
 import { genStyleHooks, mergeToken } from '../../theme/internal';
 
@@ -11,22 +12,22 @@ export interface ComponentToken {
    *  @desc 开关高度
    *  @descEN Height of Switch
    */
-  trackHeight: number;
+  trackHeight: number | string;
   /**
    * @desc 小号开关高度
    * @descEN Height of small Switch
    */
-  trackHeightSM: number;
+  trackHeightSM: number | string;
   /**
    * @desc 开关最小宽度
    * @descEN Minimum width of Switch
    */
-  trackMinWidth: number;
+  trackMinWidth: number | string;
   /**
    * @desc 小号开关最小宽度
    * @descEN Minimum width of small Switch
    */
-  trackMinWidthSM: number;
+  trackMinWidthSM: number | string;
   /**
    * @desc 开关内边距
    * @descEN Padding of Switch
@@ -208,6 +209,7 @@ const genSwitchHandleStyle: GenerateStyle<SwitchToken, CSSObject> = (token) => {
         width: handleSize,
         height: handleSize,
         transition: `all ${token.switchDuration} ease-in-out`,
+        ...genNoMotionStyle(),
 
         '&::before': {
           position: 'absolute',
@@ -220,6 +222,7 @@ const genSwitchHandleStyle: GenerateStyle<SwitchToken, CSSObject> = (token) => {
           boxShadow: handleShadow,
           transition: `all ${token.switchDuration} ease-in-out`,
           content: '""',
+          ...genNoMotionStyle(),
         },
       },
 
@@ -250,6 +253,7 @@ const genSwitchInnerStyle: GenerateStyle<SwitchToken, CSSObject> = (token) => {
     innerMinMargin,
     innerMaxMargin,
     handleSize,
+    switchDuration,
     calc,
   } = token;
   const switchInnerCls = `${componentCls}-inner`;
@@ -266,15 +270,20 @@ const genSwitchInnerStyle: GenerateStyle<SwitchToken, CSSObject> = (token) => {
         height: '100%',
         paddingInlineStart: innerMaxMargin,
         paddingInlineEnd: innerMinMargin,
-        transition: `padding-inline-start ${token.switchDuration} ease-in-out, padding-inline-end ${token.switchDuration} ease-in-out`,
-
+        transition: [`padding-inline-start`, `padding-inline-end`]
+          .map((prop) => `${prop} ${switchDuration} ease-in-out`)
+          .join(', '),
+        ...genNoMotionStyle(),
         [`${switchInnerCls}-checked, ${switchInnerCls}-unchecked`]: {
           display: 'block',
           color: token.colorTextLightSolid,
           fontSize: token.fontSizeSM,
-          transition: `margin-inline-start ${token.switchDuration} ease-in-out, margin-inline-end ${token.switchDuration} ease-in-out`,
           pointerEvents: 'none',
           minHeight: trackHeight,
+          transition: [`margin-inline-start`, `margin-inline-end`]
+            .map((prop) => `${prop} ${switchDuration} ease-in-out`)
+            .join(', '),
+          ...genNoMotionStyle(),
         },
 
         [`${switchInnerCls}-checked`]: {
@@ -322,7 +331,7 @@ const genSwitchInnerStyle: GenerateStyle<SwitchToken, CSSObject> = (token) => {
   };
 };
 
-const genSwitchStyle = (token: SwitchToken): CSSObject => {
+const genSwitchStyle: GenerateStyle<SwitchToken, CSSObject> = (token) => {
   const { componentCls, trackHeight, trackMinWidth } = token;
 
   return {
@@ -334,7 +343,7 @@ const genSwitchStyle = (token: SwitchToken): CSSObject => {
       boxSizing: 'border-box',
       minWidth: trackMinWidth,
       height: trackHeight,
-      lineHeight: `${unit(trackHeight)}`,
+      lineHeight: unit(trackHeight),
       verticalAlign: 'middle',
       background: token.colorTextQuaternary,
       border: '0',
@@ -342,7 +351,7 @@ const genSwitchStyle = (token: SwitchToken): CSSObject => {
       cursor: 'pointer',
       transition: `all ${token.motionDurationMid}`,
       userSelect: 'none',
-
+      ...genNoMotionStyle(),
       [`&:hover:not(${componentCls}-disabled)`]: {
         background: token.colorTextTertiary,
       },
@@ -394,7 +403,7 @@ export const prepareComponentToken: GetDefaultToken<'Switch'> = (token) => {
     handleBg: colorWhite,
     handleSize,
     handleSizeSM,
-    handleShadow: `0 2px 4px 0 ${new TinyColor('#00230b').setAlpha(0.2).toRgbString()}`,
+    handleShadow: `0 2px 4px 0 ${new FastColor('#00230b').setA(0.2).toRgbString()}`,
     innerMinMargin: handleSize / 2,
     innerMaxMargin: handleSize + padding + padding * 2,
     innerMinMarginSM: handleSizeSM / 2,

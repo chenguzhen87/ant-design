@@ -1,11 +1,11 @@
+import type { CSSObject } from '@ant-design/cssinjs';
+
 import type { FullToken, GenerateStyle, GetDefaultToken } from '../../theme/internal';
 import { genStyleHooks, mergeToken } from '../../theme/internal';
-import genSpaceCompactStyle from './compact';
 
 /** Component only token. Which will handle additional calculation of alias token */
-export interface ComponentToken {
-  // Component token here
-}
+// biome-ignore lint/suspicious/noEmptyInterface: ComponentToken need to be empty by default
+export interface ComponentToken {}
 
 interface SpaceToken extends FullToken<'Space'> {
   spaceGapSmallSize: number;
@@ -13,7 +13,7 @@ interface SpaceToken extends FullToken<'Space'> {
   spaceGapLargeSize: number;
 }
 
-const genSpaceStyle: GenerateStyle<SpaceToken> = (token) => {
+const genSpaceStyle: GenerateStyle<SpaceToken, CSSObject> = (token) => {
   const { componentCls, antCls } = token;
 
   return {
@@ -51,14 +51,14 @@ const genSpaceStyle: GenerateStyle<SpaceToken> = (token) => {
   };
 };
 
-const genSpaceGapStyle: GenerateStyle<SpaceToken> = (token) => {
+const genSpaceGapStyle: GenerateStyle<SpaceToken, CSSObject> = (token) => {
   const { componentCls } = token;
   return {
     [componentCls]: {
       '&-gap-row-small': {
         rowGap: token.spaceGapSmallSize,
       },
-      '&-gap-row-middle': {
+      '&-gap-row-medium, &-gap-row-middle': {
         rowGap: token.spaceGapMiddleSize,
       },
       '&-gap-row-large': {
@@ -67,7 +67,7 @@ const genSpaceGapStyle: GenerateStyle<SpaceToken> = (token) => {
       '&-gap-col-small': {
         columnGap: token.spaceGapSmallSize,
       },
-      '&-gap-col-middle': {
+      '&-gap-col-medium, &-gap-col-middle': {
         columnGap: token.spaceGapMiddleSize,
       },
       '&-gap-col-large': {
@@ -88,11 +88,7 @@ export default genStyleHooks(
       spaceGapMiddleSize: token.padding,
       spaceGapLargeSize: token.paddingLG,
     });
-    return [
-      genSpaceStyle(spaceToken),
-      genSpaceGapStyle(spaceToken),
-      genSpaceCompactStyle(spaceToken),
-    ];
+    return [genSpaceStyle(spaceToken), genSpaceGapStyle(spaceToken)];
   },
   () => ({}),
   {

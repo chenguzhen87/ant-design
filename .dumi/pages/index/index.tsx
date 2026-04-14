@@ -1,21 +1,25 @@
-import React, { Suspense } from 'react';
-import { ConfigProvider, theme } from 'antd';
-import { createStyles, css } from 'antd-style';
+import React, { Suspense, useState } from 'react';
+import { theme } from 'antd';
+import { createStaticStyles } from 'antd-style';
 
-import useDark from '../../hooks/useDark';
 import useLocale from '../../hooks/useLocale';
+import { DarkContext } from './../../hooks/useDark';
 import BannerRecommends from './components/BannerRecommends';
-import PreviewBanner from './components/PreviewBanner';
 import Group from './components/Group';
+import PreviewBanner from './components/PreviewBanner';
+import ThemePreview from './components/ThemePreview';
+import PromptDrawer from '../../theme/common/ThemeSwitch/PromptDrawer';
+import SiteContext from '../../theme/slots/SiteContext';
+import type { SiteContextProps } from '../../theme/slots/SiteContext';
 
 const ComponentsList = React.lazy(() => import('./components/ComponentsList'));
 const DesignFramework = React.lazy(() => import('./components/DesignFramework'));
-const Theme = React.lazy(() => import('./components/Theme'));
+// const Theme = React.lazy(() => import('./components/Theme'));
 
-const useStyle = createStyles(() => ({
+const classNames = createStaticStyles(({ css }) => ({
   image: css`
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
     top: -50px;
     height: 160px;
   `,
@@ -38,10 +42,19 @@ const locales = {
 
 const Homepage: React.FC = () => {
   const [locale] = useLocale(locales);
-  const { styles } = useStyle();
   const { token } = theme.useToken();
 
-  const isRootDark = useDark();
+  const isDark = React.use(DarkContext);
+  const [promptDrawerOpen, setPromptDrawerOpen] = useState(false);
+  const siteContext = React.use(SiteContext);
+
+  const handlePromptDrawerOpen = () => setPromptDrawerOpen(true);
+  const handlePromptDrawerClose = () => setPromptDrawerOpen(false);
+  const handleThemeChange = (themeConfig: SiteContextProps['dynamicTheme']) => {
+    if (siteContext?.updateSiteConfig) {
+      siteContext.updateSiteConfig({ dynamicTheme: themeConfig });
+    }
+  };
 
   return (
     <section>
@@ -49,49 +62,46 @@ const Homepage: React.FC = () => {
         <BannerRecommends />
       </PreviewBanner>
 
-      <div>
-        {/* 定制主题 */}
-        <ConfigProvider
-          theme={{
-            algorithm: theme.defaultAlgorithm,
-          }}
-        >
-          <Suspense fallback={null}>
-            <Theme />
-          </Suspense>
-        </ConfigProvider>
+      <ThemePreview onOpenPromptDrawer={handlePromptDrawerOpen} />
 
-        {/* 组件列表 */}
-        <Group
-          background={token.colorBgElevated}
-          collapse
-          title={locale.assetsTitle}
-          description={locale.assetsDesc}
-          id="design"
-        >
-          <Suspense fallback={null}>
-            <ComponentsList />
-          </Suspense>
-        </Group>
+      {/* AI 生成主题抽屉 */}
+      <PromptDrawer
+        open={promptDrawerOpen}
+        onClose={handlePromptDrawerClose}
+        onThemeChange={handleThemeChange}
+      />
 
-        {/* 设计语言 */}
-        <Group
-          title={locale.designTitle}
-          description={locale.designDesc}
-          background={isRootDark ? 'rgb(57, 63, 74)' : '#F5F8FF'}
-          decoration={
-            <img
-              className={styles.image}
-              src="https://gw.alipayobjects.com/zos/bmw-prod/ba37a413-28e6-4be4-b1c5-01be1a0ebb1c.svg"
-              alt=""
-            />
-          }
-        >
-          <Suspense fallback={null}>
-            <DesignFramework />
-          </Suspense>
-        </Group>
-      </div>
+      {/* 组件列表 */}
+      <Group
+        background={token.colorBgElevated}
+        collapse
+        title={locale.assetsTitle}
+        description={locale.assetsDesc}
+        id="design"
+      >
+        <Suspense fallback={null}>
+          <ComponentsList />
+        </Suspense>
+      </Group>
+
+      {/* 设计语言 */}
+      <Group
+        title={locale.designTitle}
+        description={locale.designDesc}
+        background={isDark ? '#393F4A' : '#F5F8FF'}
+        decoration={
+          <img
+            draggable={false}
+            className={classNames.image}
+            src="https://gw.alipayobjects.com/zos/bmw-prod/ba37a413-28e6-4be4-b1c5-01be1a0ebb1c.svg"
+            alt="bg"
+          />
+        }
+      >
+        <Suspense fallback={null}>
+          <DesignFramework />
+        </Suspense>
+      </Group>
     </section>
   );
 };

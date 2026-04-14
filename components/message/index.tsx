@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { render } from 'rc-util/lib/React/render';
+import { render } from '@rc-component/util/lib/React/render';
 
 import { AppConfigContext } from '../app/context';
 import ConfigProvider, { ConfigContext, globalConfig, warnContext } from '../config-provider';
@@ -7,6 +7,9 @@ import type {
   ArgsProps,
   ConfigOptions,
   MessageInstance,
+  MessageSemanticClassNames,
+  MessageSemanticName,
+  MessageSemanticStyles,
   MessageType,
   NoticeType,
   TypeOpen,
@@ -15,7 +18,7 @@ import PurePanel from './PurePanel';
 import useMessage, { useInternalMessage } from './useMessage';
 import { wrapPromiseFn } from './util';
 
-export type { ArgsProps };
+export type { ArgsProps, MessageSemanticClassNames, MessageSemanticName, MessageSemanticStyles };
 
 let message: GlobalMessage | null = null;
 
@@ -43,14 +46,7 @@ interface TypeTask {
   skipped?: boolean;
 }
 
-type Task =
-  | OpenTask
-  | TypeTask
-  | {
-      type: 'destroy';
-      key?: React.Key;
-      skipped?: boolean;
-    };
+type Task = OpenTask | TypeTask | { type: 'destroy'; key?: React.Key; skipped?: boolean };
 
 let taskQueue: Task[] = [];
 
@@ -98,7 +94,7 @@ const GlobalHolder = React.forwardRef<
   return holder;
 });
 
-const GlobalHolderWrapper = React.forwardRef<GlobalHolderRef, {}>((_, ref) => {
+const GlobalHolderWrapper = React.forwardRef<GlobalHolderRef, unknown>((_, ref) => {
   const [messageConfig, setMessageConfig] = React.useState<ConfigOptions>(getGlobalContext);
 
   const sync = () => {
@@ -120,7 +116,7 @@ const GlobalHolderWrapper = React.forwardRef<GlobalHolderRef, {}>((_, ref) => {
   );
 });
 
-function flushNotice() {
+const flushMessageQueue = () => {
   if (!message) {
     const holderFragment = document.createDocumentFragment();
 
@@ -136,13 +132,12 @@ function flushNotice() {
         <GlobalHolderWrapper
           ref={(node) => {
             const { instance, sync } = node || {};
-
             // React 18 test env will throw if call immediately in ref
             Promise.resolve().then(() => {
               if (!newMessage.instance && instance) {
                 newMessage.instance = instance;
                 newMessage.sync = sync;
-                flushNotice();
+                flushMessageQueue();
               }
             });
           }}
@@ -201,7 +196,7 @@ function flushNotice() {
 
   // Clean up
   taskQueue = [];
-}
+};
 
 // ==============================================================================
 // ==                                  Export                                  ==
@@ -244,7 +239,7 @@ function open(config: ArgsProps): MessageType {
     };
   });
 
-  flushNotice();
+  flushMessageQueue();
 
   return result;
 }
@@ -281,17 +276,14 @@ function typeOpen(type: NoticeType, args: Parameters<TypeOpen>): MessageType {
     };
   });
 
-  flushNotice();
+  flushMessageQueue();
 
   return result;
 }
 
 const destroy: BaseMethods['destroy'] = (key) => {
-  taskQueue.push({
-    type: 'destroy',
-    key,
-  });
-  flushNotice();
+  taskQueue.push({ type: 'destroy', key });
+  flushMessageQueue();
 };
 
 interface BaseMethods {
@@ -332,24 +324,22 @@ methods.forEach((type: keyof MessageMethods) => {
 // ==============================================================================
 const noop = () => {};
 
-/** @internal Only Work in test env */
-// eslint-disable-next-line import/no-mutable-exports
-export let actWrapper: (wrapper: any) => void = noop;
-
+let _actWrapper: (wrapper: (fn: () => void) => void) => void = noop;
 if (process.env.NODE_ENV === 'test') {
-  actWrapper = (wrapper) => {
+  _actWrapper = (wrapper) => {
     act = wrapper;
   };
 }
+const actWrapper = _actWrapper;
+export { actWrapper };
 
-/** @internal Only Work in test env */
-// eslint-disable-next-line import/no-mutable-exports
-export let actDestroy = noop;
-
+let _actDestroy = noop;
 if (process.env.NODE_ENV === 'test') {
-  actDestroy = () => {
+  _actDestroy = () => {
     message = null;
   };
 }
+const actDestroy = _actDestroy;
+export { actDestroy };
 
 export default staticMethods;

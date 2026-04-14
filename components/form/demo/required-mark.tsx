@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Radio, Tag } from 'antd';
+import type { FormProps } from 'antd';
 
 type RequiredMark = boolean | 'optional' | 'customize';
 
@@ -13,10 +14,10 @@ const customizeRequiredMark = (label: React.ReactNode, { required }: { required:
 
 const App: React.FC = () => {
   const [form] = Form.useForm();
-  const [requiredMark, setRequiredMarkType] = useState<RequiredMark>('optional');
+  const [requiredMark, setRequiredMark] = useState<RequiredMark>('optional');
 
-  const onRequiredTypeChange = ({ requiredMarkValue }: { requiredMarkValue: RequiredMark }) => {
-    setRequiredMarkType(requiredMarkValue);
+  const onRequiredTypeChange: FormProps<any>['onValuesChange'] = ({ requiredMarkValue }) => {
+    setRequiredMark(requiredMarkValue);
   };
 
   return (

@@ -1,15 +1,31 @@
 import React from 'react';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 
 import mountTest from '../../../tests/shared/mountTest';
 import { act, fireEvent, getByText, render, waitFakeTimer } from '../../../tests/utils';
 import Checkbox from '../../checkbox';
+import { defaultPrefixCls } from '../../config-provider';
+import { genCssVar } from '../../theme/util/genStyleUtils';
 import Wave from '../wave';
 import { TARGET_CLS } from '../wave/interface';
 
 (global as any).isVisible = true;
 
-jest.mock('rc-util/lib/Dom/isVisible', () => {
+const [varName] = genCssVar(defaultPrefixCls, 'wave');
+
+// TODO: Remove this. Mock for React 19
+jest.mock('react-dom', () => {
+  const realReactDOM = jest.requireActual('react-dom');
+
+  if (realReactDOM.version.startsWith('19')) {
+    const realReactDOMClient = jest.requireActual('react-dom/client');
+    realReactDOM.createRoot = realReactDOMClient.createRoot;
+  }
+
+  return realReactDOM;
+});
+
+jest.mock('@rc-component/util/lib/Dom/isVisible', () => {
   const mockFn = () => (global as any).isVisible;
   return mockFn;
 });
@@ -21,7 +37,6 @@ describe('Wave component', () => {
   let disCnt = 0;
 
   beforeAll(() => {
-    /* eslint-disable class-methods-use-this */
     class FakeResizeObserver {
       observe = () => {
         obCnt += 1;
@@ -33,12 +48,6 @@ describe('Wave component', () => {
     }
 
     (window as any).ResizeObserver = FakeResizeObserver;
-  });
-
-  afterAll(() => {
-    jest.useRealTimers();
-    expect(obCnt).not.toBe(0);
-    expect(disCnt).not.toBe(0);
   });
 
   beforeEach(() => {
@@ -55,6 +64,12 @@ describe('Wave component', () => {
     for (let i = 0; i < styles.length; i += 1) {
       styles[i].remove();
     }
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+    expect(obCnt).not.toBe(0);
+    expect(disCnt).not.toBe(0);
   });
 
   function getWaveStyle() {
@@ -97,6 +112,7 @@ describe('Wave component', () => {
     expect(document.querySelector('.ant-wave')).toBeFalsy();
 
     expect(errorSpy).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
 
     unmount();
   });
@@ -116,13 +132,10 @@ describe('Wave component', () => {
     unmount();
   });
 
-  it('wave color is grey', () => {
+  it('wave color is nonexistent', () => {
     const { container, unmount } = render(
       <Wave>
-        <button
-          type="button"
-          style={{ borderColor: 'rgb(0, 0, 0)', backgroundColor: 'transparent' }}
-        >
+        <button type="button" style={{ border: '#fff', background: '#fff' }}>
           button
         </button>
       </Wave>,
@@ -130,10 +143,8 @@ describe('Wave component', () => {
 
     fireEvent.click(container.querySelector('button')!);
     waitRaf();
-
     const style = getWaveStyle();
-
-    expect(style['--wave-color']).toBeFalsy();
+    expect(style[varName('color')]).toBe(undefined);
 
     unmount();
   });
@@ -141,7 +152,7 @@ describe('Wave component', () => {
   it('wave color is not grey', () => {
     const { container, unmount } = render(
       <Wave>
-        <button type="button" style={{ borderColor: 'red' }}>
+        <button type="button" style={{ borderColor: 'rgb(255, 0, 0)' }}>
           button
         </button>
       </Wave>,
@@ -151,7 +162,7 @@ describe('Wave component', () => {
     waitRaf();
 
     const style = getWaveStyle();
-    expect(style['--wave-color']).toEqual('red');
+    expect(style[varName('color')]).toBe('rgb(255, 0, 0)');
 
     unmount();
   });
@@ -167,7 +178,7 @@ describe('Wave component', () => {
     waitRaf();
 
     const style = getWaveStyle();
-    expect(style['--wave-color']).toEqual('blue');
+    expect(style[varName('color')]).toBe('rgb(0, 0, 255)');
 
     unmount();
   });
@@ -183,7 +194,7 @@ describe('Wave component', () => {
     waitRaf();
 
     const style = getWaveStyle();
-    expect(style['--wave-color']).toEqual('green');
+    expect(style[varName('color')]).toBe('rgb(0, 128, 0)');
 
     unmount();
   });
@@ -199,7 +210,7 @@ describe('Wave component', () => {
     waitRaf();
 
     const style = getWaveStyle();
-    expect(style['--wave-color']).toEqual('yellow');
+    expect(style[varName('color')]).toBe('rgb(255, 255, 0)');
 
     unmount();
   });
@@ -271,7 +282,7 @@ describe('Wave component', () => {
   it('wave color should inferred if border is transparent and background is not', () => {
     const { container, unmount } = render(
       <Wave>
-        <button type="button" style={{ borderColor: 'transparent', background: 'red' }}>
+        <button type="button" style={{ borderColor: 'transparent', background: 'rgb(255, 0, 0)' }}>
           button
         </button>
       </Wave>,
@@ -280,7 +291,7 @@ describe('Wave component', () => {
     waitRaf();
 
     const style = getWaveStyle();
-    expect(style['--wave-color']).toEqual('red');
+    expect(style[varName('color')]).toBe('rgb(255, 0, 0)');
 
     unmount();
   });
@@ -298,7 +309,7 @@ describe('Wave component', () => {
     waitRaf();
 
     const style = getWaveStyle();
-    expect(style['--wave-color']).toEqual('red');
+    expect(style[varName('color')]).toBe('red');
 
     unmount();
   });
@@ -306,7 +317,7 @@ describe('Wave component', () => {
   it('Wave style should append to validate element', () => {
     const { container } = render(
       <Wave>
-        <div className="bamboo" style={{ borderColor: 'red' }} />
+        <div className="bamboo" style={{ borderColor: 'rgb(255, 0, 0)' }} />
       </Wave>,
     );
 
@@ -330,7 +341,7 @@ describe('Wave component', () => {
     const { container } = render(
       <Wave>
         <div>
-          <div className={classNames('bamboo', TARGET_CLS)} style={{ borderColor: 'red' }} />
+          <div className={clsx('bamboo', TARGET_CLS)} style={{ borderColor: 'rgb(255, 0, 0)' }} />
         </div>
       </Wave>,
     );
@@ -352,5 +363,22 @@ describe('Wave component', () => {
 
     expect(onChange).toHaveBeenCalled();
     expect(container.querySelector('.ant-wave')).toBeFalsy();
+  });
+
+  it('support colorSource', async () => {
+    const { container, unmount } = render(
+      <Wave colorSource="color">
+        <div className="bamboo" style={{ color: 'rgb(255, 0, 0)' }} />
+      </Wave>,
+    );
+
+    fireEvent.click(container.querySelector('.bamboo')!);
+    waitRaf();
+    expect(document.querySelector('.ant-wave')).toBeTruthy();
+
+    const style = getWaveStyle();
+    expect(style[varName('color')]).toBe('rgb(255, 0, 0)');
+
+    unmount();
   });
 });

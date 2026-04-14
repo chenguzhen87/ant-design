@@ -62,7 +62,7 @@ const data = [
     name: 'Jim Green',
     age: 42,
     address: 'London No. 2 Lake Park, London No. 2 Lake Park',
-    tags: ['loser'],
+    tags: ['kawaii'],
   },
   {
     key: '3',
@@ -73,6 +73,6 @@ const data = [
   },
 ];
 
-const App: React.FC = () => <Table columns={columns} dataSource={data} />;
+const App: React.FC = () => <Table<DataType> columns={columns} dataSource={data} />;
 
 export default App;

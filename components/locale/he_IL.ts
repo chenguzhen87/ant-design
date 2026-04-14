@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/he_IL';
+import Pagination from '@rc-component/pagination/lib/locale/he_IL';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/he_IL';
@@ -16,6 +15,7 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'אנא בחר',
+    close: 'סגור',
   },
   Table: {
     filterTitle: 'תפריט סינון',
@@ -30,6 +30,11 @@ const localeValues: Locale = {
     triggerDesc: 'לחץ למיון לפי סדר יורד',
     triggerAsc: 'לחץ למיון לפי סדר עולה',
     cancelSort: 'לחץ כדי לבטל את המיון',
+  },
+  Tour: {
+    Next: 'הבא',
+    Previous: 'הקודם',
+    Finish: 'סיום',
   },
   Modal: {
     okText: 'אישור',

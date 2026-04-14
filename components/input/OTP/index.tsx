@@ -1,22 +1,39 @@
 import * as React from 'react';
-import classNames from 'classnames';
-import { useEvent } from 'rc-util';
-import pickAttrs from 'rc-util/lib/pickAttrs';
+import { useEvent } from '@rc-component/util';
+import pickAttrs from '@rc-component/util/lib/pickAttrs';
+import { clsx } from 'clsx';
 
+import { useMergeSemantic } from '../../_util/hooks';
+import type { SemanticClassNamesType, SemanticStylesType } from '../../_util/hooks';
 import { getMergedStatus } from '../../_util/statusUtils';
 import type { InputStatus } from '../../_util/statusUtils';
 import { devUseWarning } from '../../_util/warning';
-import { ConfigContext } from '../../config-provider';
-import useCSSVarCls from '../../config-provider/hooks/useCSSVarCls';
+import type { Variant } from '../../config-provider';
+import { useComponentConfig } from '../../config-provider/context';
 import useSize from '../../config-provider/hooks/useSize';
 import type { SizeType } from '../../config-provider/SizeContext';
 import { FormItemInputContext } from '../../form/context';
 import type { FormItemStatusContextProps } from '../../form/context';
-import type { Variant } from '../../form/hooks/useVariants';
 import type { InputRef } from '../Input';
 import useStyle from '../style/otp';
 import OTPInput from './OTPInput';
 import type { OTPInputProps } from './OTPInput';
+
+export type OTPSemanticClassNames = {
+  root?: string;
+  input?: string;
+  separator?: string;
+};
+
+export type OTPSemanticStyles = {
+  root?: React.CSSProperties;
+  input?: React.CSSProperties;
+  separator?: React.CSSProperties;
+};
+
+export type OTPClassNamesType = SemanticClassNamesType<OTPProps, OTPSemanticClassNames>;
+
+export type OTPStylesType = SemanticStylesType<OTPProps, OTPSemanticStyles>;
 
 export interface OTPRef {
   focus: VoidFunction;
@@ -24,7 +41,8 @@ export interface OTPRef {
   nativeElement: HTMLDivElement;
 }
 
-export interface OTPProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
+export interface OTPProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'onInput'> {
   prefixCls?: string;
   length?: number;
 
@@ -40,17 +58,48 @@ export interface OTPProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'on
   value?: string;
   onChange?: (value: string) => void;
   formatter?: (value: string) => string;
+  separator?: ((index: number) => React.ReactNode) | React.ReactNode;
 
   // Status
   disabled?: boolean;
   status?: InputStatus;
 
   mask?: boolean | string;
+
+  type?: React.HTMLInputTypeAttribute;
+
+  autoComplete?: string;
+
+  onInput?: (value: string[]) => void;
+
+  classNames?: OTPClassNamesType;
+  styles?: OTPStylesType;
 }
 
 function strToArr(str: string) {
   return (str || '').split('');
 }
+
+interface SeparatorProps {
+  index: number;
+  prefixCls: string;
+  separator: OTPProps['separator'];
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+const Separator: React.FC<Readonly<SeparatorProps>> = (props) => {
+  const { index, prefixCls, separator, className: semanticClassName, style: semanticStyle } = props;
+  const separatorNode = typeof separator === 'function' ? separator(index) : separator;
+  if (!separatorNode) {
+    return null;
+  }
+  return (
+    <span className={clsx(`${prefixCls}-separator`, semanticClassName)} style={semanticStyle}>
+      {separatorNode}
+    </span>
+  );
+};
 
 const OTP = React.forwardRef<OTPRef, OTPProps>((props, ref) => {
   const {
@@ -61,11 +110,21 @@ const OTP = React.forwardRef<OTPRef, OTPProps>((props, ref) => {
     value,
     onChange,
     formatter,
+    separator,
     variant,
     disabled,
     status: customStatus,
     autoFocus,
     mask,
+    type,
+    autoComplete,
+    onInput,
+    onFocus,
+    inputMode,
+    classNames,
+    styles,
+    className,
+    style,
     ...restProps
   } = props;
 
@@ -78,8 +137,28 @@ const OTP = React.forwardRef<OTPRef, OTPProps>((props, ref) => {
     );
   }
 
-  const { getPrefixCls, direction } = React.useContext(ConfigContext);
+  const {
+    classNames: contextClassNames,
+    styles: contextStyles,
+    getPrefixCls,
+    direction,
+    style: contextStyle,
+    className: contextClassName,
+  } = useComponentConfig('otp');
   const prefixCls = getPrefixCls('otp', customizePrefixCls);
+
+  const mergedProps: OTPProps = {
+    ...props,
+    length,
+  };
+
+  const [mergedClassNames, mergedStyles] = useMergeSemantic<
+    OTPClassNamesType,
+    OTPStylesType,
+    OTPProps
+  >([contextClassNames, classNames], [contextStyles, styles], {
+    props: mergedProps,
+  });
 
   const domAttrs = pickAttrs(restProps, {
     aria: true,
@@ -89,8 +168,7 @@ const OTP = React.forwardRef<OTPRef, OTPProps>((props, ref) => {
 
   // ========================= Root =========================
   // Style
-  const rootCls = useCSSVarCls(prefixCls);
-  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls, rootCls);
+  const [hashId, cssVarCls] = useStyle(prefixCls);
 
   // ========================= Size =========================
   const mergedSize = useSize((ctx) => customSize ?? ctx);
@@ -112,15 +190,15 @@ const OTP = React.forwardRef<OTPRef, OTPProps>((props, ref) => {
   // ========================= Refs =========================
   const containerRef = React.useRef<HTMLDivElement>(null);
 
-  const refs = React.useRef<Record<number, InputRef | null>>({});
+  const inputsRef = React.useRef<Record<number, InputRef | null>>({});
 
   React.useImperativeHandle(ref, () => ({
     focus: () => {
-      refs.current[0]?.focus();
+      inputsRef.current[0]?.focus();
     },
     blur: () => {
       for (let i = 0; i < length; i += 1) {
-        refs.current[i]?.blur();
+        inputsRef.current[i]?.blur();
       }
     },
     nativeElement: containerRef.current!,
@@ -130,7 +208,7 @@ const OTP = React.forwardRef<OTPRef, OTPProps>((props, ref) => {
   const internalFormatter = (txt: string) => (formatter ? formatter(txt) : txt);
 
   // ======================== Values ========================
-  const [valueCells, setValueCells] = React.useState<string[]>(
+  const [valueCells, setValueCells] = React.useState<string[]>(() =>
     strToArr(internalFormatter(defaultValue || '')),
   );
 
@@ -142,6 +220,10 @@ const OTP = React.forwardRef<OTPRef, OTPProps>((props, ref) => {
 
   const triggerValueCellsChange = useEvent((nextValueCells: string[]) => {
     setValueCells(nextValueCells);
+
+    if (onInput) {
+      onInput(nextValueCells);
+    }
 
     // Trigger if all cells are filled
     if (
@@ -196,15 +278,28 @@ const OTP = React.forwardRef<OTPRef, OTPProps>((props, ref) => {
     const nextCells = patchValue(index, txt);
 
     const nextIndex = Math.min(index + txt.length, length - 1);
-    if (nextIndex !== index) {
-      refs.current[nextIndex]?.focus();
+    if (nextIndex !== index && nextCells[index] !== undefined) {
+      inputsRef.current[nextIndex]?.focus();
     }
 
     triggerValueCellsChange(nextCells);
   };
 
   const onInputActiveChange: OTPInputProps['onActiveChange'] = (nextIndex) => {
-    refs.current[nextIndex]?.focus();
+    inputsRef.current[nextIndex]?.focus();
+  };
+
+  // ======================== Focus ========================
+  const onInputFocus = (event: React.FocusEvent<HTMLInputElement>, index: number) => {
+    // keep focus on the first empty cell
+    for (let i = 0; i < index; i += 1) {
+      if (!inputsRef.current[i]?.input?.value) {
+        inputsRef.current[i]?.focus();
+        break;
+      }
+    }
+
+    onFocus?.(event);
   };
 
   // ======================== Render ========================
@@ -213,13 +308,17 @@ const OTP = React.forwardRef<OTPRef, OTPProps>((props, ref) => {
     disabled,
     status: mergedStatus as InputStatus,
     mask,
+    type,
+    inputMode,
+    autoComplete,
   };
 
-  return wrapCSSVar(
+  return (
     <div
       {...domAttrs}
       ref={containerRef}
-      className={classNames(
+      className={clsx(
+        className,
         prefixCls,
         {
           [`${prefixCls}-sm`]: mergedSize === 'small',
@@ -228,32 +327,48 @@ const OTP = React.forwardRef<OTPRef, OTPProps>((props, ref) => {
         },
         cssVarCls,
         hashId,
+        contextClassName,
+        mergedClassNames.root,
       )}
+      style={{ ...mergedStyles.root, ...contextStyle, ...style }}
+      role="group"
     >
       <FormItemInputContext.Provider value={proxyFormContext}>
         {Array.from({ length }).map((_, index) => {
           const key = `otp-${index}`;
           const singleValue = valueCells[index] || '';
           return (
-            <OTPInput
-              ref={(inputEle) => {
-                refs.current[index] = inputEle;
-              }}
-              key={key}
-              index={index}
-              size={mergedSize}
-              htmlSize={1}
-              className={`${prefixCls}-input`}
-              onChange={onInputChange}
-              value={singleValue}
-              onActiveChange={onInputActiveChange}
-              autoFocus={index === 0 && autoFocus}
-              {...inputSharedProps}
-            />
+            <React.Fragment key={key}>
+              <OTPInput
+                ref={(inputEle) => {
+                  inputsRef.current[index] = inputEle;
+                }}
+                index={index}
+                size={mergedSize}
+                htmlSize={1}
+                className={clsx(mergedClassNames.input, `${prefixCls}-input`)}
+                style={mergedStyles.input}
+                onChange={onInputChange}
+                value={singleValue}
+                onActiveChange={onInputActiveChange}
+                autoFocus={index === 0 && autoFocus}
+                onFocus={(event) => onInputFocus(event, index)}
+                {...inputSharedProps}
+              />
+              {index < length - 1 && (
+                <Separator
+                  separator={separator}
+                  index={index}
+                  prefixCls={prefixCls}
+                  className={clsx(mergedClassNames.separator)}
+                  style={mergedStyles.separator}
+                />
+              )}
+            </React.Fragment>
           );
         })}
       </FormItemInputContext.Provider>
-    </div>,
+    </div>
   );
 });
 

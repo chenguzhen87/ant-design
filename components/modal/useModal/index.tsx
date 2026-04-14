@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import usePatchElement from '../../_util/hooks/usePatchElement';
+import { usePatchElement } from '../../_util/hooks';
 import type { ModalFunc, ModalStaticFunctions } from '../confirm';
 import { withConfirm, withError, withInfo, withSuccess, withWarn } from '../confirm';
 import destroyFns from '../destroyFns';
@@ -16,7 +16,7 @@ interface ElementsHolderRef {
 
 // Add `then` field for `ModalFunc` return instance.
 export type ModalFuncWithPromise = (...args: Parameters<ModalFunc>) => ReturnType<ModalFunc> & {
-  then<T>(resolve: (confirmed: boolean) => T, reject: VoidFunction): Promise<T>;
+  then: <T>(resolve: (confirmed: boolean) => T, reject: VoidFunction) => Promise<T>;
 };
 
 export type HookAPI = Omit<Record<keyof ModalStaticFunctions, ModalFuncWithPromise>, 'warn'>;
@@ -24,14 +24,7 @@ export type HookAPI = Omit<Record<keyof ModalStaticFunctions, ModalFuncWithPromi
 const ElementsHolder = React.memo(
   React.forwardRef<ElementsHolderRef>((_props, ref) => {
     const [elements, patchElement] = usePatchElement();
-    React.useImperativeHandle(
-      ref,
-      () => ({
-        patchElement,
-      }),
-      [],
-    );
-    // eslint-disable-next-line react/jsx-no-useless-fragment
+    React.useImperativeHandle(ref, () => ({ patchElement }), [patchElement]);
     return <>{elements}</>;
   }),
 );
@@ -40,11 +33,12 @@ function useModal(): readonly [instance: HookAPI, contextHolder: React.ReactElem
   const holderRef = React.useRef<ElementsHolderRef>(null);
 
   // ========================== Effect ==========================
-  const [actionQueue, setActionQueue] = React.useState<(() => void)[]>([]);
+  const [actionQueue, setActionQueue] = React.useState<VoidFunction[]>([]);
 
   React.useEffect(() => {
     if (actionQueue.length) {
       const cloneQueue = [...actionQueue];
+
       cloneQueue.forEach((action) => {
         action();
       });
@@ -68,7 +62,7 @@ function useModal(): readonly [instance: HookAPI, contextHolder: React.ReactElem
         });
         let silent = false;
 
-        let closeFunc: Function | undefined;
+        let closeFunc: (() => void) | undefined;
         const modal = (
           <HookModal
             key={`modal-${uuid}`}
@@ -104,7 +98,7 @@ function useModal(): readonly [instance: HookAPI, contextHolder: React.ReactElem
           },
           update: (newConfig) => {
             function updateAction() {
-              modalRef.current?.update(newConfig as ModalFuncProps);
+              modalRef.current?.update(newConfig);
             }
 
             if (modalRef.current) {
@@ -132,7 +126,7 @@ function useModal(): readonly [instance: HookAPI, contextHolder: React.ReactElem
       warning: getConfirmFunc(withWarn),
       confirm: getConfirmFunc(withConfirm),
     }),
-    [],
+    [getConfirmFunc],
   );
   return [fns, <ElementsHolder key="modal-holder" ref={holderRef} />] as const;
 }

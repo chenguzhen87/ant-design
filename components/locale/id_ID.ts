@@ -1,5 +1,4 @@
-/* eslint-disable no-template-curly-in-string */
-import Pagination from 'rc-pagination/lib/locale/id_ID';
+import Pagination from '@rc-component/pagination/lib/locale/id_ID';
 
 import type { Locale } from '.';
 import Calendar from '../calendar/locale/id_ID';
@@ -16,13 +15,14 @@ const localeValues: Locale = {
   Calendar,
   global: {
     placeholder: 'Silahkan pilih',
+    close: 'Tutup',
   },
   Table: {
     filterTitle: 'Menu filter',
     filterConfirm: 'OK',
     filterReset: 'Reset',
     filterEmptyText: 'Tidak ada filter',
-    filterCheckall: 'Pilih semua item',
+    filterCheckAll: 'Pilih semua item',
     filterSearchPlaceholder: 'Cari di filter',
     emptyText: 'Tidak ada data',
     selectAll: 'Pilih halaman saat ini',
@@ -133,9 +133,6 @@ const localeValues: Locale = {
       },
     },
   },
-  Image: {
-    preview: 'Pratinjau',
-  },
   QRCode: {
     expired: 'Kode QR sudah habis masa berlakunya',
     refresh: 'Segarkan',
@@ -143,6 +140,9 @@ const localeValues: Locale = {
   },
   ColorPicker: {
     presetEmpty: 'Kosong',
+    transparent: 'Transparan',
+    singleColor: 'Warna tunggal',
+    gradientColor: 'Warna gradien',
   },
 };
 

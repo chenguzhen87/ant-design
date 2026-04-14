@@ -1,14 +1,16 @@
 import React from 'react';
 
-import type { GlobalToken } from '../theme/interface';
+import type { GlobalToken } from '../theme/internal';
 import { useToken } from '../theme/internal';
 
-export type Breakpoint = 'xxl' | 'xl' | 'lg' | 'md' | 'sm' | 'xs';
+export const responsiveArray = ['xxxl', 'xxl', 'xl', 'lg', 'md', 'sm', 'xs'] as const;
+export const responsiveArrayReversed = [...responsiveArray].reverse();
+
+export type Breakpoint = (typeof responsiveArray)[number];
 export type BreakpointMap = Record<Breakpoint, string>;
 export type ScreenMap = Partial<Record<Breakpoint, boolean>>;
 export type ScreenSizeMap = Partial<Record<Breakpoint, number>>;
 
-export const responsiveArray: Breakpoint[] = ['xxl', 'xl', 'lg', 'md', 'sm', 'xs'];
 type SubscribeFunc = (screens: ScreenMap) => void;
 
 const getResponsiveMap = (token: GlobalToken): BreakpointMap => ({
@@ -18,6 +20,7 @@ const getResponsiveMap = (token: GlobalToken): BreakpointMap => ({
   lg: `(min-width: ${token.screenLG}px)`,
   xl: `(min-width: ${token.screenXL}px)`,
   xxl: `(min-width: ${token.screenXXL}px)`,
+  xxxl: `(min-width: ${token.screenXXXL}px)`,
 });
 
 /**
@@ -28,7 +31,7 @@ const validateBreakpoints = (token: GlobalToken) => {
   const indexableToken: any = token;
   const revBreakpoints = [...responsiveArray].reverse();
 
-  revBreakpoints.forEach((breakpoint: Breakpoint, i: number) => {
+  revBreakpoints.forEach((breakpoint, i) => {
     const breakpointUpper = breakpoint.toUpperCase();
     const screenMin = `screen${breakpointUpper}Min`;
     const screen = `screen${breakpointUpper}`;
@@ -48,7 +51,7 @@ const validateBreakpoints = (token: GlobalToken) => {
         );
       }
 
-      const nextBreakpointUpperMin: string = revBreakpoints[i + 1].toUpperCase();
+      const nextBreakpointUpperMin = revBreakpoints[i + 1].toUpperCase();
       const nextScreenMin = `screen${nextBreakpointUpperMin}Min`;
 
       if (!(indexableToken[screenMax] <= indexableToken[nextScreenMin])) {
@@ -61,30 +64,56 @@ const validateBreakpoints = (token: GlobalToken) => {
   return token;
 };
 
-export default function useResponsiveObserver() {
+export const matchScreen = (screens: ScreenMap, screenSizes?: ScreenSizeMap) => {
+  if (!screenSizes) {
+    return;
+  }
+  for (const breakpoint of responsiveArray) {
+    if (screens[breakpoint] && screenSizes?.[breakpoint] !== undefined) {
+      return screenSizes[breakpoint];
+    }
+  }
+};
+
+interface ResponsiveObserverType {
+  responsiveMap: BreakpointMap;
+  dispatch: (map: ScreenMap) => boolean;
+  subscribe: (func: SubscribeFunc) => number;
+  unsubscribe: (token: number) => void;
+  register: () => void;
+  unregister: () => void;
+  matchHandlers: Record<
+    PropertyKey,
+    {
+      mql: MediaQueryList;
+      listener: (this: MediaQueryList, ev: MediaQueryListEvent) => void;
+    }
+  >;
+}
+
+const useResponsiveObserver = () => {
   const [, token] = useToken();
-  const responsiveMap: BreakpointMap = getResponsiveMap(validateBreakpoints(token));
+  const responsiveMap = getResponsiveMap(validateBreakpoints(token));
 
   // To avoid repeat create instance, we add `useMemo` here.
-  return React.useMemo(() => {
-    const subscribers = new Map<Number, SubscribeFunc>();
+  return React.useMemo<ResponsiveObserverType>(() => {
+    const subscribers = new Map<number, SubscribeFunc>();
     let subUid = -1;
-    let screens = {};
-
+    let screens: Partial<Record<Breakpoint, boolean>> = {};
     return {
-      matchHandlers: {} as {
-        [prop: string]: {
-          mql: MediaQueryList;
-          listener: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null;
-        };
-      },
+      responsiveMap,
+      matchHandlers: {},
       dispatch(pointMap: ScreenMap) {
         screens = pointMap;
-        subscribers.forEach((func) => func(screens));
+        subscribers.forEach((func) => {
+          func(screens);
+        });
         return subscribers.size >= 1;
       },
       subscribe(func: SubscribeFunc): number {
-        if (!subscribers.size) this.register();
+        if (!subscribers.size) {
+          this.register();
+        }
         subUid += 1;
         subscribers.set(subUid, func);
         func(screens);
@@ -92,47 +121,34 @@ export default function useResponsiveObserver() {
       },
       unsubscribe(paramToken: number) {
         subscribers.delete(paramToken);
-        if (!subscribers.size) this.unregister();
-      },
-      unregister() {
-        Object.keys(responsiveMap).forEach((screen) => {
-          const matchMediaQuery = responsiveMap[screen as Breakpoint];
-          const handler = this.matchHandlers[matchMediaQuery];
-          handler?.mql.removeListener(handler?.listener);
-        });
-        subscribers.clear();
+        if (!subscribers.size) {
+          this.unregister();
+        }
       },
       register() {
-        Object.keys(responsiveMap).forEach((screen) => {
-          const matchMediaQuery = responsiveMap[screen as Breakpoint];
+        Object.entries(responsiveMap).forEach(([screen, mediaQuery]) => {
           const listener = ({ matches }: { matches: boolean }) => {
-            this.dispatch({
-              ...screens,
-              [screen]: matches,
-            });
+            this.dispatch({ ...screens, [screen]: matches });
           };
-          const mql = window.matchMedia(matchMediaQuery);
-          mql.addListener(listener);
-          this.matchHandlers[matchMediaQuery] = {
-            mql,
-            listener,
-          };
-
+          const mql = window.matchMedia(mediaQuery);
+          if (typeof mql?.addEventListener === 'function') {
+            mql.addEventListener('change', listener);
+          }
+          this.matchHandlers[mediaQuery] = { mql, listener };
           listener(mql);
         });
       },
-      responsiveMap,
+      unregister() {
+        Object.values(responsiveMap).forEach((mediaQuery) => {
+          const handler = this.matchHandlers[mediaQuery];
+          if (typeof handler?.mql?.removeEventListener === 'function') {
+            handler.mql.removeEventListener('change', handler?.listener);
+          }
+        });
+        subscribers.clear();
+      },
     };
-  }, [token]);
-}
-
-export const matchScreen = (screens: ScreenMap, screenSizes?: ScreenSizeMap) => {
-  if (screenSizes && typeof screenSizes === 'object') {
-    for (let i = 0; i < responsiveArray.length; i++) {
-      const breakpoint: Breakpoint = responsiveArray[i];
-      if (screens[breakpoint] && screenSizes[breakpoint] !== undefined) {
-        return screenSizes[breakpoint];
-      }
-    }
-  }
+  }, [responsiveMap]);
 };
+
+export default useResponsiveObserver;

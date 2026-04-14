@@ -69,15 +69,15 @@ Please refer to [Use custom date library](/docs/react/use-custom-date-library).
 
 ## It doesn't work when I change `defaultValue` dynamically.
 
-The `defaultXxxx` (e.g. `defaultValue`) of `Input`/`Select`(etc...) only works on the first render. It is a specification of React. Please read [React's documentation](https://facebook.github.io/react/docs/forms.html#controlled-components).
+The `defaultXxxx` (e.g. `defaultValue`) of `Input`/`Select`(etc...) only works on the first render. It is a specification of React. Please read [React's documentation](https://react.dev/reference/react-dom/components/input#controlling-an-input-with-a-state-variable).
 
 ## Why does modifying props in mutable way not trigger a component update?
 
-antd use shallow compare of props to optimize performance. You should always pass the new object when updating the state. Please ref [React's document](https://reactjs.org/docs/thinking-in-react.html)
+antd use shallow compare of props to optimize performance. You should always pass the new object when updating the state. Please ref [React's document](https://react.dev/learn/thinking-in-react)
 
 ## After I set the `value` of an `Input`/`Select`(etc.) component, the value cannot be changed by user's action.
 
-Try `onChange` to change `value`, and please read [React's documentation](https://reactjs.org/docs/forms.html#controlled-components).
+Try `onChange` to change `value`, and please read [React's documentation](https://react.dev/reference/react-dom/components/input#controlling-an-input-with-a-state-variable).
 
 ## Components are not vertically aligned when placed in single row.
 
@@ -167,23 +167,21 @@ Like [the explanation](https://github.com/ant-design/ant-design/issues/11586#iss
 
 Likewise, `disabledDate` [cannot work on year/month panels](https://github.com/ant-design/ant-design/issues/9008#issuecomment-358554118) of `<DatePicker mode="year/month" />`, but only on cells of date panel.
 
-### Workaround
+:::success{title=Workaround} You can refer to [this article](https://juejin.im/post/5cf65c366fb9a07eca6968f9) or [this article](https://www.cnblogs.com/zyl-Tara/p/10197177.html), using `mode` and `onPanelChange` to encapsulate a `YearPicker` or `MonthRangePicker` for your needs.
 
-You can refer to [this article](https://juejin.im/post/5cf65c366fb9a07eca6968f9) or [this article](https://www.cnblogs.com/zyl-Tara/p/10197177.html), using `mode` and `onPanelChange` to encapsulate a `YearPicker` or `MonthRangePicker` for your needs.
-
-Or you can simply upgrade to [antd@4.0](https://github.com/ant-design/ant-design/issues/16911), in which we [added more XxxPickers](https://github.com/ant-design/ant-design/issues/4524#issuecomment-480576884) to meet those requirements, and `disabledDate` could be effect on those pickers too.
+Or you can simply upgrade to [antd@4.0](https://github.com/ant-design/ant-design/issues/16911), in which we [added more XxxPickers](https://github.com/ant-design/ant-design/issues/4524#issuecomment-480576884) to meet those requirements, and `disabledDate` could be effect on those pickers too. :::
 
 ## message/notification/Modal.confirm lost styles when set `prefixCls` on ConfigProvider?
 
 Static methods like message/notification/Modal.confirm are not using the same render tree as `<Button />`, but rendered to independent DOM node created by `ReactDOM.render`, which cannot access React context from ConfigProvider. Consider two solutions here:
 
-1. Replace original usages with [message.useMessage](/components/message/#components-message-demo-hooks), [notification.useNotification](/components/notification/#why-i-can-not-access-context-redux-configprovider-localeprefixcls-in-notification) and [Modal.useModal](/components/modal/#why-i-can-not-access-context-redux-configprovider-localeprefixcls-in-modalxxx).
+1. Replace original usages with [message.useMessage](/components/message/#message-demo-hooks), [notification.useNotification](/components/notification/#why-i-can-not-access-context-redux-configprovider-localeprefixcls-in-notification) and [Modal.useModal](/components/modal/#why-i-can-not-access-context-redux-configprovider-localeprefixcls-in-modalxxx).
 
 2. Use [App.useApp](/components/app-cn#%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95) to get message/notification/modal instance.
 
 ## Why shouldn't I use component internal props or state with ref?
 
-You should only access the API by official doc with ref. Directly access internal `props` or `state` is not recommended which will make your code strong coupling with current version. Any refactor will break your code like refactor with [Hooks](https://reactjs.org/docs/hooks-intro.html) version, delete or rename internal `props` or `state`, adjust internal node constructor, etc.
+You should only access the API by official doc with ref. Directly access internal `props` or `state` is not recommended which will make your code strong coupling with current version. Any refactor will break your code like refactor with [Hooks](https://react.dev/reference/react/hooks) version, delete or rename internal `props` or `state`, adjust internal node constructor, etc.
 
 <div id="why-open"></div>
 
@@ -225,9 +223,11 @@ In the Ant Design Token system, `colorPrimary` and `colorInfo` are both [Seed To
 
 ## How to spell Ant Design correctly?
 
-- ✅ **Ant Design**: Capitalized with space, for the design language.
-- ✅ **antd**: all lowercase, for the React UI library.
-- ✅ **ant.design**：For ant.design website url.
+| Spelt | Usage | Pronunciation |
+| --- | --- | --- |
+| ✅ **Ant Design** | Capitalized with space, for the design language | - |
+| ✅ **antd** | All lowercase, for the React UI library | <audio controls src="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/file/A*ChCdRJ0w8SUAAAAAAAAAAAAADgCCAQ"></audio> |
+| ✅ **ant.design** | For ant.design website url | - |
 
 Here are some typical wrong examples:
 
@@ -273,6 +273,10 @@ If you encounter the above error, please check the current project `tsconfig.jso
 ```
 
 The above problem occurs if `strictNullChecks` is set to `true`, If you can determine the project don't need this configuration (see [strictNullChecks](https://www.typescriptlang.org/zh/tsconfig#strictNullChecks) to judge whether need the configuration). You can try changing to `false` to turn off the control strict check. However, if you do need to enable this feature, you can avoid this situation by using other types instead of `null` when defining types
+
+## Why doesn't antd handle precision issues encountered with browser zoom?
+
+Different browsers have different rendering behaviors when zooming. Fixing a precision issue in one browser often leads to issues in others. Additionally, zoom-related precision issues typically occur at extreme zoom levels, which are uncommon in regular use. The inconsistency in rendering arises from how browsers calculate and render elements during zoom operations, including subpixel rendering, rounding differences, and layout recalculations. Addressing these issues requires a significant amount of browser-specific code, which can negatively impact performance and maintainability, and may also be broken by iterations in the browsers themselves.
 
 ## The antd component reported an error when using the App Router of Next.js
 

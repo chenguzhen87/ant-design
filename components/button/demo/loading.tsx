@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { PoweroffOutlined } from '@ant-design/icons';
+import { PoweroffOutlined, SyncOutlined } from '@ant-design/icons';
 import { Button, Flex } from 'antd';
 
 const App: React.FC = () => {
   const [loadings, setLoadings] = useState<boolean[]>([]);
 
   const enterLoading = (index: number) => {
+    console.log('Start loading:', index);
+
     setLoadings((prevLoadings) => {
       const newLoadings = [...prevLoadings];
       newLoadings[index] = true;
@@ -18,7 +20,7 @@ const App: React.FC = () => {
         newLoadings[index] = false;
         return newLoadings;
       });
-    }, 6000);
+    }, 3000);
   };
 
   return (
@@ -31,10 +33,21 @@ const App: React.FC = () => {
           Loading
         </Button>
         <Button type="primary" icon={<PoweroffOutlined />} loading />
+        <Button type="primary" loading={{ icon: <SyncOutlined spin /> }}>
+          Loading Icon
+        </Button>
       </Flex>
       <Flex gap="small" wrap>
         <Button type="primary" loading={loadings[0]} onClick={() => enterLoading(0)}>
-          Click me!
+          Icon Start
+        </Button>
+        <Button
+          type="primary"
+          loading={loadings[2]}
+          onClick={() => enterLoading(2)}
+          iconPlacement="end"
+        >
+          Icon End
         </Button>
         <Button
           type="primary"
@@ -42,14 +55,22 @@ const App: React.FC = () => {
           loading={loadings[1]}
           onClick={() => enterLoading(1)}
         >
-          Click me!
+          Icon Replace
         </Button>
         <Button
           type="primary"
           icon={<PoweroffOutlined />}
-          loading={loadings[2]}
-          onClick={() => enterLoading(2)}
+          loading={loadings[3]}
+          onClick={() => enterLoading(3)}
         />
+        <Button
+          type="primary"
+          icon={<PoweroffOutlined />}
+          loading={loadings[3] && { icon: <SyncOutlined spin /> }}
+          onClick={() => enterLoading(3)}
+        >
+          Loading Icon
+        </Button>
       </Flex>
     </Flex>
   );

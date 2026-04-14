@@ -1,49 +1,41 @@
-import React, { useContext, useLayoutEffect, useMemo, useState } from 'react';
-import { Col, Flex, Typography } from 'antd';
-import { createStyles } from 'antd-style';
-import classNames from 'classnames';
+import React, { Suspense, useLayoutEffect, useMemo, useState } from 'react';
+import { Col, Flex, FloatButton, Skeleton, Space, Typography } from 'antd';
+import { clsx } from 'clsx';
 import { FormattedMessage, useRouteMeta } from 'dumi';
 
 import useLayoutState from '../../../hooks/useLayoutState';
 import useLocation from '../../../hooks/useLocation';
 import ComponentMeta from '../../builtins/ComponentMeta';
+import EditButton from '../../common/EditButton';
+import PrevAndNext from '../../common/PrevAndNext';
 import type { DemoContextProps } from '../DemoContext';
 import DemoContext from '../DemoContext';
+import Footer from '../Footer';
 import SiteContext from '../SiteContext';
-import InViewSuspense from './InViewSuspense';
+import ColumnCard from './ColumnCard';
+import Contributors from './Contributors';
+import DocAnchor, { useStyle } from './DocAnchor';
+import DocMeta from './DocMeta';
 
-const Contributors = React.lazy(() => import('./Contributors'));
-const ColumnCard = React.lazy(() => import('./ColumnCard'));
-const DocAnchor = React.lazy(() => import('./DocAnchor'));
-const DocMeta = React.lazy(() => import('./DocMeta'));
-const Footer = React.lazy(() => import('../Footer'));
-const PrevAndNext = React.lazy(() => import('../../common/PrevAndNext'));
-const ComponentChangelog = React.lazy(() => import('../../common/ComponentChangelog'));
-const EditButton = React.lazy(() => import('../../common/EditButton'));
+const AvatarPlaceholder: React.FC<{ num?: number }> = ({ num = 6 }) =>
+  Array.from({ length: num }).map<React.ReactNode>((_, i) => (
+    <Skeleton.Avatar size="small" active key={i} style={{ marginInlineStart: i === 0 ? 0 : -8 }} />
+  ));
 
-const useStyle = createStyles(({ token, css }) => ({
-  articleWrapper: css`
-    padding: 0 170px 32px 64px;
-    &.rtl {
-      padding: 0 64px 144px 170px;
-    }
-    @media only screen and (max-width: ${token.screenLG}px) {
-      &,
-      &.rtl {
-        padding: 0 ${token.paddingLG * 2}px;
-      }
-    }
-  `,
-}));
+export interface ContentProps {
+  children?: React.ReactNode;
+  className?: string;
+}
 
-const Content: React.FC<React.PropsWithChildren> = ({ children }) => {
+const Content: React.FC<ContentProps> = ({ children, className }) => {
   const meta = useRouteMeta();
   const { pathname, hash } = useLocation();
-  const { direction } = useContext(SiteContext);
+  const { direction } = React.use(SiteContext);
   const { styles } = useStyle();
 
   const [showDebug, setShowDebug] = useLayoutState(false);
   const [codeType, setCodeType] = useState('tsx');
+
   const debugDemos = useMemo(
     () => meta.toc?.filter((item) => item._debug_demo).map((item) => item.id) || [],
     [meta],
@@ -53,46 +45,37 @@ const Content: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   useLayoutEffect(() => {
     setShowDebug(process.env.NODE_ENV === 'development' || isDebugDemo);
-  }, []);
+  }, [isDebugDemo]);
 
   const contextValue = useMemo<DemoContextProps>(
     () => ({ showDebug, setShowDebug, codeType, setCodeType }),
-    [showDebug, codeType, debugDemos],
+    [showDebug, codeType],
   );
 
   const isRTL = direction === 'rtl';
 
   return (
-    <DemoContext.Provider value={contextValue}>
-      <Col xxl={20} xl={19} lg={18} md={18} sm={24} xs={24}>
-        <InViewSuspense fallback={null}>
-          <DocAnchor showDebug={showDebug} debugDemos={debugDemos} />
-        </InViewSuspense>
-        <article className={classNames(styles.articleWrapper, { rtl: isRTL })}>
+    <DemoContext value={contextValue}>
+      <Col xxl={20} xl={19} lg={18} md={18} sm={24} xs={24} className={className}>
+        <DocAnchor showDebug={showDebug} debugDemos={debugDemos} />
+        <article className={clsx(styles.articleWrapper, { rtl: isRTL })}>
           {meta.frontmatter?.title ? (
-            <Typography.Title style={{ fontSize: 30, position: 'relative' }}>
-              <Flex gap="small">
-                <div>{meta.frontmatter?.title}</div>
-                <div>{meta.frontmatter?.subtitle}</div>
-                {!pathname.startsWith('/components/overview') && (
-                  <InViewSuspense fallback={null}>
+            <Flex justify="space-between">
+              <Typography.Title style={{ fontSize: 32, position: 'relative' }}>
+                <Space>
+                  <span>{meta.frontmatter?.title}</span>
+                  <span>{meta.frontmatter?.subtitle}</span>
+                  {!pathname.startsWith('/components/overview') && (
                     <EditButton
                       title={<FormattedMessage id="app.content.edit-page" />}
                       filename={meta.frontmatter.filename}
                     />
-                  </InViewSuspense>
-                )}
-              </Flex>
-              {pathname.startsWith('/components/') && (
-                <InViewSuspense fallback={null}>
-                  <ComponentChangelog pathname={pathname} />
-                </InViewSuspense>
-              )}
-            </Typography.Title>
+                  )}
+                </Space>
+              </Typography.Title>
+            </Flex>
           ) : null}
-          <InViewSuspense fallback={null}>
-            <DocMeta />
-          </InViewSuspense>
+          <DocMeta />
           {!meta.frontmatter.__autoDescription && meta.frontmatter.description}
 
           {/* Import Info */}
@@ -103,28 +86,32 @@ const Content: React.FC<React.PropsWithChildren> = ({ children }) => {
                 component={meta.frontmatter.title}
                 filename={meta.frontmatter.filename}
                 version={meta.frontmatter.tag}
+                designUrl={meta.frontmatter.designUrl}
+                searchTitleKeywords={[meta.frontmatter.title, meta.frontmatter.subtitle].filter(
+                  Boolean,
+                )}
+                repo="ant-design/ant-design"
               />
             )}
-          <div style={{ minHeight: 'calc(100vh - 64px)', width: 'calc(100% - 10px)' }}>
+          <div style={{ minHeight: 'calc(100vh - 64px)' }}>
             {children}
+            <FloatButton.BackTop />
           </div>
-          <InViewSuspense>
-            <ColumnCard
-              zhihuLink={meta.frontmatter.zhihu_url}
-              yuqueLink={meta.frontmatter.yuque_url}
-              juejinLink={meta.frontmatter.juejin_url}
-            />
-          </InViewSuspense>
-          <InViewSuspense fallback={<div style={{ height: 50, marginTop: 120 }} />}>
-            <Contributors filename={meta.frontmatter.filename} />
-          </InViewSuspense>
+          <ColumnCard
+            zhihuLink={meta.frontmatter.zhihu_url}
+            yuqueLink={meta.frontmatter.yuque_url}
+            juejinLink={meta.frontmatter.juejin_url}
+          />
+          <div style={{ marginTop: 120 }}>
+            <Suspense fallback={<AvatarPlaceholder />}>
+              <Contributors filename={meta.frontmatter.filename} />
+            </Suspense>
+          </div>
         </article>
-        <InViewSuspense fallback={null}>
-          <PrevAndNext rtl={isRTL} />
-        </InViewSuspense>
+        <PrevAndNext rtl={isRTL} />
         <Footer />
       </Col>
-    </DemoContext.Provider>
+    </DemoContext>
   );
 };
 

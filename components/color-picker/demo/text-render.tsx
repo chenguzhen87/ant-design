@@ -5,8 +5,8 @@ import { ColorPicker, Space } from 'antd';
 const Demo = () => {
   const [open, setOpen] = useState(false);
   return (
-    <Space direction="vertical">
-      <ColorPicker defaultValue="#1677ff" showText />
+    <Space vertical>
+      <ColorPicker defaultValue="#1677ff" showText allowClear />
       <ColorPicker
         defaultValue="#1677ff"
         showText={(color) => <span>Custom Text ({color.toHexString()})</span>}

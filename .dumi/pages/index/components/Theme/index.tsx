@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { defaultAlgorithm, defaultTheme } from '@ant-design/compatible';
+import { FastColor } from '@ant-design/fast-color';
 import {
   BellOutlined,
+  CheckOutlined,
+  CopyOutlined,
   FolderOutlined,
   HomeOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
-import { TinyColor } from '@ctrl/tinycolor';
-import type { MenuProps, ThemeConfig } from 'antd';
+import type { ColorPickerProps, GetProp, MenuProps, ThemeConfig } from 'antd';
 import {
   Breadcrumb,
   Button,
@@ -19,21 +21,23 @@ import {
   Menu,
   Radio,
   theme,
+  Tooltip,
   Typography,
 } from 'antd';
-import { createStyles } from 'antd-style';
-import type { Color } from 'antd/es/color-picker';
+import { createStaticStyles } from 'antd-style';
 import { generateColor } from 'antd/es/color-picker/util';
-import classNames from 'classnames';
+import copy from 'antd/lib/_util/copy';
+import { clsx } from 'clsx';
 import { useLocation } from 'dumi';
 
-import useDark from '../../../../hooks/useDark';
 import useLocale from '../../../../hooks/useLocale';
-import Link from '../../../../theme/common/Link';
+import LinkButton from '../../../../theme/common/LinkButton';
 import SiteContext from '../../../../theme/slots/SiteContext';
 import { getLocalizedPathname } from '../../../../theme/utils';
 import Group from '../Group';
+import { generateThemeCode } from '../ThemePreview/themeCodeUtils';
 import { getCarouselStyle } from '../util';
+import { DarkContext } from './../../../../hooks/useDark';
 import BackgroundImage from './BackgroundImage';
 import ColorPicker from './ColorPicker';
 import { DEFAULT_COLOR, getAvatarURL, getClosetColor, PINK_COLOR } from './colorUtil';
@@ -42,12 +46,18 @@ import RadiusPicker from './RadiusPicker';
 import type { THEME } from './ThemePicker';
 import ThemePicker from './ThemePicker';
 
+type Color = Extract<GetProp<ColorPickerProps, 'value'>, string | { cleared: any }>;
+
 const { Header, Content, Sider } = Layout;
 
 const TokenChecker: React.FC = () => {
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('Demo Token:', theme.useToken());
-  }
+  const token = theme.useToken();
+  React.useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.log('Demo Token:', token);
+    }
+  }, [token]);
   return null;
 };
 
@@ -55,7 +65,7 @@ const TokenChecker: React.FC = () => {
 const locales = {
   cn: {
     themeTitle: '定制主题，随心所欲',
-    themeDesc: 'Ant Design 5.0 开放更多样式算法，让你定制主题更简单',
+    themeDesc: 'Ant Design 开放更多样式算法，让你定制主题更简单',
 
     customizeTheme: '定制主题',
     myTheme: '我的主题',
@@ -69,10 +79,12 @@ const locales = {
     dark: '暗黑',
     toDef: '深度定制',
     toUse: '去使用',
+    copyTheme: '复制主题代码',
+    copySuccess: '已复制',
   },
   en: {
     themeTitle: 'Flexible theme customization',
-    themeDesc: 'Ant Design 5.0 enable extendable algorithm, make custom theme easier',
+    themeDesc: 'Ant Design enable extendable algorithm, make custom theme easier',
 
     customizeTheme: 'Customize Theme',
     myTheme: 'My Theme',
@@ -86,18 +98,20 @@ const locales = {
     dark: 'Dark',
     toDef: 'More',
     toUse: 'Apply',
+    copyTheme: 'Copy theme code',
+    copySuccess: 'Copied',
   },
 };
 
 // ============================= Style =============================
-const useStyle = createStyles(({ token, css, cx }) => {
+const styles = createStaticStyles(({ cssVar, css, cx }) => {
   const { carousel } = getCarouselStyle();
   const demo = css`
     overflow: hidden;
     background: rgba(240, 242, 245, 0.25);
     backdrop-filter: blur(50px);
     box-shadow: 0 2px 10px 2px rgba(0, 0, 0, 0.1);
-    transition: all ${token.motionDurationSlow};
+    transition: all ${cssVar.motionDurationSlow};
   `;
 
   return {
@@ -136,10 +150,10 @@ const useStyle = createStyles(({ token, css, cx }) => {
     header: css`
       display: flex;
       align-items: center;
-      border-bottom: 1px solid ${token.colorSplit};
-      padding-inline: ${token.paddingLG}px !important;
-      height: ${token.controlHeightLG * 1.2}px;
-      line-height: ${token.controlHeightLG * 1.2}px;
+      border-bottom: 1px solid ${cssVar.colorSplit};
+      padding-inline: ${cssVar.paddingLG} !important;
+      height: calc(${cssVar.controlHeightLG} * 1.2);
+      line-height: calc(${cssVar.controlHeightLG} * 1.2);
     `,
 
     headerDark: css`
@@ -147,8 +161,8 @@ const useStyle = createStyles(({ token, css, cx }) => {
     `,
 
     avatar: css`
-      width: ${token.controlHeight}px;
-      height: ${token.controlHeight}px;
+      width: ${cssVar.controlHeight};
+      height: ${cssVar.controlHeight};
       border-radius: 100%;
       background: rgba(240, 240, 240, 0.75);
       background-size: cover;
@@ -162,11 +176,11 @@ const useStyle = createStyles(({ token, css, cx }) => {
     logo: css`
       display: flex;
       align-items: center;
-      column-gap: ${token.padding}px;
+      column-gap: ${cssVar.padding};
 
       h1 {
         font-weight: 400;
-        font-size: ${token.fontSizeLG}px;
+        font-size: ${cssVar.fontSizeLG};
         line-height: 1.5;
       }
     `,
@@ -195,29 +209,29 @@ const useStyle = createStyles(({ token, css, cx }) => {
       position: absolute;
     `,
     leftTopImagePos: css`
-      left: 0;
+      inset-inline-start: 0;
       top: -100px;
       height: 500px;
     `,
     rightBottomPos: css`
-      right: 0;
+      inset-inline-end: 0;
       bottom: -100px;
       height: 287px;
     `,
     leftTopImage: css`
-      left: 50%;
+      inset-inline-start: 50%;
       transform: translate3d(-900px, 0, 0);
       top: -100px;
       height: 500px;
     `,
     rightBottomImage: css`
-      right: 50%;
+      inset-inline-end: 50%;
       transform: translate3d(750px, 0, 0);
       bottom: -100px;
       height: 287px;
     `,
     motion: css`
-      transition: all ${token.motionDurationSlow};
+      transition: all ${cssVar.motionDurationSlow};
     `,
     op1: css`
       opacity: 1;
@@ -265,7 +279,7 @@ const sideMenuItems: MenuProps['items'] = [
 
 // ============================= Theme =============================
 
-function getTitleColor(colorPrimary: string | Color, isLight?: boolean) {
+function getTitleColor(colorPrimary: Color, isLight?: boolean) {
   if (!isLight) {
     return '#FFF';
   }
@@ -290,7 +304,7 @@ function getTitleColor(colorPrimary: string | Color, isLight?: boolean) {
 
 interface ThemeData {
   themeType: THEME;
-  colorPrimary: string | Color;
+  colorPrimary: Color;
   borderRadius: number;
   compact: 'default' | 'compact';
 }
@@ -323,7 +337,7 @@ const ThemesInfo: Record<THEME, Partial<ThemeData>> = {
 const normalize = (value: number) => value / 255;
 
 function rgbToColorMatrix(color: string) {
-  const rgb = new TinyColor(color).toRgb();
+  const rgb = new FastColor(color).toRgb();
   const { r, g, b } = rgb;
 
   const invertValue = normalize(r) * 100;
@@ -343,12 +357,13 @@ function rgbToColorMatrix(color: string) {
 }
 
 const Theme: React.FC = () => {
-  const { styles } = useStyle();
   const [locale, lang] = useLocale(locales);
   const isZhCN = lang === 'cn';
   const { search } = useLocation();
 
   const [themeData, setThemeData] = React.useState<ThemeData>(ThemeDefault);
+  const [copied, setCopied] = React.useState(false);
+  const copyTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const onThemeChange = (_: Partial<ThemeData>, nextThemeData: ThemeData) => {
     React.startTransition(() => {
@@ -359,7 +374,7 @@ const Theme: React.FC = () => {
   const { compact, themeType, colorPrimary, ...themeToken } = themeData;
   const isLight = themeType !== 'dark';
   const [form] = Form.useForm();
-  const { isMobile } = React.useContext(SiteContext);
+  const { isMobile } = React.use(SiteContext);
   const colorPrimaryValue = React.useMemo(
     () => (typeof colorPrimary === 'string' ? colorPrimary : colorPrimary.toHexString()),
     [colorPrimary],
@@ -387,16 +402,15 @@ const Theme: React.FC = () => {
       themeType,
       ...ThemesInfo[themeType],
     };
-
     setThemeData(mergedData);
     form.setFieldsValue(mergedData);
-  }, [themeType]);
+  }, [form, themeType]);
 
-  const isRootDark = useDark();
+  const isDark = React.use(DarkContext);
 
   React.useEffect(() => {
-    onThemeChange({}, { ...themeData, themeType: isRootDark ? 'dark' : 'default' });
-  }, [isRootDark]);
+    onThemeChange({}, { ...themeData, themeType: isDark ? 'dark' : 'default' });
+  }, [isDark]);
 
   // ================================ Tokens ================================
   const closestColor = getClosetColor(colorPrimaryValue);
@@ -431,23 +445,35 @@ const Theme: React.FC = () => {
       token: { ...themeToken, colorPrimary: colorPrimaryValue },
       algorithm: algorithmFn,
       components: {
-        Layout: isLight
-          ? {
-              headerBg: 'transparent',
-              bodyBg: 'transparent',
-            }
-          : {},
+        Layout: isLight ? { headerBg: 'transparent', bodyBg: 'transparent' } : {},
         Menu: isLight
-          ? {
-              itemBg: 'transparent',
-              subMenuItemBg: 'transparent',
-              activeBarBorderWidth: 0,
-            }
+          ? { itemBg: 'transparent', subMenuItemBg: 'transparent', activeBarBorderWidth: 0 }
           : {},
         ...(themeType === 'v4' ? defaultTheme.components : {}),
       },
     }),
-    [themeToken, colorPrimaryValue, algorithmFn, themeType],
+    [themeToken, colorPrimaryValue, algorithmFn, isLight, themeType],
+  );
+
+  const handleCopyTheme = async () => {
+    const code = generateThemeCode(memoTheme);
+    const success = await copy(code);
+    if (success) {
+      if (copyTimerRef.current) {
+        clearTimeout(copyTimerRef.current);
+      }
+      setCopied(true);
+      copyTimerRef.current = setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  React.useEffect(
+    () => () => {
+      if (copyTimerRef.current) {
+        clearTimeout(copyTimerRef.current);
+      }
+    },
+    [],
   );
 
   // ================================ Render ================================
@@ -455,35 +481,34 @@ const Theme: React.FC = () => {
     <ConfigProvider theme={memoTheme}>
       <TokenChecker />
       <div
-        className={classNames(styles.demo, {
+        className={clsx(styles.demo, {
           [styles.otherDemo]: isLight && closestColor !== DEFAULT_COLOR && styles.otherDemo,
           [styles.darkDemo]: !isLight,
         })}
         style={{ borderRadius: themeData.borderRadius }}
       >
         <Layout className={styles.transBg}>
-          <Header
-            className={classNames(styles.header, styles.transBg, !isLight && styles.headerDark)}
-          >
+          <Header className={clsx(styles.header, styles.transBg, !isLight && styles.headerDark)}>
             {/* Logo */}
             <div className={styles.logo}>
               <div className={styles.logoImg}>
                 <img
+                  draggable={false}
                   src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
                   style={{
                     filter:
                       closestColor === DEFAULT_COLOR ? undefined : rgbToColorMatrix(logoColor),
                   }}
-                  alt=""
+                  alt="antd logo"
                 />
               </div>
-              <h1>Ant Design 5.0</h1>
+              <h1>Ant Design</h1>
             </div>
             <Flex className={styles.menu} gap="middle">
               <BellOutlined />
               <QuestionCircleOutlined />
               <div
-                className={classNames(styles.avatar, { [styles.avatarDark]: themeType === 'dark' })}
+                className={clsx(styles.avatar, { [styles.avatarDark]: themeType === 'dark' })}
                 style={{
                   backgroundColor: avatarColor,
                   backgroundImage: `url(${getAvatarURL(closestColor)})`,
@@ -492,13 +517,13 @@ const Theme: React.FC = () => {
             </Flex>
           </Header>
           <Layout className={styles.transBg} hasSider>
-            <Sider className={classNames(styles.transBg)} width={200}>
+            <Sider className={clsx(styles.transBg)} width={200}>
               <Menu
                 mode="inline"
-                className={classNames(styles.transBg)}
+                className={clsx(styles.transBg)}
                 selectedKeys={['Themes']}
                 openKeys={['Design']}
-                style={{ height: '100%', borderRight: 0 }}
+                style={{ height: '100%', borderInlineEnd: 0 }}
                 items={sideMenuItems}
                 expandIcon={false}
               />
@@ -518,14 +543,23 @@ const Theme: React.FC = () => {
                   title={locale.myTheme}
                   extra={
                     <Flex gap="small">
-                      <Link to={getLocalizedPathname('/theme-editor', isZhCN, search)}>
-                        <Button type="default">{locale.toDef}</Button>
-                      </Link>
-                      <Link
+                      <Tooltip title={locale.copyTheme}>
+                        <Button
+                          icon={copied ? <CheckOutlined /> : <CopyOutlined />}
+                          onClick={handleCopyTheme}
+                        >
+                          {locale.copyTheme}
+                        </Button>
+                      </Tooltip>
+                      <LinkButton to={getLocalizedPathname('/theme-editor', isZhCN, search)}>
+                        {locale.toDef}
+                      </LinkButton>
+                      <LinkButton
+                        type="primary"
                         to={getLocalizedPathname('/docs/react/customize-theme', isZhCN, search)}
                       >
-                        <Button type="primary">{locale.toUse}</Button>
-                      </Link>
+                        {locale.toUse}
+                      </LinkButton>
                     </Flex>
                   }
                 >
@@ -578,42 +612,41 @@ const Theme: React.FC = () => {
         <>
           {/* >>>>>> Default <<<<<< */}
           <div
-            className={classNames(
+            className={clsx(
               styles.motion,
               isLight && closestColor === DEFAULT_COLOR ? styles.op1 : styles.op0,
             )}
           >
             {/* Image Left Top */}
             <img
-              className={classNames(styles.pos, styles.leftTopImage)}
+              draggable={false}
+              className={clsx(styles.pos, styles.leftTopImage)}
               src="https://gw.alipayobjects.com/zos/bmw-prod/bd71b0c6-f93a-4e52-9c8a-f01a9b8fe22b.svg"
-              alt=""
+              alt="image-left-top"
             />
             {/* Image Right Bottom */}
             <img
-              className={classNames(styles.pos, styles.rightBottomImage)}
+              draggable={false}
+              className={clsx(styles.pos, styles.rightBottomImage)}
               src="https://gw.alipayobjects.com/zos/bmw-prod/84ad805a-74cb-4916-b7ba-9cdc2bdec23a.svg"
-              alt=""
+              alt="image-right-bottom"
             />
           </div>
           {/* >>>>>> Dark <<<<<< */}
-          <div
-            className={classNames(
-              styles.motion,
-              !isLight || !closestColor ? styles.op1 : styles.op0,
-            )}
-          >
+          <div className={clsx(styles.motion, !isLight || !closestColor ? styles.op1 : styles.op0)}>
             {/* Image Left Top */}
             <img
-              className={classNames(styles.pos, styles.leftTopImagePos)}
+              draggable={false}
+              className={clsx(styles.pos, styles.leftTopImagePos)}
               src="https://gw.alipayobjects.com/zos/bmw-prod/a213184a-f212-4afb-beec-1e8b36bb4b8a.svg"
-              alt=""
+              alt="image-left-top"
             />
             {/* Image Right Bottom */}
             <img
-              className={classNames(styles.pos, styles.rightBottomPos)}
+              draggable={false}
+              className={clsx(styles.pos, styles.rightBottomPos)}
               src="https://gw.alipayobjects.com/zos/bmw-prod/bb74a2fb-bff1-4d0d-8c2d-2ade0cd9bb0d.svg"
-              alt=""
+              alt="image-right-bottom"
             />
           </div>
           {/* >>>>>> Background Image <<<<<< */}
